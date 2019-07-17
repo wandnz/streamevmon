@@ -23,7 +23,6 @@ import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
 import com.github.fsanaulla.chronicler.macros.auto._
 import org.apache.flink.api.scala._
 
-
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
@@ -49,7 +48,7 @@ object InfluxConsumer
     }
     Await.ready(pingFuture, Duration.Inf)
 
-    val measurement = influxDB.measurement[ICMP](database, "data_amp_icmp")
+    val measurement = influxDB.measurement[ICMPMeasurement](database, "data_amp_icmp")
 
     val result = measurement.read("SELECT * FROM data_amp_icmp")
 

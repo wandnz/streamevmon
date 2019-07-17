@@ -15,7 +15,8 @@ val flinkVersion = "1.8.1"
 
 val flinkDependencies = Seq(
   "org.apache.flink" %% "flink-scala" % flinkVersion,
-  "org.apache.flink" %% "flink-streaming-scala" % flinkVersion)
+  "org.apache.flink" %% "flink-streaming-scala" % flinkVersion,
+  "org.apache.flink" %% "flink-table-api-scala" % flinkVersion)
 
 val log4jDependencies = Seq(
   "org.apache.logging.log4j" %% "log4j-api-scala" % "11.0",
@@ -28,6 +29,7 @@ val chroniclerVersion = "0.5.1"
 
 val influxDependencies = Seq(
   "com.github.fsanaulla" %% "chronicler-ahc-io" % chroniclerVersion,
+  "com.github.fsanaulla" %% "chronicler-ahc-management" % chroniclerVersion,
   "com.github.fsanaulla" %% "chronicler-macros" % chroniclerVersion
 )
 
