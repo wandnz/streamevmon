@@ -17,7 +17,6 @@ package nz.ac.waikato
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 import com.github.fsanaulla.chronicler.ahc.io.InfluxIO
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
 import com.github.fsanaulla.chronicler.macros.auto._
@@ -30,12 +29,14 @@ import scala.util.{Failure, Success}
 
 object InfluxConsumer
 {
+
   def main(args: Array[String]): Unit =
   {
     // set up the execution environment
     val env = ExecutionEnvironment.getExecutionEnvironment
 
-    val influxDB = InfluxIO("localhost", 8086, Some(InfluxCredentials("cuz", "")))
+    val influxDB =
+      InfluxIO("localhost", 8086, Some(InfluxCredentials("cuz", "")))
     val database = "nntsc"
 
     val pingFuture = influxDB.ping
@@ -48,7 +49,8 @@ object InfluxConsumer
     }
     Await.ready(pingFuture, Duration.Inf)
 
-    val measurement = influxDB.measurement[ICMPMeasurement](database, "data_amp_icmp")
+    val measurement =
+      influxDB.measurement[ICMPMeasurement](database, "data_amp_icmp")
 
     val result = measurement.read("SELECT * FROM data_amp_icmp")
 
@@ -56,9 +58,13 @@ object InfluxConsumer
     {
       case Success(qr) if qr.isRight =>
         println(s"Found ${qr.right.get.length} ICMP results")
-        println(s"Flink found ${env.fromCollection(qr.right.get).count} ICMP results")
-      case Success(qr) if qr.isLeft => println(s"Failed query in chronicler: $qr")
-      case Failure(exception) => println(s"Failed query with exception: $exception")
+        println(
+          s"Flink found ${env.fromCollection(qr.right.get).count} ICMP results"
+        )
+      case Success(qr) if qr.isLeft =>
+        println(s"Failed query in chronicler: $qr")
+      case Failure(exception) =>
+        println(s"Failed query with exception: $exception")
     }
 
     Await.ready(result, Duration.Inf)

@@ -30,18 +30,21 @@ final case class ICMPMeasurement(
 
 object ICMPFactory
 {
+
   def CreateICMPs(subscriptionPacketHTTP: String): Array[ICMPMeasurement] =
   {
-    subscriptionPacketHTTP.split('\n')
+    subscriptionPacketHTTP
+      .split('\n')
       // Drop the HTTP header
-      .dropWhile(!_.isEmpty).drop(1)
+      .dropWhile(!_.isEmpty)
+      .drop(1)
       .map(x =>
       {
         CreateICMP(x)
       })
   }
 
-  def CreateICMP(subscriptionLine : String): ICMPMeasurement =
+  def CreateICMP(subscriptionLine: String): ICMPMeasurement =
   {
     val data = subscriptionLine.split(Array(',', ' '))
     ICMPMeasurement(
@@ -52,14 +55,18 @@ object ICMPFactory
       data(5).split('=')(1).replace("i", "").toInt,
       data(6).split('=')(1).replace("i", "").toInt,
       data(7).split('=')(1),
-      data(8).toLong)
+      data(8).toLong
+    )
   }
 
-  def CreateICMPs(subscriptionPacketHTTP: Stream[String]): Stream[ICMPMeasurement] =
+  def CreateICMPs(
+    subscriptionPacketHTTP: Stream[String]
+  ): Stream[ICMPMeasurement] =
   {
     subscriptionPacketHTTP
       // Drop the HTTP header
-      .dropWhile(!_.isEmpty).drop(1)
+      .dropWhile(!_.isEmpty)
+      .drop(1)
       .map(x =>
       {
         CreateICMP(x)
