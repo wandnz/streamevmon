@@ -19,9 +19,9 @@ val flinkDependencies = Seq(
   "org.apache.flink" %% "flink-table-api-scala" % flinkVersion)
 
 val log4jDependencies = Seq(
-  "org.apache.logging.log4j" %% "log4j-api-scala" % "11.0",
-  "org.apache.logging.log4j" % "log4j-api" % "2.11.0",
-  "org.apache.logging.log4j" % "log4j-core" % "2.11.0" % Runtime,
+  //"org.apache.logging.log4j" %% "log4j-api-scala" % "11.0",
+  //"org.apache.logging.log4j" % "log4j-api" % "2.11.0",
+  //"org.apache.logging.log4j" % "log4j-core" % "2.11.0" % Runtime,
   "org.slf4j" % "slf4j-simple" % "1.7.9"
 )
 
@@ -44,7 +44,7 @@ lazy val root = (project in file(".")).
 assembly / mainClass := Some("nz.ac.waikato.InfluxSubscription")
 
 // make run command include the provided dependencies
-Compile / run  := Defaults.runTask(Compile / fullClasspath,
+Compile / run := Defaults.runTask(Compile / run / fullClasspath,
                                    Compile / run / mainClass,
                                    Compile / run / runner
                                   ).evaluated

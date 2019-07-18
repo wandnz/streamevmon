@@ -9,7 +9,6 @@ import com.github.fsanaulla.chronicler.core.enums.Destinations
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
 import org.apache.flink.api.scala.ExecutionEnvironment
 import org.apache.flink.streaming.api.scala._
-import org.apache.logging.log4j.scala.Logging
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
@@ -18,17 +17,16 @@ import scala.util.{Failure, Success}
 
 class SubscriptionServer(
   subscriptionName: String = "SubscriptionServer",
-  dbName          : String = "nntsc",
-  rpName          : String = "nntscdefault",
-  protocol        : String = "http",
-  listenAddress   : String = "130.217.250.59",
-  listenPort      : Int = 8008,
-  influxAddress   : String = "localhost",
-  influxPort      : Int = 8086,
-  influxUsername  : String = "cuz",
-  influxPassword: String = ""
-)
-  extends Thread
+  dbName: String = "nntsc",
+  rpName            : String = "nntscdefault",
+  protocol: String = "http",
+  listenAddress     : String = "130.217.250.59",
+  listenPort        : Int = 8008,
+  influxAddress: String = "localhost",
+  influxPort        : Int = 8086,
+  influxUsername    : String = "cuz",
+  influxPassword    : String = ""
+) extends Thread
           with Logging
 {
 
@@ -65,7 +63,7 @@ class SubscriptionServer(
 
         val lines = Stream.continually(reader.readLine).takeWhile(_ != null)
 
-        ICMPFactory.CreateICMPs(lines).foreach(l => logger.info(l))
+        ICMPFactory.CreateICMPs(lines).foreach(l => logger.info(l.toString))
 
         reader.close()
       }

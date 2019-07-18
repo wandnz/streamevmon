@@ -1,14 +1,13 @@
 package nz.ac.waikato
 
-import java.io.IOException
-import java.net.{InetAddress, ServerSocket}
+import java.io.{BufferedReader, IOException, InputStreamReader}
+import java.net.{InetAddress, ServerSocket, SocketTimeoutException}
 
 import com.github.fsanaulla.chronicler.ahc.management.{AhcManagementClient, InfluxMng}
 import com.github.fsanaulla.chronicler.core.alias.{ErrorOr, ResponseCode}
 import com.github.fsanaulla.chronicler.core.enums.Destinations
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
 import org.apache.flink.streaming.api.functions.source.SourceFunction
-import org.apache.logging.log4j.scala.Logging
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
@@ -16,18 +15,19 @@ import scala.concurrent.{Await, Future}
 import scala.sys.ShutdownHookThread
 import scala.util.{Failure, Success, Try}
 
-class ICMPMeasurementSourceFunction(subscriptionName: String = "SubscriptionServer",
-                                    dbName: String = "nntsc",
-                                    rpName: String = "nntscdefault",
-                                    protocol: String = "http",
-                                    listenAddress: String = "130.217.250.59",
-                                    listenPort: Int = 8008,
-                                    listenBacklog: Int = 5,
-                                    influxAddress: String = "localhost",
-                                    influxPort: Int = 8086,
-                                    influxUsername: String = "cuz",
-                                    influxPassword: String = "")
-    extends SourceFunction[ICMPMeasurement]
+class ICMPMeasurementSourceFunction(
+  subscriptionName: String = "SubscriptionServer",
+  dbName          : String = "nntsc",
+  rpName          : String = "nntscdefault",
+  protocol        : String = "http",
+  listenAddress   : String = "130.217.250.59",
+  listenPort      : Int = 8008,
+  listenBacklog   : Int = 5,
+  influxAddress   : String = "localhost",
+  influxPort      : Int = 8086,
+  influxUsername  : String = "cuz",
+  influxPassword  : String = ""
+) extends SourceFunction[ICMPMeasurement]
     with Logging {
 
   var isRunning = false
@@ -42,8 +42,31 @@ class ICMPMeasurementSourceFunction(subscriptionName: String = "SubscriptionServ
 
   def destinations: Seq[String] = Seq(s"$protocol://$listenAddress:$listenPort")
 
-  def listen(): Unit = {
-    logger.info("I'm definitely listening right now")
+  def listen(ctx: SourceFunction.SourceContext[ICMPMeasurement]): Unit =
+  {
+    logger.info("Listening for subscribed events...")
+
+    isRunning = true
+    while (isRunning)
+    {
+      try
+      {
+        listener match
+        {
+          case Some(sock) =>
+            val reader = new BufferedReader(new InputStreamReader(sock.accept.getInputStream))
+
+            val lines = Stream.continually(reader.readLine).takeWhile(_ != null)
+
+            ICMPFactory.CreateICMPs(lines).foreach(ctx.collect)
+          case None => isRunning = false
+        }
+      }
+      catch
+      {
+        case _: SocketTimeoutException =>
+      }
+    }
   }
 
   override def run(ctx: SourceFunction.SourceContext[ICMPMeasurement]): Unit = {
@@ -69,7 +92,7 @@ class ICMPMeasurementSourceFunction(subscriptionName: String = "SubscriptionServ
                   Await.ready(dropSubscription(), Duration.Inf)
                   logger.info(s"Removed subscription $subscriptionName")
                 }
-                Future(listen())
+                Future(listen(ctx))
             })
 
           Await.ready(subscribeFuture, Duration.Inf)
@@ -81,8 +104,10 @@ class ICMPMeasurementSourceFunction(subscriptionName: String = "SubscriptionServ
       hook.remove()
     }
 
-    disconnectInflux()
     stopListener()
+    logger.info("Stopped listener")
+    disconnectInflux()
+    logger.info("Disconnected from Influx")
   }
 
   override def cancel(): Unit = {
@@ -121,18 +146,7 @@ class ICMPMeasurementSourceFunction(subscriptionName: String = "SubscriptionServ
   def checkInfluxConnection(): Boolean =
     influx match {
       case Some(db) =>
-        val ping = db.ping
-        var pingResult: Boolean = false
-
-        ping.onComplete {
-          case Success(_) => pingResult = true
-          case Failure(_) => pingResult = false
-        }
-
-        Await.ready(ping, Duration.Inf)
-
-        pingResult
-
+        Await.result(db.ping.map(result => result.isRight), Duration.Inf)
       case None => false
     }
 
