@@ -1,4 +1,4 @@
-package nz.ac.waikato
+package nz.net.wand
 
 import java.io.{BufferedReader, IOException, InputStreamReader}
 import java.net.{InetAddress, ServerSocket, SocketTimeoutException}
@@ -17,7 +17,7 @@ import scala.util.{Failure, Success, Try}
 
 class ICMPMeasurementSourceFunction(
   subscriptionName: String = "SubscriptionServer",
-  dbName          : String = "nntsc",
+  dbName: String = "nntsc",
   rpName          : String = "nntscdefault",
   protocol        : String = "http",
   listenAddress   : String = "130.217.250.59",
@@ -30,44 +30,11 @@ class ICMPMeasurementSourceFunction(
 ) extends SourceFunction[ICMPMeasurement]
     with Logging {
 
-  var isRunning = false
+  private[this] var isRunning = false
 
-  var influx: Option[AhcManagementClient] = Option.empty
+  private[this] var influx: Option[AhcManagementClient] = Option.empty
 
-  var listener: Option[ServerSocket] = Option.empty
-
-  def listenInet: InetAddress = InetAddress.getByName(listenAddress)
-
-  def influxCredentials = InfluxCredentials(influxUsername, influxPassword)
-
-  def destinations: Seq[String] = Seq(s"$protocol://$listenAddress:$listenPort")
-
-  def listen(ctx: SourceFunction.SourceContext[ICMPMeasurement]): Unit =
-  {
-    logger.info("Listening for subscribed events...")
-
-    isRunning = true
-    while (isRunning)
-    {
-      try
-      {
-        listener match
-        {
-          case Some(sock) =>
-            val reader = new BufferedReader(new InputStreamReader(sock.accept.getInputStream))
-
-            val lines = Stream.continually(reader.readLine).takeWhile(_ != null)
-
-            ICMPFactory.CreateICMPs(lines).foreach(ctx.collect)
-          case None => isRunning = false
-        }
-      }
-      catch
-      {
-        case _: SocketTimeoutException =>
-      }
-    }
-  }
+  private[this] var listener: Option[ServerSocket] = Option.empty
 
   override def run(ctx: SourceFunction.SourceContext[ICMPMeasurement]): Unit = {
     var shutdownHooks: Seq[ShutdownHookThread] = Seq()
@@ -114,7 +81,41 @@ class ICMPMeasurementSourceFunction(
     isRunning = false
   }
 
-  def startListener(): Try[Unit] = {
+  private[this] def listenInet: InetAddress = InetAddress.getByName(listenAddress)
+
+  private[this] def influxCredentials = InfluxCredentials(influxUsername, influxPassword)
+
+  private[this] def destinations: Seq[String] = Seq(s"$protocol://$listenAddress:$listenPort")
+
+  private[this] def listen(ctx: SourceFunction.SourceContext[ICMPMeasurement]): Unit =
+  {
+    logger.info("Listening for subscribed events...")
+
+    isRunning = true
+    while (isRunning)
+    {
+      try
+      {
+        listener match
+        {
+          case Some(sock) =>
+            val reader = new BufferedReader(new InputStreamReader(sock.accept.getInputStream))
+
+            val lines = Stream.continually(reader.readLine).takeWhile(_ != null)
+
+            ICMPFactory.CreateICMPs(lines).foreach(ctx.collect)
+          case None => isRunning = false
+        }
+      }
+      catch
+      {
+        case _: SocketTimeoutException =>
+      }
+    }
+  }
+
+  private[this] def startListener(): Try[Unit] =
+  {
     try {
       listener = Some(new ServerSocket(listenPort, listenBacklog, listenInet))
       listener.get.setSoTimeout(100)
@@ -125,32 +126,33 @@ class ICMPMeasurementSourceFunction(
     }
   }
 
-  def stopListener(): Unit =
+  private[this] def stopListener(): Unit =
     listener match {
       case Some(listen) => listen.close()
       case None         =>
     }
 
-  def connectInflux(): Boolean = {
+  private[this] def connectInflux(): Boolean =
+  {
     influx = Some(InfluxMng(influxAddress, influxPort, Some(influxCredentials)))
 
     checkInfluxConnection()
   }
 
-  def disconnectInflux(): Unit =
+  private[this] def disconnectInflux(): Unit =
     influx match {
       case Some(db) => db.close
       case None     =>
     }
 
-  def checkInfluxConnection(): Boolean =
+  private[this] def checkInfluxConnection(): Boolean =
     influx match {
       case Some(db) =>
         Await.result(db.ping.map(result => result.isRight), Duration.Inf)
       case None => false
     }
 
-  def addOrUpdateSubscription(): Future[ErrorOr[ResponseCode]] =
+  private[this] def addOrUpdateSubscription(): Future[ErrorOr[ResponseCode]] =
     influx match {
       case Some(_) =>
         addSubscription().flatMap(addResult =>
@@ -171,7 +173,7 @@ class ICMPMeasurementSourceFunction(
         Future(Left(new IllegalStateException("No database connection")))
     }
 
-  def addSubscription(): Future[ErrorOr[ResponseCode]] =
+  private[this] def addSubscription(): Future[ErrorOr[ResponseCode]] =
     influx match {
       case Some(db) =>
         db.createSubscription(
@@ -185,7 +187,7 @@ class ICMPMeasurementSourceFunction(
         Future(Left(new IllegalStateException("No database connection")))
     }
 
-  def dropSubscription(): Future[ErrorOr[ResponseCode]] =
+  private[this] def dropSubscription(): Future[ErrorOr[ResponseCode]] =
     influx match {
       case Some(db) => db.dropSubscription(subscriptionName, dbName, rpName)
       case None =>

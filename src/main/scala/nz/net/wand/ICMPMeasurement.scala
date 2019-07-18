@@ -1,4 +1,4 @@
-package nz.ac.waikato
+package nz.net.wand
 
 import com.github.fsanaulla.chronicler.macros.annotations.reader.utc
 import com.github.fsanaulla.chronicler.macros.annotations.{field, tag, timestamp}
@@ -6,7 +6,7 @@ import com.github.fsanaulla.chronicler.macros.annotations.{field, tag, timestamp
 final case class ICMPMeasurement(
   @tag stream: String,
   @field loss         : Int,
-  @field lossrate: Double,
+  @field lossrate     : Double,
   @field median       : Int,
   @field packet_size: Int,
   @field results      : Int,

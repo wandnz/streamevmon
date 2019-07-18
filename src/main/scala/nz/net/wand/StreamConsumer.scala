@@ -1,4 +1,4 @@
-package nz.ac.waikato
+package nz.net.wand
 
 import org.apache.flink.streaming.api.scala._
 
