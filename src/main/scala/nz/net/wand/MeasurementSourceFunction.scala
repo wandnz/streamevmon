@@ -1,6 +1,6 @@
 package nz.net.wand
 
-import nz.net.wand.measurements.ICMP
+import nz.net.wand.measurements.{Measurement, MeasurementFactory}
 
 import java.io.{BufferedReader, IOException, InputStreamReader}
 import java.net.{InetAddress, ServerSocket, SocketTimeoutException}
@@ -17,19 +17,19 @@ import scala.concurrent.{Await, Future}
 import scala.sys.ShutdownHookThread
 import scala.util.{Failure, Success, Try}
 
-class ICMPMeasurementSourceFunction(
-  subscriptionName: String = "SubscriptionServer",
-  dbName          : String = "nntsc",
-  rpName          : String = "nntscdefault",
-  protocol        : String = "http",
-  listenAddress   : String = "130.217.250.59",
-  listenPort      : Int = 8008,
-  listenBacklog   : Int = 5,
-  influxAddress   : String = "localhost",
-  influxPort      : Int = 8086,
-  influxUsername  : String = "cuz",
-  influxPassword  : String = ""
-) extends SourceFunction[ICMP]
+class MeasurementSourceFunction(
+    subscriptionName: String = "SubscriptionServer",
+    dbName: String = "nntsc",
+    rpName: String = "nntscdefault",
+    protocol: String = "http",
+    listenAddress: String = "130.217.250.59",
+    listenPort: Int = 8008,
+    listenBacklog: Int = 5,
+    influxAddress: String = "localhost",
+    influxPort: Int = 8086,
+    influxUsername: String = "cuz",
+    influxPassword: String = ""
+) extends SourceFunction[Measurement]
     with Logging {
 
   private[this] var isRunning = false
@@ -38,8 +38,7 @@ class ICMPMeasurementSourceFunction(
 
   private[this] var listener: Option[ServerSocket] = Option.empty
 
-  override def run(ctx: SourceFunction.SourceContext[ICMP]): Unit =
-  {
+  override def run(ctx: SourceFunction.SourceContext[Measurement]): Unit = {
     var shutdownHooks: Seq[ShutdownHookThread] = Seq()
 
     if (!connectInflux()) {
@@ -92,33 +91,26 @@ class ICMPMeasurementSourceFunction(
 
   private[this] def destinations: Seq[String] = Seq(s"$protocol://$listenAddress:$listenPort")
 
-  private[this] def listen(ctx: SourceFunction.SourceContext[ICMP]): Unit =
-  {
+  private[this] def listen(ctx: SourceFunction.SourceContext[Measurement]): Unit = {
     logger.info("Listening for subscribed events...")
 
     isRunning = true
-    while (isRunning)
-    {
-      try
-      {
-        listener match
-        {
+    while (isRunning) {
+      try {
+        listener match {
           case Some(serverSock) =>
             val sock = serverSock.accept
             sock.setSoTimeout(100)
             val reader = new BufferedReader(new InputStreamReader(sock.getInputStream))
 
             Stream
-              .continually
-              {
+              .continually {
                 val in = reader.readLine
-                if (in != null)
-                {
-                  val result = ICMP.Create(in)
-                  result match
-                  {
+                if (in != null) {
+                  val result = MeasurementFactory.CreateMeasurement(in)
+                  result match {
                     case Some(x) => ctx.collect(x)
-                    case None =>
+                    case None    =>
                   }
                 }
                 in
@@ -130,9 +122,7 @@ class ICMPMeasurementSourceFunction(
             logger.warn("Listener unexpectedly died")
             isRunning = false
         }
-      }
-      catch
-      {
+      } catch {
         case _: SocketTimeoutException =>
       }
     }
@@ -140,8 +130,7 @@ class ICMPMeasurementSourceFunction(
     logger.info("No longer listening")
   }
 
-  private[this] def startListener(): Try[Unit] =
-  {
+  private[this] def startListener(): Try[Unit] = {
     try {
       listener = Some(new ServerSocket(listenPort, listenBacklog, listenInet))
       listener.get.setSoTimeout(100)
@@ -158,8 +147,7 @@ class ICMPMeasurementSourceFunction(
       case None         =>
     }
 
-  private[this] def connectInflux(): Boolean =
-  {
+  private[this] def connectInflux(): Boolean = {
     influx = Some(InfluxMng(influxAddress, influxPort, Some(influxCredentials)))
 
     checkInfluxConnection()

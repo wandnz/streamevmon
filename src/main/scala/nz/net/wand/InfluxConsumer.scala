@@ -17,7 +17,6 @@ package nz.net.wand
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
 import nz.net.wand.measurements.ICMP
 
 import com.github.fsanaulla.chronicler.ahc.io.{AhcIOClient, InfluxIO}
@@ -30,19 +29,16 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Success}
 
-object InfluxConsumer
-{
+object InfluxConsumer {
 
-  def doICMP(influxDB: AhcIOClient, database: String): Future[ErrorOr[Array[ICMP]]] =
-  {
+  def doICMP(influxDB: AhcIOClient, database: String): Future[ErrorOr[Array[ICMP]]] = {
 
     val measurement =
       influxDB.measurement[ICMP](database, "data_amp_icmp")
 
     val result = measurement.read("SELECT * FROM data_amp_icmp fill(-1)")
 
-    result.onComplete
-    {
+    result.onComplete {
       case Success(qr) if qr.isRight =>
         println(s"Found ${qr.right.get.length} ICMP results")
       case Success(qr) if qr.isLeft =>
@@ -54,15 +50,13 @@ object InfluxConsumer
     result
   }
 
-  def main(args: Array[String]): Unit =
-  {
+  def main(args: Array[String]): Unit = {
     val influxDB =
       InfluxIO("localhost", 8086, Some(InfluxCredentials("cuz", "")))
     val database = "nntsc"
 
     val pingFuture = influxDB.ping
-    pingFuture.onComplete
-    {
+    pingFuture.onComplete {
       case Success(_) => println(s"Successfully connected to InfluxDB")
       case Failure(exception) =>
         println(s"Failed to connect: $exception")

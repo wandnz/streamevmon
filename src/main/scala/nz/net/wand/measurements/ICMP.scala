@@ -4,18 +4,16 @@ import com.github.fsanaulla.chronicler.macros.annotations.reader.utc
 import com.github.fsanaulla.chronicler.macros.annotations.{field, tag, timestamp}
 
 final case class ICMP(
-  @tag stream         : String,
-  @field loss         : Int,
-  @field lossrate     : Double,
-  @field median       : Int,
-  @field packet_size  : Int,
-  @field results      : Int,
-  @field rtts         : String,
-  @utc @timestamp time: Long
-) extends Measurement
-{
-  override def toString: String =
-  {
+    @tag stream: String,
+    @field loss: Int,
+    @field lossrate: Double,
+    @field median: Int,
+    @field packet_size: Int,
+    @field results: Int,
+    @field rtts: String,
+    @utc @timestamp time: Long
+) extends Measurement {
+  override def toString: String = {
     s"data_amp_icmp," +
       s"stream=$stream " +
       s"loss=$loss," +
@@ -28,21 +26,17 @@ final case class ICMP(
   }
 }
 
-object ICMP extends MeasurementFactory with nz.net.wand.Logging
-{
+object ICMP extends MeasurementFactory {
 
   final override val table_name: String = "data_amp_icmp"
 
-  override def Create(subscriptionLine: String): Option[ICMP] =
-  {
+  override def Create(subscriptionLine: String): Option[ICMP] = {
     val data = subscriptionLine.split(Array(',', ' '))
     val namedData = data.drop(1).dropRight(1)
-    if (data(0) != table_name)
-    {
+    if (data(0) != table_name) {
       None
     }
-    else
-    {
+    else {
       Some(
         ICMP(
           getNamedField(namedData, "stream"),
@@ -57,29 +51,25 @@ object ICMP extends MeasurementFactory with nz.net.wand.Logging
     }
   }
 
-  def CreateICMPs(subscriptionPacketHTTP: String): Array[ICMP] =
-  {
+  def CreateICMPs(subscriptionPacketHTTP: String): Array[ICMP] = {
     subscriptionPacketHTTP
       .split('\n')
       // Drop the HTTP header
       .dropWhile(!_.isEmpty)
       .drop(1)
-      .flatMap(x =>
-      {
+      .flatMap(x => {
         Create(x)
       })
   }
 
   def CreateICMPs(
-    subscriptionPacketHTTP: Stream[String]
-  ): Stream[ICMP] =
-  {
+      subscriptionPacketHTTP: Stream[String]
+  ): Stream[ICMP] = {
     subscriptionPacketHTTP
-      // Drop the HTTP header
+    // Drop the HTTP header
       .dropWhile(!_.isEmpty)
       .drop(1)
-      .flatMap(x =>
-      {
+      .flatMap(x => {
         Create(x)
       })
   }
