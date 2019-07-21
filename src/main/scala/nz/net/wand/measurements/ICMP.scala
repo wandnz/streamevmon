@@ -50,27 +50,4 @@ object ICMP extends MeasurementFactory {
         ))
     }
   }
-
-  def CreateICMPs(subscriptionPacketHTTP: String): Array[ICMP] = {
-    subscriptionPacketHTTP
-      .split('\n')
-      // Drop the HTTP header
-      .dropWhile(!_.isEmpty)
-      .drop(1)
-      .flatMap(x => {
-        Create(x)
-      })
-  }
-
-  def CreateICMPs(
-      subscriptionPacketHTTP: Stream[String]
-  ): Stream[ICMP] = {
-    subscriptionPacketHTTP
-    // Drop the HTTP header
-      .dropWhile(!_.isEmpty)
-      .drop(1)
-      .flatMap(x => {
-        Create(x)
-      })
-  }
 }

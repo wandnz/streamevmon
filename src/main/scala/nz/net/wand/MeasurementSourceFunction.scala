@@ -69,7 +69,6 @@ class MeasurementSourceFunction(
     }
 
     shutdownHooks.foreach { hook =>
-      logger.debug("Shutting down fully")
       hook.run()
       hook.remove()
     }
