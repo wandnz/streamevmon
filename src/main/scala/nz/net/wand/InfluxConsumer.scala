@@ -17,24 +17,45 @@ package nz.net.wand
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-import com.github.fsanaulla.chronicler.ahc.io.InfluxIO
+
+import nz.net.wand.measurements.ICMP
+
+import com.github.fsanaulla.chronicler.ahc.io.{AhcIOClient, InfluxIO}
+import com.github.fsanaulla.chronicler.core.alias.ErrorOr
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
 import com.github.fsanaulla.chronicler.macros.auto._
-import org.apache.flink.api.scala._
 
-import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Success}
 
 object InfluxConsumer
 {
 
+  def doICMP(influxDB: AhcIOClient, database: String): Future[ErrorOr[Array[ICMP]]] =
+  {
+
+    val measurement =
+      influxDB.measurement[ICMP](database, "data_amp_icmp")
+
+    val result = measurement.read("SELECT * FROM data_amp_icmp fill(-1)")
+
+    result.onComplete
+    {
+      case Success(qr) if qr.isRight =>
+        println(s"Found ${qr.right.get.length} ICMP results")
+      case Success(qr) if qr.isLeft =>
+        println(s"Failed query in chronicler: $qr")
+      case Failure(exception) =>
+        println(s"Failed query with exception: $exception")
+    }
+
+    result
+  }
+
   def main(args: Array[String]): Unit =
   {
-    // set up the execution environment
-    val env = ExecutionEnvironment.getExecutionEnvironment
-
     val influxDB =
       InfluxIO("localhost", 8086, Some(InfluxCredentials("cuz", "")))
     val database = "nntsc"
@@ -48,26 +69,7 @@ object InfluxConsumer
         System.exit(1)
     }
     Await.ready(pingFuture, Duration.Inf)
-
-    val measurement =
-      influxDB.measurement[ICMPMeasurement](database, "data_amp_icmp")
-
-    val result = measurement.read("SELECT * FROM data_amp_icmp")
-
-    result.onComplete
-    {
-      case Success(qr) if qr.isRight =>
-        println(s"Found ${qr.right.get.length} ICMP results")
-        println(
-          s"Flink found ${env.fromCollection(qr.right.get).count} ICMP results"
-        )
-      case Success(qr) if qr.isLeft =>
-        println(s"Failed query in chronicler: $qr")
-      case Failure(exception) =>
-        println(s"Failed query with exception: $exception")
-    }
-
-    Await.ready(result, Duration.Inf)
+    Await.result(doICMP(influxDB, database), Duration.Inf)
 
     influxDB.close()
   }

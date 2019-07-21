@@ -1,5 +1,7 @@
 package nz.net.wand
 
+import nz.net.wand.measurements.ICMP
+
 import java.io.{BufferedReader, IOException, InputStreamReader}
 import java.net.{InetAddress, ServerSocket, SocketTimeoutException}
 
@@ -17,7 +19,7 @@ import scala.util.{Failure, Success, Try}
 
 class ICMPMeasurementSourceFunction(
   subscriptionName: String = "SubscriptionServer",
-  dbName: String = "nntsc",
+  dbName          : String = "nntsc",
   rpName          : String = "nntscdefault",
   protocol        : String = "http",
   listenAddress   : String = "130.217.250.59",
@@ -27,7 +29,7 @@ class ICMPMeasurementSourceFunction(
   influxPort      : Int = 8086,
   influxUsername  : String = "cuz",
   influxPassword  : String = ""
-) extends SourceFunction[ICMPMeasurement]
+) extends SourceFunction[ICMP]
     with Logging {
 
   private[this] var isRunning = false
@@ -36,7 +38,8 @@ class ICMPMeasurementSourceFunction(
 
   private[this] var listener: Option[ServerSocket] = Option.empty
 
-  override def run(ctx: SourceFunction.SourceContext[ICMPMeasurement]): Unit = {
+  override def run(ctx: SourceFunction.SourceContext[ICMP]): Unit =
+  {
     var shutdownHooks: Seq[ShutdownHookThread] = Seq()
 
     if (!connectInflux()) {
@@ -56,17 +59,18 @@ class ICMPMeasurementSourceFunction(
               else {
                 logger.info(s"Added subscription $subscriptionName")
                 shutdownHooks = shutdownHooks :+ sys.addShutdownHook {
-                  Await.ready(dropSubscription(), Duration.Inf)
+                  Await.result(dropSubscription(), Duration.Inf)
                   logger.info(s"Removed subscription $subscriptionName")
                 }
                 Future(listen(ctx))
             })
 
-          Await.ready(subscribeFuture, Duration.Inf)
+          Await.result(subscribeFuture, Duration.Inf)
       }
     }
 
     shutdownHooks.foreach { hook =>
+      logger.debug("Shutting down fully")
       hook.run()
       hook.remove()
     }
@@ -78,6 +82,7 @@ class ICMPMeasurementSourceFunction(
   }
 
   override def cancel(): Unit = {
+    logger.info("Stopping listener...")
     isRunning = false
   }
 
@@ -87,7 +92,7 @@ class ICMPMeasurementSourceFunction(
 
   private[this] def destinations: Seq[String] = Seq(s"$protocol://$listenAddress:$listenPort")
 
-  private[this] def listen(ctx: SourceFunction.SourceContext[ICMPMeasurement]): Unit =
+  private[this] def listen(ctx: SourceFunction.SourceContext[ICMP]): Unit =
   {
     logger.info("Listening for subscribed events...")
 
@@ -98,13 +103,32 @@ class ICMPMeasurementSourceFunction(
       {
         listener match
         {
-          case Some(sock) =>
-            val reader = new BufferedReader(new InputStreamReader(sock.accept.getInputStream))
+          case Some(serverSock) =>
+            val sock = serverSock.accept
+            sock.setSoTimeout(100)
+            val reader = new BufferedReader(new InputStreamReader(sock.getInputStream))
 
-            val lines = Stream.continually(reader.readLine).takeWhile(_ != null)
+            Stream
+              .continually
+              {
+                val in = reader.readLine
+                if (in != null)
+                {
+                  val result = ICMP.Create(in)
+                  result match
+                  {
+                    case Some(x) => ctx.collect(x)
+                    case None =>
+                  }
+                }
+                in
+              }
+              .takeWhile(line => line != null)
+              .foreach(line => line)
 
-            ICMPFactory.CreateICMPs(lines).foreach(ctx.collect)
-          case None => isRunning = false
+          case None =>
+            logger.warn("Listener unexpectedly died")
+            isRunning = false
         }
       }
       catch
@@ -112,6 +136,8 @@ class ICMPMeasurementSourceFunction(
         case _: SocketTimeoutException =>
       }
     }
+
+    logger.info("No longer listening")
   }
 
   private[this] def startListener(): Try[Unit] =

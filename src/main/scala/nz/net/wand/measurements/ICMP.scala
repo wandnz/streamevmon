@@ -1,18 +1,18 @@
-package nz.net.wand
+package nz.net.wand.measurements
 
 import com.github.fsanaulla.chronicler.macros.annotations.reader.utc
 import com.github.fsanaulla.chronicler.macros.annotations.{field, tag, timestamp}
 
-final case class ICMPMeasurement(
-  @tag stream: String,
+final case class ICMP(
+  @tag stream         : String,
   @field loss         : Int,
   @field lossrate     : Double,
   @field median       : Int,
-  @field packet_size: Int,
+  @field packet_size  : Int,
   @field results      : Int,
   @field rtts         : String,
   @utc @timestamp time: Long
-)
+) extends Measurement
 {
   override def toString: String =
   {
@@ -21,40 +21,43 @@ final case class ICMPMeasurement(
       s"loss=$loss," +
       s"lossrate=$lossrate," +
       s"median=$median," +
-      s"packet_size=$packet_size" +
+      s"packet_size=$packet_size," +
       s"results=$results," +
       s"rtts=$rtts " +
       s"$time"
   }
 }
 
-object ICMPFactory
+object ICMP extends MeasurementFactory with nz.net.wand.Logging
 {
 
-  def CreateICMP(subscriptionLine: String): Option[ICMPMeasurement] =
+  final override val table_name: String = "data_amp_icmp"
+
+  override def Create(subscriptionLine: String): Option[ICMP] =
   {
     val data = subscriptionLine.split(Array(',', ' '))
-    if (!data(0).contains("icmp"))
+    val namedData = data.drop(1).dropRight(1)
+    if (data(0) != table_name)
     {
       None
     }
     else
     {
       Some(
-        ICMPMeasurement(
-          data(1).split('=')(1),
-          data(2).split('=')(1).replace("i", "").toInt,
-          data(3).split('=')(1).replace("i", "").toDouble,
-          data(4).split('=')(1).replace("i", "").toInt,
-          data(5).split('=')(1).replace("i", "").toInt,
-          data(6).split('=')(1).replace("i", "").toInt,
-          data(7).split('=')(1),
-          data(8).toLong
+        ICMP(
+          getNamedField(namedData, "stream"),
+          getNamedField(namedData, "loss").dropRight(1).toInt,
+          getNamedField(namedData, "lossrate").toDouble,
+          getNamedField(namedData, "median").dropRight(1).toInt,
+          getNamedField(namedData, "packet_size").dropRight(1).toInt,
+          getNamedField(namedData, "results").dropRight(1).toInt,
+          getNamedField(namedData, "rtts"),
+          data.last.toLong
         ))
     }
   }
 
-  def CreateICMPs(subscriptionPacketHTTP: String): Array[ICMPMeasurement] =
+  def CreateICMPs(subscriptionPacketHTTP: String): Array[ICMP] =
   {
     subscriptionPacketHTTP
       .split('\n')
@@ -63,13 +66,13 @@ object ICMPFactory
       .drop(1)
       .flatMap(x =>
       {
-        CreateICMP(x)
+        Create(x)
       })
   }
 
   def CreateICMPs(
     subscriptionPacketHTTP: Stream[String]
-  ): Stream[ICMPMeasurement] =
+  ): Stream[ICMP] =
   {
     subscriptionPacketHTTP
       // Drop the HTTP header
@@ -77,7 +80,7 @@ object ICMPFactory
       .drop(1)
       .flatMap(x =>
       {
-        CreateICMP(x)
+        Create(x)
       })
   }
 }
