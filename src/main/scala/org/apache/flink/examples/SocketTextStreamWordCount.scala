@@ -58,12 +58,10 @@ object SocketTextStreamWordCount {
     //Create streams for names and ages by mapping the inputs to the corresponding objects
     val text = env.socketTextStream(hostName, port)
     val counts = text
-      .flatMap
-      {
-        _.toLowerCase.split("\\W+") filter
-          {
-            _.nonEmpty
-          }
+      .flatMap {
+        _.toLowerCase.split("\\W+") filter {
+          _.nonEmpty
+        }
       }
       .map { (_, 1) }
       .keyBy(0)
