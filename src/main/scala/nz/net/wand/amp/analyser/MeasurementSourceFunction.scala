@@ -1,20 +1,18 @@
-package nz.net.wand
+package nz.net.wand.amp.analyser
 
-import nz.net.wand.measurements.{Measurement, MeasurementFactory}
+import nz.net.wand.amp.analyser.measurements.{Measurement, MeasurementFactory}
 
 import java.io.{BufferedReader, IOException, InputStreamReader}
 import java.net.{InetAddress, ServerSocket, SocketTimeoutException}
 
-import com.github.fsanaulla.chronicler.ahc.management.{AhcManagementClient, InfluxMng}
+import com.github.fsanaulla.chronicler.ahc.management.AhcManagementClient
 import com.github.fsanaulla.chronicler.core.alias.{ErrorOr, ResponseCode}
-import com.github.fsanaulla.chronicler.core.enums.Destinations
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
-import scala.sys.ShutdownHookThread
 import scala.util.{Failure, Success, Try}
 
 class MeasurementSourceFunction(
@@ -39,8 +37,6 @@ class MeasurementSourceFunction(
   private[this] var listener: Option[ServerSocket] = Option.empty
 
   override def run(ctx: SourceFunction.SourceContext[Measurement]): Unit = {
-    var shutdownHooks: Seq[ShutdownHookThread] = Seq()
-
     if (!connectInflux()) {
       logger.error(s"Failed to connect to influx")
     }
@@ -51,26 +47,14 @@ class MeasurementSourceFunction(
         case Success(_) =>
           logger.info("Started listener")
           val subscribeFuture =
-            addOrUpdateSubscription().flatMap(subscribeResult =>
-              if (subscribeResult.isLeft) {
-                Future(logger.error(s"Failed to update subscription: ${subscribeResult.left.get}"))
-              }
-              else {
-                logger.info(s"Added subscription $subscriptionName")
-                shutdownHooks = shutdownHooks :+ sys.addShutdownHook {
-                  Await.result(dropSubscription(), Duration.Inf)
-                  logger.info(s"Removed subscription $subscriptionName")
-                }
-                Future(listen(ctx))
-            })
+            addOrUpdateSubscription().flatMap {
+              case Right(_) => Future(listen(ctx))
+              case Left(error) =>
+                Future(logger.error(s"Failed to subscribe to InfluxDB stream: $error"))
+            }
 
           Await.result(subscribeFuture, Duration.Inf)
       }
-    }
-
-    shutdownHooks.foreach { hook =>
-      hook.run()
-      hook.remove()
     }
 
     stopListener()
@@ -147,62 +131,20 @@ class MeasurementSourceFunction(
     }
 
   private[this] def connectInflux(): Boolean = {
-    influx = Some(InfluxMng(influxAddress, influxPort, Some(influxCredentials)))
-
-    checkInfluxConnection()
+    influx = InfluxConnection.getManagement(influxAddress, influxPort, influxCredentials)
+    influx.isDefined
   }
 
   private[this] def disconnectInflux(): Unit =
     influx match {
-      case Some(db) => db.close
+      case Some(db) => InfluxConnection.disconnect(db)
       case None     =>
-    }
-
-  private[this] def checkInfluxConnection(): Boolean =
-    influx match {
-      case Some(db) =>
-        Await.result(db.ping.map(result => result.isRight), Duration.Inf)
-      case None => false
     }
 
   private[this] def addOrUpdateSubscription(): Future[ErrorOr[ResponseCode]] =
     influx match {
-      case Some(_) =>
-        addSubscription().flatMap(addResult =>
-          if (addResult.isRight) {
-            // Successfully added
-            Future(addResult)
-          }
-          else {
-            dropSubscription().flatMap(dropResult =>
-              if (dropResult.isRight) {
-                addSubscription()
-              }
-              else {
-                Future(Left(dropResult.left.get))
-            })
-        })
-      case None =>
-        Future(Left(new IllegalStateException("No database connection")))
-    }
-
-  private[this] def addSubscription(): Future[ErrorOr[ResponseCode]] =
-    influx match {
       case Some(db) =>
-        db.createSubscription(
-          subscriptionName,
-          dbName,
-          rpName,
-          Destinations.ALL,
-          destinations
-        )
-      case None =>
-        Future(Left(new IllegalStateException("No database connection")))
-    }
-
-  private[this] def dropSubscription(): Future[ErrorOr[ResponseCode]] =
-    influx match {
-      case Some(db) => db.dropSubscription(subscriptionName, dbName, rpName)
+        InfluxConnection.addOrUpdateSubscription(db, subscriptionName, dbName, rpName, destinations)
       case None =>
         Future(Left(new IllegalStateException("No database connection")))
     }

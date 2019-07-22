@@ -1,4 +1,4 @@
-package nz.net.wand.measurements
+package nz.net.wand.amp.analyser.measurements
 
 import com.github.fsanaulla.chronicler.macros.annotations.reader.utc
 import com.github.fsanaulla.chronicler.macros.annotations.{field, tag, timestamp}

@@ -17,14 +17,6 @@ val flinkDependencies = Seq(
   "org.apache.flink" %% "flink-scala" % flinkVersion,
   "org.apache.flink" %% "flink-streaming-scala" % flinkVersion,
   "org.apache.flink" %% "flink-table-api-scala" % flinkVersion)
-
-val log4jDependencies = Seq(
-  //"org.apache.logging.log4j" %% "log4j-api-scala" % "11.0",
-  //"org.apache.logging.log4j" % "log4j-api" % "2.11.0",
-  //"org.apache.logging.log4j" % "log4j-core" % "2.11.0" % Runtime,
-  "org.slf4j" % "slf4j-simple" % "1.7.9"
-)
-
 val chroniclerVersion = "0.5.1"
 
 val influxDependencies = Seq(
@@ -33,12 +25,21 @@ val influxDependencies = Seq(
   "com.github.fsanaulla" %% "chronicler-macros" % chroniclerVersion
 )
 
+val logDependencies = Seq(
+  "org.slf4j" % "slf4j-simple" % "1.7.9"
+)
+
+val testDependencies = Seq(
+  "org.scalatest" %% "scalatest" % "3.0.8" % "test"
+)
+
 lazy val root = (project in file(".")).
   settings(
     libraryDependencies ++=
       flinkDependencies ++
       influxDependencies ++
-      log4jDependencies
+      logDependencies ++
+      testDependencies
   )
 
 assembly / mainClass := Some("nz.ac.waikato.InfluxSubscription")

@@ -1,4 +1,4 @@
-package nz.net.wand.measurements
+package nz.net.wand.amp.analyser.measurements
 
 trait MeasurementFactory {
 

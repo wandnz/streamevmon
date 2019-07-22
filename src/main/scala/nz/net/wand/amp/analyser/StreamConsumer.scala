@@ -1,4 +1,4 @@
-package nz.net.wand
+package nz.net.wand.amp.analyser
 
 import org.apache.flink.streaming.api.scala._
 

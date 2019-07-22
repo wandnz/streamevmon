@@ -1,4 +1,4 @@
-package nz.net.wand
+package nz.net.wand.amp.analyser
 
 import org.slf4j.{Logger, LoggerFactory}
 
