@@ -24,7 +24,31 @@ final case class DNS(
     @field total_authority: Int,
     @field ttl: Int,
     @utc @timestamp time: Long
-) extends Measurement {}
+) extends Measurement {
+  override def toString: String = {
+    s"${DNS.table_name}," +
+      s"stream=$stream " +
+      s"flag_aa=$flag_aa," +
+      s"flag_ad=$flag_ad," +
+      s"flag_cd=$flag_cd," +
+      s"flag_qr=$flag_qr," +
+      s"flag_ra=$flag_ra," +
+      s"flag_rd=$flag_rd," +
+      s"flag_tc=$flag_tc," +
+      s"lossrate=$lossrate," +
+      s"opcode=$opcode," +
+      s"query_len=$query_len," +
+      s"rcode=$rcode," +
+      s"requests=$requests," +
+      s"response_size=$response_size," +
+      s"rtt=$rtt," +
+      s"total_additional=$total_additional," +
+      s"total_answer=$total_answer," +
+      s"total_authority=$total_authority," +
+      s"ttl=$ttl " +
+      s"$time"
+  }
+}
 
 object DNS extends MeasurementFactory {
 

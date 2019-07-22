@@ -1,6 +1,6 @@
 package test.unit.measurements
 
-import nz.net.wand.amp.analyser.measurements.{DNS, ICMP, Measurement, MeasurementFactory}
+import nz.net.wand.amp.analyser.measurements._
 
 import org.scalatest.FlatSpec
 
@@ -12,6 +12,9 @@ class MeasurementFromSubscription extends FlatSpec {
 
   def icmpSubscriptionLine =
     "data_amp_icmp,stream=3 loss=0i,lossrate=0.0,median=225i,packet_size=520i,results=1i,rtts=\"[225]\" 1563761840000000000"
+
+  def tracerouteSubscriptionLine =
+    "data_amp_traceroute_pathlen,stream=5 path_length=12.0 1563764080000000000"
 
   def getDNS: Option[DNS] = {
     DNS.create(dnsSubscriptionLine)
@@ -77,10 +80,32 @@ class MeasurementFromSubscription extends FlatSpec {
     }
   }
 
+  def getTraceroute: Option[Traceroute] = {
+    Traceroute.create(tracerouteSubscriptionLine)
+  }
+
+  def assertCorrectTraceroute(traceroute: Traceroute): Unit = {
+    assert(traceroute.stream == "5")
+    assert(traceroute.path_length == 12.0)
+    assert(traceroute.time == 1563764080000000000L)
+  }
+
+  behavior of "getTraceroute"
+
+  it should "convert an entry from a subscription into a Traceroute object" in {
+    val tracerouteResult = getTraceroute
+
+    tracerouteResult match {
+      case Some(x) => assertCorrectTraceroute(x)
+      case None    => fail()
+    }
+  }
+
   def getFromFactory: Seq[Option[Measurement]] = {
     Seq(
       MeasurementFactory.createMeasurement(dnsSubscriptionLine),
-      MeasurementFactory.createMeasurement(icmpSubscriptionLine)
+      MeasurementFactory.createMeasurement(icmpSubscriptionLine),
+      MeasurementFactory.createMeasurement(tracerouteSubscriptionLine)
     )
   }
 
@@ -92,9 +117,10 @@ class MeasurementFromSubscription extends FlatSpec {
     results.foreach {
       case Some(x) =>
         x match {
-          case _: DNS  => assertCorrectDNS(x.asInstanceOf[DNS])
-          case _: ICMP => assertCorrectICMP(x.asInstanceOf[ICMP])
-          case _       => fail()
+          case _: DNS        => assertCorrectDNS(x.asInstanceOf[DNS])
+          case _: ICMP       => assertCorrectICMP(x.asInstanceOf[ICMP])
+          case _: Traceroute => assertCorrectTraceroute(x.asInstanceOf[Traceroute])
+          case _             => fail()
         }
       case None => fail()
     }

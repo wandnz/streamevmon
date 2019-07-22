@@ -25,9 +25,10 @@ object MeasurementFactory {
 
   def createMeasurement(line: String): Option[Measurement] = {
     line match {
-      case x if x.startsWith(ICMP.table_name) => ICMP.create(x)
-      case x if x.startsWith(DNS.table_name)  => DNS.create(x)
-      case _                                  => None
+      case x if x.startsWith(ICMP.table_name)       => ICMP.create(x)
+      case x if x.startsWith(DNS.table_name)        => DNS.create(x)
+      case x if x.startsWith(Traceroute.table_name) => Traceroute.create(x)
+      case _                                        => None
     }
   }
 }

@@ -14,7 +14,7 @@ final case class ICMP(
     @utc @timestamp time: Long
 ) extends Measurement {
   override def toString: String = {
-    s"data_amp_icmp," +
+    s"${ICMP.table_name}," +
       s"stream=$stream " +
       s"loss=$loss," +
       s"lossrate=$lossrate," +
