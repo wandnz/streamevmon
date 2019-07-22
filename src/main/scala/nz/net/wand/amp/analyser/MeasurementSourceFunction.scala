@@ -90,7 +90,7 @@ class MeasurementSourceFunction(
               .continually {
                 val in = reader.readLine
                 if (in != null) {
-                  val result = MeasurementFactory.CreateMeasurement(in)
+                  val result = MeasurementFactory.createMeasurement(in)
                   result match {
                     case Some(x) => ctx.collect(x)
                     case None    =>

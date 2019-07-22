@@ -30,7 +30,7 @@ object ICMP extends MeasurementFactory {
 
   final override val table_name: String = "data_amp_icmp"
 
-  override def Create(subscriptionLine: String): Option[ICMP] = {
+  override def create(subscriptionLine: String): Option[ICMP] = {
     val data = subscriptionLine.split(Array(',', ' '))
     val namedData = data.drop(1).dropRight(1)
     if (data(0) != table_name) {

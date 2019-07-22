@@ -18,15 +18,15 @@ trait MeasurementFactory {
       .split('=')(1)
   }
 
-  private[measurements] def Create(subscriptionLine: String): Option[Measurement]
+  private[measurements] def create(subscriptionLine: String): Option[Measurement]
 }
 
 object MeasurementFactory {
 
-  def CreateMeasurement(line: String): Option[Measurement] = {
+  def createMeasurement(line: String): Option[Measurement] = {
     line match {
-      case x if x.startsWith(ICMP.table_name) => ICMP.Create(x)
-      case x if x.startsWith(DNS.table_name)  => DNS.Create(x)
+      case x if x.startsWith(ICMP.table_name) => ICMP.create(x)
+      case x if x.startsWith(DNS.table_name)  => DNS.create(x)
       case _                                  => None
     }
   }

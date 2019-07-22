@@ -1,5 +1,6 @@
 package nz.net.wand.amp.analyser
 
+import com.github.fsanaulla.chronicler.ahc.io.{AhcIOClient, InfluxIO}
 import com.github.fsanaulla.chronicler.ahc.management.{AhcManagementClient, InfluxMng}
 import com.github.fsanaulla.chronicler.ahc.shared.InfluxAhcClient
 import com.github.fsanaulla.chronicler.core.alias.{ErrorOr, ResponseCode}
@@ -22,10 +23,30 @@ object InfluxConnection {
     }, Duration.Inf)
   }
 
+  def checkConnection(influx: AhcIOClient): Boolean = {
+    Await.result(influx.ping.map {
+      case Right(_) => true
+      case Left(_)  => false
+    }, Duration.Inf)
+  }
+
   def getManagement(influxAddress: String,
                     influxPort: Int,
                     influxCredentials: InfluxCredentials): Option[AhcManagementClient] = {
     def influx = InfluxMng(influxAddress, influxPort, Some(influxCredentials))
+
+    if (checkConnection(influx)) {
+      Some(influx)
+    }
+    else {
+      None
+    }
+  }
+
+  def getIO(influxAddress: String,
+            influxPort: Int,
+            influxCredentials: InfluxCredentials): Option[AhcIOClient] = {
+    def influx = InfluxIO(influxAddress, influxPort, Some(influxCredentials))
 
     if (checkConnection(influx)) {
       Some(influx)
