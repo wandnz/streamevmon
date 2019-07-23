@@ -12,7 +12,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 import scala.sys.ShutdownHookThread
 
-object InfluxConnection {
+object InfluxConnection extends Logging {
 
   private[this] var subscriptionRemoveHooks: Seq[(String, ShutdownHookThread)] = Seq()
 
@@ -77,7 +77,9 @@ object InfluxConnection {
           subscriptionRemoveHooks = subscriptionRemoveHooks :+ (subscriptionName, sys
             .addShutdownHook {
               Await.result(dropSubscription(influx, subscriptionName, dbName, rpName), Duration.Inf)
+              logger.info(s"Removed subscription $subscriptionName")
             })
+          logger.info(s"Added subscription $subscriptionName")
           Future(Right(subscribeResult.right.get))
         }
         else {

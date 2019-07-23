@@ -10,5 +10,7 @@ object StreamConsumer {
     env.addSource(new RichMeasurementSourceFunction()).print()
 
     env.execute()
+
+    System.exit(0)
   }
 }

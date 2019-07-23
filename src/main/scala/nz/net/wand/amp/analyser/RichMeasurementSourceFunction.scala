@@ -30,6 +30,7 @@ class RichMeasurementSourceFunction(
 ) extends SourceFunction[RichMeasurement]
     with Logging {
 
+  @volatile
   private[this] var isRunning = false
 
   private[this] var influx: Option[AhcManagementClient] = Option.empty
@@ -37,34 +38,36 @@ class RichMeasurementSourceFunction(
   private[this] var listener: Option[ServerSocket] = Option.empty
 
   override def run(ctx: SourceFunction.SourceContext[RichMeasurement]): Unit = {
-    if (!connectInflux()) {
-      logger.error(s"Failed to connect to influx")
-    }
-    else {
-      logger.info("Connected to influx")
-      startListener() match {
-        case Failure(ex) => logger.error(s"Failed to start listener: $ex")
-        case Success(_) =>
-          logger.info("Started listener")
-          val subscribeFuture =
-            addOrUpdateSubscription().flatMap {
-              case Right(_) => Future(listen(ctx))
-              case Left(error) =>
-                Future(logger.error(s"Failed to subscribe to InfluxDB stream: $error"))
-            }
+    connectInflux() match {
+      case Failure(ex) => logger.error(s"Failed to connect to InfluxDB: $ex")
+      case Success(_) =>
+        logger.info("Connected to influx")
 
-          Await.result(subscribeFuture, Duration.Inf)
-      }
-    }
+        startListener() match {
+          case Failure(ex) => logger.error(s"Failed to start listener: $ex")
+          case Success(_) =>
+            logger.info("Started listener")
 
-    stopListener()
-    logger.info("Stopped listener")
-    disconnectInflux()
-    logger.info("Disconnected from Influx")
+            val subscribeFuture =
+              addOrUpdateSubscription().flatMap {
+                case Right(_) => Future(listen(ctx))
+                case Left(error) =>
+                  Future(logger.error(s"Failed to subscribe to InfluxDB stream: $error"))
+              }
+
+            Await.result(subscribeFuture, Duration.Inf)
+
+            stopListener()
+            logger.info("Stopped listener")
+        }
+
+        disconnectInflux()
+        logger.info("Disconnected from Influx")
+    }
   }
 
   override def cancel(): Unit = {
-    logger.info("Stopping listener...")
+    logger.info(s"Cancelling $subscriptionName")
     isRunning = false
   }
 
@@ -130,10 +133,13 @@ class RichMeasurementSourceFunction(
       case None         =>
     }
 
-  private[this] def connectInflux(): Boolean = {
-    influx = InfluxConnection.getManagement(influxAddress, influxPort, influxCredentials)
-    influx.isDefined
-  }
+  private[this] def connectInflux(): Try[Unit] =
+    try {
+      influx = InfluxConnection.getManagement(influxAddress, influxPort, influxCredentials)
+      Success()
+    } catch {
+      case ex: Exception => Failure(ex)
+    }
 
   private[this] def disconnectInflux(): Unit =
     influx match {
