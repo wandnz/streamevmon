@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
-    <profile name="sbt 1" modules="Flink AMP Test,flink-amp-test-Flink AMP Test,flink-amp-test-mainRunner,flink-amp-test_2658,mainRunner" />
+    <profile name="sbt 1" modules="Flink AMP Analyser,flink-amp-analyser-mainRunner" />
   </component>
 </project>

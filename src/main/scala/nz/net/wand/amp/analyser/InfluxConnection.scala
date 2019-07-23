@@ -30,10 +30,10 @@ object InfluxConnection {
     }, Duration.Inf)
   }
 
-  def getManagement(influxAddress: String,
-                    influxPort: Int,
-                    influxCredentials: InfluxCredentials): Option[AhcManagementClient] = {
-    def influx = InfluxMng(influxAddress, influxPort, Some(influxCredentials))
+  def getManagement(address: String,
+                    port: Int,
+                    credentials: InfluxCredentials): Option[AhcManagementClient] = {
+    def influx = InfluxMng(address, port, Some(credentials))
 
     if (checkConnection(influx)) {
       Some(influx)
@@ -43,10 +43,8 @@ object InfluxConnection {
     }
   }
 
-  def getIO(influxAddress: String,
-            influxPort: Int,
-            influxCredentials: InfluxCredentials): Option[AhcIOClient] = {
-    def influx = InfluxIO(influxAddress, influxPort, Some(influxCredentials))
+  def getIO(address: String, port: Int, credentials: InfluxCredentials): Option[AhcIOClient] = {
+    def influx = InfluxIO(address, port, Some(credentials))
 
     if (checkConnection(influx)) {
       Some(influx)

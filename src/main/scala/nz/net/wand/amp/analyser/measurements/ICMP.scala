@@ -24,6 +24,10 @@ final case class ICMP(
       s"rtts=$rtts " +
       s"$time"
   }
+
+  override def enrich(): Option[RichMeasurement] = {
+    MeasurementFactory.enrichMeasurement(this).asInstanceOf[Option[RichICMP]]
+  }
 }
 
 object ICMP extends MeasurementFactory {

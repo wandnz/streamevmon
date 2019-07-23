@@ -1,3 +1,5 @@
 package nz.net.wand.amp.analyser.measurements
 
-abstract class Measurement {}
+abstract class Measurement {
+  def enrich(): Option[RichMeasurement]
+}

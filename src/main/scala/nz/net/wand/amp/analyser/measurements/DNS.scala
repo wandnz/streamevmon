@@ -48,6 +48,10 @@ final case class DNS(
       s"ttl=$ttl " +
       s"$time"
   }
+
+  override def enrich(): Option[RichDNS] = {
+    MeasurementFactory.enrichMeasurement(this).asInstanceOf[Option[RichDNS]]
+  }
 }
 
 object DNS extends MeasurementFactory {

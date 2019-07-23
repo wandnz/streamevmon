@@ -3,26 +3,32 @@ ThisBuild / resolvers ++= Seq(
     Resolver.mavenLocal
 )
 
-name := "Flink AMP Test"
+name := "Flink AMP Analyser"
 
 version := "0.1-SNAPSHOT"
 
-organization := "nz.ac.waikato"
+organization := "nz.net.wand"
 
 ThisBuild / scalaVersion := "2.11.12"
 
-val flinkVersion = "1.8.1"
+addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
 
+val flinkVersion = "1.8.1"
 val flinkDependencies = Seq(
   "org.apache.flink" %% "flink-scala" % flinkVersion,
   "org.apache.flink" %% "flink-streaming-scala" % flinkVersion,
   "org.apache.flink" %% "flink-table-api-scala" % flinkVersion)
-val chroniclerVersion = "0.5.1"
 
+val chroniclerVersion = "0.5.1"
 val influxDependencies = Seq(
   "com.github.fsanaulla" %% "chronicler-ahc-io" % chroniclerVersion,
   "com.github.fsanaulla" %% "chronicler-ahc-management" % chroniclerVersion,
   "com.github.fsanaulla" %% "chronicler-macros" % chroniclerVersion
+)
+
+val postgresDependencies = Seq(
+  "org.postgresql" % "postgresql" % "9.4.1208",
+  "io.getquill" %% "quill-jdbc" % "3.3.0"
 )
 
 val logDependencies = Seq(
@@ -38,11 +44,10 @@ lazy val root = (project in file(".")).
     libraryDependencies ++=
       flinkDependencies ++
       influxDependencies ++
+      postgresDependencies ++
       logDependencies ++
       testDependencies
   )
-
-assembly / mainClass := Some("nz.ac.waikato.InfluxSubscription")
 
 // make run command include the provided dependencies
 Compile / run := Defaults.runTask(Compile / run / fullClasspath,

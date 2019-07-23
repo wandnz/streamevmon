@@ -14,6 +14,10 @@ final case class Traceroute(
       s"path_length=$path_length " +
       s"$time"
   }
+
+  override def enrich(): Option[RichTraceroute] = {
+    MeasurementFactory.enrichMeasurement(this).asInstanceOf[Option[RichTraceroute]]
+  }
 }
 
 object Traceroute extends MeasurementFactory {
