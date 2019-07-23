@@ -11,8 +11,6 @@ organization := "nz.net.wand"
 
 ThisBuild / scalaVersion := "2.11.12"
 
-addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
-
 val flinkVersion = "1.8.1"
 val flinkDependencies = Seq(
   "org.apache.flink" %% "flink-scala" % flinkVersion,

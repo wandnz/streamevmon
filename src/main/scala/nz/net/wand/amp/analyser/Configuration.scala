@@ -1,11 +1,11 @@
 package nz.net.wand.amp.analyser
 
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{Config, ConfigFactory}
 
 trait Configuration {
-  protected[this] val config: com.typesafe.config.Config = ConfigFactory.load()
+  protected[this] val config: Config = ConfigFactory.load()
 
-  private[this] val staticPrefix: String = getClass.getPackage.toString
+  private[this] val staticPrefix: String = getClass.getPackage.getName
 
   private[this] var _configPrefix = ""
 
@@ -20,7 +20,11 @@ trait Configuration {
     }
   }
 
-  protected[this] def getConfig[T](name: String): T = {
-    config.getAnyRef(configPrefix + name).asInstanceOf[T]
+  protected[this] def getConfigInt(name: String): Int = {
+    config.getInt(configPrefix + name)
+  }
+
+  protected[this] def getConfigString(name: String): String = {
+    config.getString(configPrefix + name)
   }
 }
