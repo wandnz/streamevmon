@@ -34,18 +34,18 @@ case class RichDNS(
 ) extends RichMeasurement {
 
   override def toString: String = {
-    s"${DNS.table_name}," +
-      s"source=$source " +
-      s"destination=$destination " +
-      s"instance=$instance " +
-      s"address=$address " +
-      s"query=$query " +
-      s"query_type=$query_type " +
-      s"query_class=$query_class " +
-      s"udp_payload_size=$udp_payload_size " +
-      s"recurse=$recurse " +
-      s"dnssec=$dnssec " +
-      s"nsid=$nsid " +
+    s"${DNS.table_name} " +
+      s"source=$source," +
+      s"destination=$destination," +
+      s"instance=$instance," +
+      s"address=$address," +
+      s"query=$query," +
+      s"query_type=$query_type," +
+      s"query_class=$query_class," +
+      s"udp_payload_size=$udp_payload_size," +
+      s"recurse=$recurse," +
+      s"dnssec=$dnssec," +
+      s"nsid=$nsid," +
       s"flag_aa=$flag_aa," +
       s"flag_ad=$flag_ad," +
       s"flag_cd=$flag_cd," +

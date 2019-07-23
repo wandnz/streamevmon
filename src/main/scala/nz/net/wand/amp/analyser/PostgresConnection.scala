@@ -3,8 +3,9 @@ import nz.net.wand.amp.analyser.measurements._
 
 import io.getquill.{PostgresJdbcContext, SnakeCase}
 
+// TODO: Cache metadata results
 object PostgresConnection extends Logging {
-  lazy val ctx = new PostgresJdbcContext(SnakeCase, "nz.net.wand.amp.analyser")
+  lazy val ctx = new PostgresJdbcContext(SnakeCase, "nz.net.wand.amp.analyser.postgres")
   import ctx._
 
   val icmpTable: Quoted[EntityQuery[ICMPMeta]] = quote {

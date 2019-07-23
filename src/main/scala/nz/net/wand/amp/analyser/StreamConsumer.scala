@@ -11,6 +11,6 @@ object StreamConsumer {
 
     env.execute()
 
-    System.exit(0)
+    sys.exit()
   }
 }

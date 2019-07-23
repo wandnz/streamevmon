@@ -15,25 +15,26 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Success, Try}
 
-class MeasurementSourceFunction(
-    subscriptionName: String = "SubscriptionServer",
-    dbName: String = "nntsc",
-    rpName: String = "nntscdefault",
-    protocol: String = "http",
-    listenAddress: String = "130.217.250.59",
-    listenPort: Int = 8008,
-    listenBacklog: Int = 5,
-    influxAddress: String = "localhost",
-    influxPort: Int = 8086,
-    influxUsername: String = "cuz",
-    influxPassword: String = ""
-) extends SourceFunction[Measurement]
-    with Logging {
+class MeasurementSourceFunction()
+    extends SourceFunction[Measurement]
+    with Logging
+    with Configuration {
+
+  configPrefix = "influx.dataSource"
+  private[this] val subscriptionName: String = getConfig("subscriptionName")
+  private[this] val dbName: String = getConfig("databaseName")
+  private[this] val rpName: String = getConfig("retentionPolicyName")
+  private[this] val listenProtocol: String = getConfig("listenProtocol")
+  private[this] val listenAddress: String = getConfig("listenAddress")
+  private[this] val listenPort: Int = getConfig("listenPort")
+  private[this] val listenBacklog: Int = getConfig("listenBacklog")
+  private[this] val influxAddress: String = getConfig("influxAddress")
+  private[this] val influxPort: Int = getConfig("portNumber")
+  private[this] val influxUsername: String = getConfig("user")
+  private[this] val influxPassword: String = getConfig("password")
 
   private[this] var isRunning = false
-
   private[this] var influx: Option[AhcManagementClient] = Option.empty
-
   private[this] var listener: Option[ServerSocket] = Option.empty
 
   override def run(ctx: SourceFunction.SourceContext[Measurement]): Unit = {
@@ -72,7 +73,7 @@ class MeasurementSourceFunction(
 
   private[this] def influxCredentials = InfluxCredentials(influxUsername, influxPassword)
 
-  private[this] def destinations: Seq[String] = Seq(s"$protocol://$listenAddress:$listenPort")
+  private[this] def destinations: Seq[String] = Seq(s"$listenProtocol://$listenAddress:$listenPort")
 
   private[this] def listen(ctx: SourceFunction.SourceContext[Measurement]): Unit = {
     logger.info("Listening for subscribed events...")
