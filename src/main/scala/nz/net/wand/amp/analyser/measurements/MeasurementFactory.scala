@@ -44,10 +44,16 @@ object MeasurementFactory {
     PostgresConnection.getMeta(base) match {
       case Some(x) =>
         x match {
+          case y: ICMPMeta       => RichICMP.create(base, y)
+          case y: DNSMeta        => RichDNS.create(base, y)
           case y: TracerouteMeta => RichTraceroute.create(base, y)
           case _                 => None
         }
       case None => None
     }
+  }
+
+  def createRichMeasurement(line: String): Option[RichMeasurement] = {
+    createMeasurement(line).flatMap(_.enrich())
   }
 }
