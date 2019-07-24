@@ -1,22 +1,27 @@
 package nz.net.wand.amp.analyser.measurements
 
+import java.time.{Instant, ZoneId}
+import java.util.concurrent.TimeUnit
+
 case class RichTraceroute(
+    stream: Int,
     source: String,
     destination: String,
     family: String,
     packet_size: String,
     path_length: Double,
-    time: Long
+    time: Instant
 ) extends RichMeasurement {
 
   override def toString: String = {
     s"${Traceroute.table_name} " +
-      s"source=$source," +
-      s"destination=$destination," +
-      s"family=$family," +
-      s"packet_size=$packet_size," +
+      s"stream=$stream " +
+      s"source=$source " +
+      s"destination=$destination " +
+      s"family=$family " +
+      s"packet_size=$packet_size " +
       s"path_length=$path_length " +
-      s"$time"
+      s"${time.atZone(ZoneId.systemDefault())}"
   }
 }
 
@@ -29,12 +34,13 @@ object RichTraceroute extends RichMeasurementFactory {
           case m: TracerouteMeta =>
             Some(
               RichTraceroute(
+                m.stream,
                 m.source,
                 m.destination,
                 m.family,
                 m.packet_size,
                 b.path_length,
-                b.time
+                Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(b.time))
               ))
           case _ => None
         }

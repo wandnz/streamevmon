@@ -26,7 +26,6 @@ object PostgresConnection extends Logging with Caching {
     getWithCache(
       s"icmp.${base.stream}", {
         val query = quote(unquote(icmpTable).filter(t => t.stream == lift(base.stream.toInt)))
-        logger.debug(s"Getting new uncached value for 'icmp.${base.stream}'")
         ctx.run(query).headOption
       }
     )
@@ -35,7 +34,6 @@ object PostgresConnection extends Logging with Caching {
     getWithCache(
       s"dns.${base.stream}", {
         val query = quote(unquote(dnsTable).filter(t => t.stream == lift(base.stream.toInt)))
-        logger.debug(s"Getting new uncached value for 'dns.${base.stream}'")
         ctx.run(query).headOption
       }
     )
@@ -44,7 +42,6 @@ object PostgresConnection extends Logging with Caching {
     getWithCache(
       s"traceroute.${base.stream}", {
         val query = quote(unquote(tracerouteTable).filter(t => t.stream == lift(base.stream.toInt)))
-        logger.debug(s"Getting new uncached value for 'traceroute.${base.stream}'")
         ctx.run(query).headOption
       }
     )
