@@ -3,9 +3,9 @@ package nz.net.wand.amp.analyser
 import com.typesafe.config.{Config, ConfigFactory}
 
 trait Configuration {
-  protected[this] val config: Config = ConfigFactory.load()
+  @transient final protected[this] lazy val config: Config = ConfigFactory.load()
 
-  private[this] val staticPrefix: String = getClass.getPackage.getName
+  @transient final private[this] lazy val staticPrefix: String = getClass.getPackage.getName
 
   private[this] var _configPrefix = ""
 

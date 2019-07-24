@@ -1,6 +1,6 @@
 package nz.net.wand.amp.analyser
 
-import java.io.{BufferedReader, IOException, InputStreamReader}
+import java.io.{BufferedReader, InputStreamReader, IOException}
 import java.net.{InetAddress, ServerSocket, SocketTimeoutException}
 
 import com.github.fsanaulla.chronicler.ahc.management.AhcManagementClient
@@ -8,9 +8,9 @@ import com.github.fsanaulla.chronicler.core.alias.{ErrorOr, ResponseCode}
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 
+import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Success, Try}
 
 abstract class InfluxSubscriptionSourceFunction[T]()

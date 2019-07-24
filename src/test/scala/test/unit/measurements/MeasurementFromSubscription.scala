@@ -69,7 +69,7 @@ class MeasurementFromSubscription extends FlatSpec {
     assert(icmp.time == 1563761840000000000L)
   }
 
-  behavior of "getDNS"
+  behavior of "getICMP"
 
   it should "convert an entry from a subscription into an ICMP object" in {
     val icmpResult = getICMP

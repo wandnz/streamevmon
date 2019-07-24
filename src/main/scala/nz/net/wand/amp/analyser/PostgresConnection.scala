@@ -5,18 +5,20 @@ import nz.net.wand.amp.analyser.measurements._
 import io.getquill.{PostgresJdbcContext, SnakeCase}
 
 object PostgresConnection extends Logging with Caching {
-  lazy val ctx = new PostgresJdbcContext(SnakeCase, "nz.net.wand.amp.analyser.postgres")
+
+  @transient final private[this] lazy val ctx =
+    new PostgresJdbcContext(SnakeCase, "nz.net.wand.amp.analyser.postgres")
   import ctx._
 
-  val icmpTable: Quoted[EntityQuery[ICMPMeta]] = quote {
+  final private[this] lazy val icmpTable: Quoted[EntityQuery[ICMPMeta]] = quote {
     querySchema[ICMPMeta]("streams_amp_icmp", _.stream -> "stream_id")
   }
 
-  val dnsTable: Quoted[EntityQuery[DNSMeta]] = quote {
+  final private[this] lazy val dnsTable: Quoted[EntityQuery[DNSMeta]] = quote {
     querySchema[DNSMeta]("streams_amp_dns", _.stream -> "stream_id")
   }
 
-  val tracerouteTable: Quoted[EntityQuery[TracerouteMeta]] = quote {
+  final private[this] lazy val tracerouteTable: Quoted[EntityQuery[TracerouteMeta]] = quote {
     querySchema[TracerouteMeta]("streams_amp_traceroute", _.stream -> "stream_id")
   }
 

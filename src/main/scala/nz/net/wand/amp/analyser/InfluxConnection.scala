@@ -7,9 +7,9 @@ import com.github.fsanaulla.chronicler.core.alias.{ErrorOr, ResponseCode}
 import com.github.fsanaulla.chronicler.core.enums.Destinations
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
 
+import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
 import scala.sys.ShutdownHookThread
 
 object InfluxConnection extends Logging {

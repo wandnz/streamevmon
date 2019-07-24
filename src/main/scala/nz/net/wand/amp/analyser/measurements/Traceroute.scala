@@ -1,7 +1,7 @@
 package nz.net.wand.amp.analyser.measurements
 
-import com.github.fsanaulla.chronicler.macros.annotations.reader.utc
 import com.github.fsanaulla.chronicler.macros.annotations.{field, tag, timestamp}
+import com.github.fsanaulla.chronicler.macros.annotations.reader.utc
 
 final case class Traceroute(
     @tag stream: String,
