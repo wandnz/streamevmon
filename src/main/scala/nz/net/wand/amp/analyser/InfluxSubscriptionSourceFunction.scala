@@ -19,17 +19,19 @@ abstract class InfluxSubscriptionSourceFunction[T]()
     with Configuration {
 
   configPrefix = "influx.dataSource"
-  private[this] val subscriptionName: String = getConfigString("subscriptionName")
-  private[this] val dbName: String = getConfigString("databaseName")
-  private[this] val rpName: String = getConfigString("retentionPolicyName")
-  private[this] val listenProtocol: String = getConfigString("listenProtocol")
-  private[this] val listenAddress: String = getConfigString("listenAddress")
-  private[this] val listenPort: Int = getConfigInt("listenPort")
-  private[this] val listenBacklog: Int = getConfigInt("listenBacklog")
-  private[this] val influxAddress: String = getConfigString("serverName")
-  private[this] val influxPort: Int = getConfigInt("portNumber")
-  private[this] val influxUsername: String = getConfigString("user")
-  private[this] val influxPassword: String = getConfigString("password")
+  private[this] val subscriptionName: String =
+    getConfigString("subscriptionName").getOrElse("SubscriptionServer")
+  private[this] val dbName: String = getConfigString("databaseName").getOrElse("nntsc")
+  private[this] val rpName: String =
+    getConfigString("retentionPolicyName").getOrElse("nntscdefault")
+  private[this] val listenProtocol: String = getConfigString("listenProtocol").getOrElse("http")
+  private[this] val listenAddress: String = getConfigString("listenAddress").get
+  private[this] val listenPort: Int = getConfigInt("listenPort").getOrElse(8008)
+  private[this] val listenBacklog: Int = getConfigInt("listenBacklog").getOrElse(5)
+  private[this] val influxAddress: String = getConfigString("serverName").getOrElse("localhost")
+  private[this] val influxPort: Int = getConfigInt("portNumber").getOrElse(8086)
+  private[this] val influxUsername: String = getConfigString("user").getOrElse("cuz")
+  private[this] val influxPassword: String = getConfigString("password").getOrElse("")
 
   private[this] var isRunning = false
   private[this] var influx: Option[AhcManagementClient] = Option.empty

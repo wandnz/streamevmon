@@ -11,8 +11,8 @@ object Caching extends Configuration {
 
   configPrefix = "caching"
 
-  @transient implicit final private lazy val ttl: Some[FiniteDuration] = Some(
-    getConfigInt("ttl").seconds)
+  @transient implicit final private lazy val ttl: Option[FiniteDuration] =
+    getConfigInt("ttl").map(x => x.seconds)
 }
 
 trait Caching {

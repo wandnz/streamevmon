@@ -8,9 +8,7 @@ trait Configuration {
   @transient final private[this] lazy val staticPrefix: String = getClass.getPackage.getName
 
   private[this] var _configPrefix = ""
-
   protected[this] def configPrefix: String = _configPrefix
-
   protected[this] def configPrefix_=(prefix: String): Unit = {
     if (prefix.isEmpty) {
       _configPrefix = s"$staticPrefix."
@@ -20,11 +18,33 @@ trait Configuration {
     }
   }
 
-  protected[this] def getConfigInt(name: String): Int = {
-    config.getInt(configPrefix + name)
+  protected[this] def getConfigInt(name: String): Option[Int] = {
+    if (config.hasPath(configPrefix + name)) {
+      val s = config.getString(configPrefix + name)
+      if (s.isEmpty) {
+        None
+      }
+      else {
+        Some(s.toInt)
+      }
+    }
+    else {
+      None
+    }
   }
 
-  protected[this] def getConfigString(name: String): String = {
-    config.getString(configPrefix + name)
+  protected[this] def getConfigString(name: String): Option[String] = {
+    if (config.hasPath(configPrefix + name)) {
+      val s = config.getString(configPrefix + name)
+      if (s.isEmpty) {
+        None
+      }
+      else {
+        Some(s)
+      }
+    }
+    else {
+      None
+    }
   }
 }
