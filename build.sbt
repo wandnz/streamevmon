@@ -29,6 +29,12 @@ val postgresDependencies = Seq(
   "io.getquill" %% "quill-jdbc" % "3.3.0"
 )
 
+val scalaCacheVersion = "0.28.0"
+val cacheDependencies = Seq(
+  "com.github.cb372" %% "scalacache-core" % scalaCacheVersion,
+  "com.github.cb372" %% "scalacache-caffeine" % scalaCacheVersion
+)
+
 val logDependencies = Seq(
   "org.slf4j" % "slf4j-simple" % "1.7.9"
 )
@@ -43,6 +49,7 @@ lazy val root = (project in file(".")).
       flinkDependencies ++
       influxDependencies ++
       postgresDependencies ++
+      cacheDependencies ++
       logDependencies ++
       testDependencies
   )
