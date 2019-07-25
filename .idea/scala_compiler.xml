@@ -3,6 +3,6 @@
   <component name="ScalaCompilerConfiguration">
     <option name="deprecationWarnings" value="true" />
     <option name="explainTypeErrors" value="true" />
-    <profile name="sbt 2" modules="Flink AMP Analyser,flink-amp-analyser-mainRunner" />
+    <profile name="sbt 2" modules="Flink AMP Analyser,flink-amp-analyser-mainRunner,flink-amp-analyser_1829" />
   </component>
 </project>

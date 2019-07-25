@@ -3,24 +3,25 @@ package nz.net.wand.amp.analyser
 import com.typesafe.config.{Config, ConfigFactory}
 
 trait Configuration {
-  @transient final protected[this] lazy val config: Config = ConfigFactory.load()
-
   @transient final private[this] lazy val staticPrefix: String = getClass.getPackage.getName
-
-  private[this] var _configPrefix = ""
+  @transient protected[this] var config: Config = ConfigFactory.load(staticPrefix)
+  private[this] var _configPrefix = s"$staticPrefix"
   protected[this] def configPrefix: String = _configPrefix
   protected[this] def configPrefix_=(prefix: String): Unit = {
     if (prefix.isEmpty) {
-      _configPrefix = s"$staticPrefix."
+      config = ConfigFactory.load().getConfig(staticPrefix)
+      _configPrefix = staticPrefix
     }
     else {
-      _configPrefix = s"$staticPrefix.$prefix."
+      val newPrefix = s"$staticPrefix.$prefix"
+      config = ConfigFactory.load().getConfig(newPrefix)
+      _configPrefix = newPrefix
     }
   }
 
   protected[this] def getConfigInt(name: String): Option[Int] = {
-    if (config.hasPath(configPrefix + name)) {
-      val s = config.getString(configPrefix + name)
+    if (config.hasPath(name)) {
+      val s = config.getString(name)
       if (s.isEmpty) {
         None
       }
@@ -34,8 +35,8 @@ trait Configuration {
   }
 
   protected[this] def getConfigString(name: String): Option[String] = {
-    if (config.hasPath(configPrefix + name)) {
-      val s = config.getString(configPrefix + name)
+    if (config.hasPath(name)) {
+      val s = config.getString(name)
       if (s.isEmpty) {
         None
       }
