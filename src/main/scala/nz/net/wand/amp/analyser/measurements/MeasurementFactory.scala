@@ -40,7 +40,6 @@ object MeasurementFactory {
   }
 
   def enrichMeasurement(base: Measurement): Option[RichMeasurement] = {
-
     PostgresConnection.getMeta(base) match {
       case Some(x) =>
         x match {

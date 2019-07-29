@@ -1,6 +1,4 @@
-package test.integration.influx
-
-import nz.net.wand.amp.analyser.InfluxConnection
+package nz.net.wand.amp.analyser
 
 import java.net.ConnectException
 

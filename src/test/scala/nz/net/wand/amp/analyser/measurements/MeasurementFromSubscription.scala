@@ -1,6 +1,4 @@
-package test.unit.measurements
-
-import nz.net.wand.amp.analyser.measurements._
+package nz.net.wand.amp.analyser.measurements
 
 import org.scalatest.FlatSpec
 

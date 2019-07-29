@@ -2,45 +2,71 @@ package nz.net.wand.amp.analyser
 
 import nz.net.wand.amp.analyser.measurements._
 
-import com.typesafe.config.{Config, ConfigFactory}
-import io.getquill.{PostgresJdbcContext, SnakeCase}
+import java.sql.DriverManager
+
+import org.squeryl.{Session, SessionFactory}
+import org.squeryl.adapters.PostgreSqlAdapter
 
 object PostgresConnection extends Logging with Configuration with Caching {
 
-  @transient final private[analyser] lazy val ctx =
-    new PostgresJdbcContext(SnakeCase, getConfigRoot)
+  configPrefix = "postgres.dataSource"
 
-  def getConfigRoot: Config = {
-    val postgresConfigRoot =
-      getConfigString("postgres.configRoot").getOrElse(s"$configPrefix.postgres")
-    ConfigFactory.load().getConfig(postgresConfigRoot)
+  val jdbcUrl: String = {
+    val host = getConfigString("serverName").getOrElse("localhost")
+    val port = getConfigString("portNumber").getOrElse("5432")
+    val databaseName = getConfigString("databaseName").getOrElse("nntsc")
+    s"jdbc:postgresql://$host:$port/$databaseName?loggerLevel=OFF"
   }
-  import ctx._
+  val username: String = getConfigString("user").getOrElse("cuz")
+  val password: String = getConfigString("password").getOrElse("")
 
-  def getICMPMeta(base: ICMP): Option[ICMPMeta] =
+  def getOrInitSession(): Unit =
+    SessionFactory.concreteFactory match {
+      case Some(_) =>
+      case None =>
+        SessionFactory.concreteFactory = Some(
+          () =>
+            Session.create(
+              DriverManager.getConnection(jdbcUrl, username, password),
+              new PostgreSqlAdapter
+          ))
+    }
+
+  def getICMPMeta(base: ICMP): Option[ICMPMeta] = {
     getWithCache(
       s"icmp.${base.stream}", {
-        val query = quote(unquote(schema.icmp).filter(t => t.stream == lift(base.stream.toInt)))
-        ctx.run(query).headOption
+        getOrInitSession()
+        import PostgresSchema._
+        import SquerylEntrypoint._
+
+        transaction(icmpMeta.where(m => m.stream === base.stream.toInt).headOption)
       }
     )
+  }
 
-  def getDNSMeta(base: DNS): Option[DNSMeta] =
+  def getDNSMeta(base: DNS): Option[DNSMeta] = {
     getWithCache(
       s"dns.${base.stream}", {
-        val query = quote(unquote(schema.dns).filter(t => t.stream == lift(base.stream.toInt)))
-        ctx.run(query).headOption
+        getOrInitSession()
+        import PostgresSchema._
+        import SquerylEntrypoint._
+
+        transaction(dnsMeta.where(m => m.stream === base.stream.toInt).headOption)
       }
     )
+  }
 
-  def getTracerouteMeta(base: Traceroute): Option[TracerouteMeta] =
+  def getTracerouteMeta(base: Traceroute): Option[TracerouteMeta] = {
     getWithCache(
       s"traceroute.${base.stream}", {
-        val query =
-          quote(unquote(schema.traceroute).filter(t => t.stream == lift(base.stream.toInt)))
-        ctx.run(query).headOption
+        getOrInitSession()
+        import PostgresSchema._
+        import SquerylEntrypoint._
+
+        transaction(tracerouteMeta.where(m => m.stream === base.stream.toInt).headOption)
       }
     )
+  }
 
   def getMeta(base: Measurement): Option[MeasurementMeta] =
     base match {
@@ -49,18 +75,4 @@ object PostgresConnection extends Logging with Configuration with Caching {
       case x: Traceroute => getTracerouteMeta(x)
       case _             => None
     }
-
-  private[analyser] object schema {
-    final lazy val icmp: Quoted[EntityQuery[ICMPMeta]] = quote {
-      querySchema[ICMPMeta]("streams_amp_icmp", _.stream -> "stream_id")
-    }
-
-    final lazy val dns: Quoted[EntityQuery[DNSMeta]] = quote {
-      querySchema[DNSMeta]("streams_amp_dns", _.stream -> "stream_id")
-    }
-
-    final lazy val traceroute: Quoted[EntityQuery[TracerouteMeta]] = quote {
-      querySchema[TracerouteMeta]("streams_amp_traceroute", _.stream -> "stream_id")
-    }
-  }
 }

@@ -26,7 +26,7 @@ val influxDependencies = Seq(
 
 val postgresDependencies = Seq(
   "org.postgresql" % "postgresql" % "9.4.1208",
-  "io.getquill" %% "quill-jdbc" % "3.3.0"
+  "org.squeryl" %% "squeryl" % "0.9.9"
 )
 
 val scalaCacheVersion = "0.28.0"

@@ -1,6 +1,5 @@
-package test.integration.influx
+package nz.net.wand.amp.analyser
 
-import nz.net.wand.amp.analyser.InfluxConnection
 import nz.net.wand.amp.analyser.measurements.{DNS, ICMP}
 
 import java.net.ConnectException
