@@ -7,7 +7,9 @@ object StreamConsumer {
   def main(args: Array[String]): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
 
-    env.addSource(new RichMeasurementSourceFunction()).print()
+    val sourceFunction = new RichMeasurementSourceFunction
+
+    env.addSource(sourceFunction).print()
 
     env.execute()
 
