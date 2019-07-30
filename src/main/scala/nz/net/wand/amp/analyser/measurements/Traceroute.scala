@@ -1,18 +1,18 @@
 package nz.net.wand.amp.analyser.measurements
 
-import com.github.fsanaulla.chronicler.macros.annotations.{field, tag, timestamp}
-import com.github.fsanaulla.chronicler.macros.annotations.reader.utc
+import java.time.{Instant, ZoneId}
+import java.util.concurrent.TimeUnit
 
 final case class Traceroute(
-    @tag stream: String,
-    @field path_length: Double,
-    @utc @timestamp time: Long
+    stream: Int,
+    path_length: Double,
+    time: Instant
 ) extends Measurement {
   override def toString: String = {
     s"${Traceroute.table_name}," +
       s"stream=$stream " +
       s"path_length=$path_length " +
-      s"$time"
+      s"${time.atZone(ZoneId.systemDefault())}"
   }
 
   override def enrich(): Option[RichTraceroute] = {
@@ -33,9 +33,9 @@ object Traceroute extends MeasurementFactory {
     else {
       Some(
         Traceroute(
-          getNamedField(namedData, "stream"),
-          getNamedField(namedData, "path_length").toDouble,
-          data.last.toLong
+          getNamedField(namedData, "stream").get.toInt,
+          getNamedField(namedData, "path_length").get.toDouble,
+          Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(data.last.toLong))
         ))
     }
   }

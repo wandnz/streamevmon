@@ -1,7 +1,6 @@
 package nz.net.wand.amp.analyser.measurements
 
 import java.time.{Instant, ZoneId}
-import java.util.concurrent.TimeUnit
 
 case class RichTraceroute(
     stream: Int,
@@ -40,7 +39,7 @@ object RichTraceroute extends RichMeasurementFactory {
                 m.family,
                 m.packet_size,
                 b.path_length,
-                Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(b.time))
+                b.time
               ))
           case _ => None
         }

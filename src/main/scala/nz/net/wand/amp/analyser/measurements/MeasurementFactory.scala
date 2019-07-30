@@ -6,8 +6,8 @@ trait MeasurementFactory {
 
   val table_name: String
 
-  protected def getNamedField(fields: Array[String], name: String): String = {
-    fields
+  protected def getNamedField(fields: Array[String], name: String): Option[String] = {
+    val result = fields
       .map(entry =>
         if (entry.startsWith(name)) {
           entry
@@ -18,6 +18,12 @@ trait MeasurementFactory {
       .filter(!_.isEmpty)
       .head
       .split('=')(1)
+    if (result.isEmpty) {
+      None
+    }
+    else {
+      Some(result)
+    }
   }
 
   private[measurements] def create(subscriptionLine: String): Option[Measurement]

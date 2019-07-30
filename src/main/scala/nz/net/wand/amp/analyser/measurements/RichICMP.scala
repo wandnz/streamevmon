@@ -1,7 +1,6 @@
 package nz.net.wand.amp.analyser.measurements
 
 import java.time.{Instant, ZoneId}
-import java.util.concurrent.TimeUnit
 
 case class RichICMP(
     stream: Int,
@@ -17,7 +16,6 @@ case class RichICMP(
     rtts: Seq[Int],
     time: Instant
 ) extends RichMeasurement {
-
   override def toString: String = {
     s"${ICMP.table_name}," +
       s"stream=$stream " +
@@ -37,20 +35,6 @@ case class RichICMP(
 
 object RichICMP extends RichMeasurementFactory {
 
-  def getMedian(in: Int): Option[Int] = {
-    if (in != -1) {
-      Some(in)
-    }
-    else {
-      None
-    }
-  }
-
-  def getRtts(in: String): Seq[Int] = {
-    // TODO: Input assumed to be like "[1234, 3456]", including quotes
-    in.drop(2).dropRight(2).split(',').map(x => x.trim.toInt)
-  }
-
   override def create(base: Measurement, meta: MeasurementMeta): Option[RichICMP] = {
     base match {
       case b: ICMP =>
@@ -65,11 +49,11 @@ object RichICMP extends RichMeasurementFactory {
                 m.packet_size,
                 b.loss,
                 b.lossrate,
-                getMedian(b.median),
+                b.median,
                 b.packet_size,
                 b.results,
-                getRtts(b.rtts),
-                Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(b.time))
+                b.rtts,
+                b.time
               ))
           case _ => None
         }

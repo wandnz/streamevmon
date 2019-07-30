@@ -8,6 +8,10 @@ import org.scalatest.AsyncFlatSpec
 
 import scala.concurrent.Future
 
+/* TODO: InfluxPing and InfluxSelect should be a little more abstract and allow for container testing.
+   Perhaps move some configuration from InfluxSubscriptionSourceFunction to InfluxConnection.
+ */
+
 class InfluxPing extends AsyncFlatSpec {
 
   def pingInflux(): Future[ErrorOr[InfluxDBInfo]] = {

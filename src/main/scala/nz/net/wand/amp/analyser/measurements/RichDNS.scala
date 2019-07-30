@@ -1,7 +1,6 @@
 package nz.net.wand.amp.analyser.measurements
 
 import java.time.{Instant, ZoneId}
-import java.util.concurrent.TimeUnit
 
 case class RichDNS(
     stream: Int,
@@ -16,24 +15,24 @@ case class RichDNS(
     recurse: Boolean,
     dnssec: Boolean,
     nsid: Boolean,
-    flag_aa: Boolean,
-    flag_ad: Boolean,
-    flag_cd: Boolean,
-    flag_qr: Boolean,
-    flag_ra: Boolean,
-    flag_rd: Boolean,
-    flag_tc: Boolean,
+    flag_aa: Option[Boolean],
+    flag_ad: Option[Boolean],
+    flag_cd: Option[Boolean],
+    flag_qr: Option[Boolean],
+    flag_ra: Option[Boolean],
+    flag_rd: Option[Boolean],
+    flag_tc: Option[Boolean],
     lossrate: Double,
-    opcode: Int,
+    opcode: Option[Int],
     query_len: Int,
-    rcode: Int,
+    rcode: Option[Int],
     requests: Int,
-    response_size: Int,
-    rtt: Int,
-    total_additional: Int,
-    total_answer: Int,
-    total_authority: Int,
-    ttl: Int,
+    response_size: Option[Int],
+    rtt: Option[Int],
+    total_additional: Option[Int],
+    total_answer: Option[Int],
+    total_authority: Option[Int],
+    ttl: Option[Int],
     time: Instant
 ) extends RichMeasurement {
 
@@ -51,24 +50,24 @@ case class RichDNS(
       s"recurse=$recurse " +
       s"dnssec=$dnssec " +
       s"nsid=$nsid " +
-      s"flag_aa=$flag_aa " +
-      s"flag_ad=$flag_ad " +
-      s"flag_cd=$flag_cd " +
-      s"flag_qr=$flag_qr " +
-      s"flag_ra=$flag_ra " +
-      s"flag_rd=$flag_rd " +
-      s"flag_tc=$flag_tc " +
-      s"lossrate=$lossrate " +
-      s"opcode=$opcode " +
-      s"query_len=$query_len " +
-      s"rcode=$rcode " +
-      s"requests=$requests " +
-      s"response_size=$response_size " +
-      s"rtt=$rtt " +
-      s"total_additional=$total_additional " +
-      s"total_answer=$total_answer " +
-      s"total_authority=$total_authority " +
-      s"ttl=$ttl " +
+      s"flag_aa=${flag_aa.get}," +
+      s"flag_ad=${flag_ad.get}," +
+      s"flag_cd=${flag_cd.get}," +
+      s"flag_qr=${flag_qr.get}," +
+      s"flag_ra=${flag_ra.get}," +
+      s"flag_rd=${flag_rd.get}," +
+      s"flag_tc=${flag_tc.get}," +
+      s"lossrate=$lossrate," +
+      s"opcode=${opcode.get}," +
+      s"query_len=$query_len," +
+      s"rcode=${rcode.get}," +
+      s"requests=$requests," +
+      s"response_size=${response_size.get}," +
+      s"rtt=${rtt.get}," +
+      s"total_additional=${total_additional.get}," +
+      s"total_answer=${total_answer.get}," +
+      s"total_authority=${total_authority.get}," +
+      s"ttl=${ttl.get} " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 }
@@ -112,7 +111,7 @@ object RichDNS extends RichMeasurementFactory {
                 b.total_answer,
                 b.total_authority,
                 b.ttl,
-                Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(b.time))
+                b.time
               ))
           case _ => None
         }

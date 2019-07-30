@@ -39,7 +39,7 @@ object PostgresConnection extends Logging with Configuration with Caching {
         import PostgresSchema._
         import SquerylEntrypoint._
 
-        transaction(icmpMeta.where(m => m.stream === base.stream.toInt).headOption)
+        transaction(icmpMeta.where(m => m.stream === base.stream).headOption)
       }
     )
   }
@@ -51,7 +51,7 @@ object PostgresConnection extends Logging with Configuration with Caching {
         import PostgresSchema._
         import SquerylEntrypoint._
 
-        transaction(dnsMeta.where(m => m.stream === base.stream.toInt).headOption)
+        transaction(dnsMeta.where(m => m.stream === base.stream).headOption)
       }
     )
   }
@@ -63,7 +63,7 @@ object PostgresConnection extends Logging with Configuration with Caching {
         import PostgresSchema._
         import SquerylEntrypoint._
 
-        transaction(tracerouteMeta.where(m => m.stream === base.stream.toInt).headOption)
+        transaction(tracerouteMeta.where(m => m.stream === base.stream).headOption)
       }
     )
   }

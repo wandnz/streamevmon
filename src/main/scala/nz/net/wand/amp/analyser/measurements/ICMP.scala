@@ -1,28 +1,28 @@
 package nz.net.wand.amp.analyser.measurements
 
-import com.github.fsanaulla.chronicler.macros.annotations.{field, tag, timestamp}
-import com.github.fsanaulla.chronicler.macros.annotations.reader.utc
+import java.time.{Instant, ZoneId}
+import java.util.concurrent.TimeUnit
 
 final case class ICMP(
-    @tag stream: String,
-    @field loss: Int,
-    @field lossrate: Double,
-    @field median: Int,
-    @field packet_size: Int,
-    @field results: Int,
-    @field rtts: String,
-    @utc @timestamp time: Long
+    stream: Int,
+    loss: Int,
+    lossrate: Double,
+    median: Option[Int],
+    packet_size: Int,
+    results: Int,
+    rtts: Seq[Int],
+    time: Instant
 ) extends Measurement {
   override def toString: String = {
     s"${ICMP.table_name}," +
       s"stream=$stream " +
       s"loss=$loss," +
       s"lossrate=$lossrate," +
-      s"median=$median," +
+      s"median=${median.get}," +
       s"packet_size=$packet_size," +
       s"results=$results," +
-      s"rtts=$rtts " +
-      s"$time"
+      s"rtts=${rtts.mkString("\"", ",", "\"")} " +
+      s"${time.atZone(ZoneId.systemDefault())}"
   }
 
   override def enrich(): Option[RichMeasurement] = {
@@ -34,6 +34,11 @@ object ICMP extends MeasurementFactory {
 
   final override val table_name: String = "data_amp_icmp"
 
+  def getRtts(in: String): Seq[Int] = {
+    // TODO: Input assumed to be like "[1234, 3456]", including quotes
+    in.drop(2).dropRight(2).split(',').map(x => x.trim.toInt)
+  }
+
   override def create(subscriptionLine: String): Option[ICMP] = {
     val data = subscriptionLine.split(Array(',', ' '))
     val namedData = data.drop(1).dropRight(1)
@@ -43,14 +48,14 @@ object ICMP extends MeasurementFactory {
     else {
       Some(
         ICMP(
-          getNamedField(namedData, "stream"),
-          getNamedField(namedData, "loss").dropRight(1).toInt,
-          getNamedField(namedData, "lossrate").toDouble,
-          getNamedField(namedData, "median").dropRight(1).toInt,
-          getNamedField(namedData, "packet_size").dropRight(1).toInt,
-          getNamedField(namedData, "results").dropRight(1).toInt,
-          getNamedField(namedData, "rtts"),
-          data.last.toLong
+          getNamedField(namedData, "stream").get.toInt,
+          getNamedField(namedData, "loss").get.dropRight(1).toInt,
+          getNamedField(namedData, "lossrate").get.toDouble,
+          getNamedField(namedData, "median").map(_.dropRight(1).toInt),
+          getNamedField(namedData, "packet_size").get.dropRight(1).toInt,
+          getNamedField(namedData, "results").get.dropRight(1).toInt,
+          getRtts(getNamedField(namedData, "rtts").get),
+          Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(data.last.toLong))
         ))
     }
   }
