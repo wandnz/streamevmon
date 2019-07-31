@@ -42,6 +42,7 @@ val logDependencies = Seq(
 val testDependencies = Seq(
   "org.scalatest" %% "scalatest" % "3.0.8" % "test",
   "org.testcontainers" % "postgresql" % "1.12.0" % "test",
+  "org.testcontainers" % "influxdb" % "1.12.0" % "test",
   "com.dimafeng" %% "testcontainers-scala" % "0.29.0" % "test"
 )
 

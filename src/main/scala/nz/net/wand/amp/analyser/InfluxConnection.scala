@@ -16,27 +16,30 @@ import scala.sys.ShutdownHookThread
 object InfluxConnection extends Logging with Configuration {
 
   configPrefix = "influx.dataSource"
-  private[this] val subscriptionName: String =
-    getConfigString("subscriptionName").getOrElse("SubscriptionServer")
-  private[this] val dbName: String = getConfigString("databaseName").getOrElse("nntsc")
-  private[this] val rpName: String =
-    getConfigString("retentionPolicyName").getOrElse("nntscdefault")
-  private[this] val listenProtocol: String = getConfigString("listenProtocol").getOrElse("http")
-  private[this] val listenAddress: String = getConfigString("listenAddress").get
-  private[this] val listenPort: Int = getConfigInt("listenPort").getOrElse(8008)
-  private[this] val listenBacklog: Int = getConfigInt("listenBacklog").getOrElse(5)
-  private[this] val influxAddress: String = getConfigString("serverName").getOrElse("localhost")
-  private[this] val influxPort: Int = getConfigInt("portNumber").getOrElse(8086)
-  private[this] val influxUsername: String = getConfigString("user").getOrElse("cuz")
-  private[this] val influxPassword: String = getConfigString("password").getOrElse("")
+  var subscriptionName: String = getConfigString("subscriptionName").getOrElse("SubscriptionServer")
+  var dbName: String = getConfigString("databaseName").getOrElse("nntsc")
+  var rpName: String = getConfigString("retentionPolicyName").getOrElse("nntscdefault")
+  var listenProtocol: String = getConfigString("listenProtocol").getOrElse("http")
+  var listenAddress: String = getConfigString("listenAddress").get
+  var listenPort: Int = getConfigInt("listenPort").getOrElse(8008)
+  var listenBacklog: Int = getConfigInt("listenBacklog").getOrElse(5)
+  var influxAddress: String = getConfigString("serverName").getOrElse("localhost")
+  var influxPort: Int = getConfigInt("portNumber").getOrElse(8086)
+  var influxUsername: String = getConfigString("user").getOrElse("cuz")
+  var influxPassword: String = getConfigString("password").getOrElse("")
+
   var influx: Option[AhcManagementClient] = None
   private[this] var subscriptionRemoveHooks: Seq[(String, ShutdownHookThread)] = Seq()
 
-  def checkConnection(influx: AhcManagementClient): Boolean = {
-    Await.result(influx.ping.map {
-      case Right(_) => true
-      case Left(_)  => false
-    }, Duration.Inf)
+  def checkConnection(): Boolean = {
+    influx match {
+      case Some(x) =>
+        Await.result(x.ping.map {
+          case Right(_) => true
+          case Left(_)  => false
+        }, Duration.Inf)
+      case None => false
+    }
   }
 
   def ensureConnection(): Unit = {
@@ -48,6 +51,7 @@ object InfluxConnection extends Logging with Configuration {
 
   def disconnect(): Unit = {
     influx.foreach(_.close)
+    influx = None
   }
 
   def getSubscriptionListener: Option[ServerSocket] = {
@@ -136,10 +140,12 @@ object InfluxConnection extends Logging with Configuration {
     })
   }
 
+  def destinations: Seq[String] = Seq(s"$listenProtocol://$listenAddress:$listenPort")
+
   private[this] def getManagement: Option[AhcManagementClient] = {
     def influx = InfluxMng(influxAddress, influxPort, Some(influxCredentials))
 
-    if (checkConnection(influx)) {
+    if (checkConnection()) {
       Some(influx)
     }
     else {
@@ -150,6 +156,4 @@ object InfluxConnection extends Logging with Configuration {
   private[this] def listenInet: InetAddress = InetAddress.getByName(listenAddress)
 
   private[this] def influxCredentials = InfluxCredentials(influxUsername, influxPassword)
-
-  private[this] def destinations: Seq[String] = Seq(s"$listenProtocol://$listenAddress:$listenPort")
 }
