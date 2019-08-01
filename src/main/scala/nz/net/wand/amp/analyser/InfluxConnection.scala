@@ -96,9 +96,9 @@ object InfluxConnection extends Logging with Configuration {
                 (subscriptionName,
                 sys.addShutdownHook {
                   Await.result(dropSubscription(), Duration.Inf)
-                  logger.info(s"Removed subscription $subscriptionName")
+                  logger.debug(s"Removed subscription $subscriptionName")
                 })
-              logger.info(s"Added subscription $subscriptionName")
+              logger.debug(s"Added subscription $subscriptionName at ${destinations.mkString(",")}")
               Future(Right(subscribeResult.right.get))
             }
             else {
@@ -116,9 +116,14 @@ object InfluxConnection extends Logging with Configuration {
       case Some(db) =>
         subscriptionRemoveHooks.filter(_._1 == subscriptionName).foreach { hook =>
           if (!hook._2.isAlive) {
-            hook._2.remove
+            try {
+              hook._2.remove
+            } catch {
+              case _: IllegalStateException => // Already shutting down, so the hook will run.
+            }
           }
         }
+        logger.debug(s"Dropping subscription $subscriptionName")
         db.dropSubscription(subscriptionName, dbName, rpName)
       case None => Future(Left(new IllegalStateException("No influx connection.")))
     }
