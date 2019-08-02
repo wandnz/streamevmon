@@ -1,6 +1,6 @@
 package nz.net.wand.amp.analyser.measurements
 
-import nz.net.wand.amp.analyser.PostgresConnection
+import nz.net.wand.amp.analyser.connectors.PostgresConnection
 
 trait MeasurementFactory {
 

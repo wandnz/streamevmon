@@ -1,6 +1,7 @@
-package nz.net.wand.amp.analyser.measurements
+package nz.net.wand.amp.analyser.connectors
 
-import nz.net.wand.amp.analyser.SquerylEntrypoint._
+import nz.net.wand.amp.analyser.connectors.SquerylEntrypoint._
+import nz.net.wand.amp.analyser.measurements.{DNSMeta, ICMPMeta, TracerouteMeta}
 
 import org.squeryl.{Schema, Table}
 

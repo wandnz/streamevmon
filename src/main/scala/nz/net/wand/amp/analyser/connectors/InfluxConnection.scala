@@ -1,4 +1,6 @@
-package nz.net.wand.amp.analyser
+package nz.net.wand.amp.analyser.connectors
+
+import nz.net.wand.amp.analyser.{Configuration, Logging}
 
 import java.io.IOException
 import java.net.{ConnectException, InetAddress, ServerSocket}
@@ -42,7 +44,7 @@ object InfluxConnection extends Logging with Configuration {
     }
   }
 
-  def ensureConnection(): Unit = {
+  private[this] def ensureConnection(): Unit = {
     influx match {
       case Some(_) =>
       case None    => influx = getManagement

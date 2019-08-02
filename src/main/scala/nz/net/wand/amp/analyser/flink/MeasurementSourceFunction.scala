@@ -1,4 +1,4 @@
-package nz.net.wand.amp.analyser
+package nz.net.wand.amp.analyser.flink
 
 import nz.net.wand.amp.analyser.measurements.{Measurement, MeasurementFactory}
 

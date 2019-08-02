@@ -1,5 +1,7 @@
 package nz.net.wand.amp.analyser
 
+import nz.net.wand.amp.analyser.flink.RichMeasurementSourceFunction
+
 import org.apache.flink.streaming.api.scala._
 
 object StreamConsumer {

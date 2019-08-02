@@ -1,4 +1,4 @@
-package nz.net.wand.amp.analyser
+package nz.net.wand.amp.analyser.connectors
 
 import com.dimafeng.testcontainers.ForAllTestContainer
 import com.github.fsanaulla.chronicler.ahc.management.InfluxMng

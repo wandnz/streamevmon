@@ -1,5 +1,7 @@
-package nz.net.wand.amp.analyser
+package nz.net.wand.amp.analyser.connectors
 
+import nz.net.wand.amp.analyser.SeedData
+import nz.net.wand.amp.analyser.flink.{MeasurementSourceFunction, MockSourceContext}
 import nz.net.wand.amp.analyser.measurements.{Measurement, MeasurementFactory}
 
 import java.io.{BufferedReader, InputStreamReader}

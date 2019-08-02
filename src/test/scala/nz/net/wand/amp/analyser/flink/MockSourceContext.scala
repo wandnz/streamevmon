@@ -1,4 +1,4 @@
-package nz.net.wand.amp.analyser
+package nz.net.wand.amp.analyser.flink
 
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 import org.apache.flink.streaming.api.watermark.Watermark

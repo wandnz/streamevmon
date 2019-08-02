@@ -4,7 +4,9 @@ import com.typesafe.config.{Config, ConfigFactory}
 
 trait Configuration {
   @transient final private[this] lazy val staticPrefix: String = getClass.getPackage.getName
+
   @transient protected[this] var config: Config = ConfigFactory.load(staticPrefix)
+
   private[this] var _configPrefix = s"$staticPrefix"
   protected[this] def configPrefix: String = _configPrefix
   protected[this] def configPrefix_=(prefix: String): Unit = {

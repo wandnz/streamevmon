@@ -1,5 +1,6 @@
-package nz.net.wand.amp.analyser
+package nz.net.wand.amp.analyser.connectors
 
+import nz.net.wand.amp.analyser.{Caching, Configuration, Logging}
 import nz.net.wand.amp.analyser.measurements._
 
 import java.sql.DriverManager
@@ -20,7 +21,7 @@ object PostgresConnection extends Logging with Configuration with Caching {
   val username: String = getConfigString("user").getOrElse("cuz")
   val password: String = getConfigString("password").getOrElse("")
 
-  def getOrInitSession(): Unit =
+  private[this] def getOrInitSession(): Unit =
     SessionFactory.concreteFactory match {
       case Some(_) =>
       case None =>
@@ -36,8 +37,8 @@ object PostgresConnection extends Logging with Configuration with Caching {
     getWithCache(
       s"icmp.${base.stream}", {
         getOrInitSession()
-        import PostgresSchema._
-        import SquerylEntrypoint._
+        import nz.net.wand.amp.analyser.connectors.PostgresSchema._
+        import nz.net.wand.amp.analyser.connectors.SquerylEntrypoint._
 
         transaction(icmpMeta.where(m => m.stream === base.stream).headOption)
       }
@@ -48,8 +49,8 @@ object PostgresConnection extends Logging with Configuration with Caching {
     getWithCache(
       s"dns.${base.stream}", {
         getOrInitSession()
-        import PostgresSchema._
-        import SquerylEntrypoint._
+        import nz.net.wand.amp.analyser.connectors.PostgresSchema._
+        import nz.net.wand.amp.analyser.connectors.SquerylEntrypoint._
 
         transaction(dnsMeta.where(m => m.stream === base.stream).headOption)
       }
@@ -60,8 +61,8 @@ object PostgresConnection extends Logging with Configuration with Caching {
     getWithCache(
       s"traceroute.${base.stream}", {
         getOrInitSession()
-        import PostgresSchema._
-        import SquerylEntrypoint._
+        import nz.net.wand.amp.analyser.connectors.PostgresSchema._
+        import nz.net.wand.amp.analyser.connectors.SquerylEntrypoint._
 
         transaction(tracerouteMeta.where(m => m.stream === base.stream).headOption)
       }

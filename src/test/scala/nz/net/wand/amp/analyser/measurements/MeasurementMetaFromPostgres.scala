@@ -1,6 +1,7 @@
 package nz.net.wand.amp.analyser.measurements
 
 import nz.net.wand.amp.analyser._
+import nz.net.wand.amp.analyser.connectors.{PostgresConnection, PreparePostgresTestContainer}
 
 import java.sql.DriverManager
 
@@ -24,8 +25,8 @@ class MeasurementMetaFromPostgres extends WordSpec with ForAllTestContainer {
     }
 
     "contain expected metadata" in {
-      import PostgresSchema._
-      import SquerylEntrypoint._
+      import nz.net.wand.amp.analyser.connectors.PostgresSchema._
+      import nz.net.wand.amp.analyser.connectors.SquerylEntrypoint._
 
       assertResult(SeedData.allExpectedICMPMeta)(transaction(icmpMeta.allRows.toList))
       assertResult(SeedData.allExpectedDNSMeta)(transaction(dnsMeta.allRows.toList))

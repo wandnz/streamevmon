@@ -1,4 +1,7 @@
-package nz.net.wand.amp.analyser
+package nz.net.wand.amp.analyser.flink
+
+import nz.net.wand.amp.analyser.connectors.InfluxConnection
+import nz.net.wand.amp.analyser.Logging
 
 import java.io.{BufferedReader, InputStreamReader}
 import java.net.{ServerSocket, SocketTimeoutException}
