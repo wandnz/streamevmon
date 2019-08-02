@@ -118,10 +118,6 @@ class InfluxConnectionTest extends InfluxContainerTest {
                          )))
     }
 
-    "successfully ping" in {
-      assert(InfluxConnection.checkConnection())
-    }
-
     "add a subscription" in {
 
       InfluxConnection.subscriptionName = "addRemove"

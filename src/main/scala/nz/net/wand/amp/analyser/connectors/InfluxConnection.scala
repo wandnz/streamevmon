@@ -33,15 +33,15 @@ object InfluxConnection extends Logging with Configuration {
   var influx: Option[AhcManagementClient] = None
   private[this] var subscriptionRemoveHooks: Seq[(String, ShutdownHookThread)] = Seq()
 
-  def checkConnection(): Boolean = {
-    influx match {
-      case Some(x) =>
-        Await.result(x.ping.map {
-          case Right(_) => true
-          case Left(_)  => false
-        }, Duration.Inf)
-      case None => false
-    }
+  def checkConnection(influx: AhcManagementClient): Boolean = {
+    Await.result(influx.ping.map {
+      case Right(_) =>
+        logger.info("Ping success")
+        true
+      case Left(_) =>
+        logger.error("Ping failed")
+        false
+    }, Duration.Inf)
   }
 
   private[this] def ensureConnection(): Unit = {
@@ -152,10 +152,14 @@ object InfluxConnection extends Logging with Configuration {
   private[this] def getManagement: Option[AhcManagementClient] = {
     def influx = InfluxMng(influxAddress, influxPort, Some(influxCredentials))
 
-    if (checkConnection()) {
+    println(s"Starting connection: $influxAddress:$influxPort $influxCredentials")
+
+    if (checkConnection(influx)) {
+      println("Hello.")
       Some(influx)
     }
     else {
+      println("Hello?")
       None
     }
   }
