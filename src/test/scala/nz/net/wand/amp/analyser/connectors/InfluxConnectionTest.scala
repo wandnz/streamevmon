@@ -1,6 +1,6 @@
 package nz.net.wand.amp.analyser.connectors
 
-import nz.net.wand.amp.analyser.SeedData
+import nz.net.wand.amp.analyser.{InfluxContainerSpec, SeedData}
 import nz.net.wand.amp.analyser.flink.{MeasurementSourceFunction, MockSourceContext}
 import nz.net.wand.amp.analyser.measurements.{Measurement, MeasurementFactory}
 
@@ -16,7 +16,7 @@ import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 
-class InfluxConnectionTest extends InfluxContainerTest {
+class InfluxConnectionTest extends InfluxContainerSpec {
 
   def checkSubscription(
       influx: AhcManagementClient,
@@ -175,11 +175,11 @@ class InfluxConnectionTest extends InfluxContainerTest {
     Thread.sleep(20)
 
     println("Sending data")
-    Await.result(db.writeNative(SeedData.icmpSubscriptionLine), Duration.Inf)
+    Await.result(db.writeNative(SeedData.icmp.subscriptionLine), Duration.Inf)
     Thread.sleep(20)
-    Await.result(db.writeNative(SeedData.dnsSubscriptionLine), Duration.Inf)
+    Await.result(db.writeNative(SeedData.dns.subscriptionLine), Duration.Inf)
     Thread.sleep(20)
-    Await.result(db.writeNative(SeedData.tracerouteSubscriptionLine), Duration.Inf)
+    Await.result(db.writeNative(SeedData.traceroute.subscriptionLine), Duration.Inf)
     println("Data sent.")
     Thread.sleep(20)
   }

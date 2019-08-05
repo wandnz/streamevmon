@@ -1,4 +1,4 @@
-package nz.net.wand.amp.analyser.connectors
+package nz.net.wand.amp.analyser
 
 import com.dimafeng.testcontainers.SingleContainer
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
@@ -29,6 +29,12 @@ class InfluxDBContainer(dockerImageNameOverride: Option[String] = None)
 
     case None =>
       new OTCInfluxDBContainer()
+        .withAdmin(username)
+        .asInstanceOf[OTCContainer]
+        .withAdminPassword(password)
+        .asInstanceOf[OTCContainer]
+        .withDatabase(database)
+        .asInstanceOf[OTCContainer]
   }
 
   def credentials = InfluxCredentials(username, password)

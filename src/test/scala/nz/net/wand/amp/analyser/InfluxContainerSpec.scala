@@ -1,4 +1,6 @@
-package nz.net.wand.amp.analyser.connectors
+package nz.net.wand.amp.analyser
+
+import nz.net.wand.amp.analyser.connectors.InfluxConnection
 
 import com.dimafeng.testcontainers.ForAllTestContainer
 import com.github.fsanaulla.chronicler.ahc.management.InfluxMng
@@ -8,7 +10,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class InfluxContainerTest extends WordSpec with ForAllTestContainer {
+class InfluxContainerSpec extends WordSpec with ForAllTestContainer {
   override val container: InfluxDBContainer = InfluxDBContainer("alpine")
 
   override def afterStart(): Unit = {
