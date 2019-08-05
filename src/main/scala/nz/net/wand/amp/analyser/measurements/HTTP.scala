@@ -14,10 +14,10 @@ final case class HTTP(
   override def toString: String = {
     s"${HTTP.table_name}," +
       s"stream=$stream " +
-      s"bytes=$bytes " +
-      s"duration=$duration " +
-      s"object_count=$object_count " +
-      s"server_count=$server_count " +
+      s"bytes=${bytes}i," +
+      s"duration=${duration}i," +
+      s"object_count=${object_count}i," +
+      s"server_count=${server_count}i " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 

@@ -28,24 +28,24 @@ final case class DNS(
   override def toString: String = {
     s"${DNS.table_name}," +
       s"stream=$stream " +
-      s"flag_aa=${flag_aa.get}," +
-      s"flag_ad=${flag_ad.get}," +
-      s"flag_cd=${flag_cd.get}," +
-      s"flag_qr=${flag_qr.get}," +
-      s"flag_ra=${flag_ra.get}," +
-      s"flag_rd=${flag_rd.get}," +
-      s"flag_tc=${flag_tc.get}," +
+      s"flag_aa=${flag_aa.getOrElse("")}," +
+      s"flag_ad=${flag_ad.getOrElse("")}," +
+      s"flag_cd=${flag_cd.getOrElse("")}," +
+      s"flag_qr=${flag_qr.getOrElse("")}," +
+      s"flag_ra=${flag_ra.getOrElse("")}," +
+      s"flag_rd=${flag_rd.getOrElse("")}," +
+      s"flag_tc=${flag_tc.getOrElse("")}," +
       s"lossrate=$lossrate," +
-      s"opcode=${opcode.get}," +
-      s"query_len=$query_len," +
-      s"rcode=${rcode.get}," +
-      s"requests=$requests," +
-      s"response_size=${response_size.get}," +
-      s"rtt=${rtt.get}," +
-      s"total_additional=${total_additional.get}," +
-      s"total_answer=${total_answer.get}," +
-      s"total_authority=${total_authority.get}," +
-      s"ttl=${ttl.get} " +
+      s"opcode=${opcode.map(x => s"${x}i").getOrElse("")}," +
+      s"query_len=${query_len}i," +
+      s"rcode=${rcode.map(x => s"${x}i").getOrElse("")}," +
+      s"requests=${requests}i," +
+      s"response_size=${response_size.map(x => s"${x}i").getOrElse("")}," +
+      s"rtt=${rtt.map(x => s"${x}i").getOrElse("")}," +
+      s"total_additional=${total_additional.map(x => s"${x}i").getOrElse("")}," +
+      s"total_answer=${total_answer.map(x => s"${x}i").getOrElse("")}," +
+      s"total_authority=${total_authority.map(x => s"${x}i").getOrElse("")}," +
+      s"ttl=${ttl.map(x => s"${x}i").getOrElse("")} " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 

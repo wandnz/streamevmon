@@ -13,7 +13,7 @@ case class RichICMP(
     median: Option[Int],
     packet_size: Int,
     results: Int,
-    rtts: Seq[Int],
+    rtts: Seq[Option[Int]],
     time: Instant
 ) extends RichMeasurement {
   override def toString: String = {

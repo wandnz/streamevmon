@@ -11,19 +11,19 @@ final case class TCPPing(
     median: Option[Int],
     packet_size: Int,
     results: Int,
-    rtts: Seq[Int],
+    rtts: Seq[Option[Int]],
     time: Instant
 ) extends Measurement {
   override def toString: String = {
     s"${TCPPing.table_name}," +
       s"stream=$stream " +
-      s"icmperrors=$icmperrors," +
-      s"loss=$loss," +
+      s"icmperrors=${icmperrors}i," +
+      s"loss=${loss}i," +
       s"lossrate=$lossrate," +
-      s"median=${median.get}," +
-      s"packet_size=$packet_size," +
-      s"results=$results," +
-      s"rtts=${rtts.mkString("\"", ",", "\"")} " +
+      s"median=${median.map(x => s"${x}i").getOrElse("")}," +
+      s"packet_size=${packet_size}i," +
+      s"results=${results}i," +
+      s"rtts=${rtts.map(x => x.getOrElse("None")).mkString("\"[", ",", "]\"")} " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 

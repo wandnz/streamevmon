@@ -10,18 +10,18 @@ final case class ICMP(
     median: Option[Int],
     packet_size: Int,
     results: Int,
-    rtts: Seq[Int],
+    rtts: Seq[Option[Int]],
     time: Instant
 ) extends Measurement {
   override def toString: String = {
     s"${ICMP.table_name}," +
       s"stream=$stream " +
-      s"loss=$loss," +
+      s"loss=${loss}i," +
       s"lossrate=$lossrate," +
-      s"median=${median.get}," +
-      s"packet_size=$packet_size," +
-      s"results=$results," +
-      s"rtts=${rtts.mkString("\"", ",", "\"")} " +
+      s"median=${median.map(x => s"${x}i").getOrElse("")}," +
+      s"packet_size=${packet_size}i," +
+      s"results=${results}i," +
+      s"rtts=${rtts.map(x => x.getOrElse("None")).mkString("\"[", ",", "]\"")} " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 

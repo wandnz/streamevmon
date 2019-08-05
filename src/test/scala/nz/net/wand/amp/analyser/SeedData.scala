@@ -40,7 +40,7 @@ object SeedData extends Configuration {
       median = Some(225),
       packet_size = 520,
       results = 1,
-      rtts = Seq(225),
+      rtts = Seq(Some(225)),
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1563761840000000000L))
     )
 
@@ -63,7 +63,7 @@ object SeedData extends Configuration {
       median = Some(225),
       packet_size = 520,
       results = 1,
-      rtts = Seq(225),
+      rtts = Seq(Some(225)),
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1563761840000000000L))
     )
   }
@@ -255,7 +255,7 @@ object SeedData extends Configuration {
       Some(189),
       64,
       1,
-      Seq(189),
+      Seq(Some(189)),
       Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713040000000000L))
     )
 
@@ -281,7 +281,7 @@ object SeedData extends Configuration {
       Some(189),
       64,
       1,
-      Seq(189),
+      Seq(Some(189)),
       Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713040000000000L))
     )
   }

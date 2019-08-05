@@ -28,9 +28,17 @@ trait MeasurementFactory {
 
   private[measurements] def create(subscriptionLine: String): Option[Measurement]
 
-  protected def getRtts(in: String): Seq[Int] = {
+  protected def getRtts(in: String): Seq[Option[Int]] = {
     // TODO: Input assumed to be like "[1234, 3456]", including quotes
-    in.drop(2).dropRight(2).split(',').map(x => x.trim.toInt)
+    in.drop(2).dropRight(2).split(',').map { x =>
+      val y = x.trim
+      if (y == "None") {
+        None
+      }
+      else {
+        Some(y.toInt)
+      }
+    }
   }
 }
 
