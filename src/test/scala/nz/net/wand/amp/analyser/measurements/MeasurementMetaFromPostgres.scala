@@ -50,20 +50,34 @@ class MeasurementMetaFromPostgres extends WordSpec with ForAllTestContainer {
       assertResult(SeedData.expectedTracerouteMeta)(result)
     }
 
+    "obtain correct TCPPingMeta" in {
+      val result = PostgresConnection.getTcppingMeta(SeedData.expectedTcpping).get
+      assertResult(SeedData.expectedTcppingMeta)(result)
+    }
+
+    "obtain correct HTTPMeta" in {
+      val result = PostgresConnection.getHttpMeta(SeedData.expectedHTTP).get
+      assertResult(SeedData.expectedHttpMeta)(result)
+    }
+
     "obtain several correct Meta objects" in {
       Seq(
         PostgresConnection.getMeta(SeedData.expectedICMP),
         PostgresConnection.getMeta(SeedData.expectedDNS),
-        PostgresConnection.getMeta(SeedData.expectedTraceroute)
+        PostgresConnection.getMeta(SeedData.expectedTraceroute),
+        PostgresConnection.getMeta(SeedData.expectedTcpping),
+        PostgresConnection.getMeta(SeedData.expectedHTTP)
       ).foreach {
         case Some(x) =>
           x match {
             case _: ICMPMeta       => assertResult(SeedData.expectedICMPMeta)(x)
             case _: DNSMeta        => assertResult(SeedData.expectedDNSMeta)(x)
             case _: TracerouteMeta => assertResult(SeedData.expectedTracerouteMeta)(x)
-            case _                 => fail()
+            case _: TCPPingMeta    => assertResult(SeedData.expectedTcppingMeta)(x)
+            case _: HTTPMeta       => assertResult(SeedData.expectedHttpMeta)(x)
+            case _                 => fail("Created a type we didn't recognise")
           }
-        case None => fail()
+        case None => fail("Failed to create an object")
       }
     }
   }
@@ -79,6 +93,14 @@ class MeasurementMetaFromPostgres extends WordSpec with ForAllTestContainer {
 
     "obtain the correct RichTraceroute object" in {
       assertResult(SeedData.expectedRichTraceroute)(SeedData.expectedTraceroute.enrich().get)
+    }
+
+    "obtain the correct RichTcpping object" in {
+      assertResult(SeedData.expectedRichTcpping)(SeedData.expectedTcpping.enrich().get)
+    }
+
+    "obtain the correct RichHTTP object" in {
+      assertResult(SeedData.expectedRichHttp)(SeedData.expectedHTTP.enrich().get)
     }
   }
 }

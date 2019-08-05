@@ -12,7 +12,7 @@ class MeasurementSourceFunction() extends InfluxSubscriptionSourceFunction[Measu
       val result = MeasurementFactory.createMeasurement(line)
       result match {
         case Some(x) => ctx.collect(x)
-        case None    =>
+        case None    => logger.error(s"Entry failed to parse: $line")
       }
     }
   }

@@ -55,12 +55,12 @@ abstract class InfluxSubscriptionSourceFunction[T]() extends SourceFunction[T] w
 
             Stream
               .continually {
-                val in = reader.readLine
-                processLine(ctx, in)
-                in
+                reader.readLine
               }
               .takeWhile(line => line != null)
-              .foreach(line => line)
+              .dropWhile(line => !line.isEmpty)
+              .drop(1)
+              .foreach(line => processLine(ctx, line))
 
           case None =>
             logger.warn("Listener unexpectedly died")

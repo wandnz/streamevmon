@@ -32,5 +32,23 @@ class RichMeasurementCreate extends WordSpec {
 
       assertResult(SeedData.expectedRichDNS)(result)
     }
+
+    "merge a TCPPing and TCPPingMeta object" in {
+      val result =
+        RichTCPPing
+          .create(SeedData.expectedTcpping, SeedData.expectedTcppingMeta)
+          .get
+
+      assertResult(SeedData.expectedRichTcpping)(result)
+    }
+
+    "merge an HTTP and HTTPMeta object" in {
+      val result =
+        RichHTTP
+          .create(SeedData.expectedHTTP, SeedData.expectedHttpMeta)
+          .get
+
+      assertResult(SeedData.expectedRichHttp)(result)
+    }
   }
 }

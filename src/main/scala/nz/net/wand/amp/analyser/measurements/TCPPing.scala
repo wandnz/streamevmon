@@ -3,8 +3,9 @@ package nz.net.wand.amp.analyser.measurements
 import java.time.{Instant, ZoneId}
 import java.util.concurrent.TimeUnit
 
-final case class ICMP(
+final case class TCPPing(
     stream: Int,
+    icmperrors: Int,
     loss: Int,
     lossrate: Double,
     median: Option[Int],
@@ -14,8 +15,9 @@ final case class ICMP(
     time: Instant
 ) extends Measurement {
   override def toString: String = {
-    s"${ICMP.table_name}," +
+    s"${TCPPing.table_name}," +
       s"stream=$stream " +
+      s"icmperrors=$icmperrors," +
       s"loss=$loss," +
       s"lossrate=$lossrate," +
       s"median=${median.get}," +
@@ -25,16 +27,15 @@ final case class ICMP(
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 
-  override def enrich(): Option[RichMeasurement] = {
-    MeasurementFactory.enrichMeasurement(this).asInstanceOf[Option[RichICMP]]
+  override def enrich(): Option[RichTCPPing] = {
+    MeasurementFactory.enrichMeasurement(this).asInstanceOf[Option[RichTCPPing]]
   }
 }
 
-object ICMP extends MeasurementFactory {
+object TCPPing extends MeasurementFactory {
+  final override val table_name: String = "data_amp_tcpping"
 
-  final override val table_name: String = "data_amp_icmp"
-
-  override def create(subscriptionLine: String): Option[ICMP] = {
+  override def create(subscriptionLine: String): Option[TCPPing] = {
     val data = subscriptionLine.split(Array(',', ' '))
     val namedData = data.drop(1).dropRight(1)
     if (data(0) != table_name) {
@@ -42,8 +43,9 @@ object ICMP extends MeasurementFactory {
     }
     else {
       Some(
-        ICMP(
+        TCPPing(
           getNamedField(namedData, "stream").get.toInt,
+          getNamedField(namedData, "icmperrors").get.dropRight(1).toInt,
           getNamedField(namedData, "loss").get.dropRight(1).toInt,
           getNamedField(namedData, "lossrate").get.toDouble,
           getNamedField(namedData, "median").map(_.dropRight(1).toInt),

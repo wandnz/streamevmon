@@ -36,10 +36,8 @@ object InfluxConnection extends Logging with Configuration {
   def checkConnection(influx: AhcManagementClient): Boolean = {
     Await.result(influx.ping.map {
       case Right(_) =>
-        logger.info("Ping success")
         true
       case Left(_) =>
-        logger.error("Ping failed")
         false
     }, Duration.Inf)
   }
@@ -152,14 +150,10 @@ object InfluxConnection extends Logging with Configuration {
   private[this] def getManagement: Option[AhcManagementClient] = {
     def influx = InfluxMng(influxAddress, influxPort, Some(influxCredentials))
 
-    println(s"Starting connection: $influxAddress:$influxPort $influxCredentials")
-
     if (checkConnection(influx)) {
-      println("Hello.")
       Some(influx)
     }
     else {
-      println("Hello?")
       None
     }
   }

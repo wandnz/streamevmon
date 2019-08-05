@@ -27,6 +27,11 @@ trait MeasurementFactory {
   }
 
   private[measurements] def create(subscriptionLine: String): Option[Measurement]
+
+  protected def getRtts(in: String): Seq[Int] = {
+    // TODO: Input assumed to be like "[1234, 3456]", including quotes
+    in.drop(2).dropRight(2).split(',').map(x => x.trim.toInt)
+  }
 }
 
 trait RichMeasurementFactory {
@@ -41,6 +46,8 @@ object MeasurementFactory {
       case x if x.startsWith(ICMP.table_name)       => ICMP.create(x)
       case x if x.startsWith(DNS.table_name)        => DNS.create(x)
       case x if x.startsWith(Traceroute.table_name) => Traceroute.create(x)
+      case x if x.startsWith(TCPPing.table_name)    => TCPPing.create(x)
+      case x if x.startsWith(HTTP.table_name)       => HTTP.create(x)
       case _                                        => None
     }
   }
@@ -52,6 +59,8 @@ object MeasurementFactory {
           case y: ICMPMeta       => RichICMP.create(base, y)
           case y: DNSMeta        => RichDNS.create(base, y)
           case y: TracerouteMeta => RichTraceroute.create(base, y)
+          case y: TCPPingMeta    => RichTCPPing.create(base, y)
+          case y: HTTPMeta       => RichHTTP.create(base, y)
           case _                 => None
         }
       case None => None

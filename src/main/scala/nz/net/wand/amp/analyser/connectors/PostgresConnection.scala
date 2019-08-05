@@ -69,11 +69,37 @@ object PostgresConnection extends Logging with Configuration with Caching {
     )
   }
 
+  def getTcppingMeta(base: TCPPing): Option[TCPPingMeta] = {
+    getWithCache(
+      s"tcpping.${base.stream}", {
+        getOrInitSession()
+        import nz.net.wand.amp.analyser.connectors.PostgresSchema._
+        import nz.net.wand.amp.analyser.connectors.SquerylEntrypoint._
+
+        transaction(tcppingMeta.where(m => m.stream === base.stream).headOption)
+      }
+    )
+  }
+
+  def getHttpMeta(base: HTTP): Option[HTTPMeta] = {
+    getWithCache(
+      s"http.${base.stream}", {
+        getOrInitSession()
+        import nz.net.wand.amp.analyser.connectors.PostgresSchema._
+        import nz.net.wand.amp.analyser.connectors.SquerylEntrypoint._
+
+        transaction(httpMeta.where(m => m.stream === base.stream).headOption)
+      }
+    )
+  }
+
   def getMeta(base: Measurement): Option[MeasurementMeta] =
     base match {
       case x: ICMP       => getICMPMeta(x)
       case x: DNS        => getDNSMeta(x)
       case x: Traceroute => getTracerouteMeta(x)
+      case x: TCPPing    => getTcppingMeta(x)
+      case x: HTTP       => getHttpMeta(x)
       case _             => None
     }
 }
