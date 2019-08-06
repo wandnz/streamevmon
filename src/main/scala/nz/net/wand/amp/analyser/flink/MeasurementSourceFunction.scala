@@ -7,13 +7,14 @@ import org.apache.flink.streaming.api.functions.source.SourceFunction
 class MeasurementSourceFunction() extends InfluxSubscriptionSourceFunction[Measurement] {
 
   override protected def processLine(ctx: SourceFunction.SourceContext[Measurement],
-                                     line: String): Unit = {
-    if (line != null) {
-      val result = MeasurementFactory.createMeasurement(line)
-      result match {
-        case Some(x) => ctx.collectWithTimestamp(x, x.time.toEpochMilli)
-        case None    => logger.error(s"Entry failed to parse: $line")
-      }
+                                     line: String): Option[Measurement] = {
+    val result = MeasurementFactory.createMeasurement(line)
+    result match {
+      case Some(x) =>
+        ctx.collectWithTimestamp(x, x.time.toEpochMilli)
+        submitWatermark(ctx, x.time)
+      case None => logger.error(s"Entry failed to parse: $line")
     }
+    result
   }
 }

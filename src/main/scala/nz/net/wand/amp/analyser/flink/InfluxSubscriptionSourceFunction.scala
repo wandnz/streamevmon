@@ -1,23 +1,30 @@
 package nz.net.wand.amp.analyser.flink
 
 import nz.net.wand.amp.analyser.connectors.InfluxConnection
-import nz.net.wand.amp.analyser.Logging
+import nz.net.wand.amp.analyser.{Configuration, Logging}
 
 import java.io.{BufferedReader, InputStreamReader}
 import java.net.{ServerSocket, SocketTimeoutException}
+import java.time.Instant
 
 import org.apache.flink.streaming.api.functions.source.SourceFunction
+import org.apache.flink.streaming.api.watermark.Watermark
 
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 
-abstract class InfluxSubscriptionSourceFunction[T]() extends SourceFunction[T] with Logging {
+abstract class InfluxSubscriptionSourceFunction[T]()
+    extends SourceFunction[T]
+    with Logging
+    with Configuration {
 
   private[this] var isRunning = false
   private[this] var listener: Option[ServerSocket] = Option.empty
 
-  protected[this] def processLine(ctx: SourceFunction.SourceContext[T], line: String): Unit
+  val watermarkFrequency: Int = getConfigInt("watermarkFrequency").getOrElse(60)
+
+  protected[this] def processLine(ctx: SourceFunction.SourceContext[T], line: String): Option[T]
 
   override def run(ctx: SourceFunction.SourceContext[T]): Unit = {
     if (!startListener()) {
@@ -67,6 +74,16 @@ abstract class InfluxSubscriptionSourceFunction[T]() extends SourceFunction[T] w
     }
 
     logger.info("No longer listening")
+  }
+
+  var lastWatermark: Instant = Instant.EPOCH
+
+  protected[this] def submitWatermark(ctx: SourceFunction.SourceContext[T], time: Instant): Unit = {
+    if (java.time.Duration.between(lastWatermark, time).getSeconds > watermarkFrequency) {
+      val newWatermark = new Watermark(time.toEpochMilli)
+      ctx.emitWatermark(newWatermark)
+      lastWatermark = time
+    }
   }
 
   override def cancel(): Unit = {

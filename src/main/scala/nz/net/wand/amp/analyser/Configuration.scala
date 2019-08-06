@@ -10,6 +10,7 @@ trait Configuration {
   private[this] var _configPrefix = s"$staticPrefix"
   protected[this] def configPrefix: String = _configPrefix
   protected[this] def configPrefix_=(prefix: String): Unit = {
+    // TODO: This has issues if the config setting category doesn't exist
     if (prefix.isEmpty) {
       config = ConfigFactory.load().getConfig(staticPrefix)
       _configPrefix = staticPrefix
