@@ -181,15 +181,15 @@ class InfluxConnectionTest extends InfluxContainerSpec {
     Thread.sleep(20)
     Await.result(db.writeNative(SeedData.traceroute.subscriptionLine), Duration.Inf)
     println("Data sent.")
-    Thread.sleep(20)
+    Thread.sleep(200)
   }
 
   def sendDataAnd(
       afterSend: () => Any = () => Unit,
       withSend: () => Any = () => Unit
   ): Unit = {
-    val withSendFuture = Future(withSend())
     val sendDataFuture = Future(sendData())
+    val withSendFuture = Future(withSend())
 
     Await.result(sendDataFuture, Duration.Inf)
     afterSend()

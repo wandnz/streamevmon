@@ -13,7 +13,9 @@ abstract class MockSourceContext[T] extends SourceFunction.SourceContext[T] {
     unprocessedElements = unprocessedElements :+ element
   }
 
-  override def collectWithTimestamp(element: T, timestamp: Long): Unit = ???
+  override def collectWithTimestamp(element: T, timestamp: Long): Unit = {
+    unprocessedElements = unprocessedElements :+ element
+  }
 
   override def emitWatermark(mark: Watermark): Unit = ???
 

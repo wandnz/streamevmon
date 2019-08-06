@@ -1,3 +1,5 @@
 package nz.net.wand.amp.analyser.measurements
 
-abstract class MeasurementMeta {}
+abstract class MeasurementMeta {
+  val stream: Int
+}

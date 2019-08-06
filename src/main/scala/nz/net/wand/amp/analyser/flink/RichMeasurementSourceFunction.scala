@@ -11,7 +11,7 @@ class RichMeasurementSourceFunction() extends InfluxSubscriptionSourceFunction[R
     if (line != null) {
       val result = MeasurementFactory.createRichMeasurement(line)
       result match {
-        case Some(x) => ctx.collect(x)
+        case Some(x) => ctx.collectWithTimestamp(x, x.time.toEpochMilli)
         case None    => logger.error(s"Entry failed to parse: $line")
       }
     }

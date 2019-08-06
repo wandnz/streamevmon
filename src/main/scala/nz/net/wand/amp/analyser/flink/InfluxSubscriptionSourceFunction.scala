@@ -17,6 +17,8 @@ abstract class InfluxSubscriptionSourceFunction[T]() extends SourceFunction[T] w
   private[this] var isRunning = false
   private[this] var listener: Option[ServerSocket] = Option.empty
 
+  protected[this] def processLine(ctx: SourceFunction.SourceContext[T], line: String): Unit
+
   override def run(ctx: SourceFunction.SourceContext[T]): Unit = {
     if (!startListener()) {
       logger.error(s"Failed to start listener.")
@@ -33,13 +35,6 @@ abstract class InfluxSubscriptionSourceFunction[T]() extends SourceFunction[T] w
       InfluxConnection.disconnect()
     }
   }
-
-  override def cancel(): Unit = {
-    logger.info("Stopping listener...")
-    isRunning = false
-  }
-
-  protected[this] def processLine(ctx: SourceFunction.SourceContext[T], line: String): Unit
 
   private[this] def listen(ctx: SourceFunction.SourceContext[T]): Unit = {
     logger.info("Listening for subscribed events...")
@@ -72,6 +67,11 @@ abstract class InfluxSubscriptionSourceFunction[T]() extends SourceFunction[T] w
     }
 
     logger.info("No longer listening")
+  }
+
+  override def cancel(): Unit = {
+    logger.info("Stopping listener...")
+    isRunning = false
   }
 
   private[this] def startListener(): Boolean = {
