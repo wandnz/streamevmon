@@ -10,15 +10,20 @@ trait Configuration {
   private[this] var _configPrefix = s"$staticPrefix"
   protected[this] def configPrefix: String = _configPrefix
   protected[this] def configPrefix_=(prefix: String): Unit = {
-    // TODO: This has issues if the config setting category doesn't exist
     if (prefix.isEmpty) {
-      config = ConfigFactory.load().getConfig(staticPrefix)
+      config = ConfigFactory.load(staticPrefix)
       _configPrefix = staticPrefix
     }
     else {
-      val newPrefix = s"$staticPrefix.$prefix"
-      config = ConfigFactory.load().getConfig(newPrefix)
-      _configPrefix = newPrefix
+      _configPrefix = s"$staticPrefix.$prefix"
+      val topConfig = ConfigFactory.load()
+
+      if (topConfig.hasPath(_configPrefix)) {
+        config = topConfig.getConfig(_configPrefix)
+      }
+      else {
+        config = ConfigFactory.empty()
+      }
     }
   }
 

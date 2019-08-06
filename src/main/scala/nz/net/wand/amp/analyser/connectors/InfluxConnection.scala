@@ -9,6 +9,7 @@ import com.github.fsanaulla.chronicler.ahc.management.{AhcManagementClient, Infl
 import com.github.fsanaulla.chronicler.core.alias.{ErrorOr, ResponseCode}
 import com.github.fsanaulla.chronicler.core.enums.Destinations
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
+import org.apache.flink.configuration.IllegalConfigurationException
 
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -22,7 +23,11 @@ object InfluxConnection extends Logging with Configuration {
   var dbName: String = getConfigString("databaseName").getOrElse("nntsc")
   var rpName: String = getConfigString("retentionPolicyName").getOrElse("nntscdefault")
   var listenProtocol: String = getConfigString("listenProtocol").getOrElse("http")
-  var listenAddress: String = getConfigString("listenAddress").get
+
+  var listenAddress: String =
+    getConfigString("listenAddress").getOrElse {
+      throw new IllegalConfigurationException(s"You must specify $configPrefix.listenAddress")
+    }
   var listenPort: Int = getConfigInt("listenPort").getOrElse(8008)
   var listenBacklog: Int = getConfigInt("listenBacklog").getOrElse(5)
   var influxAddress: String = getConfigString("serverName").getOrElse("localhost")
