@@ -9,5 +9,6 @@ case class TCPPingMeta(
     destination: String,
     port: Int,
     family: String,
-    packet_size: String
+    @Column("packet_size")
+    packet_size_selection: String
 ) extends MeasurementMeta

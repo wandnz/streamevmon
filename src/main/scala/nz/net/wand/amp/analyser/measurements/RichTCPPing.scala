@@ -21,18 +21,18 @@ case class RichTCPPing(
   override def toString: String = {
     s"${TCPPing.table_name}," +
       s"stream=$stream " +
-      s"source=$source " +
-      s"destination=$destination " +
-      s"port=$port " +
-      s"family=$family " +
-      s"packet_size_selection=$packet_size_selection " +
-      s"icmperrors=$icmperrors " +
-      s"loss=$loss " +
-      s"lossrate=$lossrate " +
-      s"median=$median " +
-      s"packet_size=$packet_size " +
-      s"results=$results " +
-      s"rtts=$rtts " +
+      s"source=$source," +
+      s"destination=$destination," +
+      s"port=$port," +
+      s"family=$family," +
+      s"packet_size_selection=$packet_size_selection," +
+      s"icmperrors=${icmperrors}i," +
+      s"loss=${loss}i," +
+      s"lossrate=$lossrate," +
+      s"median=${median.map(x => s"${x}i").getOrElse("")}," +
+      s"packet_size=${packet_size}i," +
+      s"results=${results}i," +
+      s"rtts=${rtts.map(x => x.getOrElse("None")).mkString("\"[", ",", "]\"")} " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 }
@@ -50,7 +50,7 @@ object RichTCPPing extends RichMeasurementFactory {
                 m.destination,
                 m.port,
                 m.family,
-                m.packet_size,
+                m.packet_size_selection,
                 b.icmperrors,
                 b.loss,
                 b.lossrate,

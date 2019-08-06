@@ -8,5 +8,6 @@ case class ICMPMeta(
     source: String,
     destination: String,
     family: String,
-    packet_size: String
+    @Column("packet_size")
+    packet_size_selection: String
 ) extends MeasurementMeta

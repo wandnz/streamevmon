@@ -49,7 +49,7 @@ object SeedData extends Configuration {
       source = "amplet",
       destination = "wand.net.nz",
       family = "ipv4",
-      packet_size = "random"
+      packet_size_selection = "random"
     )
 
     val expectedRich = RichICMP(
@@ -228,7 +228,7 @@ object SeedData extends Configuration {
       source = "amplet",
       destination = "google.com",
       family = "ipv4",
-      packet_size = "60"
+      packet_size_selection = "60"
     )
 
     val expectedRich = RichTraceroute(
@@ -236,7 +236,7 @@ object SeedData extends Configuration {
       source = "amplet",
       destination = "google.com",
       family = "ipv4",
-      packet_size = "60",
+      packet_size_selection = "60",
       path_length = 12.0,
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1563764080000000000L))
     )

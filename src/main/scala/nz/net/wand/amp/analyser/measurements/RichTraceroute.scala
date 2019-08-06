@@ -7,18 +7,18 @@ case class RichTraceroute(
     source: String,
     destination: String,
     family: String,
-    packet_size: String,
+    packet_size_selection: String,
     path_length: Double,
     time: Instant
 ) extends RichMeasurement {
 
   override def toString: String = {
-    s"${Traceroute.table_name} " +
+    s"${Traceroute.table_name}," +
       s"stream=$stream " +
-      s"source=$source " +
-      s"destination=$destination " +
-      s"family=$family " +
-      s"packet_size=$packet_size " +
+      s"source=$source," +
+      s"destination=$destination," +
+      s"family=$family," +
+      s"packet_size_selection=$packet_size_selection," +
       s"path_length=$path_length " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
@@ -37,7 +37,7 @@ object RichTraceroute extends RichMeasurementFactory {
                 m.source,
                 m.destination,
                 m.family,
-                m.packet_size,
+                m.packet_size_selection,
                 b.path_length,
                 b.time
               ))

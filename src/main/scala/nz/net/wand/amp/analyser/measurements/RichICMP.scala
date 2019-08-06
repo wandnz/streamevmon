@@ -19,16 +19,16 @@ case class RichICMP(
   override def toString: String = {
     s"${ICMP.table_name}," +
       s"stream=$stream " +
-      s"source=$source " +
-      s"destination=$destination " +
-      s"family=$family " +
+      s"source=$source," +
+      s"destination=$destination," +
+      s"family=$family," +
       s"packet_size_selection=$packet_size_selection " +
-      s"loss=$loss " +
-      s"lossrate=$lossrate " +
-      s"median=$median " +
-      s"packet_size=$packet_size " +
-      s"results=$results " +
-      s"rtts=$rtts " +
+      s"loss=${loss}i," +
+      s"lossrate=$lossrate," +
+      s"median=${median.map(x => s"${x}i").getOrElse("")}," +
+      s"packet_size=${packet_size}i," +
+      s"results=${results}i," +
+      s"rtts=${rtts.map(x => x.getOrElse("None")).mkString("\"[", ",", "]\"")} " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 }
@@ -46,7 +46,7 @@ object RichICMP extends RichMeasurementFactory {
                 m.source,
                 m.destination,
                 m.family,
-                m.packet_size,
+                m.packet_size_selection,
                 b.loss,
                 b.lossrate,
                 b.median,

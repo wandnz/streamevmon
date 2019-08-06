@@ -22,19 +22,19 @@ case class RichHTTP(
   override def toString: String = {
     s"${HTTP.table_name}," +
       s"stream=$stream " +
-      s"source=$source " +
-      s"destination=$destination " +
-      s"max_connections=$max_connections " +
-      s"max_connections_per_server=$max_connections_per_server " +
-      s"max_persistent_connections_per_server=$max_persistent_connections_per_server " +
-      s"pipelining_max_requests=$pipelining_max_requests " +
-      s"persist=$persist " +
-      s"pipelining=$pipelining " +
-      s"caching=$caching " +
-      s"bytes=$bytes " +
-      s"duration=$duration " +
-      s"object_count=$object_count " +
-      s"server_count=$server_count " +
+      s"source=$source," +
+      s"destination=$destination," +
+      s"max_connections=$max_connections," +
+      s"max_connections_per_server=$max_connections_per_server," +
+      s"max_persistent_connections_per_server=$max_persistent_connections_per_server," +
+      s"pipelining_max_requests=$pipelining_max_requests," +
+      s"persist=$persist," +
+      s"pipelining=$pipelining," +
+      s"caching=$caching," +
+      s"bytes=${bytes}i," +
+      s"duration=${duration}i," +
+      s"object_count=${object_count}i," +
+      s"server_count=${server_count}i " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 }

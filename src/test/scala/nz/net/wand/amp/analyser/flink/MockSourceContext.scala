@@ -17,9 +17,9 @@ abstract class MockSourceContext[T] extends SourceFunction.SourceContext[T] {
     unprocessedElements = unprocessedElements :+ element
   }
 
-  override def emitWatermark(mark: Watermark): Unit = ???
+  override def emitWatermark(mark: Watermark): Unit = {}
 
-  override def markAsTemporarilyIdle(): Unit = ???
+  override def markAsTemporarilyIdle(): Unit = {}
 
   override def getCheckpointLock: AnyRef = ???
 
