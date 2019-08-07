@@ -10,7 +10,7 @@ import org.squeryl.adapters.PostgreSqlAdapter
 
 object PostgresConnection extends Logging with Configuration with Caching {
 
-  configPrefix = "postgres.dataSource"
+  configPrefix = "connectors.postgres.dataSource"
 
   val jdbcUrl: String = {
     val host = getConfigString("serverName").getOrElse("localhost")

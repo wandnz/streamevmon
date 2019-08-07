@@ -18,7 +18,7 @@ import scala.sys.ShutdownHookThread
 
 object InfluxConnection extends Logging with Configuration {
 
-  configPrefix = "influx.dataSource"
+  configPrefix = "connectors.influx.dataSource"
   var subscriptionName: String = getConfigString("subscriptionName").getOrElse("SubscriptionServer")
   var dbName: String = getConfigString("databaseName").getOrElse("nntsc")
   var rpName: String = getConfigString("retentionPolicyName").getOrElse("nntscdefault")

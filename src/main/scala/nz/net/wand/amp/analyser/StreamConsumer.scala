@@ -1,6 +1,7 @@
 package nz.net.wand.amp.analyser
 
-import nz.net.wand.amp.analyser.flink.RichMeasurementSourceFunction
+import nz.net.wand.amp.analyser.events.{Event, ThresholdEvent}
+import nz.net.wand.amp.analyser.flink.{InfluxSink, RichMeasurementSourceFunction}
 import nz.net.wand.amp.analyser.measurements.{RichICMP, RichMeasurement}
 
 import org.apache.flink.streaming.api.scala._
@@ -19,19 +20,26 @@ object StreamConsumer {
 
     val sourceFunction = new RichMeasurementSourceFunction
 
-    env
+    val eventStream = env
       .addSource(sourceFunction)
-      .windowAll(TumblingEventTimeWindows.of(Time.seconds(60)))
-      .process(new ProcessAllWindowFunction[RichMeasurement, RichMeasurement, TimeWindow] {
+      .windowAll(TumblingEventTimeWindows.of(Time.seconds(10)))
+      .process(new ProcessAllWindowFunction[RichMeasurement, Event, TimeWindow] {
         override def process(context: Context,
                              elements: Iterable[RichMeasurement],
-                             out: Collector[RichMeasurement]): Unit = {
+                             out: Collector[Event]): Unit = {
           elements
-            .filter(m => m.isInstanceOf[RichICMP])
-            .foreach(out.collect)
+            .filter(_.isInstanceOf[RichICMP])
+            .map(_.asInstanceOf[RichICMP])
+            .foreach(m => {
+              if (m.stream > 2) {
+                out.collect(ThresholdEvent(severity = 10, m.time))
+              }
+            })
         }
       })
-      .print()
+
+    eventStream.print()
+    eventStream.addSink(new InfluxSink())
 
     env.execute()
 

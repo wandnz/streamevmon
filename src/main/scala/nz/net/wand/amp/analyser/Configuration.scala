@@ -3,7 +3,7 @@ package nz.net.wand.amp.analyser
 import com.typesafe.config.{Config, ConfigFactory}
 
 trait Configuration {
-  @transient final private[this] lazy val staticPrefix: String = getClass.getPackage.getName
+  @transient final private[this] lazy val staticPrefix: String = "nz.net.wand.amp.analyser"
 
   @transient protected[this] var config: Config = ConfigFactory.load(staticPrefix)
 

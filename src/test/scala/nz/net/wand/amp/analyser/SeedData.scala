@@ -1,9 +1,14 @@
 package nz.net.wand.amp.analyser
 
+import nz.net.wand.amp.analyser.events._
 import nz.net.wand.amp.analyser.measurements._
 
 import java.time.Instant
 import java.util.concurrent.TimeUnit
+
+import org.apache.flink.streaming.connectors.influxdb.InfluxDBPoint
+
+import scala.collection.JavaConversions.mapAsJavaMap
 
 object SeedData extends Configuration {
 
@@ -248,41 +253,41 @@ object SeedData extends Configuration {
       "data_amp_tcpping,stream=9 icmperrors=0i,loss=0i,lossrate=0.0,median=189i,packet_size=64i,results=1i,rtts=\"[189]\" 1564713040000000000"
 
     val expected = TCPPing(
-      9,
-      0,
-      0,
-      0.0,
-      Some(189),
-      64,
-      1,
-      Seq(Some(189)),
-      Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713040000000000L))
+      stream = 9,
+      icmperrors = 0,
+      loss = 0,
+      lossrate = 0.0,
+      median = Some(189),
+      packet_size = 64,
+      results = 1,
+      rtts = Seq(Some(189)),
+      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713040000000000L))
     )
 
     val expectedMeta = TCPPingMeta(
-      9,
-      "amplet",
-      "wand.net.nz",
-      443,
-      "ipv4",
-      "64"
+      stream = 9,
+      source = "amplet",
+      destination = "wand.net.nz",
+      port = 443,
+      family = "ipv4",
+      packet_size_selection = "64"
     )
 
     val expectedRich = RichTCPPing(
-      9,
-      "amplet",
-      "wand.net.nz",
-      443,
-      "ipv4",
-      "64",
-      0,
-      0,
-      0.0,
-      Some(189),
-      64,
-      1,
-      Seq(Some(189)),
-      Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713040000000000L))
+      stream = 9,
+      source = "amplet",
+      destination = "wand.net.nz",
+      port = 443,
+      family = "ipv4",
+      packet_size_selection = "64",
+      icmperrors = 0,
+      loss = 0,
+      lossrate = 0.0,
+      median = Some(189),
+      packet_size = 64,
+      results = 1,
+      rtts = Seq(Some(189)),
+      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713040000000000L))
     )
   }
 
@@ -292,43 +297,61 @@ object SeedData extends Configuration {
       "data_amp_http,stream=17 bytes=62210i,duration=77i,object_count=8i,server_count=1i 1564713045000000000"
 
     val expected = HTTP(
-      17,
-      62210,
-      77,
-      8,
-      1,
-      Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L))
+      stream = 17,
+      bytes = 62210,
+      duration = 77,
+      object_count = 8,
+      server_count = 1,
+      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L))
     )
 
     val expectedMeta = HTTPMeta(
-      17,
-      "amplet",
-      "https://wand.net.nz/",
-      24,
-      8,
-      2,
-      4,
+      stream = 17,
+      source = "amplet",
+      destination = "https://wand.net.nz/",
+      max_connections = 24,
+      max_connections_per_server = 8,
+      max_persistent_connections_per_server = 2,
+      pipelining_max_requests = 4,
       persist = true,
       pipelining = false,
       caching = false
     )
 
     val expectedRich = RichHTTP(
-      17,
-      "amplet",
-      "https://wand.net.nz/",
-      24,
-      8,
-      2,
-      4,
+      stream = 17,
+      source = "amplet",
+      destination = "https://wand.net.nz/",
+      max_connections = 24,
+      max_connections_per_server = 8,
+      max_persistent_connections_per_server = 2,
+      pipelining_max_requests = 4,
       persist = true,
       pipelining = false,
       caching = false,
-      62210,
-      77,
-      8,
-      1,
-      Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L))
+      bytes = 62210,
+      duration = 77,
+      object_count = 8,
+      server_count = 1,
+      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L))
+    )
+  }
+
+  object thresholdEvent {
+
+    val event: ThresholdEvent = ThresholdEvent(
+      severity = 10,
+      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L))
+    )
+
+    val influxPoint: InfluxDBPoint = new InfluxDBPoint(
+      ThresholdEvent.measurement_name,
+      event.time.toEpochMilli,
+      mapAsJavaMap(Map()),
+      mapAsJavaMap(
+        Map[String, Object](
+          "severity" -> new Integer(event.severity)
+        ))
     )
   }
 }
