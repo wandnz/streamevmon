@@ -22,7 +22,7 @@ abstract class InfluxSubscriptionSourceFunction[T]()
   private[this] var isRunning = false
   private[this] var listener: Option[ServerSocket] = Option.empty
 
-  val watermarkFrequency: Int = getConfigInt("watermarkFrequency").getOrElse(60)
+  val watermarkFrequency: Int = getConfigInt("watermarkFrequency").getOrElse(1)
 
   protected[this] def processLine(ctx: SourceFunction.SourceContext[T], line: String): Option[T]
 

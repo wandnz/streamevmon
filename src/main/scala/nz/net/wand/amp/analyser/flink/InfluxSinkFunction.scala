@@ -9,7 +9,7 @@ import org.apache.flink.streaming.api.functions.sink.RichSinkFunction
 import org.apache.flink.streaming.connectors.influxdb.{InfluxDBConfig, InfluxDBSink}
 import org.influxdb.InfluxDBFactory
 
-class InfluxSink extends RichSinkFunction[Event] with Configuration with Logging {
+class InfluxSinkFunction extends RichSinkFunction[Event] with Configuration with Logging {
 
   configPrefix = "connectors.influx"
 

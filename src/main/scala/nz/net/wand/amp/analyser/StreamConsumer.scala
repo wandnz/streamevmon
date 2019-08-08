@@ -1,16 +1,11 @@
 package nz.net.wand.amp.analyser
 
-import nz.net.wand.amp.analyser.events.{Event, ThresholdEvent}
-import nz.net.wand.amp.analyser.flink.{InfluxSink, RichMeasurementSourceFunction}
-import nz.net.wand.amp.analyser.measurements.{RichICMP, RichMeasurement}
+import nz.net.wand.amp.analyser.flink._
 
 import org.apache.flink.streaming.api.scala._
-import org.apache.flink.streaming.api.scala.function.ProcessAllWindowFunction
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows
 import org.apache.flink.streaming.api.windowing.time.Time
-import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 import org.apache.flink.streaming.api.TimeCharacteristic
-import org.apache.flink.util.Collector
 
 object StreamConsumer {
 
@@ -19,27 +14,18 @@ object StreamConsumer {
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     val sourceFunction = new RichMeasurementSourceFunction
+    val processFunction = new SimpleThresholdProcessFunction
+    val sinkFunction = new InfluxSinkFunction
+    val windowSize = 1
 
-    val eventStream = env
-      .addSource(sourceFunction)
-      .windowAll(TumblingEventTimeWindows.of(Time.seconds(10)))
-      .process(new ProcessAllWindowFunction[RichMeasurement, Event, TimeWindow] {
-        override def process(context: Context,
-                             elements: Iterable[RichMeasurement],
-                             out: Collector[Event]): Unit = {
-          elements
-            .filter(_.isInstanceOf[RichICMP])
-            .map(_.asInstanceOf[RichICMP])
-            .foreach(m => {
-              if (m.stream > 2) {
-                out.collect(ThresholdEvent(severity = 10, m.time))
-              }
-            })
-        }
-      })
+    val measurementStream = env.addSource(sourceFunction)
+    val measurementWindows =
+      measurementStream.windowAll(TumblingEventTimeWindows.of(Time.seconds(windowSize)))
+    val eventStream = measurementWindows.process(processFunction)
+    eventStream.addSink(sinkFunction)
 
-    eventStream.print()
-    eventStream.addSink(new InfluxSink())
+    measurementStream.print("Measurements")
+    eventStream.print("Events")
 
     env.execute()
 
