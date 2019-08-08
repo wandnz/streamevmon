@@ -1,6 +1,7 @@
 package nz.net.wand.amp.analyser
 
 import nz.net.wand.amp.analyser.flink._
+import nz.net.wand.amp.analyser.measurements.RichMeasurement
 
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows
@@ -14,7 +15,7 @@ object StreamConsumer {
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     val sourceFunction = new RichMeasurementSourceFunction
-    val processFunction = new SimpleThresholdProcessFunction
+    val processFunction = new SimpleThresholdProcessFunction[RichMeasurement]
     val sinkFunction = new InfluxSinkFunction
     val windowSize = 1
 

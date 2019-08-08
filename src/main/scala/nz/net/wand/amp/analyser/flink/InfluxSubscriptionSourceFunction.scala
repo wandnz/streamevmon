@@ -6,13 +6,14 @@ import nz.net.wand.amp.analyser.connectors.InfluxConnection
 import java.io.{BufferedReader, InputStreamReader}
 import java.net.{ServerSocket, SocketTimeoutException}
 import java.time.Instant
+import java.util.concurrent.TimeUnit
 
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 import org.apache.flink.streaming.api.watermark.Watermark
 
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration._
 
 abstract class InfluxSubscriptionSourceFunction[T]()
     extends SourceFunction[T]
@@ -22,7 +23,10 @@ abstract class InfluxSubscriptionSourceFunction[T]()
   private[this] var isRunning = false
   private[this] var listener: Option[ServerSocket] = Option.empty
 
-  val watermarkFrequency: Int = getConfigInt("watermarkFrequency").getOrElse(1)
+  configPrefix = "flink"
+  val maxMeasurementLateness: Int = getConfigInt("maxMeasurementLateness").getOrElse(1)
+
+  @transient private[this] lazy val actorSystem = akka.actor.ActorSystem("watermarkEmitter")
 
   protected[this] def processLine(ctx: SourceFunction.SourceContext[T], line: String): Option[T]
 
@@ -76,14 +80,12 @@ abstract class InfluxSubscriptionSourceFunction[T]()
     logger.info("No longer listening")
   }
 
-  var lastWatermark: Instant = Instant.EPOCH
-
   protected[this] def submitWatermark(ctx: SourceFunction.SourceContext[T], time: Instant): Unit = {
-    if (java.time.Duration.between(lastWatermark, time).getSeconds > watermarkFrequency) {
-      val newWatermark = new Watermark(time.toEpochMilli)
-      ctx.emitWatermark(newWatermark)
-      lastWatermark = time
-    }
+    actorSystem.scheduler
+      .scheduleOnce(maxMeasurementLateness.seconds) {
+        ctx.emitWatermark(
+          new Watermark(time.toEpochMilli + TimeUnit.SECONDS.toMillis(maxMeasurementLateness)))
+      }
   }
 
   override def cancel(): Unit = {
