@@ -37,7 +37,8 @@ val cacheDependencies = Seq(
 )
 
 val logDependencies = Seq(
-  "org.slf4j" % "slf4j-simple" % "1.7.9"
+  "org.slf4j" % "slf4j-simple" % "1.7.9",
+  "com.typesafe.akka" %% "akka-actor" % "2.5.23"
 )
 
 val testDependencies = Seq(
@@ -70,3 +71,9 @@ Global / cancelable := true
 
 // exclude Scala library from assembly
 assembly / assemblyOption  := (assembly / assemblyOption).value.copy(includeScala = false)
+
+// exclude META-INF and use correct behaviour for duplicate library files
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", xs@_*) => MergeStrategy.discard
+  case x => MergeStrategy.first
+}

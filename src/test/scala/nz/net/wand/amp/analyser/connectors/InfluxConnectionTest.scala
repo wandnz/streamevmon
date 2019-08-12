@@ -12,9 +12,10 @@ import com.github.fsanaulla.chronicler.ahc.management.{AhcManagementClient, Infl
 import com.github.fsanaulla.chronicler.core.enums.Destinations
 import com.github.fsanaulla.chronicler.core.model.{Subscription, SubscriptionInfo}
 
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 class InfluxConnectionTest extends InfluxContainerSpec {
 
@@ -167,33 +168,33 @@ class InfluxConnectionTest extends InfluxContainerSpec {
   }
 
   var shouldSend = false
+  private[this] val ourClassLoader: ClassLoader = this.getClass.getClassLoader
+  private[this] lazy val actorSystem =
+    akka.actor.ActorSystem(getClass.getSimpleName, classLoader = Some(ourClassLoader))
 
-  def sendData(): Unit = {
+  def sendData(andThen: () => Any = () => Unit): Unit = {
     val db = InfluxIO(container.address, container.port, Some(container.credentials))
       .database(container.database)
 
-    Thread.sleep(20)
-
-    println("Sending data")
-    Await.result(db.writeNative(SeedData.icmp.subscriptionLine), Duration.Inf)
-    Thread.sleep(20)
-    Await.result(db.writeNative(SeedData.dns.subscriptionLine), Duration.Inf)
-    Thread.sleep(20)
-    Await.result(db.writeNative(SeedData.traceroute.subscriptionLine), Duration.Inf)
-    println("Data sent.")
-    Thread.sleep(200)
+    actorSystem.scheduler
+      .scheduleOnce(20 millis) {
+        println("Sending data")
+        Await.result(db.writeNative(SeedData.icmp.subscriptionLine), Duration.Inf)
+        Thread.sleep(20)
+        Await.result(db.writeNative(SeedData.dns.subscriptionLine), Duration.Inf)
+        Thread.sleep(20)
+        Await.result(db.writeNative(SeedData.traceroute.subscriptionLine), Duration.Inf)
+        println("Data sent.")
+        andThen()
+      }
   }
 
   def sendDataAnd(
       afterSend: () => Any = () => Unit,
       withSend: () => Any = () => Unit
   ): Unit = {
-    val sendDataFuture = Future(sendData())
-    val withSendFuture = Future(withSend())
-
-    Await.result(sendDataFuture, Duration.Inf)
-    afterSend()
-    Await.result(withSendFuture, Duration.Inf)
+    sendData(andThen = afterSend)
+    withSend()
   }
 
   "Subscription listener" should {

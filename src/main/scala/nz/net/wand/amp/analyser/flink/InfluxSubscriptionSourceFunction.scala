@@ -26,7 +26,12 @@ abstract class InfluxSubscriptionSourceFunction[T]()
   configPrefix = "flink"
   val maxMeasurementLateness: Int = getConfigInt("maxMeasurementLateness").getOrElse(1)
 
-  @transient private[this] lazy val actorSystem = akka.actor.ActorSystem("watermarkEmitter")
+  // We reuse the class loader for our ActorSystem to get reliable behaviour
+  // during tests in the sbt shell.
+  @transient private[this] val ourClassLoader: ClassLoader = this.getClass.getClassLoader
+
+  @transient private[this] lazy val actorSystem =
+    akka.actor.ActorSystem("watermarkEmitter", classLoader = Some(ourClassLoader))
 
   protected[this] def processLine(ctx: SourceFunction.SourceContext[T], line: String): Option[T]
 
