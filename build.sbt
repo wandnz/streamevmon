@@ -38,7 +38,7 @@ val cacheDependencies = Seq(
 
 val logDependencies = Seq(
   "org.slf4j" % "slf4j-simple" % "1.7.9",
-  "com.typesafe.akka" %% "akka-actor" % "2.5.23"
+  "com.typesafe.akka" %% "akka-actor" % "2.4.20"
 )
 
 val testDependencies = Seq(
