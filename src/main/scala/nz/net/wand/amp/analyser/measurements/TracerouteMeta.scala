@@ -2,6 +2,13 @@ package nz.net.wand.amp.analyser.measurements
 
 import org.squeryl.annotations.Column
 
+/** Represents the metadata associated with the scheduled test that an AMP DNS
+  * measurement is produced from.
+  *
+  * @see [[Traceroute]]
+  * @see [[RichTraceroute]]
+  * @see [[https://github.com/wanduow/amplet2/wiki/amp-trace]]
+  */
 case class TracerouteMeta(
     @Column("stream_id")
     stream: Int,

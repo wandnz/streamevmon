@@ -7,8 +7,18 @@ import org.apache.flink.streaming.api.scala.function.ProcessAllWindowFunction
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 import org.apache.flink.util.Collector
 
+/** Very basic example of threshold detection.
+  *
+  * Examines [[nz.net.wand.amp.analyser.measurements.RichICMP RichICMP]]
+  * objects, and emits events with a constant severity if the median value is
+  * greater than 1000.
+  *
+  * @tparam T This class can accept any type of Measurement, but only provides
+  *           output if the measurement is a RichICMP.
+  */
 class SimpleThresholdProcessFunction[T <: Measurement]
     extends ProcessAllWindowFunction[T, Event, TimeWindow] {
+
   override def process(context: Context, elements: Iterable[T], out: Collector[Event]): Unit = {
     elements
       .filter(_.isInstanceOf[RichICMP])

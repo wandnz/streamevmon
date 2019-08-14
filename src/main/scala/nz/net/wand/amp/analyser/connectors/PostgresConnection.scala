@@ -1,6 +1,6 @@
 package nz.net.wand.amp.analyser.connectors
 
-import nz.net.wand.amp.analyser.{Caching, Configuration, Logging}
+import nz.net.wand.amp.analyser.{Caching, Configuration}
 import nz.net.wand.amp.analyser.measurements._
 
 import java.sql.DriverManager
@@ -8,19 +8,32 @@ import java.sql.DriverManager
 import org.squeryl.{Session, SessionFactory}
 import org.squeryl.adapters.PostgreSqlAdapter
 
-object PostgresConnection extends Logging with Configuration with Caching {
+/** PostgreSQL interface which produces
+  * [[nz.net.wand.amp.analyser.measurements.MeasurementMeta MeasurementMeta]]
+  * objects.
+  *
+  * @see [[InfluxConnection]]
+  */
+object PostgresConnection extends Caching with Configuration {
 
   configPrefix = "connectors.postgres.dataSource"
 
-  val jdbcUrl: String = {
+  /** Connection string for PostgreSQL. */
+  private[this] val jdbcUrl: String = {
     val host = getConfigString("serverName").getOrElse("localhost")
     val port = getConfigString("portNumber").getOrElse("5432")
     val databaseName = getConfigString("databaseName").getOrElse("nntsc")
     s"jdbc:postgresql://$host:$port/$databaseName?loggerLevel=OFF"
   }
-  val username: String = getConfigString("user").getOrElse("cuz")
-  val password: String = getConfigString("password").getOrElse("")
 
+  /** The username that should be used to connect to PostgreSQL */
+  private[this] val username: String = getConfigString("user").getOrElse("cuz")
+
+  /** The password that should be used to connect to PostgreSQL */
+  private[this] val password: String = getConfigString("password").getOrElse("")
+
+  /** Ensures that there is an existing connection to PostgreSQL.
+    */
   private[this] def getOrInitSession(): Unit =
     SessionFactory.concreteFactory match {
       case Some(_) =>
@@ -33,7 +46,12 @@ object PostgresConnection extends Logging with Configuration with Caching {
           ))
     }
 
-  def getICMPMeta(base: ICMP): Option[ICMPMeta] = {
+  /** Gets the [[ICMPMeta metadata]] associated with a given [[ICMP]] measurement.
+    *
+    * @param base The measurement to gather metadata for.
+    * @return The [[ICMPMeta metadata]] if successful, otherwise None.
+    */
+  private[connectors] def getICMPMeta(base: ICMP): Option[ICMPMeta] = {
     getWithCache(
       s"icmp.${base.stream}", {
         getOrInitSession()
@@ -45,7 +63,12 @@ object PostgresConnection extends Logging with Configuration with Caching {
     )
   }
 
-  def getDNSMeta(base: DNS): Option[DNSMeta] = {
+  /** Gets the [[DNSMeta metadata]] associated with a given [[DNS]] measurement.
+    *
+    * @param base The measurement to gather metadata for.
+    * @return The [[DNSMeta metadata]] if successful, otherwise None.
+    */
+  private[connectors] def getDNSMeta(base: DNS): Option[DNSMeta] = {
     getWithCache(
       s"dns.${base.stream}", {
         getOrInitSession()
@@ -57,7 +80,12 @@ object PostgresConnection extends Logging with Configuration with Caching {
     )
   }
 
-  def getTracerouteMeta(base: Traceroute): Option[TracerouteMeta] = {
+  /** Gets the [[TracerouteMeta metadata]] associated with a given [[Traceroute]] measurement.
+    *
+    * @param base The measurement to gather metadata for.
+    * @return The [[TracerouteMeta metadata]] if successful, otherwise None.
+    */
+  private[connectors] def getTracerouteMeta(base: Traceroute): Option[TracerouteMeta] = {
     getWithCache(
       s"traceroute.${base.stream}", {
         getOrInitSession()
@@ -69,7 +97,12 @@ object PostgresConnection extends Logging with Configuration with Caching {
     )
   }
 
-  def getTcppingMeta(base: TCPPing): Option[TCPPingMeta] = {
+  /** Gets the [[TCPPingMeta metadata]] associated with a given [[TCPPing]] measurement.
+    *
+    * @param base The measurement to gather metadata for.
+    * @return The [[TCPPingMeta metadata]] if successful, otherwise None.
+    */
+  private[connectors] def getTcppingMeta(base: TCPPing): Option[TCPPingMeta] = {
     getWithCache(
       s"tcpping.${base.stream}", {
         getOrInitSession()
@@ -81,7 +114,12 @@ object PostgresConnection extends Logging with Configuration with Caching {
     )
   }
 
-  def getHttpMeta(base: HTTP): Option[HTTPMeta] = {
+  /** Gets the [[HTTPMeta metadata]] associated with a given [[HTTP]] measurement.
+    *
+    * @param base The measurement to gather metadata for.
+    * @return The [[HTTPMeta metadata]] if successful, otherwise None.
+    */
+  private[connectors] def getHttpMeta(base: HTTP): Option[HTTPMeta] = {
     getWithCache(
       s"http.${base.stream}", {
         getOrInitSession()
@@ -93,6 +131,11 @@ object PostgresConnection extends Logging with Configuration with Caching {
     )
   }
 
+  /** Gets the metadata associated with a given measurement.
+    *
+    * @param base The measurement to gather metadata for.
+    * @return The metadata if successful, otherwise None.
+    */
   def getMeta(base: Measurement): Option[MeasurementMeta] =
     base match {
       case x: ICMP       => getICMPMeta(x)

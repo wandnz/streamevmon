@@ -1,6 +1,6 @@
 package nz.net.wand.amp.analyser.connectors
 
-import nz.net.wand.amp.analyser.{PostgresContainerSpec, SeedData}
+import nz.net.wand.amp.analyser.SeedData
 
 import java.sql.DriverManager
 

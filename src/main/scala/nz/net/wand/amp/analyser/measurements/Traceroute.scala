@@ -3,6 +3,12 @@ package nz.net.wand.amp.analyser.measurements
 import java.time.{Instant, ZoneId}
 import java.util.concurrent.TimeUnit
 
+/** Represents an AMP Traceroute measurement.
+  *
+  * @see [[TracerouteMeta]]
+  * @see [[RichTraceroute]]
+  * @see [[https://github.com/wanduow/amplet2/wiki/amp-trace]]
+  */
 final case class Traceroute(
     stream: Int,
     path_length: Double,

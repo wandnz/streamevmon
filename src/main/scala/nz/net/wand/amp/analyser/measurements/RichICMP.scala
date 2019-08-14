@@ -2,6 +2,13 @@ package nz.net.wand.amp.analyser.measurements
 
 import java.time.{Instant, ZoneId}
 
+/** Represents an AMP ICMP measurement, as well as the metadata associated with
+  * the scheduled test that generated it.
+  *
+  * @see [[ICMP]]
+  * @see [[ICMPMeta]]
+  * @see [[https://github.com/wanduow/amplet2/wiki/amp-icmp]]
+  */
 case class RichICMP(
     stream: Int,
     source: String,

@@ -2,6 +2,13 @@ package nz.net.wand.amp.analyser.measurements
 
 import java.time.{Instant, ZoneId}
 
+/** Represents an AMP DNS measurement, as well as the metadata associated with
+  * the scheduled test that generated it.
+  *
+  * @see [[DNS]]
+  * @see [[DNSMeta]]
+  * @see [[https://github.com/wanduow/amplet2/wiki/amp-dns]]
+  */
 case class RichDNS(
     stream: Int,
     source: String,

@@ -1,6 +1,6 @@
 package nz.net.wand.amp.analyser.connectors
 
-import nz.net.wand.amp.analyser.{InfluxContainerSpec, SeedData}
+import nz.net.wand.amp.analyser.SeedData
 import nz.net.wand.amp.analyser.flink.{MeasurementSourceFunction, MockSourceContext}
 import nz.net.wand.amp.analyser.measurements.{Measurement, MeasurementFactory}
 

@@ -3,4 +3,12 @@
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
+  <component name="ScaladocSettings">
+    <option name="outputDir" value="$USER_HOME$/Scratch/stratus/flink-amp-analyser/out/docs" />
+    <option name="additionalFlags" value="-skip-packages sbt:com.softwaremill.sttp" />
+    <option name="maxHeapSize" value="" />
+    <option name="docTitle" value="Flink AMP Analyser documentation" />
+    <option name="verbose" value="false" />
+    <option name="openInBrowser" value="false" />
+  </component>
 </project>

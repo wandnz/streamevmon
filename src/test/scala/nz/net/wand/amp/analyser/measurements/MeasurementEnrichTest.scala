@@ -1,6 +1,7 @@
 package nz.net.wand.amp.analyser.measurements
 
-import nz.net.wand.amp.analyser.{PostgresContainerSpec, SeedData}
+import nz.net.wand.amp.analyser.SeedData
+import nz.net.wand.amp.analyser.connectors.PostgresContainerSpec
 
 class MeasurementEnrichTest extends PostgresContainerSpec {
   "Children of Measurement.enrich" should {

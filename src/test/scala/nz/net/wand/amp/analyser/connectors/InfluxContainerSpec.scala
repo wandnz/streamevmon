@@ -1,6 +1,6 @@
-package nz.net.wand.amp.analyser
+package nz.net.wand.amp.analyser.connectors
 
-import nz.net.wand.amp.analyser.connectors.InfluxConnection
+import nz.net.wand.amp.analyser.InfluxDBContainer
 
 import com.dimafeng.testcontainers.ForAllTestContainer
 import com.github.fsanaulla.chronicler.ahc.management.InfluxMng

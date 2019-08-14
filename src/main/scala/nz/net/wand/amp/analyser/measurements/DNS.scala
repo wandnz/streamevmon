@@ -3,6 +3,12 @@ package nz.net.wand.amp.analyser.measurements
 import java.time.{Instant, ZoneId}
 import java.util.concurrent.TimeUnit
 
+/** Represents an AMP DNS measurement.
+  *
+  * @see [[DNSMeta]]
+  * @see [[RichDNS]]
+  * @see [[https://github.com/wanduow/amplet2/wiki/amp-dns]]
+  */
 final case class DNS(
     stream: Int,
     flag_aa: Option[Boolean],

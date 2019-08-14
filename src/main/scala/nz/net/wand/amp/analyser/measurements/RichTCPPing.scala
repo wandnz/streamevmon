@@ -2,6 +2,13 @@ package nz.net.wand.amp.analyser.measurements
 
 import java.time.{Instant, ZoneId}
 
+/** Represents an AMP TCPPing measurement, as well as the metadata associated
+  * with the scheduled test that generated it.
+  *
+  * @see [[TCPPing]]
+  * @see [[TCPPingMeta]]
+  * @see [[https://github.com/wanduow/amplet2/wiki/amp-tcpping]]
+  */
 case class RichTCPPing(
     stream: Int,
     source: String,

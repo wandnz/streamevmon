@@ -3,6 +3,12 @@ package nz.net.wand.amp.analyser.measurements
 import java.time.{Instant, ZoneId}
 import java.util.concurrent.TimeUnit
 
+/** Represents an AMP HTTP measurement.
+  *
+  * @see [[HTTPMeta]]
+  * @see [[RichHTTP]]
+  * @see [[https://github.com/wanduow/amplet2/wiki/amp-http]]
+  */
 final case class HTTP(
     stream: Int,
     bytes: Int,

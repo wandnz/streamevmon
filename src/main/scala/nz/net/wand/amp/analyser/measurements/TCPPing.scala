@@ -3,6 +3,12 @@ package nz.net.wand.amp.analyser.measurements
 import java.time.{Instant, ZoneId}
 import java.util.concurrent.TimeUnit
 
+/** Represents an AMP TCPPing measurement.
+  *
+  * @see [[TCPPingMeta]]
+  * @see [[RichTCPPing]]
+  * @see [[https://github.com/wanduow/amplet2/wiki/amp-tcpping]]
+  */
 final case class TCPPing(
     stream: Int,
     icmperrors: Int,

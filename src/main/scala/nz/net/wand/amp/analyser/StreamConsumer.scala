@@ -8,6 +8,11 @@ import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindo
 import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.TimeCharacteristic
 
+/** Default entrypoint.
+  *
+  * Mainly used to create Flink pipelines during development, and should be
+  * expected to change often.
+  */
 object StreamConsumer {
 
   def main(args: Array[String]): Unit = {

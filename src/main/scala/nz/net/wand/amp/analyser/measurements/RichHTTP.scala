@@ -2,6 +2,13 @@ package nz.net.wand.amp.analyser.measurements
 
 import java.time.{Instant, ZoneId}
 
+/** Represents an AMP HTTP measurement, as well as the metadata associated with
+  * the scheduled test that generated it.
+  *
+  * @see [[HTTP]]
+  * @see [[HTTPMeta]]
+  * @see [[https://github.com/wanduow/amplet2/wiki/amp-http]]
+  */
 case class RichHTTP(
     stream: Int,
     source: String,

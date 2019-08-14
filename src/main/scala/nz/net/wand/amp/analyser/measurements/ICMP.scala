@@ -3,6 +3,12 @@ package nz.net.wand.amp.analyser.measurements
 import java.time.{Instant, ZoneId}
 import java.util.concurrent.TimeUnit
 
+/** Represents an AMP ICMP measurement.
+  *
+  * @see [[ICMPMeta]]
+  * @see [[RichICMP]]
+  * @see [[https://github.com/wanduow/amplet2/wiki/amp-icmp]]
+  */
 final case class ICMP(
     stream: Int,
     loss: Int,

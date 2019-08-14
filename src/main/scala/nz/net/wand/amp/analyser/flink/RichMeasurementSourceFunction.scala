@@ -4,6 +4,9 @@ import nz.net.wand.amp.analyser.measurements.{MeasurementFactory, RichMeasuremen
 
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 
+/** Receives [[nz.net.wand.amp.analyser.measurements.RichMeasurement RichMeasurement]]
+  * values from InfluxDB in a streaming fashion.
+  */
 class RichMeasurementSourceFunction() extends InfluxSubscriptionSourceFunction[RichMeasurement] {
 
   override protected def processLine(ctx: SourceFunction.SourceContext[RichMeasurement],

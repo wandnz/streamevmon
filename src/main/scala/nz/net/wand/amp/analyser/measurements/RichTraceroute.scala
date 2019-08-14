@@ -2,6 +2,13 @@ package nz.net.wand.amp.analyser.measurements
 
 import java.time.{Instant, ZoneId}
 
+/** Represents an AMP Traceroute measurement, as well as the metadata associated
+  * with the scheduled test that generated it.
+  *
+  * @see [[Traceroute]]
+  * @see [[TracerouteMeta]]
+  * @see [[https://github.com/wanduow/amplet2/wiki/amp-trace]]
+  */
 case class RichTraceroute(
     stream: Int,
     source: String,
