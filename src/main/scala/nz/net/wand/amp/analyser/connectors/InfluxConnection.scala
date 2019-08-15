@@ -189,8 +189,15 @@ object InfluxConnection extends Configuration with Logging {
               subscriptionRemoveHooks = subscriptionRemoveHooks :+
                 (subscriptionName,
                 sys.addShutdownHook {
-                  Await.result(dropSubscription(), Duration.Inf)
-                  logger.debug(s"Removed subscription $subscriptionName")
+                  try {
+                    Await.result(dropSubscription(), Duration.Inf)
+                    logger.debug(s"Removed subscription $subscriptionName")
+                  }
+                  catch {
+                    case ex@(_: Exception) =>
+                      logger.debug(
+                        s"Could not remove subscription $subscriptionName: ${ex.getMessage}")
+                  }
                 })
               logger.debug(s"Added subscription $subscriptionName at ${destinations.mkString(",")}")
               Future(Right(subscribeResult.right.get))

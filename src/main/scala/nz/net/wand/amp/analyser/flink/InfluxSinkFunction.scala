@@ -44,7 +44,7 @@ class InfluxSinkFunction extends RichSinkFunction[Event] with Configuration {
 
   configPrefix = "connectors.influx"
 
-  private[flink] var url: String = {
+  private[analyser] var url: String = {
     val address = getConfigString("sink.serverName").getOrElse {
       getConfigString("dataSource.serverName").getOrElse {
         throw new IllegalConfigurationException(
@@ -59,14 +59,15 @@ class InfluxSinkFunction extends RichSinkFunction[Event] with Configuration {
     s"http://$address:$port"
   }
 
-  private[flink] var username: String = getConfigString("sink.user").getOrElse {
+  private[analyser] var username: String = getConfigString("sink.user").getOrElse {
     getConfigString("dataSource.user").getOrElse("cuz")
   }
 
-  private[flink] var password: String = getConfigString("sink.password").getOrElse {
+  private[analyser] var password: String = getConfigString("sink.password").getOrElse {
     getConfigString("dataSource.user").getOrElse("")
   }
-  private[flink] var database: String = getConfigString("sink.databaseName").getOrElse("analyser")
+  private[analyser] var database: String =
+    getConfigString("sink.databaseName").getOrElse("analyser")
 
   private[this] lazy val sink: InfluxDBSink = new InfluxDBSink(
     InfluxDBConfig

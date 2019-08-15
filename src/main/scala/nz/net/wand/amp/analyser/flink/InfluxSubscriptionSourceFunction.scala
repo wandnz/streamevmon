@@ -40,15 +40,17 @@ import scala.concurrent.duration._
   * @see [[RichMeasurementSourceFunction]]
   */
 abstract class InfluxSubscriptionSourceFunction[T]
-    extends SourceFunction[T]
-    with Logging
-    with Configuration {
+  extends StoppableSourceFunction[T]
+          with Logging
+          with Configuration {
 
-  private[this] var isRunning = false
+  @volatile
+  @transient private[this] var isRunning = false
+  
   private[this] var listener: Option[ServerSocket] = Option.empty
 
   configPrefix = "flink"
-  private[this] val maxLateness: Int = getConfigInt("maxLateness").getOrElse(1)
+  @transient private[this] val maxLateness: Int = getConfigInt("maxLateness").getOrElse(1)
 
   // We reuse the class loader for our ActorSystem to get reliable behaviour
   // during tests in the sbt shell.
@@ -98,7 +100,8 @@ abstract class InfluxSubscriptionSourceFunction[T]
     logger.info("Listening for subscribed events...")
 
     isRunning = true
-    while (isRunning) {
+
+    while (isRunning && !shouldShutdown) {
       try {
         listener match {
           case Some(serverSock) =>

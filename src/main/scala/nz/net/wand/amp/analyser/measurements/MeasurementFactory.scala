@@ -61,6 +61,7 @@ trait MeasurementFactory {
   * @see [[MeasurementFactory]]
   */
 trait RichMeasurementFactory {
+
   /** Creates a RichMeasurement by mixing a Measurement with its associated
     * metadata.
     *

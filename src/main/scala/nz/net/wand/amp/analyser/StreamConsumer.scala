@@ -34,7 +34,5 @@ object StreamConsumer {
     eventStream.print("Events")
 
     env.execute()
-
-    sys.exit()
   }
 }
