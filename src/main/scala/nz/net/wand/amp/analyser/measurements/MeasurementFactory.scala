@@ -19,6 +19,7 @@ trait MeasurementFactory {
     *
     * @param fields The group of 'key=value' pairs.
     * @param name   The key to find.
+    *
     * @return The value if found, or None. If several are found, returns the first.
     */
   protected[this] def getNamedField(fields: Iterable[String], name: String): Option[String] = {
@@ -31,7 +32,9 @@ trait MeasurementFactory {
   /** Creates a Measurement from an InfluxDB subscription result, in Line Protocol format.
     *
     * @param subscriptionLine The line received from the subscription.
+    *
     * @return The Measurement object, or None if the creation failed.
+    *
     * @see [[https://docs.influxdata.com/influxdb/v1.7/write_protocols/line_protocol_reference/]]
     */
   private[measurements] def create(subscriptionLine: String): Option[Measurement]
@@ -40,6 +43,7 @@ trait MeasurementFactory {
     * appropriate datatype.
     *
     * @param in The value of the "rtts" field.
+    *
     * @return A sequence of round-trip times.
     */
   protected[this] def getRtts(in: String): Seq[Option[Int]] = {
@@ -67,6 +71,7 @@ trait RichMeasurementFactory {
     *
     * @param base The measurement.
     * @param meta The metadata associated with the measurement.
+    *
     * @return The result if successful, or None.
     */
   private[measurements] def create(base: Measurement,
@@ -84,6 +89,7 @@ object MeasurementFactory {
   /** Creates a Measurement from a string in InfluxDB Line Protocol format.
     *
     * @param line The string describing the measurement.
+    *
     * @return The measurement if successful, or None.
     */
   def createMeasurement(line: String): Option[Measurement] = {
@@ -100,6 +106,7 @@ object MeasurementFactory {
   /** Enriches a measurement.
     *
     * @param base The Measurement to enrich.
+    *
     * @return The RichMeasurement if enrichment was successful, otherwise None.
     */
   def enrichMeasurement(base: Measurement): Option[RichMeasurement] = {
@@ -120,6 +127,7 @@ object MeasurementFactory {
   /** Creates a RichMeasurement directly from a string in InfluxDB Line Protocol format.
     *
     * @param line The string describing the measurement.
+    *
     * @return The RichMeasurement if both measurement creation and enrichment
     *         were successful, otherwise None.
     */

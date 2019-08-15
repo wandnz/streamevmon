@@ -47,6 +47,7 @@ trait Caching {
     *               result. This function provides no key uniqueness guarantee.
     * @param method The method to obtain a cacheable result from.
     * @tparam T The return type of `method`.
+    *
     * @return The result of `method`, regardless of whether it was
     *         obtained from the cache or from a new execution of `method`.
     */

@@ -59,6 +59,7 @@ trait Configuration {
     *
     * @param name The key containing a desired integer-type configuration option.
     *             This value is appended to the static prefix and the custom prefix.
+    *
     * @return The option value, if present, or `None`
     */
   protected[this] def getConfigInt(name: String): Option[Int] = {
@@ -80,6 +81,7 @@ trait Configuration {
     *
     * @param name The key containing a desired string-type configuration option.
     *             This value is appended to the static prefix and the custom prefix.
+    *
     * @return The option value, if present, or `None`
     */
   protected[this] def getConfigString(name: String): Option[String] = {

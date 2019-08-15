@@ -46,10 +46,14 @@ object PostgresConnection extends Caching with Configuration {
           ))
     }
 
-  /** Gets the [[ICMPMeta metadata]] associated with a given [[ICMP]] measurement.
+  /** Gets the [[nz.net.wand.amp.analyser.measurements.ICMPMeta metadata]]
+    * associated with a given [[nz.net.wand.amp.analyser.measurements.ICMP ICMP]]
+    * measurement.
     *
     * @param base The measurement to gather metadata for.
-    * @return The [[ICMPMeta metadata]] if successful, otherwise None.
+    *
+    * @return The [[nz.net.wand.amp.analyser.measurements.ICMPMeta metadata]] if
+    *         successful, otherwise None.
     */
   private[connectors] def getICMPMeta(base: ICMP): Option[ICMPMeta] = {
     getWithCache(
@@ -63,12 +67,16 @@ object PostgresConnection extends Caching with Configuration {
     )
   }
 
-  /** Gets the [[DNSMeta metadata]] associated with a given [[DNS]] measurement.
+  /** Gets the [[nz.net.wand.amp.analyser.measurements.DNSMeta metadata]]
+    * associated with a given [[nz.net.wand.amp.analyser.measurements.DNS DNS]]
+    * measurement.
     *
     * @param base The measurement to gather metadata for.
-    * @return The [[DNSMeta metadata]] if successful, otherwise None.
+    *
+    * @return The [[nz.net.wand.amp.analyser.measurements.DNSMeta metadata]] if
+    *         successful, otherwise None.
     */
-  private[connectors] def getDNSMeta(base: DNS): Option[DNSMeta] = {
+  def getDNSMeta(base: DNS): Option[DNSMeta] = {
     getWithCache(
       s"dns.${base.stream}", {
         getOrInitSession()
@@ -80,10 +88,14 @@ object PostgresConnection extends Caching with Configuration {
     )
   }
 
-  /** Gets the [[TracerouteMeta metadata]] associated with a given [[Traceroute]] measurement.
+  /** Gets the [[nz.net.wand.amp.analyser.measurements.TracerouteMeta metadata]]
+    * associated with a given [[nz.net.wand.amp.analyser.measurements.Traceroute Traceroute]]
+    * measurement.
     *
     * @param base The measurement to gather metadata for.
-    * @return The [[TracerouteMeta metadata]] if successful, otherwise None.
+    *
+    * @return The [[nz.net.wand.amp.analyser.measurements.TracerouteMeta metadata]]
+    *         if successful, otherwise None.
     */
   private[connectors] def getTracerouteMeta(base: Traceroute): Option[TracerouteMeta] = {
     getWithCache(
@@ -97,10 +109,14 @@ object PostgresConnection extends Caching with Configuration {
     )
   }
 
-  /** Gets the [[TCPPingMeta metadata]] associated with a given [[TCPPing]] measurement.
+  /** Gets the [[nz.net.wand.amp.analyser.measurements.TCPPingMeta metadata]]
+    * associated with a given [[nz.net.wand.amp.analyser.measurements.TCPPing TCPPing]]
+    * measurement.
     *
     * @param base The measurement to gather metadata for.
-    * @return The [[TCPPingMeta metadata]] if successful, otherwise None.
+    *
+    * @return The [[nz.net.wand.amp.analyser.measurements.TCPPingMeta metadata]]
+    *         if successful, otherwise None.
     */
   private[connectors] def getTcppingMeta(base: TCPPing): Option[TCPPingMeta] = {
     getWithCache(
@@ -114,10 +130,14 @@ object PostgresConnection extends Caching with Configuration {
     )
   }
 
-  /** Gets the [[HTTPMeta metadata]] associated with a given [[HTTP]] measurement.
+  /** Gets the [[nz.net.wand.amp.analyser.measurements.HTTPMeta metadata]]
+    * associated with a given [[nz.net.wand.amp.analyser.measurements.HTTP HTTP]]
+    * measurement.
     *
     * @param base The measurement to gather metadata for.
-    * @return The [[HTTPMeta metadata]] if successful, otherwise None.
+    *
+    * @return The [[nz.net.wand.amp.analyser.measurements.HTTPMeta metadata]] if
+    *         successful, otherwise None.
     */
   private[connectors] def getHttpMeta(base: HTTP): Option[HTTPMeta] = {
     getWithCache(
@@ -134,6 +154,7 @@ object PostgresConnection extends Caching with Configuration {
   /** Gets the metadata associated with a given measurement.
     *
     * @param base The measurement to gather metadata for.
+    *
     * @return The metadata if successful, otherwise None.
     */
   def getMeta(base: Measurement): Option[MeasurementMeta] =

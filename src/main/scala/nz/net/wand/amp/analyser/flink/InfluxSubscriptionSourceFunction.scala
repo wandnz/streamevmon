@@ -36,6 +36,7 @@ import scala.concurrent.duration._
   * Default 1.
   *
   * @tparam T The type used to represent the data received.
+  *
   * @see [[MeasurementSourceFunction]]
   * @see [[RichMeasurementSourceFunction]]
   */
@@ -64,6 +65,7 @@ abstract class InfluxSubscriptionSourceFunction[T]
     *
     * @param ctx  The SourceContext associated with the current execution.
     * @param line The line received.
+    *
     * @return The object representing the data received.
     */
   protected[this] def processLine(ctx: SourceFunction.SourceContext[T], line: String): Option[T]

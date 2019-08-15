@@ -259,6 +259,7 @@ object InfluxConnection extends Configuration with Logging {
   /** Checks an InfluxDB connection.
     *
     * @param influx The InfluxDB connection to check.
+    *
     * @return Whether the connection can ping InfluxDB.
     */
   private[this] def checkConnection(influx: AhcManagementClient): Boolean = {
