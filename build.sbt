@@ -69,6 +69,8 @@ Compile / run := Defaults.runTask(Compile / run / fullClasspath,
 Compile / run / fork := true
 Global / cancelable := true
 
+fork := true
+
 // exclude Scala library from assembly
 assembly / assemblyOption  := (assembly / assemblyOption).value.copy(includeScala = false)
 
