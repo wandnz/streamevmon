@@ -46,7 +46,7 @@ abstract class InfluxSubscriptionSourceFunction[T]
 
   @volatile
   @transient private[this] var isRunning = false
-  
+
   private[this] var listener: Option[ServerSocket] = Option.empty
 
   configPrefix = "flink"

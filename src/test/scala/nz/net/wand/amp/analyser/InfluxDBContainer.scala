@@ -14,7 +14,9 @@ class InfluxDBContainer(dockerImageNameOverride: Option[String] = None)
   val username = "testUser"
   val password = "testPassword"
   val database = "testDatabase"
-  val retentionPolicy = "testRP"
+  // We are forced to stick with the default RP since bahir-influxdb does not
+  // support sinking to a custom one.
+  val retentionPolicy = "autogen"
 
   override val container: OTCContainer = dockerImageNameOverride match {
 

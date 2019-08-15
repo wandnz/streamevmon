@@ -135,7 +135,7 @@ object SeedData extends Configuration {
     )
 
     val subscriptionLine =
-      "data_amp_dns,stream=1 flag_aa=False,flag_ad=False,flag_cd=False,flag_qr=True,flag_ra=True,flag_rd=False,flag_tc=False,lossrate=0.0,opcode=0i,query_len=40i,rcode=0i,requests=1i,response_size=68i,rtt=35799i,total_additional=1i,total_answer=1i,total_authority=0i,ttl=0i 1563761810000000000"
+      "data_amp_dns,stream=1 flag_aa=False,flag_ad=False,flag_cd=False,flag_qr=True,flag_ra=True,flag_rd=False,flag_tc=False,lossrate=0.0,opcode=0i,query_len=40i,rcode=0i,requests=1i,response_size=68i,rtt=35799i,total_additional=1i,total_answer=1i,total_authority=0i,ttl=0i 1563761841000000000"
 
     val expected = DNS(
       stream = 1,
@@ -157,7 +157,7 @@ object SeedData extends Configuration {
       total_answer = Some(1),
       total_authority = Some(0),
       ttl = Some(0),
-      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1563761810000000000L))
+      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1563761841000000000L))
     )
 
     val expectedMeta = DNSMeta(
@@ -206,7 +206,7 @@ object SeedData extends Configuration {
       total_answer = Some(1),
       total_authority = Some(0),
       ttl = Some(0),
-      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1563761810000000000L))
+      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1563761841000000000L))
     )
   }
 
@@ -220,12 +220,12 @@ object SeedData extends Configuration {
     )
 
     val subscriptionLine =
-      "data_amp_traceroute_pathlen,stream=5 path_length=12.0 1563764080000000000"
+      "data_amp_traceroute_pathlen,stream=5 path_length=12.0 1563761842000000000"
 
     val expected = Traceroute(
       stream = 5,
       path_length = 12.0,
-      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1563764080000000000L))
+      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1563761842000000000L))
     )
 
     val expectedMeta = TracerouteMeta(
@@ -243,7 +243,7 @@ object SeedData extends Configuration {
       family = "ipv4",
       packet_size_selection = "60",
       path_length = 12.0,
-      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1563764080000000000L))
+      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1563761842000000000L))
     )
   }
 
