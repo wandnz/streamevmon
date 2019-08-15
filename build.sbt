@@ -74,6 +74,6 @@ assembly / assemblyOption  := (assembly / assemblyOption).value.copy(includeScal
 
 // exclude META-INF and use correct behaviour for duplicate library files
 assemblyMergeStrategy in assembly := {
-  case PathList("META-INF", xs@_*) => MergeStrategy.discard
-  case x => MergeStrategy.first
+  case PathList("META-INF", _@_*) => MergeStrategy.discard
+  case _ => MergeStrategy.first
 }
