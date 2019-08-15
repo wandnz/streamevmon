@@ -82,8 +82,7 @@ object InfluxConnection extends Configuration with Logging {
       throw new IllegalConfigurationException(s"You must specify $configPrefix.listenAddress")
     }
 
-  // TODO: This should default to an automatically selected port.
-  private[connectors] var listenPort: Int = getConfigInt("listenPort").getOrElse(8008)
+  private[connectors] var listenPort: Option[Int] = getConfigInt("listenPort")
 
   /** The requested maximum length of the queue of incoming connections
     */
@@ -102,11 +101,13 @@ object InfluxConnection extends Configuration with Logging {
   /** The password that should be used to connect to InfluxDB. */
   private[connectors] var influxPassword: String = getConfigString("password").getOrElse("")
 
+  private[this] var obtainedPort: Int = 0
+
   /** The value of the DESTINATIONS field of the subscription that is created
     * in InfluxDB.
     */
   private[connectors] def destinations: Seq[String] =
-    Seq(s"$listenProtocol://$listenAddress:$listenPort")
+    Seq(s"$listenProtocol://$listenAddress:$obtainedPort")
 
   private[connectors] def listenInet: InetAddress = InetAddress.getByName(listenAddress)
 
@@ -132,6 +133,37 @@ object InfluxConnection extends Configuration with Logging {
     influx = None
   }
 
+  /** Gets a new ServerSocket with the requested configuration. If the desired
+    * port cannot be bound, tries again with an ephemeral port.
+    *
+    * @return The ServerSocket if successful, or None.
+    */
+  private[this] def getServerSocket: Option[ServerSocket] = {
+    val port = listenPort.getOrElse(8008)
+    // Try get a socket with the specified or default port
+    try {
+      val r = new ServerSocket(port, listenBacklog, listenInet)
+      r.setSoTimeout(100)
+      obtainedPort = r.getLocalPort
+      Some(r)
+    }
+    // If the port couldn't be bound, try with an ephemeral port
+    catch {
+      case _: IOException =>
+        try {
+          val r = new ServerSocket(0, listenBacklog, listenInet)
+          r.setSoTimeout(100)
+          obtainedPort = r.getLocalPort
+          Some(r)
+        }
+        // If we still can't manage, give up.
+        catch {
+          case _: Exception => None
+        }
+      case _: Exception => None
+    }
+  }
+
   /** Starts a listener corresponding to a new InfluxDB subscription.
     *
     * Should be closed with [[stopSubscriptionListener]].
@@ -140,22 +172,17 @@ object InfluxConnection extends Configuration with Logging {
     *         socket could be created, otherwise None.
     */
   def getSubscriptionListener: Option[ServerSocket] = {
-    try {
-      val ssock = new ServerSocket(listenPort, listenBacklog, listenInet)
-      ssock.setSoTimeout(100)
-
-      val addOrUpdateResult = addOrUpdateSubscription().map {
-        case Right(_) => Some(ssock)
-        case Left(ex) =>
-          logger.error("Error starting listener: " + ex)
-          None
-      }
-      Await.result(addOrUpdateResult, Duration.Inf)
-    } catch {
-      case ex @ (_: ConnectException | _: SecurityException | _: IOException |
-          _: IllegalArgumentException) =>
-        logger.error("Error starting listener: " + ex)
-        None
+    val ssock = getServerSocket
+    ssock match {
+      case None => None
+      case Some(x) =>
+        val addOrUpdateResult = addOrUpdateSubscription().map {
+          case Right(_) => Some(x)
+          case Left(ex) =>
+            logger.error("Error starting listener: " + ex)
+            None
+        }
+        Await.result(addOrUpdateResult, Duration.Inf)
     }
   }
 
