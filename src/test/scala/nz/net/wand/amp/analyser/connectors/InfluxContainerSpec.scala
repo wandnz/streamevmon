@@ -1,6 +1,5 @@
 package nz.net.wand.amp.analyser.connectors
 
-import nz.net.wand.amp.analyser.InfluxDBContainer
 import nz.net.wand.amp.analyser.flink.InfluxSinkFunction
 
 import com.dimafeng.testcontainers.ForAllTestContainer

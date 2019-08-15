@@ -54,7 +54,6 @@ class InfluxConnectionTest extends InfluxContainerSpec {
   "InfluxDB container" should {
 
     "successfully ping" in {
-
       val influx =
         InfluxMng(container.address, container.port, Some(container.credentials))
 
@@ -107,7 +106,6 @@ class InfluxConnectionTest extends InfluxContainerSpec {
   }
 
   "InfluxConnection" should {
-
     def getExpectedSubscriptionInfo: SubscriptionInfo = {
       SubscriptionInfo(InfluxConnection.dbName,
                        Array(
@@ -120,7 +118,6 @@ class InfluxConnectionTest extends InfluxContainerSpec {
     }
 
     "add a subscription" in {
-
       InfluxConnection.subscriptionName = "addRemove"
 
       val expected = getExpectedSubscriptionInfo
@@ -131,7 +128,6 @@ class InfluxConnectionTest extends InfluxContainerSpec {
     }
 
     "remove a subscription" in {
-
       val expected = getExpectedSubscriptionInfo
 
       checkSubscription(InfluxConnection.influx.get, expected, checkPresent = true)
@@ -142,7 +138,6 @@ class InfluxConnectionTest extends InfluxContainerSpec {
     }
 
     "clobber an existing subscription" in {
-
       InfluxConnection.subscriptionName = "clobber"
 
       val expected = getExpectedSubscriptionInfo

@@ -1,4 +1,4 @@
-package nz.net.wand.amp.analyser
+package nz.net.wand.amp.analyser.connectors
 
 import com.dimafeng.testcontainers.SingleContainer
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
@@ -49,7 +49,6 @@ class InfluxDBContainer(dockerImageNameOverride: Option[String] = None)
 }
 
 object InfluxDBContainer {
-
   def apply(dockerImageNameOverride: String = null): InfluxDBContainer =
     new InfluxDBContainer(Option(dockerImageNameOverride))
 }

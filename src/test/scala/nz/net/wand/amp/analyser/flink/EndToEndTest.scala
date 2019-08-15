@@ -1,11 +1,9 @@
-package nz.net.wand.amp.analyser.connectors
+package nz.net.wand.amp.analyser.flink
 
 import nz.net.wand.amp.analyser.SeedData
+import nz.net.wand.amp.analyser.connectors.InfluxContainerSpec
 import nz.net.wand.amp.analyser.events.{Event, ThresholdEvent}
-import nz.net.wand.amp.analyser.flink.MeasurementSourceFunction
 import nz.net.wand.amp.analyser.measurements.Measurement
-
-import java.time.temporal.ChronoUnit
 
 import com.github.fsanaulla.chronicler.ahc.io.InfluxIO
 import jawn.ast.{JArray, JNum, JString}
@@ -37,7 +35,7 @@ class EndToEndTest extends InfluxContainerSpec {
       )),
     JArray(
       Array(
-        JString(SeedData.dns.expected.time.truncatedTo(ChronoUnit.SECONDS).toString),
+        JString(SeedData.dns.expected.time.toString),
         JNum(5),
         JString("1")
       )),

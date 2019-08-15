@@ -55,7 +55,7 @@ object PostgresConnection extends Caching with Configuration {
     * @return The [[nz.net.wand.amp.analyser.measurements.ICMPMeta metadata]] if
     *         successful, otherwise None.
     */
-  private[connectors] def getICMPMeta(base: ICMP): Option[ICMPMeta] = {
+  def getICMPMeta(base: ICMP): Option[ICMPMeta] = {
     getWithCache(
       s"icmp.${base.stream}", {
         getOrInitSession()
@@ -97,7 +97,7 @@ object PostgresConnection extends Caching with Configuration {
     * @return The [[nz.net.wand.amp.analyser.measurements.TracerouteMeta metadata]]
     *         if successful, otherwise None.
     */
-  private[connectors] def getTracerouteMeta(base: Traceroute): Option[TracerouteMeta] = {
+  def getTracerouteMeta(base: Traceroute): Option[TracerouteMeta] = {
     getWithCache(
       s"traceroute.${base.stream}", {
         getOrInitSession()
@@ -118,7 +118,7 @@ object PostgresConnection extends Caching with Configuration {
     * @return The [[nz.net.wand.amp.analyser.measurements.TCPPingMeta metadata]]
     *         if successful, otherwise None.
     */
-  private[connectors] def getTcppingMeta(base: TCPPing): Option[TCPPingMeta] = {
+  def getTcppingMeta(base: TCPPing): Option[TCPPingMeta] = {
     getWithCache(
       s"tcpping.${base.stream}", {
         getOrInitSession()
@@ -139,7 +139,7 @@ object PostgresConnection extends Caching with Configuration {
     * @return The [[nz.net.wand.amp.analyser.measurements.HTTPMeta metadata]] if
     *         successful, otherwise None.
     */
-  private[connectors] def getHttpMeta(base: HTTP): Option[HTTPMeta] = {
+  def getHttpMeta(base: HTTP): Option[HTTPMeta] = {
     getWithCache(
       s"http.${base.stream}", {
         getOrInitSession()

@@ -1,7 +1,7 @@
-package nz.net.wand.amp.analyser.connectors
+package nz.net.wand.amp.analyser.measurements
 
 import nz.net.wand.amp.analyser._
-import nz.net.wand.amp.analyser.measurements._
+import nz.net.wand.amp.analyser.connectors.{PostgresConnection, PostgresContainerSpec}
 
 class MeasurementMetaCreateTest extends PostgresContainerSpec {
   "PostgresConnection" should {
