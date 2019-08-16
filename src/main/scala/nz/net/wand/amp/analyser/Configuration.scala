@@ -1,6 +1,6 @@
 package nz.net.wand.amp.analyser
 
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.{Config, ConfigFactory, ConfigRenderOptions}
 
 /** Allows accessing centralised configuration of the program's behaviour.
   *
@@ -23,8 +23,6 @@ import com.typesafe.config.{Config, ConfigFactory}
 trait Configuration {
   @transient final private[this] lazy val staticPrefix: String = "nz.net.wand.amp.analyser"
 
-  @transient private[this] var config: Config = ConfigFactory.load(staticPrefix)
-
   private[this] var _configPrefix = s"$staticPrefix"
 
   /** Gets the fully qualified config prefix.
@@ -39,19 +37,10 @@ trait Configuration {
     */
   protected[this] def configPrefix_=(prefix: String): Unit = {
     if (prefix.isEmpty) {
-      config = ConfigFactory.load(staticPrefix)
       _configPrefix = staticPrefix
     }
     else {
       _configPrefix = s"$staticPrefix.$prefix"
-      val topConfig = ConfigFactory.load()
-
-      if (topConfig.hasPath(_configPrefix)) {
-        config = topConfig.getConfig(_configPrefix)
-      }
-      else {
-        config = ConfigFactory.empty()
-      }
     }
   }
 
@@ -63,8 +52,8 @@ trait Configuration {
     * @return The option value, if present, or `None`
     */
   protected[this] def getConfigInt(name: String): Option[Int] = {
-    if (config.hasPath(name)) {
-      val s = config.getString(name)
+    if (Configuration.config.hasPath(s"$configPrefix.$name")) {
+      val s = Configuration.config.getString(s"$configPrefix.$name")
       if (s.isEmpty) {
         None
       }
@@ -85,8 +74,8 @@ trait Configuration {
     * @return The option value, if present, or `None`
     */
   protected[this] def getConfigString(name: String): Option[String] = {
-    if (config.hasPath(name)) {
-      val s = config.getString(name)
+    if (Configuration.config.hasPath(s"$configPrefix.$name")) {
+      val s = Configuration.config.getString(s"$configPrefix.$name")
       if (s.isEmpty) {
         None
       }
@@ -98,4 +87,19 @@ trait Configuration {
       None
     }
   }
+}
+
+/** Holds the shared Config object for all classes with the Configuration trait.
+  */
+private[this] object Configuration extends Logging {
+  @transient private[analyser] val config: Config = ConfigFactory.load()
+
+  private[analyser] def printAllConfig(): Unit =
+    logger.info(Configuration.config.root()
+      .withOnlyKey("nz")
+      .render(
+        ConfigRenderOptions.concise()
+          .setFormatted(true)
+          .setJson(true)
+      ))
 }
