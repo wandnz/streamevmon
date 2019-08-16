@@ -23,6 +23,7 @@ object PostgresConnection extends Caching with Configuration {
     val host = getConfigString("serverName").getOrElse("localhost")
     val port = getConfigString("portNumber").getOrElse("5432")
     val databaseName = getConfigString("databaseName").getOrElse("nntsc")
+
     s"jdbc:postgresql://$host:$port/$databaseName?loggerLevel=OFF"
   }
 
@@ -39,11 +40,12 @@ object PostgresConnection extends Caching with Configuration {
       case Some(_) =>
       case None =>
         SessionFactory.concreteFactory = Some(
-          () =>
+          () => {
+            Class.forName("org.postgresql.Driver")
             Session.create(
               DriverManager.getConnection(jdbcUrl, username, password),
               new PostgreSqlAdapter
-          ))
+          )})
     }
 
   /** Gets the [[nz.net.wand.amp.analyser.measurements.ICMPMeta metadata]]

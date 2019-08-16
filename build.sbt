@@ -69,7 +69,11 @@ Compile / run := Defaults.runTask(Compile / run / fullClasspath,
 Compile / run / fork := true
 Global / cancelable := true
 
+// Make tests in sbt shell more reliable
 fork := true
+
+// Stop assembly from running tests first
+test in assembly := {}
 
 // exclude Scala library from assembly
 assembly / assemblyOption  := (assembly / assemblyOption).value.copy(includeScala = false)

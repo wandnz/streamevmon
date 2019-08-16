@@ -158,9 +158,13 @@ object InfluxConnection extends Configuration with Logging {
         }
         // If we still can't manage, give up.
         catch {
-          case _: Exception => None
+          case e: Exception =>
+            logger.error(s"Could not create ServerSocket: $e")
+            None
         }
-      case _: Exception => None
+      case e: Exception =>
+        logger.error(s"Could not create ServerSocket: $e")
+        None
     }
   }
 

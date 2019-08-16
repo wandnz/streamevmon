@@ -56,7 +56,6 @@ abstract class InfluxSubscriptionSourceFunction[T]
   // We reuse the class loader for our ActorSystem to get reliable behaviour
   // during tests in the sbt shell.
   @transient private[this] lazy val ourClassLoader: ClassLoader = this.getClass.getClassLoader
-
   @transient private[this] lazy val actorSystem =
     akka.actor.ActorSystem("watermarkEmitter", classLoader = Some(ourClassLoader))
 

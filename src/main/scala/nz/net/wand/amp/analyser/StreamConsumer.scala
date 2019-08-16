@@ -25,10 +25,16 @@ object StreamConsumer {
     val windowSize = 1
 
     val measurementStream = env.addSource(sourceFunction)
+      .name("InfluxDB Subscription Rich Measurement Source Function")
+
     val measurementWindows =
       measurementStream.windowAll(TumblingEventTimeWindows.of(Time.seconds(windowSize)))
+
     val eventStream = measurementWindows.process(processFunction)
+      .name("Simple Rich ICMP Threshold Filter")
+
     eventStream.addSink(sinkFunction)
+      .name("InfluxDB Measurement Sink Function")
 
     measurementStream.print("Measurements")
     eventStream.print("Events")
