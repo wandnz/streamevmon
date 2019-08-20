@@ -53,7 +53,7 @@ class EndToEndTest extends InfluxContainerSpec {
       val env = StreamExecutionEnvironment.getExecutionEnvironment
       env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-      val sourceFunction = new MeasurementSourceFunction
+      val sourceFunction = new MeasurementSubscriptionSourceFunction
       val sinkFunction = getSinkFunction
 
       val processFunction: ProcessAllWindowFunction[Measurement, Event, TimeWindow] =

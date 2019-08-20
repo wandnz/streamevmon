@@ -7,7 +7,7 @@ import org.apache.flink.streaming.api.functions.source.SourceFunction
 /** Receives [[nz.net.wand.amp.analyser.measurements.Measurement Measurement]]
   * values from InfluxDB in a streaming fashion.
   */
-class MeasurementSourceFunction extends InfluxSubscriptionSourceFunction[Measurement] {
+class MeasurementSubscriptionSourceFunction extends InfluxSubscriptionSourceFunction[Measurement] {
 
   override protected def processLine(ctx: SourceFunction.SourceContext[Measurement],
                                      line: String): Option[Measurement] = {

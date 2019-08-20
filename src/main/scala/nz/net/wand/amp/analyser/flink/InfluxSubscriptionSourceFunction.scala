@@ -37,8 +37,8 @@ import scala.concurrent.duration._
   *
   * @tparam T The type used to represent the data received.
   *
-  * @see [[MeasurementSourceFunction]]
-  * @see [[RichMeasurementSourceFunction]]
+  * @see [[MeasurementSubscriptionSourceFunction]]
+  * @see [[RichMeasurementSubscriptionSourceFunction]]
   */
 abstract class InfluxSubscriptionSourceFunction[T]
   extends StoppableSourceFunction[T]

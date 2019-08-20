@@ -19,7 +19,7 @@ object StreamConsumer {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    val sourceFunction = new RichMeasurementSourceFunction
+    val sourceFunction = new RichMeasurementSubscriptionSourceFunction
     val processFunction = new SimpleThresholdProcessFunction[RichMeasurement]
     val sinkFunction = new InfluxSinkFunction
     val windowSize = 1

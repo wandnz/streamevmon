@@ -1,7 +1,7 @@
 package nz.net.wand.amp.analyser.connectors
 
 import nz.net.wand.amp.analyser.SeedData
-import nz.net.wand.amp.analyser.flink.{MeasurementSourceFunction, MockSourceContext}
+import nz.net.wand.amp.analyser.flink.{MeasurementSubscriptionSourceFunction, MockSourceContext}
 import nz.net.wand.amp.analyser.measurements.{Measurement, MeasurementFactory}
 
 import java.io.{BufferedReader, InputStreamReader}
@@ -246,11 +246,11 @@ class InfluxConnectionTest extends InfluxContainerSpec {
     }
   }
 
-  "MeasurementSourceFunction" should {
+  "MeasurementSubscriptionSourceFunction" should {
     "receive valid data" in {
       InfluxConnection.subscriptionName = "mockMeasurementSourceContext"
 
-      val func = new MeasurementSourceFunction
+      val func = new MeasurementSubscriptionSourceFunction
       val ctx = new MockSourceContext[Measurement] {
         override var process: Seq[Measurement] => Unit = { elements =>
           assert(elements.nonEmpty)
