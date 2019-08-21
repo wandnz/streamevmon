@@ -354,4 +354,79 @@ object SeedData extends Configuration {
         ))
     )
   }
+
+  object latencyTs {
+
+    val ampLine = "callplus-afrinic-ipv6,1391079600,462691,0.000"
+
+    val amp = LatencyTSAmpICMP(
+      stream = 0,
+      source = "callplus",
+      destination = "afrinic",
+      family = "ipv6",
+      time = Instant.ofEpochSecond(1391079600.toLong),
+      average = 462691,
+      lossrate = 0.000
+    )
+
+    val smokepingLineNoLoss = "afrinic.net,1380538800,452.753,0.000,451.013,451.634,451.649,451.876,451.976,452.218,452.268,452.388,452.446,452.752,452.753,453.010,453.095,453.379,453.545,453.747,454.080,456.494,456.496,456.526"
+
+    val smokepingNoLoss = LatencyTSSmokeping(
+      stream = 1,
+      destination = "afrinic.net",
+      family = "ipv4",
+      time = Instant.ofEpochSecond(1380538800.toLong),
+      median = Some(452.753),
+      loss = 0,
+      results = Seq(451.013, 451.634, 451.649, 451.876, 451.976, 452.218, 452.268, 452.388, 452.446, 452.752, 452.753, 453.010, 453.095, 453.379, 453.545, 453.747, 454.080, 456.494, 456.496, 456.526)
+    )
+
+    val smokepingLineSomeLoss = "afrinic.net,1385108700,462.624,10,462.022,462.132,462.248,462.318,462.361,462.624,463.236,463.273,464.07,464.38"
+
+    val smokepingSomeLoss = LatencyTSSmokeping(
+      stream = 2,
+      destination = "afrinic.net",
+      family = "ipv4",
+      time = Instant.ofEpochSecond(1385108700.toLong),
+      median = Some(462.493),
+      loss = 10,
+      results = Seq(462.022, 462.132, 462.248, 462.318, 462.361, 462.624, 463.236, 463.273, 464.07, 464.38)
+    )
+
+    val smokepingLineAllLoss = "afrinic.net,1381975500,,20"
+
+    val smokepingAllLoss = LatencyTSSmokeping(
+      stream = 3,
+      destination = "afrinic.net",
+      family = "ipv4",
+      time = Instant.ofEpochSecond(1381975500.toLong),
+      median = None,
+      loss = 20,
+      results = Seq()
+    )
+
+    val smokepingLineNoEntry = "afrinic.net,1385428200,,"
+
+    val smokepingNoEntry = LatencyTSSmokeping(
+      stream = 4,
+      destination = "afrinic.net",
+      family = "ipv4",
+      time = Instant.ofEpochSecond(1385428200.toLong),
+      median = None,
+      loss = 20,
+      results = Seq()
+    )
+
+    val smokepingLineMismatchedLoss = "afrinic.net,1384488300,435.381,7.000,434.960,434.970,435.090,435.099,435.100,435.110,435.122,435.130,435.274,435.366,435.381,435.444,435.800,435.802,436.056,436.230,436.240,436.400,436.410,588.667"
+
+    val smokepingMismatchedLoss = LatencyTSSmokeping(
+      stream = 5,
+      destination = "afrinic.net",
+      family = "ipv4",
+      time = Instant.ofEpochSecond(1384488300.toLong),
+      median = Some(435.374),
+      loss = 0,
+      results = Seq(434.960, 434.970, 435.090, 435.099, 435.100, 435.110, 435.122, 435.130, 435.274, 435.366, 435.381, 435.444, 435.800, 435.802, 436.056, 436.230, 436.240, 436.400, 436.410, 588.667)
+    )
+  }
 }

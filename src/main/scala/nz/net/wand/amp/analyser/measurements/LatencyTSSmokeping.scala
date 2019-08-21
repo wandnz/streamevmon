@@ -2,6 +2,8 @@ package nz.net.wand.amp.analyser.measurements
 
 import java.time.Instant
 
+import scala.math.round
+
 /** Represents an AMP ICMP measurement, but only containing the data contained
   * in the Latency TS I dataset. Comparable to a RichICMP object, but missing
   * some fields.
@@ -49,15 +51,21 @@ object LatencyTSSmokeping {
   }
 
   private def getMedian(in: Seq[Double]): Option[Double] = {
-    val s = in.sorted
+    def roundTo3DP(n: Double): Double = {
+      round(n * 1000).toDouble / 1000
+    }
+
     if (in.isEmpty) {
       None
     }
-    else if (in.length % 2 != 0) {
-      Some(s(in.length / 2))
-    }
     else {
-      Some((s((in.length / 2) - 1) + s(in.length / 2)) / 2)
+      val s = in.sorted
+      if (in.length % 2 != 0) {
+        Some(roundTo3DP(s(in.length / 2)))
+      }
+      else {
+        Some(roundTo3DP((s((in.length / 2) - 1) + s(in.length / 2)) / 2))
+      }
     }
   }
 
