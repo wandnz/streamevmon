@@ -8,6 +8,7 @@ import java.net.{ServerSocket, SocketTimeoutException}
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 
+import org.apache.flink.api.common.functions.StoppableFunction
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 import org.apache.flink.streaming.api.watermark.Watermark
 
@@ -41,7 +42,8 @@ import scala.concurrent.duration._
   * @see [[RichMeasurementSubscriptionSourceFunction]]
   */
 abstract class InfluxSubscriptionSourceFunction[T]
-  extends StoppableSourceFunction[T]
+  extends GloballyStoppableFunction[T]
+          with StoppableFunction
           with Logging
           with Configuration {
 
@@ -151,6 +153,10 @@ abstract class InfluxSubscriptionSourceFunction[T]
     logger.info("Stopping listener...")
     isRunning = false
   }
+
+  /** Stops the source, allowing the listen loop to finish.
+    */
+  override def stop(): Unit = cancel()
 
   private[this] def startListener(): Boolean = {
     listener = InfluxConnection.getSubscriptionListener

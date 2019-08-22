@@ -13,9 +13,9 @@ import org.apache.flink.streaming.api.functions.source.SourceFunction
   *
   * @tparam T The type of data emitted.
   */
-abstract class StoppableSourceFunction[T] extends SourceFunction[T] with Logging {
+abstract class GloballyStoppableFunction[T] extends SourceFunction[T] with Logging {
 
-  def shouldShutdown: Boolean = StoppableSourceFunctionCompanion.shouldShutdown
+  def shouldShutdown: Boolean = GSFCompanion.shouldShutdown
 
   /** Signals all running StoppableSourceFunctions to stop. Use this when you
     * want the pipeline to exit, since there doesn't appear to be a good way of
@@ -23,16 +23,16 @@ abstract class StoppableSourceFunction[T] extends SourceFunction[T] with Logging
     */
   def shutdownAll(): Unit = {
     logger.info(s"Shutting down all SourceFunctions")
-    StoppableSourceFunctionCompanion.shouldShutdown = true
+    GSFCompanion.shouldShutdown = true
   }
 }
 
-/** Companion object for StoppableSourceFunction.
+/** Companion object for GloballyStoppableFunction.
   *
-  * This can't be named StoppableSourceFunction since that breaks references to
+  * This can't be named GloballyStoppableFunction since that breaks references to
   * SourceFunction.SourceContext.
   */
-private[this] object StoppableSourceFunctionCompanion {
+private[this] object GSFCompanion {
   // Would be great to have this at file-scope, but that's not possible.
   private[flink] var shouldShutdown = false
 }
