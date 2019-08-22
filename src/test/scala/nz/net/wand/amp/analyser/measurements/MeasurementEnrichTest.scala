@@ -6,42 +6,37 @@ import nz.net.wand.amp.analyser.connectors.PostgresContainerSpec
 class MeasurementEnrichTest extends PostgresContainerSpec {
   "Children of Measurement.enrich" should {
     "obtain the correct RichICMP object" in {
-      assertResult(
+      assert(
+        SeedData.icmp.expected.enrich() ===
         Some(SeedData.icmp.expectedRich)
-      )(
-        SeedData.icmp.expected.enrich()
       )
     }
 
     "obtain the correct RichDNS object" in {
-      assertResult(
+      assert(
+        SeedData.dns.expected.enrich() ===
         Some(SeedData.dns.expectedRich)
-      )(
-        SeedData.dns.expected.enrich()
       )
     }
 
     "obtain the correct RichTraceroute object" in {
-      assertResult(
+      assert(
+        SeedData.traceroute.expected.enrich() ===
         Some(SeedData.traceroute.expectedRich)
-      )(
-        SeedData.traceroute.expected.enrich()
       )
     }
 
     "obtain the correct RichTcpping object" in {
-      assertResult(
+      assert(
+        SeedData.tcpping.expected.enrich() ===
         Some(SeedData.tcpping.expectedRich)
-      )(
-        SeedData.tcpping.expected.enrich()
       )
     }
 
     "obtain the correct RichHTTP object" in {
-      assertResult(
+      assert(
+        SeedData.http.expected.enrich() ===
         Some(SeedData.http.expectedRich)
-      )(
-        SeedData.http.expected.enrich()
       )
     }
   }

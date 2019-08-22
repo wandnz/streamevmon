@@ -115,7 +115,7 @@ class EndToEndTest extends InfluxContainerSpec {
               println(e)
               fail
             }
-            assertResult(expected)(e.right.get)
+            assert(e.right.get === expected)
           }),
         Duration.Inf
       )

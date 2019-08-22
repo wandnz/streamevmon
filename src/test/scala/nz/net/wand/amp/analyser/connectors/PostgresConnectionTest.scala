@@ -17,9 +17,9 @@ class PostgresConnectionTest extends PostgresContainerSpec {
       import nz.net.wand.amp.analyser.connectors.PostgresSchema._
       import nz.net.wand.amp.analyser.connectors.SquerylEntrypoint._
 
-      assertResult(SeedData.icmp.allExpectedMeta)(transaction(icmpMeta.allRows.toList))
-      assertResult(SeedData.dns.allExpectedMeta)(transaction(dnsMeta.allRows.toList))
-      assertResult(SeedData.traceroute.allExpectedMeta)(transaction(tracerouteMeta.allRows.toList))
+      assert(transaction(icmpMeta.allRows.toList) === SeedData.icmp.allExpectedMeta)
+      assert(transaction(dnsMeta.allRows.toList) === SeedData.dns.allExpectedMeta)
+      assert(transaction(tracerouteMeta.allRows.toList) === SeedData.traceroute.allExpectedMeta)
     }
   }
 }

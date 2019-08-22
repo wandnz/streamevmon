@@ -7,42 +7,37 @@ import org.scalatest.WordSpec
 class MeasurementCreateTest extends WordSpec {
   "Children of Measurement.create" should {
     "convert an entry from a subscription into an ICMP object" in {
-      assertResult(
+      assert(
+        ICMP.create(SeedData.icmp.subscriptionLine) ===
         Some(SeedData.icmp.expected)
-      )(
-        ICMP.create(SeedData.icmp.subscriptionLine)
       )
     }
 
     "convert an entry from a subscription into a DNS object" in {
-      assertResult(
+      assert(
+        DNS.create(SeedData.dns.subscriptionLine) ===
         Some(SeedData.dns.expected)
-      )(
-        DNS.create(SeedData.dns.subscriptionLine)
       )
     }
 
     "convert an entry from a subscription into a Traceroute object" in {
-      assertResult(
-        Some(SeedData.traceroute.expected)
-      )(
-        Traceroute.create(SeedData.traceroute.subscriptionLine)
+      assert(
+        Traceroute.create(SeedData.traceroute.subscriptionLine) ===
+          Some(SeedData.traceroute.expected)
       )
     }
 
     "convert an entry from a subscription into a TCPPing object" in {
-      assertResult(
-        Some(SeedData.tcpping.expected)
-      )(
-        TCPPing.create(SeedData.tcpping.subscriptionLine)
+      assert(
+        TCPPing.create(SeedData.tcpping.subscriptionLine) ===
+          Some(SeedData.tcpping.expected)
       )
     }
 
     "convert an entry from a subscription into an HTTP object" in {
-      assertResult(
-        Some(SeedData.http.expected)
-      )(
-        HTTP.create(SeedData.http.subscriptionLine)
+      assert(
+        HTTP.create(SeedData.http.subscriptionLine) ===
+          Some(SeedData.http.expected)
       )
     }
   }
@@ -58,11 +53,11 @@ class MeasurementCreateTest extends WordSpec {
       ).foreach {
         case Some(x) =>
           x match {
-            case _: ICMP       => assertResult(SeedData.icmp.expected)(x)
-            case _: DNS        => assertResult(SeedData.dns.expected)(x)
-            case _: Traceroute => assertResult(SeedData.traceroute.expected)(x)
-            case _: TCPPing    => assertResult(SeedData.tcpping.expected)(x)
-            case _: HTTP       => assertResult(SeedData.http.expected)(x)
+            case _: ICMP       => assert(x === SeedData.icmp.expected)
+            case _: DNS        => assert(x === SeedData.dns.expected)
+            case _: Traceroute => assert(x === SeedData.traceroute.expected)
+            case _: TCPPing    => assert(x === SeedData.tcpping.expected)
+            case _: HTTP       => assert(x === SeedData.http.expected)
             case _             => fail("Created a type we didn't recognise")
           }
         case None => fail("Failed to create an object")

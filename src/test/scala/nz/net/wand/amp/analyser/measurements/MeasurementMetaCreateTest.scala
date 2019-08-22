@@ -6,42 +6,37 @@ import nz.net.wand.amp.analyser.connectors.{PostgresConnection, PostgresContaine
 class MeasurementMetaCreateTest extends PostgresContainerSpec {
   "PostgresConnection" should {
     "obtain correct ICMPMeta" in {
-      assertResult(
+      assert(
+        PostgresConnection.getICMPMeta(SeedData.icmp.expected) ===
         Some(SeedData.icmp.expectedMeta)
-      )(
-        PostgresConnection.getICMPMeta(SeedData.icmp.expected)
       )
     }
 
     "obtain correct DNSMeta" in {
-      assertResult(
+      assert(
+        PostgresConnection.getDNSMeta(SeedData.dns.expected) ===
         Some(SeedData.dns.expectedMeta)
-      )(
-        PostgresConnection.getDNSMeta(SeedData.dns.expected)
       )
     }
 
     "obtain correct TracerouteMeta" in {
-      assertResult(
+      assert(
+        PostgresConnection.getTracerouteMeta(SeedData.traceroute.expected) ===
         Some(SeedData.traceroute.expectedMeta)
-      )(
-        PostgresConnection.getTracerouteMeta(SeedData.traceroute.expected)
       )
     }
 
     "obtain correct TCPPingMeta" in {
-      assertResult(
+      assert(
+        PostgresConnection.getTcppingMeta(SeedData.tcpping.expected) ===
         Some(SeedData.tcpping.expectedMeta)
-      )(
-        PostgresConnection.getTcppingMeta(SeedData.tcpping.expected)
       )
     }
 
     "obtain correct HTTPMeta" in {
-      assertResult(
+      assert(
+        PostgresConnection.getHttpMeta(SeedData.http.expected) ===
         Some(SeedData.http.expectedMeta)
-      )(
-        PostgresConnection.getHttpMeta(SeedData.http.expected)
       )
     }
 
@@ -55,11 +50,11 @@ class MeasurementMetaCreateTest extends PostgresContainerSpec {
       ).foreach {
         case Some(x) =>
           x match {
-            case _: ICMPMeta       => assertResult(SeedData.icmp.expectedMeta)(x)
-            case _: DNSMeta        => assertResult(SeedData.dns.expectedMeta)(x)
-            case _: TracerouteMeta => assertResult(SeedData.traceroute.expectedMeta)(x)
-            case _: TCPPingMeta    => assertResult(SeedData.tcpping.expectedMeta)(x)
-            case _: HTTPMeta       => assertResult(SeedData.http.expectedMeta)(x)
+            case _: ICMPMeta       => assert(x === SeedData.icmp.expectedMeta)
+            case _: DNSMeta        => assert(x === SeedData.dns.expectedMeta)
+            case _: TracerouteMeta => assert(x === SeedData.traceroute.expectedMeta)
+            case _: TCPPingMeta    => assert(x === SeedData.tcpping.expectedMeta)
+            case _: HTTPMeta       => assert(x === SeedData.http.expectedMeta)
             case _                 => fail("Created a type we didn't recognise")
           }
         case None => fail("Failed to create an object")

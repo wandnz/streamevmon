@@ -10,10 +10,10 @@ class EventTest extends WordSpec {
       val e = SeedData.thresholdEvent.influxPoint
       val r = SeedData.thresholdEvent.event.asInfluxPoint
 
-      assertResult(e.getMeasurement)(r.getMeasurement)
-      assertResult(e.getTimestamp)(r.getTimestamp)
-      assertResult(e.getTags)(r.getTags)
-      assertResult(e.getFields)(r.getFields)
+      assert(r.getMeasurement === e.getMeasurement)
+      assert(r.getTimestamp === e.getTimestamp)
+      assert(r.getTags === e.getTags)
+      assert(r.getFields === e.getFields)
     }
   }
 }
