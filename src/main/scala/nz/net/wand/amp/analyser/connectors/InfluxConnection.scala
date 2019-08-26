@@ -3,7 +3,8 @@ package nz.net.wand.amp.analyser.connectors
 import nz.net.wand.amp.analyser.Logging
 
 import java.io.IOException
-import java.net.{InetAddress, ServerSocket}
+import java.net._
+import java.util.Collections
 
 import com.github.fsanaulla.chronicler.ahc.management.{AhcManagementClient, InfluxMng}
 import com.github.fsanaulla.chronicler.core.alias.{ErrorOr, ResponseCode}
@@ -11,6 +12,7 @@ import com.github.fsanaulla.chronicler.core.enums.Destinations
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
 import org.apache.flink.api.java.utils.ParameterTool
 
+import scala.collection.JavaConverters
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
@@ -19,6 +21,46 @@ import scala.sys.ShutdownHookThread
 /** Contains additional apply methods for the companion class.
   */
 object InfluxConnection {
+
+  /** Gets an IPV4 address which should be visible to other hosts. Prefers
+    * addresses that aren't "site-local", meaning they are outside of the
+    * reserved private address space.
+    */
+  private[connectors] def getListenAddress: String = {
+    try {
+      val nonLoopbacks = JavaConverters.asScalaBufferConverter(Collections.list(NetworkInterface.getNetworkInterfaces)).asScala.flatMap {
+        iface => JavaConverters.asScalaBufferConverter(Collections.list(iface.getInetAddresses)).asScala
+      }
+        .filter(_.isInstanceOf[Inet4Address])
+        .filterNot(_.isLinkLocalAddress)
+        .filterNot(_.isLoopbackAddress)
+
+      // This can probably be achieved by specifying a custom sort order that
+      // will sort site-local addresses below globally routable addresses.
+      val globals = nonLoopbacks.filterNot(_.isSiteLocalAddress)
+      if (globals.nonEmpty) {
+        globals.map(_.getHostAddress).head
+      }
+      else {
+        nonLoopbacks.map(_.getHostAddress)
+          .headOption
+          .getOrElse("localhost")
+      }
+    }
+    catch {
+      case e: SocketException => println(s"couldn't get IP! $e")
+        "localhost"
+    }
+  }
+
+  private[this] def getOrFindListenAddress(address: String): String = {
+    if (address == null) {
+      getListenAddress
+    }
+    else {
+      address
+    }
+  }
 
   /** Creates a new InfluxConnection from the given config. Expects all fields
     * specified in the companion class' main documentation to be present.
@@ -36,7 +78,7 @@ object InfluxConnection {
       p.get(s"$configPrefix.databaseName"),
       p.get(s"$configPrefix.retentionPolicyName"),
       p.get(s"$configPrefix.listenProtocol"),
-      p.getRequired(s"$configPrefix.listenAddress"),
+      getOrFindListenAddress(p.get(s"$configPrefix.listenAddress")),
       p.getInt(s"$configPrefix.listenPort"),
       p.getInt(s"$configPrefix.listenBacklog"),
       p.get(s"$configPrefix.serverName"),
@@ -54,7 +96,13 @@ object InfluxConnection {
   *
   * This class is configured by the `influx.dataSource` config key group.
   *
-  * - `listenAddress`: '''Required'''. The address to listen on for this subscription.
+  * - `listenAddress`: The address to listen on for this subscription.
+  * If not specified, this will be automatically generated at runtime by
+  * inspecting the IP addresses attached to the interfaces on the host machine.
+  * If a non-loopback, non-link-local address is found, the program will bind to
+  * it. If several are found, it will prefer any that are not in restricted
+  * private IP ranges. Specify this option if the automatic selection does not
+  * fit your needs.
   *
   * - `listenPort`: The port this program should listen on.
   * Defaults to an ephemeral port if no configuration is supplied or if the desired port cannot be bound.
@@ -224,7 +272,7 @@ case class InfluxConnection(
                         s"Could not remove subscription $subscriptionName: ${ex.getMessage}")
                   }
                 })
-              logger.debug(s"Added subscription $subscriptionName at ${destinations.mkString(",")}")
+              logger.info(s"Added subscription $subscriptionName at ${destinations.mkString(",")}")
               Future(Right(subscribeResult.right.get))
             }
             else {

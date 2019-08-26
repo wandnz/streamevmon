@@ -58,7 +58,7 @@ class EndToEndTest extends InfluxContainerSpec {
       val env = StreamExecutionEnvironment.getExecutionEnvironment
       env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-      env.getConfig.setGlobalJobParameters(getInfluxConfig("EndToEndTest", "130.217.250.59"))
+      env.getConfig.setGlobalJobParameters(getInfluxConfig("EndToEndTest"))
 
       val sourceFunction = new MeasurementSubscriptionSourceFunction
       val sinkFunction = getSinkFunction
@@ -159,7 +159,7 @@ class EndToEndTest extends InfluxContainerSpec {
 
     "receive valid data" in {
       // TODO: Need a real address here
-      val influxConfig = getInfluxConfig("mockMeasurementSourceContext", "130.217.250.59")
+      val influxConfig = getInfluxConfig("mockMeasurementSourceContext")
 
       def setEmpty(boolean: Boolean): Unit = MeasurementSubscriptionSourceFunctionTest.noDataReceived = boolean
 

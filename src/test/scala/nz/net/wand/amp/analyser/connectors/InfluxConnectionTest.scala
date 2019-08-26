@@ -149,8 +149,6 @@ class InfluxConnectionTest extends InfluxContainerSpec {
 
       checkSubscription(influx, expected, checkPresent = true)
 
-      val oldAddress = influx.listenAddress
-
       val newInflux = getInflux("clobber", "different-address")
       val newExpected = getExpectedSubscriptionInfo(newInflux)
       Await.result(newInflux.addOrUpdateSubscription(), Duration.Inf)
@@ -203,7 +201,7 @@ class InfluxConnectionTest extends InfluxContainerSpec {
     }
 
     "receive valid data" in {
-      val influx = getInflux("receiveData", "130.217.250.59")
+      val influx = getInflux("receiveData")
 
       sendDataAnd(
         afterSend = { () =>

@@ -27,13 +27,18 @@ class InfluxContainerSpec extends WordSpec with ForAllTestContainer {
       Duration.Inf)
   }
 
-  protected def getInflux(subscriptionName: String, listenAddress: String = "address-ignored"): InfluxConnection = {
+  protected def getInflux(subscriptionName: String, listenAddress: String = null): InfluxConnection = {
     InfluxConnection(
       subscriptionName,
       container.database,
       container.retentionPolicy,
       "http",
-      listenAddress,
+      if (listenAddress == null) {
+        InfluxConnection.getListenAddress
+      }
+      else {
+        listenAddress
+      },
       0,
       5,
       container.address,
@@ -43,7 +48,7 @@ class InfluxContainerSpec extends WordSpec with ForAllTestContainer {
     )
   }
 
-  protected def getInfluxConfigMap(subscriptionName: String, listenAddress: String): Map[String, String] = {
+  protected def getInfluxConfigMap(subscriptionName: String, listenAddress: String = null): Map[String, String] = {
     Map(
       "influx.dataSource.subscriptionName" -> subscriptionName,
       "influx.dataSource.databaseName" -> container.database,
@@ -61,7 +66,7 @@ class InfluxContainerSpec extends WordSpec with ForAllTestContainer {
     )
   }
 
-  protected def getInfluxConfig(subscriptionName: String, listenAddress: String): ParameterTool = {
+  protected def getInfluxConfig(subscriptionName: String, listenAddress: String = null): ParameterTool = {
     ParameterTool.fromMap(getInfluxConfigMap(subscriptionName, listenAddress).asJava)
   }
 
