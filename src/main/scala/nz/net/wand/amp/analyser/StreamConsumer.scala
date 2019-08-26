@@ -13,11 +13,13 @@ import org.apache.flink.streaming.api.TimeCharacteristic
   * Mainly used to create Flink pipelines during development, and should be
   * expected to change often.
   */
-object StreamConsumer {
+object StreamConsumer extends Logging {
 
   def main(args: Array[String]): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
+
+    env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
     val sourceFunction = new RichMeasurementSubscriptionSourceFunction
     val processFunction = new SimpleThresholdProcessFunction[RichMeasurement]

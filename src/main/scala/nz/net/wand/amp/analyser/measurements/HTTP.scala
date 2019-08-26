@@ -26,10 +26,6 @@ final case class HTTP(
       s"server_count=${server_count}i " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
-
-  override def enrich(): Option[RichMeasurement] = {
-    MeasurementFactory.enrichMeasurement(this).asInstanceOf[Option[RichHTTP]]
-  }
 }
 
 object HTTP extends MeasurementFactory {

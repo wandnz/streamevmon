@@ -1,20 +1,50 @@
 package nz.net.wand.amp.analyser.connectors
 
-import nz.net.wand.amp.analyser.{Configuration, Logging}
+import nz.net.wand.amp.analyser.Logging
 
 import java.io.IOException
-import java.net.{ConnectException, InetAddress, ServerSocket}
+import java.net.{InetAddress, ServerSocket}
 
 import com.github.fsanaulla.chronicler.ahc.management.{AhcManagementClient, InfluxMng}
 import com.github.fsanaulla.chronicler.core.alias.{ErrorOr, ResponseCode}
 import com.github.fsanaulla.chronicler.core.enums.Destinations
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
-import org.apache.flink.configuration.IllegalConfigurationException
+import org.apache.flink.api.java.utils.ParameterTool
 
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.sys.ShutdownHookThread
+
+/** Contains additional apply methods for the companion class.
+  */
+object InfluxConnection {
+
+  /** Creates a new InfluxConnection from the given config. Expects all fields
+    * specified in the companion class' main documentation to be present.
+    *
+    * @param p The configuration to use. Generally obtained from the Flink
+    *          global configuration.
+    * @param configPrefix A custom config prefix to use, in case the configuration
+    *                     object is not as expected.
+    *
+    * @return A new InfluxConnection object.
+    */
+  def apply(p: ParameterTool, configPrefix: String = "influx.dataSource"): InfluxConnection =
+    InfluxConnection(
+      p.get(s"$configPrefix.subscriptionName"),
+      p.get(s"$configPrefix.databaseName"),
+      p.get(s"$configPrefix.retentionPolicyName"),
+      p.get(s"$configPrefix.listenProtocol"),
+      p.getRequired(s"$configPrefix.listenAddress"),
+      p.getInt(s"$configPrefix.listenPort"),
+      p.getInt(s"$configPrefix.listenBacklog"),
+      p.get(s"$configPrefix.serverName"),
+      p.getInt(s"$configPrefix.portNumber"),
+      p.get(s"$configPrefix.user"),
+      p.get(s"$configPrefix.password")
+    )
+}
 
 /** InfluxDB subscription manager which produces corresponding ServerSockets.
   *
@@ -22,12 +52,12 @@ import scala.sys.ShutdownHookThread
   *
   * ==Configuration==
   *
-  * This class is configured by the `connectors.influx.dataSource` config key group.
+  * This class is configured by the `influx.dataSource` config key group.
   *
   * - `listenAddress`: '''Required'''. The address to listen on for this subscription.
   *
   * - `listenPort`: The port this program should listen on.
-  * Default 8008.
+  * Defaults to an ephemeral port if no configuration is supplied or if the desired port cannot be bound.
   *
   * - `listenBacklog`: The requested maximum length of the queue of incoming connections.
   * Default 5.
@@ -55,51 +85,26 @@ import scala.sys.ShutdownHookThread
   * Default "nntscdefault".
   *
   * - `listenProtocol`: The transport protocol for this subscription. Can be one of
-  * "http", "https", or "udp".
+  * "http", "https", or "udp", although https and udp have not been tested.
   * Default "http".
   *
   * @see [[https://docs.oracle.com/javase/8/docs/api/java/net/ServerSocket.html]]
   * @see [[nz.net.wand.amp.analyser.flink.InfluxSinkFunction InfluxSinkFunction]]
   * @see [[PostgresConnection]]
   */
-object InfluxConnection extends Configuration with Logging {
-
-  configPrefix = "connectors.influx.dataSource"
-
-  private[connectors] var subscriptionName: String =
-    getConfigString("subscriptionName").getOrElse("SubscriptionServer")
-
-  private[connectors] var dbName: String = getConfigString("databaseName").getOrElse("nntsc")
-
-  private[connectors] var rpName: String =
-    getConfigString("retentionPolicyName").getOrElse("nntscdefault")
-
-  private[connectors] var listenProtocol: String =
-    getConfigString("listenProtocol").getOrElse("http")
-
-  private[connectors] var listenAddress: String =
-    getConfigString("listenAddress").getOrElse {
-      throw new IllegalConfigurationException(s"You must specify $configPrefix.listenAddress")
-    }
-
-  private[connectors] var listenPort: Option[Int] = getConfigInt("listenPort")
-
-  /** The requested maximum length of the queue of incoming connections
-    */
-  private[connectors] var listenBacklog: Int = getConfigInt("listenBacklog").getOrElse(5)
-
-  /** The address that InfluxDB can be found at. */
-  private[connectors] var influxAddress: String =
-    getConfigString("serverName").getOrElse("localhost")
-
-  /** The port that InfluxDB is listening on. */
-  private[connectors] var influxPort: Int = getConfigInt("portNumber").getOrElse(8086)
-
-  /** The username that should be used to connect to InfluxDB. */
-  private[connectors] var influxUsername: String = getConfigString("user").getOrElse("cuz")
-
-  /** The password that should be used to connect to InfluxDB. */
-  private[connectors] var influxPassword: String = getConfigString("password").getOrElse("")
+case class InfluxConnection(
+  subscriptionName: String,
+  dbName          : String,
+  rpName          : String,
+  listenProtocol  : String,
+  listenAddress   : String,
+  listenPort      : Int,
+  listenBacklog   : Int,
+  influxAddress   : String,
+  influxPort      : Int,
+  influxUsername  : String,
+  influxPassword  : String
+) extends Logging {
 
   private[this] var obtainedPort: Int = 0
 
@@ -113,24 +118,16 @@ object InfluxConnection extends Configuration with Logging {
 
   private[connectors] def influxCredentials = InfluxCredentials(influxUsername, influxPassword)
 
-  private[connectors] var influx: Option[AhcManagementClient] = None
+  private[connectors] lazy val influx: Option[AhcManagementClient] = {
+    getManagement
+  }
 
   private[this] var subscriptionRemoveHooks: Seq[(String, ShutdownHookThread)] = Seq()
-
-  /** Ensure that the InfluxDB connection exists and is valid.
-    */
-  private[this] def ensureConnection(): Unit = {
-    influx match {
-      case Some(_) =>
-      case None    => influx = getManagement
-    }
-  }
 
   /** Disconnect the InfluxDB connection.
     */
   def disconnect(): Unit = {
     influx.foreach(_.close)
-    influx = None
   }
 
   /** Gets a new ServerSocket with the requested configuration. If the desired
@@ -139,10 +136,9 @@ object InfluxConnection extends Configuration with Logging {
     * @return The ServerSocket if successful, or None.
     */
   private[this] def getServerSocket: Option[ServerSocket] = {
-    val port = listenPort.getOrElse(8008)
     // Try get a socket with the specified or default port
     try {
-      val r = new ServerSocket(port, listenBacklog, listenInet)
+      val r = new ServerSocket(listenPort, listenBacklog, listenInet)
       r.setSoTimeout(100)
       obtainedPort = r.getLocalPort
       Some(r)
@@ -159,11 +155,11 @@ object InfluxConnection extends Configuration with Logging {
         // If we still can't manage, give up.
         catch {
           case e: Exception =>
-            logger.error(s"Could not create ServerSocket: $e")
+            logger.error(s"Could not create ServerSocket with configuration $listenPort, $listenBacklog, ${listenInet.getHostAddress}: $e")
             None
         }
       case e: Exception =>
-        logger.error(s"Could not create ServerSocket: $e")
+        logger.error(s"Could not create ServerSocket with configuration $listenPort, $listenBacklog, ${listenInet.getHostAddress}: $e")
         None
     }
   }
@@ -204,8 +200,6 @@ object InfluxConnection extends Configuration with Logging {
     * @return A Future of either an error or the response from InfluxDB.
     */
   private[connectors] def addSubscription(): Future[ErrorOr[ResponseCode]] = {
-    ensureConnection()
-
     influx match {
       case Some(db) =>
         db.createSubscription(
@@ -246,8 +240,6 @@ object InfluxConnection extends Configuration with Logging {
     * @return A Future of either an error or the response from InfluxDB.
     */
   private[connectors] def dropSubscription(): Future[ErrorOr[ResponseCode]] = {
-    ensureConnection()
-
     influx match {
       case Some(db) =>
         subscriptionRemoveHooks.filter(_._1 == subscriptionName).foreach { hook =>
@@ -295,10 +287,8 @@ object InfluxConnection extends Configuration with Logging {
     */
   private[this] def checkConnection(influx: AhcManagementClient): Boolean = {
     Await.result(influx.ping.map {
-      case Right(_) =>
-        true
-      case Left(_) =>
-        false
+      case Right(_) => true
+      case Left(_) => false
     }, Duration.Inf)
   }
 

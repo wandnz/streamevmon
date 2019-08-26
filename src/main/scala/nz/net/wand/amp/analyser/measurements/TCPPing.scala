@@ -32,10 +32,6 @@ final case class TCPPing(
       s"rtts=${rtts.map(x => x.getOrElse("None")).mkString("\"[", ",", "]\"")} " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
-
-  override def enrich(): Option[RichTCPPing] = {
-    MeasurementFactory.enrichMeasurement(this).asInstanceOf[Option[RichTCPPing]]
-  }
 }
 
 object TCPPing extends MeasurementFactory {

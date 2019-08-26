@@ -1,105 +1,51 @@
 package nz.net.wand.amp.analyser
 
-import com.typesafe.config.{Config, ConfigFactory, ConfigRenderOptions}
+import java.nio.file.{Files, Paths}
 
-/** Allows accessing centralised configuration of the program's behaviour.
-  *
-  * Currently, an `application.properties` file is located automatically.
-  *
-  * All config keys begin with the static prefix "nz.net.wand.amp.analyser".
-  *
-  * A class using this trait can set a custom `configPrefix`. This is appended
-  * to the static prefix, and followed by the key name supplied as an argument
-  * to any call of a `getConfig` function when looking up a config key.
-  *
-  * @example
-  * {{{
-  *   configPrefix = "example"
-  *   val result = getConfigString("element")
-  * }}}
-  *
-  * This will return the value in key "nz.net.wand.amp.analyser.example.element"
+import org.apache.flink.api.java.utils.ParameterTool
+
+/** Common configuration setup for Flink jobs. The result of get should be
+  * set as the global job parameters.
   */
-trait Configuration {
-  @transient final private[this] lazy val staticPrefix: String = "nz.net.wand.amp.analyser"
-
-  private[this] var _configPrefix = s"$staticPrefix"
-
-  /** Gets the fully qualified config prefix.
+object Configuration {
+  /** Constructs a ParameterTool from a number of sources, each of which
+    * override the previous.
     *
-    * @return The fully qualified prefix, including the value of the static prefix.
+    * First, the default configuration is loaded.
+    *
+    * Second, a file called `amp-analyser.properties` in "./conf" (relative to
+    * the working directory) is searched for and loaded if present. This file
+    * can be used to provide environment-specific configuration options when it
+    * is inconvenient to adjust the system properties or program arguments.
+    *
+    * Next, the system properties are loaded.
+    *
+    * Finally, the program arguments are loaded.
+    *
+    * @param args The program arguments, passed from main.
+    *
+    * @return A ParameterTool object containing the union of all the arguments
+    *         collected.
     */
-  protected[this] def configPrefix: String = _configPrefix
+  def get(args: Array[String]): ParameterTool = {
+    val defaults = ParameterTool.fromPropertiesFile(
+      getClass.getClassLoader.getResourceAsStream("default.properties")
+    )
 
-  /** Sets the custom config prefix.
-    *
-    * @param prefix The desired custom prefix, which is appended to the static prefix.
-    */
-  protected[this] def configPrefix_=(prefix: String): Unit = {
-    if (prefix.isEmpty) {
-      _configPrefix = staticPrefix
-    }
-    else {
-      _configPrefix = s"$staticPrefix.$prefix"
-    }
-  }
-
-  /** Get an integer-type configuration option.
-    *
-    * @param name The key containing a desired integer-type configuration option.
-    *             This value is appended to the static prefix and the custom prefix.
-    *
-    * @return The option value, if present, or `None`
-    */
-  protected[this] def getConfigInt(name: String): Option[Int] = {
-    if (Configuration.config.hasPath(s"$configPrefix.$name")) {
-      val s = Configuration.config.getString(s"$configPrefix.$name")
-      if (s.isEmpty) {
-        None
+    val withCustomFile = {
+      val path = "conf/amp-analyser.properties"
+      if (Files.exists(Paths.get(path))) {
+        defaults.mergeWith(
+          ParameterTool.fromPropertiesFile(path)
+        )
       }
       else {
-        Some(s.toInt)
+        defaults
       }
     }
-    else {
-      None
-    }
+
+    withCustomFile
+      .mergeWith(ParameterTool.fromSystemProperties())
+      .mergeWith(ParameterTool.fromArgs(args))
   }
-
-  /** Get a string-type configuration option.
-    *
-    * @param name The key containing a desired string-type configuration option.
-    *             This value is appended to the static prefix and the custom prefix.
-    *
-    * @return The option value, if present, or `None`
-    */
-  protected[this] def getConfigString(name: String): Option[String] = {
-    if (Configuration.config.hasPath(s"$configPrefix.$name")) {
-      val s = Configuration.config.getString(s"$configPrefix.$name")
-      if (s.isEmpty) {
-        None
-      }
-      else {
-        Some(s)
-      }
-    }
-    else {
-      None
-    }
-  }
-}
-
-/** Holds the shared Config object for all classes with the Configuration trait.
-  */
-private[this] object Configuration extends Logging {
-  @transient private[analyser] val config: Config = ConfigFactory.load()
-
-  private[analyser] def printAllConfig(): Unit =
-    logger.info(Configuration.config.root()
-      .withOnlyKey("nz")
-      .render(
-        ConfigRenderOptions.concise()
-          .setFormatted(true)
-          .setJson(true)
-      ))
 }

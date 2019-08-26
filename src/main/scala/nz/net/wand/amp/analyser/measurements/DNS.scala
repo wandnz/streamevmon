@@ -54,10 +54,6 @@ final case class DNS(
       s"ttl=${ttl.map(x => s"${x}i").getOrElse("")} " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
-
-  override def enrich(): Option[RichDNS] = {
-    MeasurementFactory.enrichMeasurement(this).asInstanceOf[Option[RichDNS]]
-  }
 }
 
 object DNS extends MeasurementFactory {

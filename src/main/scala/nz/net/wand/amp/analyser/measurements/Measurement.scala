@@ -6,12 +6,6 @@ import java.time.Instant
   */
 abstract class Measurement {
 
-  /** Obtains the metadata which is relevant to this measurement.
-    *
-    * @return An object representing this measurement complete with the metadata.
-    */
-  def enrich(): Option[RichMeasurement]
-
   /** AMP measurements are tagged with a stream ID which corresponds to a
     * particular unique scheduled test.
     */

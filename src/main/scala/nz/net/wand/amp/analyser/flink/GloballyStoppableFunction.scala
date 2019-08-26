@@ -2,7 +2,7 @@ package nz.net.wand.amp.analyser.flink
 
 import nz.net.wand.amp.analyser.Logging
 
-import org.apache.flink.streaming.api.functions.source.SourceFunction
+import org.apache.flink.streaming.api.functions.source.RichSourceFunction
 
 /** Default supertype for all SourceFunctions in this project. Wraps SourceFunction
   * with a [[shutdownAll]] function, signalling all running subclasses that they
@@ -13,7 +13,7 @@ import org.apache.flink.streaming.api.functions.source.SourceFunction
   *
   * @tparam T The type of data emitted.
   */
-abstract class GloballyStoppableFunction[T] extends SourceFunction[T] with Logging {
+abstract class GloballyStoppableFunction[T] extends RichSourceFunction[T] with Logging {
 
   def shouldShutdown: Boolean = GSFCompanion.shouldShutdown
 
@@ -27,12 +27,11 @@ abstract class GloballyStoppableFunction[T] extends SourceFunction[T] with Loggi
   }
 }
 
-/** Companion object for GloballyStoppableFunction.
+/** Companion object for GloballyStoppableFunction, containing the shared flag.
   *
-  * This can't be named GloballyStoppableFunction since that breaks references to
-  * SourceFunction.SourceContext.
+  * This can't be named GloballyStoppableFunction since that breaks references
+  * to SourceFunction.SourceContext.
   */
 private[this] object GSFCompanion {
-  // Would be great to have this at file-scope, but that's not possible.
   private[flink] var shouldShutdown = false
 }

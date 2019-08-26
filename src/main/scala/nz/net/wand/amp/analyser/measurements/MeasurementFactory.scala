@@ -78,8 +78,7 @@ trait RichMeasurementFactory {
                                    meta: MeasurementMeta): Option[RichMeasurement]
 }
 
-/** Creates Measurements and RichMeasurements by passing calls through to
-  * concrete implementations.
+/** Creates [[Measurement]] and [[RichMeasurement]] objects.
   *
   * @see [[MeasurementFactory]]
   * @see [[RichMeasurementFactory]]
@@ -105,20 +104,22 @@ object MeasurementFactory {
 
   /** Enriches a measurement.
     *
-    * @param base The Measurement to enrich.
+    * @param pgConnection A connection to a PostgreSQL server containing
+    *                     metadata for the measurement.
+    * @param base         The Measurement to enrich.
     *
     * @return The RichMeasurement if enrichment was successful, otherwise None.
     */
-  def enrichMeasurement(base: Measurement): Option[RichMeasurement] = {
-    PostgresConnection.getMeta(base) match {
+  def enrichMeasurement(pgConnection: PostgresConnection, base: Measurement): Option[RichMeasurement] = {
+    pgConnection.getMeta(base) match {
       case Some(x) =>
         x match {
-          case y: ICMPMeta       => RichICMP.create(base, y)
-          case y: DNSMeta        => RichDNS.create(base, y)
+          case y: ICMPMeta => RichICMP.create(base, y)
+          case y: DNSMeta => RichDNS.create(base, y)
           case y: TracerouteMeta => RichTraceroute.create(base, y)
-          case y: TCPPingMeta    => RichTCPPing.create(base, y)
-          case y: HTTPMeta       => RichHTTP.create(base, y)
-          case _                 => None
+          case y: TCPPingMeta => RichTCPPing.create(base, y)
+          case y: HTTPMeta => RichHTTP.create(base, y)
+          case _ => None
         }
       case None => None
     }
@@ -126,12 +127,14 @@ object MeasurementFactory {
 
   /** Creates a RichMeasurement directly from a string in InfluxDB Line Protocol format.
     *
-    * @param line The string describing the measurement.
+    * @param pgConnection A connection to a PostgreSQL server containing
+    *                     metadata for the measurement.
+    * @param line         The string describing the measurement.
     *
     * @return The RichMeasurement if both measurement creation and enrichment
     *         were successful, otherwise None.
     */
-  def createRichMeasurement(line: String): Option[RichMeasurement] = {
-    createMeasurement(line).flatMap(_.enrich())
+  def createRichMeasurement(pgConnection: PostgresConnection, line: String): Option[RichMeasurement] = {
+    createMeasurement(line).flatMap(enrichMeasurement(pgConnection, _))
   }
 }

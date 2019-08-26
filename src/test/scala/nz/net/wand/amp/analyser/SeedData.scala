@@ -10,18 +10,7 @@ import org.apache.flink.streaming.connectors.influxdb.InfluxDBPoint
 
 import scala.collection.JavaConversions.mapAsJavaMap
 
-object SeedData extends Configuration {
-
-  object postgres {
-
-    val configPrefix = "postgres.dataSource"
-    val dataFile = "nntsc.sql"
-    val username: String = getConfigString(s"$configPrefix.user").getOrElse("cuz")
-    val password: String = getConfigString(s"$configPrefix.password").getOrElse("")
-
-    val database: String =
-      getConfigString(s"$configPrefix.databaseName").getOrElse("nntsc")
-  }
+object SeedData {
 
   object icmp {
 

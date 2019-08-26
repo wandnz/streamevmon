@@ -4,8 +4,10 @@ import nz.net.wand.amp.analyser.flink.InfluxSinkFunction
 
 import com.dimafeng.testcontainers.ForAllTestContainer
 import com.github.fsanaulla.chronicler.ahc.management.InfluxMng
+import org.apache.flink.api.java.utils.ParameterTool
 import org.scalatest.WordSpec
 
+import scala.collection.JavaConverters._
 import scala.concurrent.duration.Duration
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -23,10 +25,44 @@ class InfluxContainerSpec extends WordSpec with ForAllTestContainer {
       duration = Some("8760h0m0s")
     ),
       Duration.Inf)
+  }
 
-    InfluxConnection.influx = Some(influx)
-    InfluxConnection.dbName = container.database
-    InfluxConnection.rpName = container.retentionPolicy
+  protected def getInflux(subscriptionName: String, listenAddress: String = "address-ignored"): InfluxConnection = {
+    InfluxConnection(
+      subscriptionName,
+      container.database,
+      container.retentionPolicy,
+      "http",
+      listenAddress,
+      0,
+      5,
+      container.address,
+      container.port,
+      container.username,
+      container.password
+    )
+  }
+
+  protected def getInfluxConfigMap(subscriptionName: String, listenAddress: String): Map[String, String] = {
+    Map(
+      "influx.dataSource.subscriptionName" -> subscriptionName,
+      "influx.dataSource.databaseName" -> container.database,
+      "influx.dataSource.retentionPolicyName" -> container.retentionPolicy,
+      "influx.dataSource.listenProtocol" -> "http",
+      "influx.dataSource.listenAddress" -> listenAddress,
+      "influx.dataSource.listenPort" -> "0",
+      "influx.dataSource.listenBacklog" -> "5",
+      "influx.dataSource.serverName" -> container.address,
+      "influx.dataSource.portNumber" -> container.port.toString,
+      "influx.dataSource.user" -> container.username,
+      "influx.dataSource.password" -> container.password,
+      "influx.sink.databaseName" -> container.database,
+      "flink.maxLateness" -> "1"
+    )
+  }
+
+  protected def getInfluxConfig(subscriptionName: String, listenAddress: String): ParameterTool = {
+    ParameterTool.fromMap(getInfluxConfigMap(subscriptionName, listenAddress).asJava)
   }
 
   protected def getSinkFunction: InfluxSinkFunction = {

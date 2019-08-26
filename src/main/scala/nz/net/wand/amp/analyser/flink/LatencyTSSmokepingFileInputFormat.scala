@@ -1,7 +1,6 @@
 package nz.net.wand.amp.analyser.flink
 
 import nz.net.wand.amp.analyser.measurements.LatencyTSSmokeping
-import nz.net.wand.amp.analyser.Logging
 
 import org.apache.flink.api.common.io.GenericCsvInputFormat
 
@@ -12,8 +11,7 @@ import org.apache.flink.api.common.io.GenericCsvInputFormat
   * @see [[https://wand.net.nz/wits/latency/1/]]
   */
 class LatencyTSSmokepingFileInputFormat
-    extends GenericCsvInputFormat[LatencyTSSmokeping]
-    with Logging {
+  extends GenericCsvInputFormat[LatencyTSSmokeping] {
 
   override def readRecord(reuse: LatencyTSSmokeping,
                           bytes: Array[Byte],

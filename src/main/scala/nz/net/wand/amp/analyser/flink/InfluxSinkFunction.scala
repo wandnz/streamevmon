@@ -1,10 +1,9 @@
 package nz.net.wand.amp.analyser.flink
 
-import nz.net.wand.amp.analyser.Configuration
 import nz.net.wand.amp.analyser.events.Event
 
 import org.apache.flink.{configuration => flinkconf}
-import org.apache.flink.configuration.IllegalConfigurationException
+import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction
 import org.apache.flink.streaming.connectors.influxdb.{InfluxDBConfig, InfluxDBSink}
 import org.influxdb.InfluxDBFactory
@@ -19,9 +18,8 @@ import org.influxdb.InfluxDBFactory
   *
   * ==Configuration==
   *
-  * This class is configured first by the `connectors.influx.sink` config key
-  * group, then by `connectors.influx.dataSource` if a key is not found under
-  * `sink`.
+  * This class is configured first by the `influx.sink` config key group, then
+  * by `influx.dataSource` if a key is not found under `sink`.
   *
   * - `serverName`: '''Required'''. The host that is running InfluxDB.
   *
@@ -37,37 +35,21 @@ import org.influxdb.InfluxDBFactory
   * - `databaseName`: The name of the InfluxDB database to create or add to.
   * Default "analyser".
   *
+  * The data is stored under the "autogen" retention policy. Unfortunately, this
+  * cannot be changed.
+  *
   * @see [[https://ci.apache.org/projects/flink/flink-docs-stable/dev/table/sourceSinks.html]]
   * @see [[nz.net.wand.amp.analyser.connectors.InfluxConnection InfluxConnection]]
   */
-class InfluxSinkFunction extends RichSinkFunction[Event] with Configuration {
+class InfluxSinkFunction extends RichSinkFunction[Event] {
 
-  configPrefix = "connectors.influx"
+  private[analyser] var url: String = _
 
-  private[analyser] var url: String = {
-    val address = getConfigString("sink.serverName").getOrElse {
-      getConfigString("dataSource.serverName").getOrElse {
-        throw new IllegalConfigurationException(
-          s"You must specify $configPrefix.sink.serverName or $configPrefix.dataSource.serverName")
-      }
-    }
+  private[analyser] var username: String = _
 
-    val port = getConfigInt("sink.portNumber").getOrElse {
-      getConfigInt("dataSource.portNumber").getOrElse(8086)
-    }
+  private[analyser] var password: String = _
 
-    s"http://$address:$port"
-  }
-
-  private[analyser] var username: String = getConfigString("sink.user").getOrElse {
-    getConfigString("dataSource.user").getOrElse("cuz")
-  }
-
-  private[analyser] var password: String = getConfigString("sink.password").getOrElse {
-    getConfigString("dataSource.user").getOrElse("")
-  }
-  private[analyser] var database: String =
-    getConfigString("sink.databaseName").getOrElse("analyser")
+  private[analyser] var database: String = _
 
   private[this] lazy val sink: InfluxDBSink = new InfluxDBSink(
     InfluxDBConfig
@@ -81,11 +63,45 @@ class InfluxSinkFunction extends RichSinkFunction[Event] with Configuration {
 
   private[this] var open: Boolean = false
 
+  private[this] def getWithFallback(parameters: ParameterTool, key: String): String = {
+    val result = parameters.get(s"influx.sink.$key", "unset-sink-config-option")
+    if (result == "unset-sink-config-option") {
+      parameters.get(s"influx.dataSource.$key", null)
+    }
+    else {
+      result
+    }
+  }
+
+  private[this] def makeUrl(parameters: ParameterTool): String = {
+    val address = {
+      val sinkName = getWithFallback(parameters, "serverName")
+      if (sinkName == null) {
+        throw new RuntimeException(
+          "You must specify the config key 'influx.dataSource.serverName' " +
+            "or 'influx.sink.serverName'.")
+      }
+      sinkName
+    }
+
+    val port = {
+      getWithFallback(parameters, "portNumber").toInt
+    }
+
+    s"http://$address:$port"
+  }
+
   /** Initialisation method for RichFunctions. Occurs before any calls to `invoke()`.
     *
     * @param parameters Contains any configuration from program composition time.
     */
   override def open(parameters: flinkconf.Configuration): Unit = {
+    val p = getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
+    url = makeUrl(p)
+    username = getWithFallback(p, "user")
+    password = getWithFallback(p, "password")
+    database = p.get("influx.sink.databaseName", null)
+
     val db = InfluxDBFactory.connect(url, username, password)
 
     if (!db.databaseExists(database)) {

@@ -1,10 +1,9 @@
 package nz.net.wand.amp.analyser.connectors
 
-import nz.net.wand.amp.analyser.SeedData
-
 import java.sql.DriverManager
 
 import com.dimafeng.testcontainers.{ForAllTestContainer, PostgreSQLContainer}
+import org.apache.flink.api.java.utils.ParameterTool
 import org.scalatest.WordSpec
 import org.squeryl.{Session, SessionFactory}
 import org.squeryl.adapters.PostgreSqlAdapter
@@ -13,11 +12,13 @@ class PostgresContainerSpec extends WordSpec with ForAllTestContainer {
 
   override val container: PostgreSQLContainer = PostgreSQLContainer("postgres:10")
     .configure(db => {
-      db.withUsername(SeedData.postgres.username)
-      db.withPassword(SeedData.postgres.password)
-      db.withDatabaseName(SeedData.postgres.database)
+      val params = ParameterTool.fromPropertiesFile(getClass.getClassLoader.getResourceAsStream("default.properties"))
 
-      db.withInitScript(SeedData.postgres.dataFile)
+      db.withUsername(params.get("postgres.dataSource.user"))
+      db.withPassword(params.get("postgres.dataSource.user"))
+      db.withDatabaseName(params.get("postgres.dataSource.user"))
+
+      db.withInitScript("nntsc.sql")
 
       db.start()
       db.execInContainer(
@@ -41,5 +42,14 @@ class PostgresContainerSpec extends WordSpec with ForAllTestContainer {
           DriverManager.getConnection(container.jdbcUrl, container.username, container.password),
           new PostgreSqlAdapter
       ))
+  }
+
+  protected def getPostgres: PostgresConnection = {
+    PostgresConnection(
+      container.jdbcUrl,
+      container.username,
+      container.password,
+      caching_ttl = 0
+    )
   }
 }

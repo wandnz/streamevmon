@@ -30,10 +30,6 @@ final case class ICMP(
       s"rtts=${rtts.map(x => x.getOrElse("None")).mkString("\"[", ",", "]\"")} " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
-
-  override def enrich(): Option[RichMeasurement] = {
-    MeasurementFactory.enrichMeasurement(this).asInstanceOf[Option[RichICMP]]
-  }
 }
 
 object ICMP extends MeasurementFactory {

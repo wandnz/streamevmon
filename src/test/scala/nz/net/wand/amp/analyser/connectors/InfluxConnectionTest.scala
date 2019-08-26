@@ -1,8 +1,7 @@
 package nz.net.wand.amp.analyser.connectors
 
 import nz.net.wand.amp.analyser.SeedData
-import nz.net.wand.amp.analyser.flink.{MeasurementSubscriptionSourceFunction, MockSourceContext}
-import nz.net.wand.amp.analyser.measurements.{Measurement, MeasurementFactory}
+import nz.net.wand.amp.analyser.measurements.MeasurementFactory
 
 import java.io.{BufferedReader, InputStreamReader}
 import java.net.{ServerSocket, SocketTimeoutException}
@@ -18,6 +17,10 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 class InfluxConnectionTest extends InfluxContainerSpec {
+
+  def checkSubscription(influx: InfluxConnection, subscriptionInfo: SubscriptionInfo, checkPresent: Boolean): Unit = {
+    checkSubscription(influx.influx.get, subscriptionInfo, checkPresent)
+  }
 
   def checkSubscription(
       influx: AhcManagementClient,
@@ -106,59 +109,56 @@ class InfluxConnectionTest extends InfluxContainerSpec {
   }
 
   "InfluxConnection" should {
-    def getExpectedSubscriptionInfo: SubscriptionInfo = {
-      SubscriptionInfo(InfluxConnection.dbName,
+    def getExpectedSubscriptionInfo(influx: InfluxConnection): SubscriptionInfo = {
+      SubscriptionInfo(container.database,
                        Array(
                          Subscription(
-                           InfluxConnection.rpName,
-                           InfluxConnection.subscriptionName,
+                           container.retentionPolicy,
+                           influx.subscriptionName,
                            Destinations.ALL,
-                           InfluxConnection.destinations
+                           influx.destinations
                          )))
     }
 
     "add a subscription" in {
-      InfluxConnection.subscriptionName = "addRemove"
+      val influx = getInflux("addRemove")
 
-      val expected = getExpectedSubscriptionInfo
+      val expected = getExpectedSubscriptionInfo(influx)
 
-      Await.result(InfluxConnection.addSubscription(), Duration.Inf)
+      Await.result(influx.addSubscription(), Duration.Inf)
 
-      checkSubscription(InfluxConnection.influx.get, expected, checkPresent = true)
+      checkSubscription(influx, expected, checkPresent = true)
     }
 
     "remove a subscription" in {
-      val expected = getExpectedSubscriptionInfo
+      val influx = getInflux("addRemove")
+      val expected = getExpectedSubscriptionInfo(influx)
 
-      checkSubscription(InfluxConnection.influx.get, expected, checkPresent = true)
+      checkSubscription(influx, expected, checkPresent = true)
 
-      Await.result(InfluxConnection.dropSubscription(), Duration.Inf)
+      Await.result(influx.dropSubscription(), Duration.Inf)
 
-      checkSubscription(InfluxConnection.influx.get, expected, checkPresent = false)
+      checkSubscription(influx, expected, checkPresent = false)
     }
 
     "clobber an existing subscription" in {
-      InfluxConnection.subscriptionName = "clobber"
+      val influx = getInflux("clobber")
+      val expected = getExpectedSubscriptionInfo(influx)
 
-      val expected = getExpectedSubscriptionInfo
+      Await.result(influx.addSubscription(), Duration.Inf)
 
-      Await.result(InfluxConnection.addSubscription(), Duration.Inf)
+      checkSubscription(influx, expected, checkPresent = true)
 
-      checkSubscription(InfluxConnection.influx.get, expected, checkPresent = true)
+      val oldAddress = influx.listenAddress
 
-      val oldAddress = InfluxConnection.listenAddress
+      val newInflux = getInflux("clobber", "different-address")
+      val newExpected = getExpectedSubscriptionInfo(newInflux)
+      Await.result(newInflux.addOrUpdateSubscription(), Duration.Inf)
 
-      // This forces the subscription to be different from the existing one
-      InfluxConnection.listenAddress = "fakeAddress.local"
-      val newExpected = getExpectedSubscriptionInfo
-      Await.result(InfluxConnection.addOrUpdateSubscription(), Duration.Inf)
+      checkSubscription(influx, expected, checkPresent = false)
+      checkSubscription(newInflux, newExpected, checkPresent = true)
 
-      checkSubscription(InfluxConnection.influx.get, expected, checkPresent = false)
-      checkSubscription(InfluxConnection.influx.get, newExpected, checkPresent = true)
-
-      Await.result(InfluxConnection.dropSubscription(), Duration.Inf)
-
-      InfluxConnection.listenAddress = oldAddress
+      Await.result(newInflux.dropSubscription(), Duration.Inf)
     }
   }
 
@@ -195,15 +195,15 @@ class InfluxConnectionTest extends InfluxContainerSpec {
   "Subscription listener" should {
     var isRunning: Boolean = false
 
-    def getListener: ServerSocket = {
-      InfluxConnection.getSubscriptionListener match {
+    def getListener(influx: InfluxConnection): ServerSocket = {
+      influx.getSubscriptionListener match {
         case Some(x) => x.setSoTimeout(100); x
         case None    => fail("No subscription listener obtained")
       }
     }
 
     "receive valid data" in {
-      InfluxConnection.subscriptionName = "receiveData"
+      val influx = getInflux("receiveData", "130.217.250.59")
 
       sendDataAnd(
         afterSend = { () =>
@@ -211,7 +211,7 @@ class InfluxConnectionTest extends InfluxContainerSpec {
           isRunning = false
         },
         withSend = { () =>
-          val ssock = getListener
+          val ssock = getListener(influx)
           println(s"Listening on ${ssock.getInetAddress}")
           var gotData = false
 
@@ -240,27 +240,9 @@ class InfluxConnectionTest extends InfluxContainerSpec {
 
           assert(gotData)
 
-          InfluxConnection.stopSubscriptionListener(ssock)
+          influx.stopSubscriptionListener(ssock)
         }
       )
-    }
-  }
-
-  "MeasurementSubscriptionSourceFunction" should {
-    "receive valid data" in {
-      InfluxConnection.subscriptionName = "mockMeasurementSourceContext"
-
-      val func = new MeasurementSubscriptionSourceFunction
-      val ctx = new MockSourceContext[Measurement] {
-        override var process: Seq[Measurement] => Unit = { elements =>
-          assert(elements.nonEmpty)
-        }
-      }
-
-      sendDataAnd(afterSend = { () =>
-        func.cancel()
-        ctx.close()
-      }, withSend = () => func.run(ctx))
     }
   }
 }

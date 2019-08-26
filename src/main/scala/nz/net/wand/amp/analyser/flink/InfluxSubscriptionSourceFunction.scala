@@ -1,6 +1,6 @@
 package nz.net.wand.amp.analyser.flink
 
-import nz.net.wand.amp.analyser.{Configuration, Logging}
+import nz.net.wand.amp.analyser.Logging
 import nz.net.wand.amp.analyser.connectors.InfluxConnection
 
 import java.io.{BufferedReader, InputStreamReader}
@@ -8,7 +8,7 @@ import java.net.{ServerSocket, SocketTimeoutException}
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 
-import org.apache.flink.api.common.functions.StoppableFunction
+import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 import org.apache.flink.streaming.api.watermark.Watermark
 
@@ -36,6 +36,14 @@ import scala.concurrent.duration._
   * late data is dropped.
   * Default 1.
   *
+  * If a custom configuration is desired, the overrideConfig function can be
+  * called before any calls to [[run]]. This will replace the configuration
+  * obtained from Flink's global configuration storage.
+  *
+  * This custom configuration is also used to configure the
+  * [[nz.net.wand.amp.analyser.connectors.InfluxConnection InfluxConnection]]
+  * used.
+  *
   * @tparam T The type used to represent the data received.
   *
   * @see [[MeasurementSubscriptionSourceFunction]]
@@ -43,17 +51,16 @@ import scala.concurrent.duration._
   */
 abstract class InfluxSubscriptionSourceFunction[T]
   extends GloballyStoppableFunction[T]
-          with StoppableFunction
-          with Logging
-          with Configuration {
+          with Logging {
 
   @volatile
   @transient private[this] var isRunning = false
 
   private[this] var listener: Option[ServerSocket] = Option.empty
 
-  configPrefix = "flink"
-  @transient private[this] val maxLateness: Int = getConfigInt("maxLateness").getOrElse(1)
+  @transient private[this] var maxLateness: Int = 0
+
+  @transient private[this] var influxConnection: Option[InfluxConnection] = None //customInfluxConnection
 
   // We reuse the class loader for our ActorSystem to get reliable behaviour
   // during tests in the sbt shell.
@@ -71,25 +78,43 @@ abstract class InfluxSubscriptionSourceFunction[T]
     */
   protected[this] def processLine(ctx: SourceFunction.SourceContext[T], line: String): Option[T]
 
+  private[this] var overrideParams: Option[ParameterTool] = None
+
+  private[flink] def overrideConfig(config: ParameterTool): Unit = {
+    overrideParams = Some(config)
+  }
+
   /** Starts the source, setting up the listen server.
     *
     * @param ctx The SourceContext associated with the current execution.
     */
   override def run(ctx: SourceFunction.SourceContext[T]): Unit = {
+    if (overrideParams.isDefined) {
+      influxConnection = Some(InfluxConnection(overrideParams.get))
+      maxLateness = overrideParams.get.getInt("flink.maxLateness")
+    }
+    else {
+      val params: ParameterTool = getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
+      influxConnection = Some(InfluxConnection(params))
+      maxLateness = params.getInt("flink.maxLateness")
+    }
+
     if (!startListener()) {
       logger.error(s"Failed to start listener.")
     }
     else {
-      logger.info("Started listener")
+      logger.debug("Started listener")
 
       val subscribeFuture = Future(listen(ctx))
 
       Await.result(subscribeFuture, Duration.Inf)
 
       stopListener()
-      logger.info("Stopped listener")
-      InfluxConnection.disconnect()
+      logger.debug("Stopped listener")
     }
+
+    influxConnection.foreach(_.disconnect())
+    influxConnection = None
   }
 
   /** Listens for new events. Calls [[processLine]] once per data line gathered.
@@ -132,7 +157,7 @@ abstract class InfluxSubscriptionSourceFunction[T]
       }
     }
 
-    logger.info("No longer listening")
+    logger.debug("No longer listening")
   }
 
   /** Submits a watermark to Flink after the configured amount of time.
@@ -147,25 +172,27 @@ abstract class InfluxSubscriptionSourceFunction[T]
       }
   }
 
-  /** Stops the source, allowing the listen loop to finish.
-    */
+  /** Stops the source, allowing the listen loop to finish. */
   override def cancel(): Unit = {
     logger.info("Stopping listener...")
     isRunning = false
   }
 
-  /** Stops the source, allowing the listen loop to finish.
-    */
-  override def stop(): Unit = cancel()
+  /** Stops the source, allowing the listen loop to finish. */
+  def stop(): Unit = cancel()
 
   private[this] def startListener(): Boolean = {
-    listener = InfluxConnection.getSubscriptionListener
-    listener match {
-      case Some(_) => true
-      case None    => false
+    influxConnection match {
+      case Some(c) =>
+        listener = c.getSubscriptionListener
+        listener match {
+          case Some(_) => true
+          case None => false
+        }
+      case None => false
     }
   }
 
   private[this] def stopListener(): Unit =
-    listener.foreach(l => InfluxConnection.stopSubscriptionListener(l))
+    listener.foreach(l => influxConnection.foreach(_.stopSubscriptionListener(l)))
 }
