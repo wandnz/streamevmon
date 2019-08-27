@@ -5,7 +5,7 @@
   </component>
   <component name="ScaladocSettings">
     <option name="outputDir" value="$USER_HOME$/Scratch/stratus/flink-amp-analyser/out/docs" />
-    <option name="additionalFlags" value="-skip-packages sbt:com.softwaremill.sttp" />
+    <option name="additionalFlags" value="-skip-packages sbt:com.softwaremill.sttp:scalacache" />
     <option name="maxHeapSize" value="" />
     <option name="docTitle" value="Flink AMP Analyser documentation" />
     <option name="verbose" value="false" />
