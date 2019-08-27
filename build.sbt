@@ -33,7 +33,8 @@ val postgresDependencies = Seq(
 val scalaCacheVersion = "0.28.0"
 val cacheDependencies = Seq(
   "com.github.cb372" %% "scalacache-core" % scalaCacheVersion,
-  "com.github.cb372" %% "scalacache-caffeine" % scalaCacheVersion
+  "com.github.cb372" %% "scalacache-caffeine" % scalaCacheVersion,
+  "com.github.cb372" %% "scalacache-memcached" % scalaCacheVersion
 )
 
 val logDependencies = Seq(

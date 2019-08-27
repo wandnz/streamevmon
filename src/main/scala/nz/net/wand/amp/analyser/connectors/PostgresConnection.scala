@@ -33,7 +33,7 @@ object PostgresConnection extends Caching {
       p.get(s"$configPrefix.user"),
       p.get(s"$configPrefix.password"),
       p.getInt("caching.ttl")
-    )
+    ).withMemcachedIfEnabled(p)
   }
 
   /** Creates a new PostgresConnection object from a JDBC URL along with the
@@ -153,4 +153,11 @@ case class PostgresConnection(
         }
       }
     )
+
+  def withMemcachedIfEnabled(p: ParameterTool): PostgresConnection = {
+    if (p.getBoolean("caching.memcached.enabled")) {
+      useMemcached(p)
+    }
+    this
+  }
 }
