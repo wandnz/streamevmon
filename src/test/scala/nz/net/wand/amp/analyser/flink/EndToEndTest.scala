@@ -6,7 +6,6 @@ import nz.net.wand.amp.analyser.events.{Event, ThresholdEvent}
 import nz.net.wand.amp.analyser.measurements.Measurement
 
 import com.github.fsanaulla.chronicler.ahc.io.InfluxIO
-import jawn.ast.{JArray, JNum, JString}
 import org.apache.flink.streaming.api.scala.{StreamExecutionEnvironment, _}
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala.function.ProcessAllWindowFunction
@@ -14,6 +13,7 @@ import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindo
 import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 import org.apache.flink.util.Collector
+import org.typelevel.jawn.ast.{JArray, JNum, JString}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._

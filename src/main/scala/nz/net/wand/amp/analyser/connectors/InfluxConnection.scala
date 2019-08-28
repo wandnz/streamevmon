@@ -159,8 +159,8 @@ case class InfluxConnection(
   /** The value of the DESTINATIONS field of the subscription that is created
     * in InfluxDB.
     */
-  private[connectors] def destinations: Seq[String] =
-    Seq(s"$listenProtocol://$listenAddress:$obtainedPort")
+  private[connectors] def destinations: Array[String] =
+    Array(s"$listenProtocol://$listenAddress:$obtainedPort")
 
   private[connectors] def listenInet: InetAddress = InetAddress.getByName(listenAddress)
 

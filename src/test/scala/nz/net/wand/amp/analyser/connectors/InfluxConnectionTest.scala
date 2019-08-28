@@ -31,11 +31,20 @@ class InfluxConnectionTest extends InfluxContainerSpec {
       influx.showSubscriptionsInfo.map {
         case Left(a) => fail(s"Checking subscription failed: $a")
         case Right(b) =>
+          val e = subscriptionInfo.subscriptions.head
           if (checkPresent) {
             val rightDb = b.filter(c => subscriptionInfo.dbName == c.dbName)
             assert(rightDb.length >= 0)
             rightDb.foreach { c =>
-              assert(c.subscriptions.contains(subscriptionInfo.subscriptions.head))
+              // We have to do a deep comparison here since Chronicler changed
+              // their SubscriptionInfo to use an Array instead of a Seq, which
+              // breaks simple comparisons.
+              assert(c.subscriptions.filter { s =>
+                s.rpName == e.rpName &&
+                  s.subsName == e.subsName &&
+                  s.destType == e.destType &&
+                  s.addresses.deep == e.addresses.deep
+              }.nonEmpty)
             }
           }
           else {
@@ -45,7 +54,12 @@ class InfluxConnectionTest extends InfluxContainerSpec {
             }
             else {
               rightDb.foreach { c =>
-                assert(!c.subscriptions.contains(subscriptionInfo.subscriptions.head))
+                assert(c.subscriptions.filter { s =>
+                  s.rpName == e.rpName &&
+                    s.subsName == e.subsName &&
+                    s.destType == e.destType &&
+                    s.addresses.deep == e.addresses.deep
+                }.isEmpty)
               }
             }
           }
@@ -71,7 +85,7 @@ class InfluxConnectionTest extends InfluxContainerSpec {
         InfluxMng(container.address, container.port, Some(container.credentials))
 
       val subscriptionName = "basicAuthAddRemove"
-      val destinations = Seq("http://localhost:3456")
+      val destinations = Array("http://localhost:3456")
 
       val expected = SubscriptionInfo(container.database,
                                       Array(

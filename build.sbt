@@ -1,6 +1,6 @@
 ThisBuild / resolvers ++= Seq(
-    "Apache Development Snapshot Repository" at "https://repository.apache.org/content/repositories/snapshots/",
-    Resolver.mavenLocal
+  "Apache Development Snapshot Repository" at "https://repository.apache.org/content/repositories/snapshots/",
+  Resolver.mavenLocal
 )
 
 name := "Flink AMP Analyser"
@@ -9,15 +9,16 @@ version := "0.1-SNAPSHOT"
 
 organization := "nz.net.wand"
 
-ThisBuild / scalaVersion := "2.11.12"
+ThisBuild / scalaVersion := "2.12.9"
 
-val flinkVersion = "1.8.1"
+val flinkVersion = "1.9.0"
 val flinkDependencies = Seq(
   "org.apache.flink" %% "flink-scala" % flinkVersion,
   "org.apache.flink" %% "flink-streaming-scala" % flinkVersion,
-  "org.apache.flink" %% "flink-table-api-scala" % flinkVersion)
+  "org.apache.flink" %% "flink-table-api-scala" % flinkVersion
+)
 
-val chroniclerVersion = "0.5.1"
+val chroniclerVersion = "0.5.5"
 val influxDependencies = Seq(
   "com.github.fsanaulla" %% "chronicler-ahc-io" % chroniclerVersion,
   "com.github.fsanaulla" %% "chronicler-ahc-management" % chroniclerVersion,
@@ -25,8 +26,8 @@ val influxDependencies = Seq(
 )
 
 val postgresDependencies = Seq(
-  "org.postgresql" % "postgresql" % "9.4.1208",
-  "org.squeryl" %% "squeryl" % "0.9.9"
+  "org.postgresql" % "postgresql" % "9.4.1212",
+  "org.squeryl" %% "squeryl" % "0.9.14"
 )
 
 val scalaCacheVersion = "0.28.0"
@@ -37,15 +38,14 @@ val cacheDependencies = Seq(
 )
 
 val logDependencies = Seq(
-  "org.slf4j" % "slf4j-simple" % "1.7.9",
-  "com.typesafe.akka" %% "akka-actor" % "2.4.20"
+  "org.slf4j" % "slf4j-simple" % "1.7.28"
 )
 
 val testDependencies = Seq(
   "org.scalatest" %% "scalatest" % "3.0.8" % "test",
+  "com.dimafeng" %% "testcontainers-scala" % "0.30.0" % "test",
   "org.testcontainers" % "postgresql" % "1.12.0" % "test",
-  "org.testcontainers" % "influxdb" % "1.12.0" % "test",
-  "com.dimafeng" %% "testcontainers-scala" % "0.29.0" % "test"
+  "org.testcontainers" % "influxdb" % "1.12.0" % "test"
 )
 
 lazy val root = (project in file(".")).
@@ -69,6 +69,8 @@ Compile / run := Defaults.runTask(Compile / run / fullClasspath,
 Compile / run / fork := true
 Global / cancelable := true
 
+mainClass in assembly := Some("nz.net.wand.amp.analyser.StreamConsumer")
+
 // Make tests in sbt shell more reliable
 fork := true
 
@@ -76,7 +78,7 @@ fork := true
 test in assembly := {}
 
 // exclude Scala library from assembly
-assembly / assemblyOption  := (assembly / assemblyOption).value.copy(includeScala = false)
+assembly / assemblyOption := (assembly / assemblyOption).value.copy(includeScala = false)
 
 // exclude META-INF and use correct behaviour for duplicate library files
 assemblyMergeStrategy in assembly := {
