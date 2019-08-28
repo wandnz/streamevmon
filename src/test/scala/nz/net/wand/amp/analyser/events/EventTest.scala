@@ -5,15 +5,18 @@ import nz.net.wand.amp.analyser.SeedData
 import org.scalatest.WordSpec
 
 class EventTest extends WordSpec {
-  "Children of Event.asInfluxPoint should work" when {
-    "type is ThresholdEvent" in {
-      val e = SeedData.thresholdEvent.influxPoint
-      val r = SeedData.thresholdEvent.event.asInfluxPoint
 
-      assert(r.getMeasurement === e.getMeasurement)
-      assert(r.getTimestamp === e.getTimestamp)
-      assert(r.getTags === e.getTags)
-      assert(r.getFields === e.getFields)
+  "Events should become strings appropriately" when {
+    "type is ThresholdEvent" when {
+      "some tags are present" in {
+        assert(SeedData.thresholdEvent.withTagsAsString === SeedData.thresholdEvent.withTags.toString)
+        assert(SeedData.thresholdEvent.withTagsAsLineProtocol === SeedData.thresholdEvent.withTags.toLineProtocol)
+      }
+
+      "no tags are present" in {
+        assert(SeedData.thresholdEvent.withoutTagsAsString === SeedData.thresholdEvent.withoutTags.toString)
+        assert(SeedData.thresholdEvent.withoutTagsAsLineProtocol === SeedData.thresholdEvent.withoutTags.toLineProtocol)
+      }
     }
   }
 }

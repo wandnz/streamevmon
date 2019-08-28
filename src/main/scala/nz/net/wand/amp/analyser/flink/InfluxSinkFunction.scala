@@ -2,19 +2,18 @@ package nz.net.wand.amp.analyser.flink
 
 import nz.net.wand.amp.analyser.events.Event
 
+import com.github.fsanaulla.chronicler.ahc.io.AhcIOClient
+import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
 import org.apache.flink.{configuration => flinkconf}
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction
-import org.apache.flink.streaming.connectors.influxdb.{InfluxDBConfig, InfluxDBSink}
-import org.influxdb.InfluxDBFactory
+
+import scala.concurrent.Await
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
 
 /** A [[https://ci.apache.org/projects/flink/flink-docs-stable/api/java/org/apache/flink/streaming/api/functions/sink/SinkFunction.html SinkFunction]]
   * which stores Event objects in InfluxDB.
-  *
-  * This class is a wrapper around InfluxDBSink provided by
-  * [[https://github.com/apache/bahir-flink/tree/master/flink-connector-influxdb org.apache.bahir:flink-connector-influxdb]]
-  * which allows us to sink our own [[nz.net.wand.amp.analyser.events.Event Events]] by utilising their
-  * [[nz.net.wand.amp.analyser.events.Event.asInfluxPoint asInfluxPoint]] function.
   *
   * ==Configuration==
   *
@@ -43,7 +42,9 @@ import org.influxdb.InfluxDBFactory
   */
 class InfluxSinkFunction extends RichSinkFunction[Event] {
 
-  private[analyser] var url: String = _
+  private[analyser] var host: String = _
+
+  private[analyser] var port: Int = _
 
   private[analyser] var username: String = _
 
@@ -51,17 +52,7 @@ class InfluxSinkFunction extends RichSinkFunction[Event] {
 
   private[analyser] var database: String = _
 
-  private[this] lazy val sink: InfluxDBSink = new InfluxDBSink(
-    InfluxDBConfig
-      .builder(
-        url,
-        username,
-        password,
-        database
-      )
-      .build())
-
-  private[this] var open: Boolean = false
+  private[this] var influx: AhcIOClient = _
 
   private[this] def getWithFallback(parameters: ParameterTool, key: String): String = {
     val result = parameters.get(s"influx.sink.$key", "unset-sink-config-option")
@@ -73,22 +64,14 @@ class InfluxSinkFunction extends RichSinkFunction[Event] {
     }
   }
 
-  private[this] def makeUrl(parameters: ParameterTool): String = {
-    val address = {
-      val sinkName = getWithFallback(parameters, "serverName")
-      if (sinkName == null) {
-        throw new RuntimeException(
-          "You must specify the config key 'influx.dataSource.serverName' " +
-            "or 'influx.sink.serverName'.")
-      }
-      sinkName
+  private[this] def getHost(p: ParameterTool): String = {
+    val host = getWithFallback(p, "serverName")
+    if (host == null) {
+      throw new RuntimeException(
+        "You must specify the config key 'influx.dataSource.serverName' " +
+          "or 'influx.sink.serverName'.")
     }
-
-    val port = {
-      getWithFallback(parameters, "portNumber").toInt
-    }
-
-    s"http://$address:$port"
+    host
   }
 
   /** Initialisation method for RichFunctions. Occurs before any calls to `invoke()`.
@@ -97,28 +80,26 @@ class InfluxSinkFunction extends RichSinkFunction[Event] {
     */
   override def open(parameters: flinkconf.Configuration): Unit = {
     val p = getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
-    url = makeUrl(p)
+
+    host = getHost(p)
+    port = getWithFallback(p, "portNumber").toInt
     username = getWithFallback(p, "user")
     password = getWithFallback(p, "password")
-    database = p.get("influx.sink.databaseName", null)
+    database = p.get("influx.sink.databaseName")
 
-    val db = InfluxDBFactory.connect(url, username, password)
-
-    if (!db.databaseExists(database)) {
-      db.createDatabase(database)
-    }
-
-    sink.open(parameters)
-    open = true
+    influx = new AhcIOClient(
+      host,
+      port,
+      false,
+      Some(InfluxCredentials(username, password)),
+      None
+    )
   }
 
   /** Teardown method for RichFunctions. Occurs after all calls to `invoke()`.
     */
   override def close(): Unit = {
-    if (open && sink != null) {
-      sink.close()
-      open = false
-    }
+    influx.close()
   }
 
   /** Called when new data arrives to the sink, and passes it to InfluxDB via bahir InfluxDBSink.
@@ -126,6 +107,8 @@ class InfluxSinkFunction extends RichSinkFunction[Event] {
     * @param value The data to send to InfluxDB.
     */
   override def invoke(value: Event): Unit = {
-    sink.invoke(value.asInfluxPoint)
+    val meas = influx.measurement[Event](database, value.measurementName)
+
+    Await.result(meas.write(value)(Event.writer), Duration.Inf)
   }
 }

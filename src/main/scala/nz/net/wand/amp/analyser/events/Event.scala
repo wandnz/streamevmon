@@ -2,7 +2,8 @@ package nz.net.wand.amp.analyser.events
 
 import java.time.Instant
 
-import org.apache.flink.streaming.connectors.influxdb.InfluxDBPoint
+import com.github.fsanaulla.chronicler.core.alias.ErrorOr
+import com.github.fsanaulla.chronicler.core.model.InfluxWriter
 
 /** Parent type for all anomalous events. These describe anomalies detected in
   * network measurements which may indicate that something is wrong with the
@@ -26,9 +27,31 @@ abstract class Event {
   // TODO: Should this specify event time or detection time? Should we include both?
   val time: Instant
 
-  /** Converts this object into a form that can be stored in InfluxDB.
+  /** The name of the measurement, to be put into InfluxDB. */
+  val measurementName: String
+
+  /** Converts a Map of tags into the relevant portion of a Line Protocol Format
+    * string.
     *
-    * Used by [[nz.net.wand.amp.analyser.flink.InfluxSinkFunction InfluxSinkFunction]].
+    * @param t The tags to parse.
+    *
+    * @see [[https://docs.influxdata.com/influxdb/v1.7/write_protocols/line_protocol_reference/]]
     */
-  def asInfluxPoint: InfluxDBPoint
+  protected def getTagString(t: Map[String, String]): String = tags.map({ case (k, v) => s"$k=$v" }).mkString(",")
+
+  /** Converts the Event into InfluxDB Line Protocol Format.
+    *
+    * @see [[https://docs.influxdata.com/influxdb/v1.7/write_protocols/line_protocol_reference/]]
+    */
+  def toLineProtocol: String
+}
+
+/** Conversion util for Chronicler database writes.
+  */
+object Event {
+  implicit val writer: InfluxWriter[Event] = EventWriter()
+
+  private case class EventWriter() extends InfluxWriter[Event] {
+    override def write(obj: Event): ErrorOr[String] = Right(obj.toLineProtocol)
+  }
 }

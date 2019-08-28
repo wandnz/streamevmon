@@ -113,10 +113,10 @@ class EndToEndTest extends InfluxContainerSpec {
       sourceFunction.shutdownAll()
 
       // Check that the data is in InfluxDB after giving it a bit of time to get there.
-      Thread.sleep(1000)
+      Thread.sleep(2000)
 
       Await.result(
-        db.readJson(s"SELECT * FROM ${ThresholdEvent.measurement_name}")
+        db.readJson(s"SELECT * FROM ${ThresholdEvent.measurementName}")
           .map(e => {
             if (e.isLeft) {
               println(e)
@@ -128,7 +128,6 @@ class EndToEndTest extends InfluxContainerSpec {
       )
     }
   }
-
 
   "MeasurementSubscriptionSourceFunction" should {
 
@@ -161,7 +160,7 @@ class EndToEndTest extends InfluxContainerSpec {
       // TODO: Need a real address here
       val influxConfig = getInfluxConfig("mockMeasurementSourceContext")
 
-      def setEmpty(boolean: Boolean): Unit = MeasurementSubscriptionSourceFunctionTest.noDataReceived = boolean
+      def setEmpty(boolean: Boolean): Unit = EndToEndTest.noDataReceived = boolean
 
       val func = new MeasurementSubscriptionSourceFunction
       func.overrideConfig(influxConfig)
@@ -177,11 +176,11 @@ class EndToEndTest extends InfluxContainerSpec {
         ctx.close()
       }, withSend = () => func.run(ctx))
 
-      assert(!MeasurementSubscriptionSourceFunctionTest.noDataReceived)
+      assert(!EndToEndTest.noDataReceived)
     }
   }
 }
 
-private object MeasurementSubscriptionSourceFunctionTest {
+private object EndToEndTest {
   var noDataReceived = false
 }

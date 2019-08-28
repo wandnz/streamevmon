@@ -1,10 +1,7 @@
 package nz.net.wand.amp.analyser.events
 
 import java.time.Instant
-
-import org.apache.flink.streaming.connectors.influxdb.InfluxDBPoint
-
-import scala.collection.JavaConversions.mapAsJavaMap
+import java.util.concurrent.TimeUnit
 
 /** Represents a simple threshold anomaly, such as a ping test having a higher
   * latency than expected.
@@ -15,19 +12,34 @@ case class ThresholdEvent(
     time: Instant
 ) extends Event {
 
-  override def asInfluxPoint: InfluxDBPoint = {
-    new InfluxDBPoint(
-      ThresholdEvent.measurement_name,
-      time.toEpochMilli,
-      mapAsJavaMap(tags),
-      mapAsJavaMap(
-        Map[String, Object](
-          "severity" -> new Integer(severity)
-        ))
-    )
+  override final val measurementName: String = ThresholdEvent.measurementName
+
+  override def toLineProtocol: String = {
+    s"${getTagString(tags)}${
+      if (tags.nonEmpty) {
+        " "
+      }
+      else {
+        ""
+      }
+    }" +
+      s"severity=${severity}i " +
+      TimeUnit.MILLISECONDS.toNanos(time.toEpochMilli)
+  }
+
+  override def toString: String = {
+    s"$measurementName" + {
+      if (tags.nonEmpty) {
+        ","
+      }
+      else {
+        " "
+      }
+    } +
+      toLineProtocol
   }
 }
 
 object ThresholdEvent {
-  final val measurement_name = "threshold_events"
+  final val measurementName = "threshold_events"
 }

@@ -73,7 +73,8 @@ class InfluxContainerSpec extends WordSpec with ForAllTestContainer {
   protected def getSinkFunction: InfluxSinkFunction = {
     val sink = new InfluxSinkFunction
 
-    sink.url = s"http://${container.address}:${container.port}"
+    sink.host = container.address
+    sink.port = container.port
     sink.username = container.username
     sink.password = container.password
     sink.database = container.database

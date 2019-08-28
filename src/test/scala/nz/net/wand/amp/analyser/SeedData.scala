@@ -6,10 +6,6 @@ import nz.net.wand.amp.analyser.measurements._
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 
-import org.apache.flink.streaming.connectors.influxdb.InfluxDBPoint
-
-import scala.collection.JavaConversions.mapAsJavaMap
-
 object SeedData {
 
   object icmp {
@@ -328,20 +324,25 @@ object SeedData {
 
   object thresholdEvent {
 
-    val event: ThresholdEvent = ThresholdEvent(
+    val withTags: ThresholdEvent = ThresholdEvent(
+      severity = 10,
+      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
+      tags = Map(
+        "stream" -> "1",
+        "type" -> "test"
+      )
+    )
+
+    val withTagsAsString: String = s"${ThresholdEvent.measurementName},stream=1,type=test severity=10i 1564713045000000000"
+    val withTagsAsLineProtocol: String = "stream=1,type=test severity=10i 1564713045000000000"
+
+    val withoutTags: ThresholdEvent = ThresholdEvent(
       severity = 10,
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L))
     )
 
-    val influxPoint: InfluxDBPoint = new InfluxDBPoint(
-      ThresholdEvent.measurement_name,
-      event.time.toEpochMilli,
-      mapAsJavaMap(Map()),
-      mapAsJavaMap(
-        Map[String, Object](
-          "severity" -> new Integer(event.severity)
-        ))
-    )
+    val withoutTagsAsString: String = s"${ThresholdEvent.measurementName} severity=10i 1564713045000000000"
+    val withoutTagsAsLineProtocol: String = "severity=10i 1564713045000000000"
   }
 
   object latencyTs {

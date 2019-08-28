@@ -15,8 +15,7 @@ val flinkVersion = "1.8.1"
 val flinkDependencies = Seq(
   "org.apache.flink" %% "flink-scala" % flinkVersion,
   "org.apache.flink" %% "flink-streaming-scala" % flinkVersion,
-  "org.apache.flink" %% "flink-table-api-scala" % flinkVersion,
-  "org.apache.bahir" %% "flink-connector-influxdb" % "1.1-SNAPSHOT")
+  "org.apache.flink" %% "flink-table-api-scala" % flinkVersion)
 
 val chroniclerVersion = "0.5.1"
 val influxDependencies = Seq(
