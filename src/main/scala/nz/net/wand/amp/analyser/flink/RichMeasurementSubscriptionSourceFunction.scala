@@ -26,7 +26,6 @@ class RichMeasurementSubscriptionSourceFunction
     result match {
       case Some(x) =>
         ctx.collectWithTimestamp(x, x.time.toEpochMilli)
-        submitWatermark(ctx, x.time)
       case None => logger.error(s"Entry failed to parse: $line")
     }
     result

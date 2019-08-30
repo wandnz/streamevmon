@@ -7,6 +7,7 @@ import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows
 import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.TimeCharacteristic
+import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor
 
 /** Default entrypoint.
   *
@@ -29,8 +30,13 @@ object StreamConsumer extends Logging {
     val measurementStream = env.addSource(sourceFunction)
       .name("InfluxDB Subscription Rich Measurement Source Function")
 
+    val streamWithWatermarks = measurementStream
+      .assignTimestampsAndWatermarks(new BoundedOutOfOrdernessTimestampExtractor[RichMeasurement](Time.seconds(windowSize)) {
+        override def extractTimestamp(element: RichMeasurement): Long = element.time.toEpochMilli
+      })
+
     val measurementWindows =
-      measurementStream.windowAll(TumblingEventTimeWindows.of(Time.seconds(windowSize)))
+      streamWithWatermarks.windowAll(TumblingEventTimeWindows.of(Time.seconds(windowSize)))
 
     val eventStream = measurementWindows.process(processFunction)
       .name("Simple Rich ICMP Threshold Filter")

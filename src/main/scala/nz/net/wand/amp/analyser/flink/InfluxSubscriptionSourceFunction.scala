@@ -5,12 +5,9 @@ import nz.net.wand.amp.analyser.connectors.InfluxConnection
 
 import java.io.{BufferedReader, InputStreamReader}
 import java.net.{ServerSocket, SocketTimeoutException}
-import java.time.Instant
-import java.util.concurrent.TimeUnit
 
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.streaming.api.functions.source.SourceFunction
-import org.apache.flink.streaming.api.watermark.Watermark
 
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -22,10 +19,6 @@ import scala.concurrent.duration._
   * datapoint received. The line is in InfluxDB's
   * [[https://docs.influxdata.com/influxdb/v1.7/write_protocols/line_protocol_reference/ Line Protocol]]
   * format.
-  *
-  * Any implementations should call [[submitWatermark]] with the event time
-  * of each point of data they receive. They should use ctx.collectWithTimestamp
-  * to submit the data itself.
   *
   * ==Configuration==
   *
@@ -60,13 +53,7 @@ abstract class InfluxSubscriptionSourceFunction[T]
 
   @transient private[this] var maxLateness: Int = 0
 
-  @transient private[this] var influxConnection: Option[InfluxConnection] = None //customInfluxConnection
-
-  // We reuse the class loader for our ActorSystem to get reliable behaviour
-  // during tests in the sbt shell.
-  @transient private[this] lazy val ourClassLoader: ClassLoader = this.getClass.getClassLoader
-  @transient private[this] lazy val actorSystem =
-    akka.actor.ActorSystem("watermarkEmitter", classLoader = Some(ourClassLoader))
+  @transient private[this] var influxConnection: Option[InfluxConnection] = None
 
   /** Transforms a single line received from InfluxDB in Line Protocol format
     * into an object of type T.
@@ -158,18 +145,6 @@ abstract class InfluxSubscriptionSourceFunction[T]
     }
 
     logger.debug("No longer listening")
-  }
-
-  /** Submits a watermark to Flink after the configured amount of time.
-    *
-    * @param ctx  The SourceContext associated with the current execution.
-    * @param time The time to submit a watermark for.
-    */
-  protected[this] def submitWatermark(ctx: SourceFunction.SourceContext[T], time: Instant): Unit = {
-    actorSystem.scheduler
-      .scheduleOnce(maxLateness.seconds) {
-        ctx.emitWatermark(new Watermark(time.toEpochMilli + TimeUnit.SECONDS.toMillis(maxLateness)))
-      }
   }
 
   /** Stops the source, allowing the listen loop to finish. */
