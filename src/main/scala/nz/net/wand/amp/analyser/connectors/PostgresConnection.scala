@@ -6,6 +6,7 @@ import nz.net.wand.amp.analyser.measurements._
 import java.sql.DriverManager
 
 import org.apache.flink.api.java.utils.ParameterTool
+import org.postgresql.util.PSQLException
 import org.squeryl.{Session, SessionFactory}
 import org.squeryl.adapters.PostgreSqlAdapter
 
@@ -113,18 +114,29 @@ case class PostgresConnection(
     s"jdbc:postgresql://$host:$port/$databaseName?loggerLevel=OFF"
   }
 
-  private[this] def getOrInitSession(): Unit = {
+  private[this] def getOrInitSession(): Boolean = {
     SessionFactory.concreteFactory match {
-      case Some(_) =>
+      case Some(_) => true
       case None =>
-        SessionFactory.concreteFactory = Some(
-          () => {
-            Class.forName("org.postgresql.Driver")
-            Session.create(
-              DriverManager.getConnection(jdbcUrl, user, password),
-              new PostgreSqlAdapter
-            )
-          })
+        SessionFactory.concreteFactory = {
+          try {
+            DriverManager.getConnection(jdbcUrl, user, password)
+
+            Some(() => {
+              Class.forName("org.postgresql.Driver")
+              Session.create(
+                DriverManager.getConnection(jdbcUrl, user, password),
+                new PostgreSqlAdapter
+              )
+            })
+          }
+          catch {
+            case e: PSQLException =>
+              logger.error(s"Could not initialise PostgreSQL session! $e")
+              None
+          }
+        }
+        SessionFactory.concreteFactory.isDefined
     }
   }
 
@@ -134,25 +146,35 @@ case class PostgresConnection(
     *
     * @return The metadata if successful, otherwise None.
     */
-  def getMeta(base: Measurement): Option[MeasurementMeta] =
-    getWithCache(
-      s"${base.getClass.getSimpleName}.${base.stream}",
+  def getMeta(base: Measurement): Option[MeasurementMeta] = {
+    val cacheKey = s"${base.getClass.getSimpleName}.${base.stream}"
+    val result: Option[MeasurementMeta] = getWithCache(
+      cacheKey,
       ttl,
       {
-        getOrInitSession()
-        import nz.net.wand.amp.analyser.connectors.PostgresSchema._
-        import nz.net.wand.amp.analyser.connectors.SquerylEntrypoint._
+        if (!getOrInitSession()) {
+          None
+        }
+        else {
+          import nz.net.wand.amp.analyser.connectors.PostgresSchema._
+          import nz.net.wand.amp.analyser.connectors.SquerylEntrypoint._
 
-        base match {
-          case _: ICMP => transaction(icmpMeta.where(m => m.stream === base.stream).headOption)
-          case _: DNS => transaction(dnsMeta.where(m => m.stream === base.stream).headOption)
-          case _: Traceroute => transaction(tracerouteMeta.where(m => m.stream === base.stream).headOption)
-          case _: TCPPing => transaction(tcppingMeta.where(m => m.stream === base.stream).headOption)
-          case _: HTTP => transaction(httpMeta.where(m => m.stream === base.stream).headOption)
-          case _ => None
+          base match {
+            case _: ICMP => transaction(icmpMeta.where(m => m.stream === base.stream).headOption)
+            case _: DNS => transaction(dnsMeta.where(m => m.stream === base.stream).headOption)
+            case _: Traceroute => transaction(tracerouteMeta.where(m => m.stream === base.stream).headOption)
+            case _: TCPPing => transaction(tcppingMeta.where(m => m.stream === base.stream).headOption)
+            case _: HTTP => transaction(httpMeta.where(m => m.stream === base.stream).headOption)
+            case _ => None
+          }
         }
       }
     )
+    if (result.isEmpty) {
+      invalidate(cacheKey)
+    }
+    result
+  }
 
   def withMemcachedIfEnabled(p: ParameterTool): PostgresConnection = {
     if (p.getBoolean("caching.memcached.enabled")) {

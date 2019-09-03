@@ -70,6 +70,11 @@ trait Caching {
     cacheMode = CacheMode.InMemory
   }
 
+  implicit private[this] def cache: Cache[Option[Any]] = cacheMode match {
+    case CacheMode.InMemory => Caching.caffeineCache
+    case CacheMode.Memcached => memcachedCache
+  }
+
   /** Adds caching to a given method, according to the previously set up
     * configuration.
     *
@@ -83,10 +88,10 @@ trait Caching {
     *         obtained from the cache or from a new execution of `method`.
     */
   protected[this] def getWithCache[T](key: String, ttl: Option[FiniteDuration], method: => Option[Any]): Option[T] = {
-    implicit val cache: Cache[Option[Any]] = cacheMode match {
-      case CacheMode.InMemory => Caching.caffeineCache
-      case CacheMode.Memcached => memcachedCache
-    }
     sync.caching(key)(ttl)(method).asInstanceOf[Option[T]]
+  }
+
+  protected[this] def invalidate(key: String): Unit = {
+    sync.remove(key)
   }
 }
