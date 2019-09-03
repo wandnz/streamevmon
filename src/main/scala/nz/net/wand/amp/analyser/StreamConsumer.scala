@@ -3,11 +3,11 @@ package nz.net.wand.amp.analyser
 import nz.net.wand.amp.analyser.flink._
 import nz.net.wand.amp.analyser.measurements.RichMeasurement
 
+import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
+import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows
 import org.apache.flink.streaming.api.windowing.time.Time
-import org.apache.flink.streaming.api.TimeCharacteristic
-import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor
 
 /** Default entrypoint.
   *
@@ -19,6 +19,8 @@ object StreamConsumer extends Logging {
   def main(args: Array[String]): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
+
+    env.enableCheckpointing(10000, CheckpointingMode.EXACTLY_ONCE)
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
@@ -47,6 +49,6 @@ object StreamConsumer extends Logging {
     measurementStream.print("Measurements")
     eventStream.print("Events")
 
-    env.execute()
+    env.execute("InfluxDB to Simple ICMP Threshold to InfluxDB")
   }
 }
