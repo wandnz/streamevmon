@@ -1,6 +1,6 @@
 package nz.net.wand.amp.analyser
 
-import nz.net.wand.amp.analyser.flink.LatencyTSSmokepingFileInputFormat
+import nz.net.wand.amp.analyser.flink.LatencyTSAmpFileInputFormat
 
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.TimeCharacteristic
@@ -15,10 +15,11 @@ object LatencyTSEngine {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    val format = new LatencyTSSmokepingFileInputFormat
+    val format = new LatencyTSAmpFileInputFormat
 
     env
-      .readFile(format, "data/latency-ts-i/smokeping/series")
+      .readFile(format, "data/latency-ts-i/ampicmp/series")
+      .setParallelism(1)
       .print()
 
     env.execute()
