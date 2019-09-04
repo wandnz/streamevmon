@@ -4,10 +4,10 @@
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="ScaladocSettings">
-    <option name="outputDir" value="$USER_HOME$/Scratch/stratus/flink-amp-analyser/out/docs" />
+    <option name="outputDir" value="$PROJECT_DIR$/out/docs" />
     <option name="additionalFlags" value="-skip-packages sbt:com.softwaremill.sttp:scalacache" />
     <option name="maxHeapSize" value="" />
-    <option name="docTitle" value="Flink AMP Analyser documentation" />
+    <option name="docTitle" value="Streamevmon documentation" />
     <option name="verbose" value="false" />
     <option name="openInBrowser" value="false" />
   </component>

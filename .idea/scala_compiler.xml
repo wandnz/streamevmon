@@ -3,6 +3,6 @@
   <component name="ScalaCompilerConfiguration">
     <option name="deprecationWarnings" value="true" />
     <option name="explainTypeErrors" value="true" />
-    <profile name="sbt 1" modules="Flink AMP Analyser,mainRunner"/>
+    <profile name="sbt 1" modules="Streamevmon,mainRunner" />
   </component>
 </project>

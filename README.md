@@ -1,4 +1,4 @@
-# Flink AMP Analyser
+# Streamevmon
 
 This project is designed as a framework to ingest and process live or historical
 network measurement data, such as that produced by AMP, and detect anomalies
@@ -25,10 +25,10 @@ changes are imported and scalafmt is downloaded, and click the Build button.
 The default entrypoint is StreamConsumer, which requires a running and
 accessible instance of InfluxDB (and PostgreSQL if RichMeasurements are used).
 The locations of these databases when the program is run in IntelliJ can be
-configured using conf/amp-analyser.properties.
+configured using conf/streamevmon.properties.
 
-To run automated tests, right-click on the test/scala/nz.net.wand.amp.analyser/
-folder and select "Run ScalaTests in 'analyser'". You should have the ability
+To run automated tests, right-click on the test/scala/nz.net.wand.streamevmon/
+folder and select "Run ScalaTests in 'streamevmon'". You should have the ability
 to run Docker containers for many of these tests to work. Some tests are
 sensitive to timing and may work if the test suite is ran a second time.
 
