@@ -76,7 +76,7 @@ class InfluxSinkFunction extends RichSinkFunction[Event] {
 
   /** Initialisation method for RichFunctions. Occurs before any calls to `invoke()`.
     *
-    * @param parameters Contains any configuration from program composition time.
+    * @param parameters Ignored.
     */
   override def open(parameters: flinkconf.Configuration): Unit = {
     val p = getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]

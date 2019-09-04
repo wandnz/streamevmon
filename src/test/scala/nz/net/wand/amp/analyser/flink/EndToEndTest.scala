@@ -90,7 +90,6 @@ class EndToEndTest extends InfluxContainerSpec {
         .windowAll(TumblingEventTimeWindows.of(Time.seconds(5)))
         .process(processFunction)
 
-      //processed.print()
       processed.addSink(sinkFunction)
 
       // Spin off the Flink job
@@ -157,7 +156,6 @@ class EndToEndTest extends InfluxContainerSpec {
     }
 
     "receive valid data" in {
-      // TODO: Need a real address here
       val influxConfig = getInfluxConfig("mockMeasurementSourceContext")
 
       def setEmpty(boolean: Boolean): Unit = EndToEndTest.noDataReceived = boolean
