@@ -176,6 +176,10 @@ case class PostgresConnection(
     result
   }
 
+  /** Enables Memcached caching according to the specified configuration.
+    *
+    * @see [[nz.net.wand.amp.analyser.Caching Caching]] for relevant config keys.
+    */
   def withMemcachedIfEnabled(p: ParameterTool): PostgresConnection = {
     if (p.getBoolean("caching.memcached.enabled")) {
       useMemcached(p)
