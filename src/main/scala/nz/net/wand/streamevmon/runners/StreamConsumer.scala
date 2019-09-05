@@ -1,5 +1,7 @@
-package nz.net.wand.streamevmon
+package nz.net.wand.streamevmon.runners
 
+import nz.net.wand.streamevmon.{Configuration, Logging}
+import nz.net.wand.streamevmon.detectors.SimpleThresholdDetector
 import nz.net.wand.streamevmon.flink._
 import nz.net.wand.streamevmon.measurements.RichMeasurement
 
@@ -25,7 +27,7 @@ object StreamConsumer extends Logging {
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
     val sourceFunction = new RichMeasurementSubscriptionSourceFunction
-    val processFunction = new SimpleThresholdProcessFunction[RichMeasurement]
+    val processFunction = new SimpleThresholdDetector[RichMeasurement]
     val sinkFunction = new InfluxSinkFunction
     val windowSize = 1
 

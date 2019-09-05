@@ -1,15 +1,12 @@
 package nz.net.wand.streamevmon
 
-import nz.net.wand.streamevmon.flink.SimpleThresholdProcessFunction
-
-/** Contains classes which can be used as part of a Flink pipeline, including
-  * custom sources, processors, and sinks.
+/** Contains classes which can be used as part of a Flink pipeline for any
+  * detection algorithm, including custom sources, processors, and sinks.
   *
-  * Most new algorithms will be best implemented as a ProcessFunction (see
-  * [[SimpleThresholdProcessFunction SimpleThresholdProcessFunction]]
-  * for an example), using an existing SourceFunction and SinkFunction.
+  * The algorithms themselves should be placed in the detectors package, but
+  * many will be implemented as ProcessFunctions.
   *
-  * To define the data pipeline, a new entrypoint should be created, similar to
-  * [[StreamConsumer]].
+  * To define the data pipeline for a new algorithm, a new entrypoint should
+  * be created in the runners package.
   */
 package object flink {}

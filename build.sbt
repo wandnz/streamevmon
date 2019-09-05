@@ -69,7 +69,7 @@ Compile / run := Defaults.runTask(Compile / run / fullClasspath,
 Compile / run / fork := true
 Global / cancelable := true
 
-mainClass in assembly := Some("nz.net.wand.streamevmon.StreamConsumer")
+mainClass in assembly := Some("nz.net.wand.streamevmon.runners.StreamConsumer")
 
 // Make tests in sbt shell more reliable
 fork := true

@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon
+package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.flink.LatencyTSAmpFileInputFormat
 
@@ -9,7 +9,7 @@ import org.apache.flink.streaming.api.TimeCharacteristic
   *
   * @see [[https://wand.net.nz/wits/latency/1/]]
   */
-object LatencyTSEngine {
+object LatencyTSPrinter {
 
   def main(args: Array[String]): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment

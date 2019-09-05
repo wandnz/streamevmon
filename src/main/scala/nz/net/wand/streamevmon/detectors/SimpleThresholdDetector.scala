@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.flink
+package nz.net.wand.streamevmon.detectors
 
 import nz.net.wand.streamevmon.events.{Event, ThresholdEvent}
 import nz.net.wand.streamevmon.measurements.{Measurement, RichICMP}
@@ -16,7 +16,7 @@ import org.apache.flink.util.Collector
   * @tparam T This class can accept any type of Measurement, but only provides
   *           output if the measurement is a RichICMP.
   */
-class SimpleThresholdProcessFunction[T <: Measurement]
+class SimpleThresholdDetector[T <: Measurement]
     extends ProcessAllWindowFunction[T, Event, TimeWindow] {
 
   override def process(context: Context, elements: Iterable[T], out: Collector[Event]): Unit = {
