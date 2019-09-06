@@ -1,0 +1,23 @@
+package nz.net.wand.streamevmon.detectors
+
+/** A trait mixed into classes representing continuous probability distributions
+  * that evolve as more data is provided to them.
+  *
+  * @tparam T The type of object that the implementing class can accept as a
+  *           new point to add to the model.
+  */
+trait Distribution[T] {
+
+  /** The probability density function, returning the relative likelihood for a
+    * continuous random variable to take the value x.
+    *
+    * [[https://en.wikipedia.org/wiki/Probability_density_function]]
+    */
+  def pdf(x: T): Double
+
+  /** Returns a new Distribution after adjustment for the new point added to it. */
+  def withPoint(p: T): Distribution[T]
+
+  val mean: Double
+  val variance: Double
+}
