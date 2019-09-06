@@ -54,7 +54,7 @@ import nz.net.wand.streamevmon.measurements._
   *
   * Use the [[nz.net.wand.streamevmon.flink.LatencyTSAmpFileInputFormat LatencyTSAmpFileInputFormat]]
   * and [[nz.net.wand.streamevmon.flink.LatencyTSSmokepingFileInputFormat LatencyTSSmokepingFileInputFormat]]
-  * functions to ingest this dataset, as shown in [[LatencyTSEngine]].
+  * functions to ingest this dataset, as shown in [[nz.net.wand.streamevmon.runners.LatencyTSPrinter LatencyTSPrinter]].
   *
   * @groupname amp Live AMP Measurements
   */
