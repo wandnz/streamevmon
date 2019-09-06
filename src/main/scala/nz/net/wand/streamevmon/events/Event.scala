@@ -9,7 +9,6 @@ import com.github.fsanaulla.chronicler.core.model.InfluxWriter
   * network measurements which may indicate that something is wrong with the
   * network.
   */
-// TODO: Should this be called Anomaly instead?
 abstract class Event {
 
   /** Events should declare at least one tag that distinguishes them from other
@@ -23,12 +22,20 @@ abstract class Event {
   /** Represents how likely an event is to represent a real issue. */
   val severity: Int
 
-  /** The time associated with this event. */
-  // TODO: Should this specify event time or detection time? Should we include both?
-  val time: Instant
+  /** The time that this event is considered to have started. */
+  val eventTime: Instant
 
-  /** The name of the measurement, to be put into InfluxDB. */
+  /** The latency between this event starting and being detected, in milliseconds.
+    * The detection time is considered to be the time of the measurement that
+    * triggered the event to be emitted.
+    */
+  val detectionLatency: Int
+
+  /** The name of the measurement, to be put into InfluxDB. Must be less than 64KB. */
   val measurementName: String
+
+  /** The description of this instance of an event, to be put into InfluxDB. */
+  val description: String
 
   /** Converts a Map of tags into the relevant portion of a Line Protocol Format
     * string.

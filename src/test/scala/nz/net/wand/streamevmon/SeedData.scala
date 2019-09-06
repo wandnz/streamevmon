@@ -409,51 +409,59 @@ object SeedData {
 
     val withTags: ThresholdEvent = ThresholdEvent(
       severity = 10,
-      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
+      eventTime = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
+      detectionLatency = 12345,
       tags = Map(
         "stream" -> "1",
-        "type" -> "test"
-      )
+        "type" -> "test",
+      ),
+      description = "A test event :)"
     )
 
     val withTagsAsString: String =
-      s"${ThresholdEvent.measurementName},stream=1,type=test severity=10i 1564713045000000000"
-    val withTagsAsLineProtocol: String = "stream=1,type=test severity=10i 1564713045000000000"
+      s"""${ThresholdEvent.measurementName},stream=1,type=test severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
+    val withTagsAsLineProtocol: String = """stream=1,type=test severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
 
     val withoutTags: ThresholdEvent = ThresholdEvent(
       severity = 10,
-      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L))
+      eventTime = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
+      detectionLatency = 12345,
+      description = "A test event :)"
     )
 
     val withoutTagsAsString: String =
-      s"${ThresholdEvent.measurementName} severity=10i 1564713045000000000"
-    val withoutTagsAsLineProtocol: String = "severity=10i 1564713045000000000"
+      s"""${ThresholdEvent.measurementName} severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
+    val withoutTagsAsLineProtocol: String = """severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
   }
 
   object changepointEvent {
 
     val withTags: ChangepointEvent = ChangepointEvent(
       severity = 10,
-      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
+      eventTime = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
+      detectionLatency = 12345,
       stream = 1,
       tags = Map(
         "type" -> "test",
         "moreTags" -> "test2"
-      )
+      ),
+      description = "A test event :)"
     )
 
     val withTagsAsString: String =
-      s"${ChangepointEvent.measurementName},type=test,moreTags=test2,stream=1 severity=10i 1564713045000000000"
-    val withTagsAsLineProtocol: String = "type=test,moreTags=test2,stream=1 severity=10i 1564713045000000000"
+      s"""${ChangepointEvent.measurementName},type=test,moreTags=test2,stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
+    val withTagsAsLineProtocol: String = """type=test,moreTags=test2,stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
 
     val withoutTags: ChangepointEvent = ChangepointEvent(
       severity = 10,
-      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
-      stream = 1
+      eventTime = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
+      detectionLatency = 12345,
+      stream = 1,
+      description = "A test event :)"
     )
 
     val withoutTagsAsString: String =
-      s"${ChangepointEvent.measurementName},stream=1 severity=10i 1564713045000000000"
-    val withoutTagsAsLineProtocol: String = "stream=1 severity=10i 1564713045000000000"
+      s"""${ChangepointEvent.measurementName},stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
+    val withoutTagsAsLineProtocol: String = """stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
   }
 }

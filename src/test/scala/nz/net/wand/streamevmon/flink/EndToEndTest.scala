@@ -30,18 +30,24 @@ class EndToEndTest extends InfluxContainerSpec {
     JArray(
       Array(
         JString(SeedData.icmp.expected.time.toString),
+        JString("Yup, that's a description"),
+        JNum(0),
         JNum(5),
         JString("3")
       )),
     JArray(
       Array(
         JString(SeedData.dns.expected.time.toString),
+        JString("Yup, that's a description"),
+        JNum(0),
         JNum(5),
         JString("1")
       )),
     JArray(
       Array(
         JString(SeedData.traceroute.expected.time.toString),
+        JString("Yup, that's a description"),
+        JNum(0),
         JNum(5),
         JString("5")
       ))
@@ -76,7 +82,9 @@ class EndToEndTest extends InfluxContainerSpec {
                     "stream" -> e.stream.toString
                   ),
                   severity = 5,
-                  time = e.time
+                  eventTime = e.time,
+                  detectionLatency = 0,
+                  description = "Yup, that's a description"
                 )
               }
             }

@@ -19,6 +19,8 @@ import org.apache.flink.util.Collector
 class SimpleThresholdDetector[T <: Measurement]
     extends ProcessAllWindowFunction[T, Event, TimeWindow] {
 
+  private val description = "Median latency was over 1000"
+
   override def process(context: Context, elements: Iterable[T], out: Collector[Event]): Unit = {
     elements
       .filter(_.isInstanceOf[RichICMP])
@@ -32,7 +34,9 @@ class SimpleThresholdDetector[T <: Measurement]
                 "stream" -> m.stream.toString
               ),
               severity = 10,
-              time = m.time
+              eventTime = m.time,
+              detectionLatency = 0,
+              description = description
             )
         )
       )
