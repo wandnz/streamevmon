@@ -38,7 +38,7 @@ abstract class Event {
     * @see [[https://docs.influxdata.com/influxdb/v1.7/write_protocols/line_protocol_reference/]]
     */
   protected def getTagString(t: Map[String, String]): String =
-    tags.map({ case (k, v) => s"$k=$v" }).mkString(",")
+    t.map({ case (k, v) => s"$k=$v" }).mkString(",")
 
   /** Converts the Event into InfluxDB Line Protocol Format.
     *
