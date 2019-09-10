@@ -8,6 +8,9 @@ package nz.net.wand.streamevmon.detectors
   */
 trait Distribution[T] {
 
+  /** A friendly name for this distribution. */
+  val distributionName: String
+
   /** The probability density function, returning the relative likelihood for a
     * continuous random variable to take the value x.
     *
@@ -15,9 +18,18 @@ trait Distribution[T] {
     */
   def pdf(x: T): Double
 
-  /** Returns a new Distribution after adjustment for the new point added to it. */
+  /** Returns a new Distribution after adjustment for the new point added to it.
+    * Reflects normal_distribution.updateStatistics */
   def withPoint(p: T): Distribution[T]
 
   val mean: Double
   val variance: Double
+}
+
+object Distribution {
+  def apply[T](dist: Distribution[T]): Distribution[T] = {
+    dist match {
+      case d: NormalDistribution[T] => NormalDistribution(d)
+    }
+  }
 }

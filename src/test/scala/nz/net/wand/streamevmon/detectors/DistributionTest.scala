@@ -14,7 +14,7 @@ class DistributionTest extends WordSpec {
     "generate the correct values" in {
       val initial = NormalDistribution[Double](
         n = 1,
-        mapFunction = x => x
+        mapFunction = (x: Double) => x
       )
 
       assert(initial.mean == 0.0)

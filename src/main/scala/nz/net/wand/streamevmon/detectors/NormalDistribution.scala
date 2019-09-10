@@ -2,6 +2,8 @@ package nz.net.wand.streamevmon.detectors
 
 import org.scalactic.{Equality, TolerantNumerics}
 
+// TODO: The SumSquarePoints algorithm might not work well - we should
+// investigate the growth of the double to ensure it doesn't get too large.
 /** An implementation of a normal distribution whose parameters are based on
   * the points provided to it.
   *
@@ -23,19 +25,21 @@ case class NormalDistribution[T](
     mapFunction: T => Double
 ) extends Distribution[T] {
 
-  implicit private[this] val doubleEquality: Equality[Double] =
-    TolerantNumerics.tolerantDoubleEquality(0.000000000000001)
+  @transient implicit private[this] val doubleEquality: Equality[Double] =
+    TolerantNumerics.tolerantDoubleEquality(1E-15)
 
   override def toString: String = {
     s"${getClass.getSimpleName}(n=$n,mean=$mean,variance=$variance)"
   }
+
+  override val distributionName: String = "Normal Distribution"
 
   override def pdf(x: T): Double = {
     val y = mapFunction(x)
     n match {
       case 0 => 0.0
       case 1 =>
-        if (x == mean) {
+        if (y == mean) {
           1.0
         }
         else {
@@ -48,6 +52,7 @@ case class NormalDistribution[T](
     }
   }
 
+  /** Reflects normal_distribution.updateStatistics */
   override def withPoint(newT: T): NormalDistribution[T] = {
     val p = mapFunction(newT)
     NormalDistribution(
@@ -64,5 +69,14 @@ case class NormalDistribution[T](
     case 0 | 1 => 0.0
     case _ =>
       (1.0 / (n * (n - 1))) * ((n * sumSquarePoints) - (sumPoints * sumPoints))
+  }
+}
+
+object NormalDistribution {
+  def apply[T](dist: NormalDistribution[T]): NormalDistribution[T] = {
+    dist match {
+      case d: NormalDistribution[T] =>
+        NormalDistribution(d.sumPoints, d.sumSquarePoints, d.n, d.mapFunction)
+    }
   }
 }
