@@ -10,7 +10,7 @@ case class ThresholdEvent(
   tags: Map[String, String] = Map(),
   severity: Int,
   eventTime: Instant,
-  detectionLatency: Int,
+  detectionLatency: Long,
   description: String
 ) extends Event {
 

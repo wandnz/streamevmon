@@ -4,12 +4,12 @@ import java.time.Instant
 import java.util.concurrent.TimeUnit
 
 case class ChangepointEvent(
-  tags                 : Map[String, String] = Map(),
-  stream               : Int,
-  severity             : Int,
-  eventTime            : Instant,
-  detectionLatency: Int,
-  description: String
+  tags: Map[String, String] = Map(),
+  stream: Int,
+  severity: Int,
+  eventTime: Instant,
+  detectionLatency     : Long,
+  description          : String
 ) extends Event {
   final override val measurementName: String = ChangepointEvent.measurementName
 

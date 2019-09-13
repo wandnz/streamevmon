@@ -29,7 +29,7 @@ abstract class Event {
     * The detection time is considered to be the time of the measurement that
     * triggered the event to be emitted.
     */
-  val detectionLatency: Int
+  val detectionLatency: Long
 
   /** The name of the measurement, to be put into InfluxDB. Must be less than 64KB. */
   val measurementName: String

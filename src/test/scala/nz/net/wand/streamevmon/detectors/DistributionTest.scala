@@ -13,7 +13,7 @@ class DistributionTest extends WordSpec {
   "NormalDistribution" should {
     "generate the correct values" in {
       val initial = NormalDistribution[Double](
-        n = 1,
+        data = Seq(0.0),
         mapFunction = (x: Double) => x
       )
 

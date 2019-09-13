@@ -24,6 +24,7 @@ trait Distribution[T] {
 
   val mean: Double
   val variance: Double
+  val n: Int
 }
 
 object Distribution {

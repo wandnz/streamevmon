@@ -7,6 +7,7 @@ import scala.collection.mutable
 class RunHolder[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     initialDistribution: DistT
 ) {
+
   var runs: mutable.Seq[(DistT, Double)] = mutable.Seq[(DistT, Double)]()
 
   def length: Int = runs.length
@@ -17,6 +18,16 @@ class RunHolder[MeasT <: Measurement, DistT <: Distribution[MeasT]](
   }
 
   def purge(): Unit = runs = mutable.Seq[(DistT, Double)]()
+
+  /** @return The distribution with the highest probability. */
+  def getMostProbable: Int = {
+    if (runs.filter(_._2 >= 0.0).isEmpty) {
+      -1
+    }
+    else {
+      runs.zipWithIndex.maxBy(_._1._2)._2
+    }
+  }
 
   def normalise(): Unit = {
     val total = runs
@@ -35,36 +46,59 @@ class RunHolder[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
   /** Reflects cpp::249-272
     *
+    * @param hazard A smaller hazard tends to be less sensitive (larger lambda)
+    *
     * @return The probability that there was a change point.
     */
-  def applyGrowthProbabilities(item: MeasT, hazard: Double = 1.0 / 200.0): Double = {
-    // A smaller hazard tends to be less sensitive (larger lambda)
+  def applyGrowthProbabilities(item: MeasT, hazard: Double = 1.0 / 200.0): Unit = {
     var weight = 0.0
 
-    println("===== Before")
-    runs.foreach(print)
-    println()
-
-    // Update the probabilities of the run such that
+    // Update the probabilities of each run such that
     // runs[n+1].prob = runs[n].pdf * runs[n].prob * (1 - hazard)
     runs = runs
       .map { x =>
-        (x._1.withPoint(item), x._2 * x._1.pdf(item) * (1 - hazard))
+        (
+          x._1.withPoint(item).asInstanceOf[DistT],
+          if (x._1.n >= 2) {
+            x._2 * x._1.pdf(item) * (1 - hazard)
+          }
+          else {
+            x._2
+          }
+        )
       }
-      .asInstanceOf[mutable.Seq[(DistT, Double)]]
 
-    weight = runs.map(_._2).fold(0.0)((a, b) => a + b)
+    weight = runs.filter(_._1.n > 2).map(_._2).sum
+    if (weight == 0.0) {
+      weight = 1.0
+    }
 
-    runs :+ Tuple2(initialDistribution.withPoint(item), weight)
+    if (runs.filter(_._2.isNaN).nonEmpty) {
+      println("AAAHHHH")
+    }
 
-    println("===== After")
-    runs.foreach(print)
-    println()
-
-    weight
+    runs = Tuple2(initialDistribution.withPoint(item).asInstanceOf[DistT], weight) +: runs
   }
 
-  /** @return The distribution with the highest probability.
-    */
-  def getMostProbable: DistT = runs.maxBy(_._2)._1
+  def pruneRuns(maxHistory     : Int): Unit = {
+    while (runs.length > maxHistory) {
+      runs(runs.length - 2) = (runs.last._1, runs.last._2 + runs(runs.length - 2)._2)
+      runs = runs.dropRight(1)
+    }
+  }
+
+  def setProbabilityToMax(which: Int): Unit = {
+    runs = runs.zipWithIndex.map { x =>
+      if (x._2 == which) {
+        (x._1._1, 1.0)
+      }
+      else {
+        (x._1._1, 0.0)
+      }
+    }
+  }
+
+  def trim(lastToKeep: Int): Unit = {
+    runs = runs.dropRight(runs.length - (lastToKeep + 1))
+  }
 }
