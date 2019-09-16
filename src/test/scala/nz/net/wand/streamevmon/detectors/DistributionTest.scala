@@ -1,5 +1,7 @@
 package nz.net.wand.streamevmon.detectors
 
+import nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution
+
 import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.WordSpec
 

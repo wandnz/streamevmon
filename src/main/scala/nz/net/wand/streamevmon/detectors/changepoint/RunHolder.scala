@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.detectors
+package nz.net.wand.streamevmon.detectors.changepoint
 
 import nz.net.wand.streamevmon.measurements.Measurement
 
@@ -80,7 +80,7 @@ class RunHolder[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     runs = Tuple2(initialDistribution.withPoint(item).asInstanceOf[DistT], weight) +: runs
   }
 
-  def pruneRuns(maxHistory     : Int): Unit = {
+  def pruneRuns(maxHistory: Int): Unit = {
     while (runs.length > maxHistory) {
       runs(runs.length - 2) = (runs.last._1, runs.last._2 + runs(runs.length - 2)._2)
       runs = runs.dropRight(1)

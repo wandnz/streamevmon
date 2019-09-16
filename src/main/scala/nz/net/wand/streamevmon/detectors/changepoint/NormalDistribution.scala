@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.detectors
+package nz.net.wand.streamevmon.detectors.changepoint
 
 import org.scalactic.{Equality, TolerantNumerics}
 
@@ -15,8 +15,8 @@ import org.scalactic.{Equality, TolerantNumerics}
   * @see [[https://en.wikipedia.org/wiki/Normal_distribution]]
   */
 case class NormalDistribution[T](
-  data: Seq[Double] = Seq(),
-  mapFunction: T => Double
+    data: Seq[Double] = Seq(),
+    mapFunction: T => Double
 ) extends Distribution[T] {
 
   @transient implicit private[this] val doubleEquality: Equality[Double] =
@@ -83,6 +83,7 @@ case class NormalDistribution[T](
 }
 
 object NormalDistribution {
+
   def apply[T](dist: NormalDistribution[T]): NormalDistribution[T] = {
     NormalDistribution(dist.data, dist.mapFunction)
   }

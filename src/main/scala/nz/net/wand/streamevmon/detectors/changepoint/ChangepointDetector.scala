@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.detectors
+package nz.net.wand.streamevmon.detectors.changepoint
 
 import nz.net.wand.streamevmon.events.ChangepointEvent
 import nz.net.wand.streamevmon.measurements.Measurement
@@ -13,9 +13,10 @@ import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.util.Collector
 
-class ChangepointDetector[MeasT <: Measurement : TypeInformation, DistT <: Distribution[MeasT]](
-  initialDistribution: DistT
-) extends KeyedProcessFunction[Int, MeasT, ChangepointEvent] with Logging {
+class ChangepointDetector[MeasT <: Measurement: TypeInformation, DistT <: Distribution[MeasT]](
+    initialDistribution: DistT
+) extends KeyedProcessFunction[Int, MeasT, ChangepointEvent]
+    with Logging {
 
   final val detectorName = s"Changepoint Detector (${initialDistribution.distributionName})"
   final val eventDescription = s"Changepoint Event"
@@ -55,13 +56,19 @@ class ChangepointDetector[MeasT <: Measurement : TypeInformation, DistT <: Distr
 
   override def open(parameters: Configuration): Unit = {
     currentRunHolder = getRuntimeContext.getState(
-      new ValueStateDescriptor[RunHolder[MeasT, DistT]]("Current Runs", createTypeInformation[RunHolder[MeasT, DistT]]))
+      new ValueStateDescriptor[RunHolder[MeasT, DistT]](
+        "Current Runs",
+        createTypeInformation[RunHolder[MeasT, DistT]]))
 
     normalRunHolder = getRuntimeContext.getState(
-      new ValueStateDescriptor[RunHolder[MeasT, DistT]]("Normal Runs", createTypeInformation[RunHolder[MeasT, DistT]]))
+      new ValueStateDescriptor[RunHolder[MeasT, DistT]](
+        "Normal Runs",
+        createTypeInformation[RunHolder[MeasT, DistT]]))
 
     savedNormal = getRuntimeContext.getState(
-      new ValueStateDescriptor[RunHolder[MeasT, DistT]]("Saved Normal Runs", createTypeInformation[RunHolder[MeasT, DistT]]))
+      new ValueStateDescriptor[RunHolder[MeasT, DistT]](
+        "Saved Normal Runs",
+        createTypeInformation[RunHolder[MeasT, DistT]]))
 
     lastObserved = getRuntimeContext.getState(
       new ValueStateDescriptor[MeasT]("Last Observed Measurement", createTypeInformation[MeasT]))
@@ -70,7 +77,8 @@ class ChangepointDetector[MeasT <: Measurement : TypeInformation, DistT <: Distr
       new ValueStateDescriptor[Int]("Consecutive Anomalies", createTypeInformation[Int]))
 
     normalIsCurrent = getRuntimeContext.getState(
-      new ValueStateDescriptor[Boolean]("Normal Runs Is Current Runs", createTypeInformation[Boolean]))
+      new ValueStateDescriptor[Boolean]("Normal Runs Is Current Runs",
+                                        createTypeInformation[Boolean]))
 
     lastMostLikelyNormal = getRuntimeContext.getState(
       new ValueStateDescriptor[Int]("Last Most Likely Normal", createTypeInformation[Int]))
@@ -80,9 +88,9 @@ class ChangepointDetector[MeasT <: Measurement : TypeInformation, DistT <: Distr
   }
 
   override def processElement(
-    value                          : MeasT,
-    ctx                            : KeyedProcessFunction[Int, MeasT, ChangepointEvent]#Context,
-    out                            : Collector[ChangepointEvent]
+      value: MeasT,
+      ctx: KeyedProcessFunction[Int, MeasT, ChangepointEvent]#Context,
+      out: Collector[ChangepointEvent]
   ): Unit = {
 
     if (currentRunHolder.value == null) {
@@ -105,7 +113,9 @@ class ChangepointDetector[MeasT <: Measurement : TypeInformation, DistT <: Distr
     }
     // If it's been a while since our last measurement, purge all the runs
     // we've collected. They're too old to be useful.
-    else if (Duration.between(lastObserved.value.time, value.time).compareTo(inactivityPurgeTime) > 0) {
+    else if (Duration
+               .between(lastObserved.value.time, value.time)
+               .compareTo(inactivityPurgeTime) > 0) {
       currentRuns.purge()
       normalRuns.purge()
       normalIsCurrent.update(true)
@@ -162,11 +172,11 @@ class ChangepointDetector[MeasT <: Measurement : TypeInformation, DistT <: Distr
 
     // Check if the most likely run has changed
     if ((if (normalIsCurrent.value) {
-      mostLikelyNormal
-    }
-    else {
-      mostLikelyCurrent
-    }) != lastMostLikelyNormal.value + 1) {
+           mostLikelyNormal
+         }
+         else {
+           mostLikelyCurrent
+         }) != lastMostLikelyNormal.value + 1) {
       // If so, we have a datapoint that doesn't fit the current 'normal' distribution.
       consecutiveAnomalies.update(consecutiveAnomalies.value + 1)
 
@@ -219,12 +229,16 @@ class ChangepointDetector[MeasT <: Measurement : TypeInformation, DistT <: Distr
   }
 
   def getEventWeight(mostLikelyCurrent: Int): Double = {
-    val oldMaxLocation = Math.min(currentRuns.length, lastMostLikelyNormal.value + consecutiveAnomalies.value)
-    val run_difference = Math.abs(consecutiveAnomalies.value + lastMostLikelyNormal.value - mostLikelyCurrent)
-    val event_weight = Math.log(run_difference * (currentRuns.runs(mostLikelyCurrent)._2 / currentRuns.runs(oldMaxLocation)._2))
+    val oldMaxLocation =
+      Math.min(currentRuns.length, lastMostLikelyNormal.value + consecutiveAnomalies.value)
+    val run_difference =
+      Math.abs(consecutiveAnomalies.value + lastMostLikelyNormal.value - mostLikelyCurrent)
+    val event_weight = Math.log(
+      run_difference * (currentRuns.runs(mostLikelyCurrent)._2 / currentRuns
+        .runs(oldMaxLocation)
+        ._2))
 
     logger.info(s"Event weight: $event_weight")
-
 
     event_weight
   }
@@ -259,11 +273,11 @@ class ChangepointDetector[MeasT <: Measurement : TypeInformation, DistT <: Distr
   }
 
   def newEvent(
-    out                                       : Collector[ChangepointEvent],
-    value                                     : MeasT,
-    eventTime                                 : Instant,
-    oldmean                                   : Double,
-    newmean                                   : Double
+      out: Collector[ChangepointEvent],
+      value: MeasT,
+      eventTime: Instant,
+      oldmean: Double,
+      newmean: Double
   ): Unit = {
 
     var severity = 0
@@ -287,13 +301,14 @@ class ChangepointDetector[MeasT <: Measurement : TypeInformation, DistT <: Distr
       s"Average latency $changeDirection from $oldmean to $newmean"
     }
 
-    out.collect(ChangepointEvent(
-      Map(),
-      value.stream,
-      severity,
-      eventTime,
-      value.time.toEpochMilli - eventTime.toEpochMilli,
-      description
-    ))
+    out.collect(
+      ChangepointEvent(
+        Map(),
+        value.stream,
+        severity,
+        eventTime,
+        value.time.toEpochMilli - eventTime.toEpochMilli,
+        description
+      ))
   }
 }

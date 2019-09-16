@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.detectors
+package nz.net.wand.streamevmon.detectors.changepoint
 
 /** A trait mixed into classes representing continuous probability distributions
   * that evolve as more data is provided to them.
@@ -28,6 +28,7 @@ trait Distribution[T] {
 }
 
 object Distribution {
+
   def apply[T](dist: Distribution[T]): Distribution[T] = {
     dist match {
       case d: NormalDistribution[T] => NormalDistribution(d)

@@ -1,9 +1,9 @@
 package nz.net.wand.streamevmon.runners
 
-import nz.net.wand.streamevmon.detectors.{ChangepointDetector, NormalDistribution}
 import nz.net.wand.streamevmon.flink.LatencyTSAmpFileInputFormat
 import nz.net.wand.streamevmon.measurements.LatencyTSAmpICMP
 import nz.net.wand.streamevmon.Configuration
+import nz.net.wand.streamevmon.detectors.changepoint._
 
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.TimeCharacteristic
@@ -19,7 +19,7 @@ object ChangepointRunner {
     env.disableOperatorChaining
 
     val source = env
-      .readFile(new LatencyTSAmpFileInputFormat, "data/latency-ts-i/ampicmp/series")
+      .readFile(new LatencyTSAmpFileInputFormat, "data/latency-ts-i/ampicmp/series/callplus-afrinic-ipv6.series")
       .name("Latency TS I AMP ICMP Parser")
       .setParallelism(1)
       .keyBy(_.stream)
