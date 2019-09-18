@@ -2,8 +2,6 @@ package nz.net.wand.streamevmon.detectors.changepoint
 
 import org.scalactic.{Equality, TolerantNumerics}
 
-// TODO: The SumSquarePoints algorithm might not work well - we should
-// investigate the growth of the double to ensure it doesn't get too large.
 /** An implementation of a normal distribution whose parameters are based on
   * the points provided to it.
   *
@@ -51,11 +49,7 @@ case class NormalDistribution[T](
         else {
           import java.lang.Math._
           val a = 1.0 / (sqrt(2.0 * PI) * sqrt(variance))
-          val b = a * exp(-(((y - mean) * (y - mean)) / (2.0 * variance)))
-          if (b.isNaN) {
-            println("AAAHHH")
-          }
-          b
+          a * exp(-(((y - mean) * (y - mean)) / (2.0 * variance)))
         }
     }
   }

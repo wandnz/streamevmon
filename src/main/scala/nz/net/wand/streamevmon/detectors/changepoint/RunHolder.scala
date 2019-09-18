@@ -73,10 +73,6 @@ class RunHolder[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       weight = 1.0
     }
 
-    if (runs.filter(_._2.isNaN).nonEmpty) {
-      println("AAAHHHH")
-    }
-
     runs = Tuple2(initialDistribution.withPoint(item).asInstanceOf[DistT], weight) +: runs
   }
 

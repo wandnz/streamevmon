@@ -19,7 +19,7 @@ object ChangepointRunner {
     env.disableOperatorChaining
 
     val source = env
-      .readFile(new LatencyTSAmpFileInputFormat, "data/latency-ts-i/ampicmp/series/callplus-afrinic-ipv6.series")
+      .readFile(new LatencyTSAmpFileInputFormat, "data/latency-ts-i/ampicmp/series/waikato-xero-ipv4.series")
       .name("Latency TS I AMP ICMP Parser")
       .setParallelism(1)
       .keyBy(_.stream)
