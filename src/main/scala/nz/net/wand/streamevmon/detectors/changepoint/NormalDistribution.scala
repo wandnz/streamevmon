@@ -26,8 +26,7 @@ case class NormalDistribution[T](
 
   override val distributionName: String = "Normal Distribution"
 
-  override def pdf(x: T): Double = {
-    val y = mapFunction(x)
+  override def pdf(y: Double): Double = {
     n match {
       case 0 => 0.0
       case 1 =>
@@ -52,6 +51,10 @@ case class NormalDistribution[T](
           a * exp(-(((y - mean) * (y - mean)) / (2.0 * variance)))
         }
     }
+  }
+
+  override def pdf(x: T): Double = {
+    pdf(mapFunction(x))
   }
 
   /** Reflects normal_distribution.updateStatistics */

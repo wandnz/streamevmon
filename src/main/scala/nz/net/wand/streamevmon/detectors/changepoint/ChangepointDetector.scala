@@ -13,7 +13,9 @@ import org.apache.flink.streaming.api.scala._
 import org.apache.flink.util.Collector
 
 class ChangepointDetector[MeasT <: Measurement: TypeInformation, DistT <: Distribution[MeasT]](
-    initialDistribution: DistT
+  initialDistribution: DistT,
+  normalise: Boolean,
+  squash             : Boolean
 ) extends KeyedProcessFunction[Int, MeasT, ChangepointEvent]
     with Logging {
 
@@ -37,7 +39,7 @@ class ChangepointDetector[MeasT <: Measurement: TypeInformation, DistT <: Distri
       out: Collector[ChangepointEvent]
   ): Unit = {
     if (processor.value == null) {
-      processor.update(new ChangepointProcessor[MeasT, DistT](initialDistribution))
+      processor.update(new ChangepointProcessor[MeasT, DistT](initialDistribution, normalise, squash))
       processor.value.open(
         getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
       )

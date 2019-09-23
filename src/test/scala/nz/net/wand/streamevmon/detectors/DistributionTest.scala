@@ -14,9 +14,9 @@ class DistributionTest extends WordSpec {
 
   "NormalDistribution" should {
     "generate the correct values" in {
-      val initial = NormalDistribution[Double](
+      val initial = NormalDistribution[(Double, Double)](
         data = Seq(0.0),
-        mapFunction = (x: Double) => x
+        mapFunction = (x: (Double, Double)) => x._1
       )
 
       assert(initial.mean == 0.0)
@@ -39,7 +39,7 @@ class DistributionTest extends WordSpec {
              .map {
                case (((a, b), c), d) => (a, b, c, d)
              }) {
-        current = current.withPoint(i)
+        current = current.withPoint((i, i))
 
         assert(current.mean === mean)
         assert(current.variance === variance)

@@ -20,11 +20,17 @@ object ChangepointRunner {
 
     val source = env
       .readFile(new LatencyTSAmpFileInputFormat, "data/latency-ts-i/ampicmp/series/waikato-xero-ipv4.series")
+      //.readFile(new LatencyTSAmpFileInputFormat, "data/latency-ts-i/ampicmp/waikato-xero-ipv4.series.small")
       .name("Latency TS I AMP ICMP Parser")
       .setParallelism(1)
       .keyBy(_.stream)
 
-    val detector = new ChangepointDetector[LatencyTSAmpICMP, NormalDistribution[LatencyTSAmpICMP]](new NormalDistribution(mapFunction = _.average))
+    val detector = new ChangepointDetector
+                         [LatencyTSAmpICMP, NormalDistribution[LatencyTSAmpICMP]](
+      new NormalDistribution(mapFunction = _.average),
+      true,
+      true
+    )
 
     val process = source
       .process(detector)

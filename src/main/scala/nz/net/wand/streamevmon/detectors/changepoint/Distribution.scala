@@ -16,6 +16,7 @@ trait Distribution[T] {
     *
     * [[https://en.wikipedia.org/wiki/Probability_density_function]]
     */
+  def pdf(x: Double): Double
   def pdf(x: T): Double
 
   /** Returns a new Distribution after adjustment for the new point added to it.

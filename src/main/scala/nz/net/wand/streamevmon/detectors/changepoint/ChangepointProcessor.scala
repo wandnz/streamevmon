@@ -3,6 +3,7 @@ package nz.net.wand.streamevmon.detectors.changepoint
 import nz.net.wand.streamevmon.events.ChangepointEvent
 import nz.net.wand.streamevmon.measurements.Measurement
 
+import java.io.{File, PrintWriter}
 import java.time.{Duration, Instant}
 
 import org.apache.flink.api.java.utils.ParameterTool
@@ -11,13 +12,14 @@ import org.apache.flink.util.Collector
 import scala.language.implicitConversions
 
 class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
-    initialDistribution: DistT
+  initialDistribution: DistT,
+  normalise          : Boolean,
+  squash             : Boolean
 ) {
 
   implicit private def distToDistT(x: Distribution[MeasT]): DistT = x.asInstanceOf[DistT]
 
   private case class Run(uid: Int, dist: DistT, prob: Double, start: Instant) {
-
     def mergeWith(other: Run): Run = {
       if (normalIndex == uid) {
         normalIndex = other.uid
@@ -27,33 +29,54 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       }
       Run(
         other.uid,
-        dist,
+        other.dist,
         prob + other.prob,
-        start
+        other.start
       )
     }
+
+    def isMature: Boolean = dist.n > runMaturityAge
   }
 
   implicit private class SeqOfRuns(s: Seq[Run]) {
 
-    def applyGrowthProbabilities(value: MeasT): Seq[Run] = {
+    def addPoint(value                : MeasT, newRun: Boolean = false): Seq[Run] = {
+      val withPoint = s.map { x =>
+        Run(
+          x.uid,
+          x.dist.withPoint(value),
+          x.prob,
+          x.start
+        )
+      }
+      if (newRun) {
+        withPoint :+ Run(
+          getNewRunIndex,
+          initialDistribution.withPoint(value),
+          1.0,
+          value.time
+        )
+      }
+      else {
+        withPoint
+      }
+    }
+
+    def addRuns(value: Seq[Run]): Seq[Run] = {
+      s ++ value
+    }
+
+    def updateProbabilities(value: MeasT): Seq[Run] = {
       s.map(
-        x =>
+        x => {
+          //println(s"${x.uid}: ${x.dist.pdf(value)}, ${x.dist.pdf(value) / x.dist.pdf(x.dist.mean)}")
           Run(
             x.uid,
-            x.dist.withPoint(value),
-            if (x.dist.variance == 0) {
-              x.prob
-            }
-            else {
-              x.prob * x.dist.pdf(value) * (1 - hazard)
-            },
+            x.dist,
+            x.dist.pdf(value) * x.prob * (1 - hazard),
             x.start
-        )) :+ Run(
-        getNewRunIndex,
-        initialDistribution.withPoint(value),
-        1.0,
-        value.time
+          )
+        }
       )
     }
 
@@ -87,8 +110,10 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
   private val hazard = 1.0 / 200.0
 
+  private val runMaturityAge = 20
+
   /** The maximum number of runs to retain */
-  private val maxHistory = 4
+  private val maxHistory = 20
 
   /** The number of consecutive outliers that must occur before we believe that
     * the input data is behaving erratically. The sameRunConsecutiveTriggerCount
@@ -103,12 +128,14 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
   private val inactivityPurgeTime = Duration.ofSeconds(60)
 
-  private var runIndexCounter = 0
+  private var runIndexCounter = -1
   private def getNewRunIndex: Int = {
     runIndexCounter += 1
-    runIndexCounter - 1
+    runIndexCounter
   }
-  private var currentRuns: Seq[Run] = _
+
+  private var currentRuns: Seq[Run] = Seq()
+  private var immatureRuns: Seq[Run] = Seq()
 
   private var savedNormal: Run = _
 
@@ -122,36 +149,32 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
   private var lastMostLikelyIndex: Int = _
   private var normalIndex: Int = _
 
-  def open(config: ParameterTool): Unit = {}
+  def open(config: ParameterTool): Unit = {
+    writer.write("NewEntry,")
+    writer.write("MostLikelyID,")
+    Range(0, maxHistory).foreach(i => writer.write(s"uid$i,prob$i,n$i,mean$i,var$i,"))
+    writer.println()
+    writer.flush()
+  }
 
   def reset(firstItem: MeasT): Unit = {
     runIndexCounter = 0
-    currentRuns = Seq(
-      Run(
-        getNewRunIndex,
-        initialDistribution.withPoint(firstItem),
-        1.0,
-        firstItem.time
-      ))
+    immatureRuns = Seq().addPoint(firstItem, newRun = true)
+    currentRuns = Seq()
 
     lastObserved = firstItem
 
     consecutiveAnomalies = 0
     consecutiveAnomaliesSameRun = 0
-    normalIndex = currentRuns.head.uid
-    lastMostLikelyIndex = normalIndex
+    normalIndex = -1
+    lastMostLikelyIndex = -1
 
     // We don't need to set savedNormal here since it's overwritten whenever a
     // new item is processed.
   }
 
   def differentEnough(oldNormal: Run, newNormal: Run): Boolean = {
-    if (Math.abs(oldNormal.dist.mean - newNormal.dist.mean) > 0) {
-      true
-    }
-    else {
-      false
-    }
+    true
   }
 
   def newEvent(out: Collector[ChangepointEvent],
@@ -191,6 +214,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     // If it's been a while since our last measurement, our old runs probably
     // aren't much use anymore, so we should start over as well.
     if (lastObserved == null ||
+      (currentRuns.isEmpty && immatureRuns.isEmpty) ||
         Duration
           .between(lastObserved.time, value.time)
           .compareTo(inactivityPurgeTime) > 0) {
@@ -203,17 +227,45 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       lastObserved = value
     }
 
-    // Save the current normal run.
-    savedNormal = currentRuns.find(_.uid == normalIndex).get
+    // Save the current normal run. If data is still immature, put a placeholder down instead.
+    savedNormal = currentRuns.find(_.uid == normalIndex).getOrElse(Run(-1, initialDistribution, 0.0, Instant.EPOCH))
 
-    // Figure out how well the new point matches the distributions we have.
-    val runsAfterGrowth = currentRuns
-      .applyGrowthProbabilities(value)
-    //.squashOldRuns
-    //.normalise
-    val mostLikelyRun = runsAfterGrowth.filterNot(_.dist.variance == 0).maxBy(_.prob)
+    // Update our playpen of immature runs. We don't need to bother applying
+    // probabilities to these yet, since they're excluded from evaluation.
+    val (mature, immature) = immatureRuns.addPoint(value, newRun = true).partition(_.isMature)
+    immatureRuns = immature
 
-    currentRuns = runsAfterGrowth
+    // If all our data is still immature, there's nothing else to do.
+    if (currentRuns.isEmpty && mature.isEmpty) {
+      return
+    }
+
+    // We should add the new value to the current runs so that we can then
+    // update their probabilities. The newly mature runs already include the new
+    // value, so we do this before including the new ones.
+    currentRuns = currentRuns.addPoint(value)
+
+    // Once a run has matured, we add it to the runs that are being evaluated.
+    // It begins with the default probability (1.0).
+    currentRuns = currentRuns.addRuns(mature)
+
+    // Next, we apply growth probabilities. They depend on the value we just added.
+    currentRuns = currentRuns
+      .updateProbabilities(value)
+
+    if (squash) {
+      currentRuns = currentRuns.squashOldRuns
+    }
+    if (normalise) {
+      currentRuns = currentRuns.normalise
+    }
+
+    if (currentRuns.isEmpty) {
+      reset(value)
+      return
+    }
+
+    val mostLikelyRun = currentRuns.maxBy(_.prob)
 
     // If this measurement doesn't match our current 'normal' run, update a counter.
     if (normalIndex != mostLikelyRun.uid) {
@@ -244,7 +296,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       // If the new normal is sufficiently different from the old one, we should
       // generate an event.
       if (differentEnough(savedNormal, mostLikelyRun)) {
-        newEvent(out, savedNormal, mostLikelyRun, value)
+        //newEvent(out, savedNormal, mostLikelyRun, value)
       }
     }
 
@@ -252,9 +304,44 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     // erratic. This should generate an event.
     if (consecutiveAnomalies > erraticTriggerCount) {
       //println("Erratic trigger!")
-      newErraticEvent(out, value)
+      //newErraticEvent(out, value)
       consecutiveAnomalies = 0
       consecutiveAnomaliesSameRun = 0
     }
+
+    writeState(value, mostLikelyRun)
   }
+
+  private val formatter: Run => String = { x =>
+    s"${x.uid},${x.prob},${x.dist.n},${x.dist.mean},${x.dist.variance}"
+  }
+
+  private def writeState(value: MeasT, mostLikelyRun: Run): Unit = {
+    writer.print(s"${initialDistribution.asInstanceOf[NormalDistribution[MeasT]].mapFunction(value)},")
+    writer.print(s"${mostLikelyRun.uid},")
+    currentRuns.foreach(x => writer.print(s"${formatter(x)},"))
+    writer.println()
+
+    writer.flush()
+  }
+
+  private val getFile = {
+    s"${
+      if (normalise) {
+        "Normalise"
+      }
+      else {
+        "NoNormalise"
+      }
+    }-${
+      if (squash) {
+        "Squash"
+      }
+      else {
+        "NoSquash"
+      }
+    }"
+  }
+
+  private val writer = new PrintWriter(new File(s"../plot-ltsi/processed/$getFile.csv"))
 }
