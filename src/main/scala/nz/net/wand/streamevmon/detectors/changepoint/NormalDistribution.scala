@@ -15,8 +15,10 @@ import org.scalactic.{Equality, TolerantNumerics}
   * @see [[https://en.wikipedia.org/wiki/Normal_distribution]]
   */
 case class NormalDistribution[T](
-    data: Seq[Double] = Seq(),
-    mapFunction: T => Double
+  mean: Double,
+  variance: Double,
+  n: Int = 0,
+  mapFunction: T => Double
 ) extends Distribution[T] with Logging {
 
   @transient implicit private[this] val doubleEquality: Equality[Double] =
@@ -29,31 +31,19 @@ case class NormalDistribution[T](
   override val distributionName: String = "Normal Distribution"
 
   override def pdf(y: Double): Double = {
-    n match {
-      case 0 => 0.0
-      case 1 =>
-        logger.info("PDF called for n=1!")
-        if (y == mean) {
-          1.0
-        }
-        else {
-          0.0
-        }
-      case _ =>
-        if (variance == 0) {
-          logger.info("PDF called when variance is 0!")
-          if (y == mean) {
-            1.0
-          }
-          else {
-            0.0
-          }
-        }
-        else {
-          import java.lang.Math._
-          val a = 1.0 / (sqrt(2.0 * PI) * sqrt(variance))
-          a * exp(-(((y - mean) * (y - mean)) / (2.0 * variance)))
-        }
+    if (variance == 0) {
+      logger.info("PDF called when variance is 0!")
+      if (y == mean) {
+        1.0
+      }
+      else {
+        0.0
+      }
+    }
+    else {
+      import java.lang.Math._
+      val a = 1.0 / (sqrt(2.0 * PI) * sqrt(variance))
+      a * exp(-(((y - mean) * (y - mean)) / (2.0 * variance)))
     }
   }
 
@@ -63,33 +53,29 @@ case class NormalDistribution[T](
 
   /** Reflects normal_distribution.updateStatistics */
   override def withPoint(newT: T): NormalDistribution[T] = {
+    val newValue = mapFunction(newT)
+    val newMean = ((mean * n) + newValue) / (n + 1)
+    val diff = (newValue - newMean) * (newValue - mean)
+    val newVariance = (variance * n + diff) / (n + 1)
+
     NormalDistribution(
-      data :+ mapFunction(newT),
+      newMean,
+      newVariance,
+      n + 1,
       mapFunction
     )
-  }
-
-  override val n: Int = data.length
-
-  private val sumPoints = data.sum
-  private val sumSquarePoints = data.fold(0.0)((a, b) => a + (b * b))
-
-  override val mean: Double = data.sum / n
-
-  override val variance: Double = n match {
-    case 0 | 1 => 0.0
-    case _ =>
-      (1.0 / (n * (n - 1))) * ((n * sumSquarePoints) - (sumPoints * sumPoints))
   }
 }
 
 object NormalDistribution {
 
+  val defaultVariance: Int = 10000 * 10000
+
   def apply[T](dist: NormalDistribution[T]): NormalDistribution[T] = {
-    NormalDistribution(dist.data, dist.mapFunction)
+    NormalDistribution(dist.mean, dist.variance, dist.n, dist.mapFunction)
   }
 
   def apply[T](item: T, mapFunction: T => Double): NormalDistribution[T] = {
-    NormalDistribution(Seq(mapFunction(item)), mapFunction)
+    NormalDistribution(mapFunction(item), defaultVariance, 1, mapFunction)
   }
 }

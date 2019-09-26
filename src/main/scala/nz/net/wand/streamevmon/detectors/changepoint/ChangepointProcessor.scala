@@ -22,12 +22,14 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
   private case class Run(uid: Int, dist: DistT, prob: Double, start: Instant) {
     def mergeWith(other: Run): Run = {
+      /*
       if (normalIndex == uid) {
         normalIndex = other.uid
       }
       if (lastMostLikelyIndex == uid) {
         lastMostLikelyIndex = other.uid
       }
+       */
       Run(
         other.uid,
         other.dist,
@@ -134,7 +136,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
   private val hazard = 1.0 / 200.0
 
-  private val runMaturityAge = 3
+  private val runMaturityAge = 2
 
   /** The maximum number of runs to retain */
   private val maxHistory = 20
@@ -267,7 +269,12 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     }
 
     // Save the current normal run. If data is still immature, put a placeholder down instead.
-    savedNormal = currentRuns.find(_.uid == normalIndex).getOrElse(Run(-1, initialDistribution, 0.0, Instant.EPOCH))
+    savedNormal = if (currentRuns.isDefinedAt(normalIndex)) {
+      currentRuns(normalIndex)
+    }
+    else {
+      Run(-1, initialDistribution, 0.0, Instant.EPOCH)
+    }
 
     // We should add the new value to the current runs so that we can then
     // update their probabilities. The newly mature runs already include the new
@@ -296,19 +303,20 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     }
 
     val mostLikelyRun = currentRuns.maxBy(_.prob)
+    val mostLikelyRunIndex = currentRuns.zipWithIndex.maxBy(_._1.prob)._2
 
     // If this measurement doesn't match our current 'normal' run, update a counter.
-    if (normalIndex != mostLikelyRun.uid) {
+    if (normalIndex != mostLikelyRunIndex) {
       consecutiveAnomalies += 1
       //println(s"Anomaly $consecutiveAnomalies")
 
       // If it's the same abnormal run as last time, there's a different counter.
-      if (lastMostLikelyIndex == mostLikelyRun.uid) {
+      if (lastMostLikelyIndex == mostLikelyRunIndex) {
         consecutiveAnomaliesSameRun += 1
         //println(s"Same Run Consecutive Anomaly $consecutiveAnomaliesSameRun")
       }
       else {
-        lastMostLikelyIndex = mostLikelyRun.uid
+        lastMostLikelyIndex = mostLikelyRunIndex
         consecutiveAnomaliesSameRun = 0
         //println("Different Run")
       }
@@ -319,7 +327,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     if (consecutiveAnomaliesSameRun > sameRunConsecutiveTriggerCount) {
       consecutiveAnomalies = 0
       consecutiveAnomaliesSameRun = 0
-      normalIndex = mostLikelyRun.uid
+      normalIndex = mostLikelyRunIndex
 
       //println("Trigger!")
 
