@@ -24,7 +24,8 @@ class MakeGraphs extends WordSpec {
         val source = env
           .readFile(
             new LatencyTSAmpFileInputFormat,
-            "data/latency-ts-i/ampicmp/waikato-xero-ipv4.series.small"
+            //"data/latency-ts-i/ampicmp/waikato-xero-ipv4.series.small"
+            "data/latency-ts-i/ampicmp/waikato-xero-ipv4.series.change"
             //"data/latency-ts-i/ampicmp/series/waikato-xero-ipv4.series"
           )
           .name("Latency TS I AMP ICMP Parser")

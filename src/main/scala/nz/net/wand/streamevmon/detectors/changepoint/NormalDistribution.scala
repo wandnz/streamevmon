@@ -1,5 +1,7 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
+import nz.net.wand.streamevmon.Logging
+
 import org.scalactic.{Equality, TolerantNumerics}
 
 /** An implementation of a normal distribution whose parameters are based on
@@ -15,7 +17,7 @@ import org.scalactic.{Equality, TolerantNumerics}
 case class NormalDistribution[T](
     data: Seq[Double] = Seq(),
     mapFunction: T => Double
-) extends Distribution[T] {
+) extends Distribution[T] with Logging {
 
   @transient implicit private[this] val doubleEquality: Equality[Double] =
     TolerantNumerics.tolerantDoubleEquality(1E-15)
@@ -30,6 +32,7 @@ case class NormalDistribution[T](
     n match {
       case 0 => 0.0
       case 1 =>
+        logger.info("PDF called for n=1!")
         if (y == mean) {
           1.0
         }
@@ -38,6 +41,7 @@ case class NormalDistribution[T](
         }
       case _ =>
         if (variance == 0) {
+          logger.info("PDF called when variance is 0!")
           if (y == mean) {
             1.0
           }
