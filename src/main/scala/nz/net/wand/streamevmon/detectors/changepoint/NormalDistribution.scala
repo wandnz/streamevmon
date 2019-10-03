@@ -31,20 +31,22 @@ case class NormalDistribution[T](
   override val distributionName: String = "Normal Distribution"
 
   override def pdf(y: Double): Double = {
-    if (variance == 0) {
-      logger.info("PDF called when variance is 0!")
-      if (y == mean) {
-        1.0
-      }
-      else {
-        0.0
-      }
+    // If the variance is 0, we should instead use some other small
+    // value to prevent the PDF function from becoming a delta function,
+    // which is 0 at all places except the mean, at which it is infinite.
+
+    val maybeFakeVariance = if (variance == 0) {
+      logger.info("PDF called with variance == 0!")
+      y / 100
     }
     else {
-      import java.lang.Math._
-      val a = 1.0 / (sqrt(2.0 * PI) * sqrt(variance))
-      a * exp(-(((y - mean) * (y - mean)) / (2.0 * variance)))
+      variance
     }
+
+    import java.lang.Math._
+    val a = 1.0 / (sqrt(2.0 * PI) * sqrt(maybeFakeVariance))
+    val b = a * exp(-(((y - mean) * (y - mean)) / (2.0 * maybeFakeVariance)))
+    b
   }
 
   override def pdf(x: T): Double = {

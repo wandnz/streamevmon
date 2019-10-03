@@ -52,6 +52,7 @@ class MakeGraphs extends WordSpec {
       "all" in {
         for (normalise <- Seq(true, false)) {
           for (squash <- Seq(true)) {
+            println(s"normalise: $normalise, squash: $squash")
             doIt(normalise, squash)
           }
         }

@@ -14,8 +14,8 @@ import scala.language.implicitConversions
 
 class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
   initialDistribution: DistT,
-  normalise          : Boolean,
-  squash             : Boolean
+  shouldNormalise    : Boolean,
+  shouldSquash       : Boolean
 ) extends Logging {
 
   implicit private def distToDistT(x: Distribution[MeasT]): DistT = x.asInstanceOf[DistT]
@@ -38,7 +38,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       )
     }
 
-    def isMature: Boolean = dist.n > runMaturityAge
+    def isMature: Boolean = dist.variance != 0
   }
 
   implicit private class SeqOfRuns(s: Seq[Run]) {
@@ -85,11 +85,14 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       var totalProb = 0.0
       for (i <- Range(s.size, 0, -1)) {
         if (i != s.size) {
+          val meanPdf = s(i).dist.pdf(s(i).dist.mean)
+          //totalProb += (s(i).dist.pdf(value) / meanPdf) * s(i).prob * hazard
           totalProb += s(i).dist.pdf(value) * s(i).prob * hazard
 
           newSeq = Run(
             newSeq.head.uid,
             newSeq.head.dist,
+            //(s(i).dist.pdf(value) / meanPdf) * s(i).prob * (1 - hazard),
             s(i).dist.pdf(value) * s(i).prob * (1 - hazard),
             newSeq.head.start
           ) +: newSeq.drop(1)
@@ -106,32 +109,84 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       ) +: newSeq.drop(1)
     }
 
-    /** This function definitely matches netevmon */
-    def normalise: Seq[Run] = {
-      val total = s.filterNot(_.dist.variance == 0).map(_.prob).sum
-      s.map(x =>
-        if (x.dist.variance == 0) {
-          x
+    def squashOldRuns: Seq[Run] = {
+      if (shouldSquash) {
+        if (s.length > maxHistory) {
+          //s.dropRight(2) :+ s.last.mergeWith(s.dropRight(1).last)
+          Seq(s.head.mergeWith(s.drop(1).head)) ++ s.drop(2)
         }
         else {
-          Run(
-            x.uid,
-            x.dist,
-            x.prob / total,
-            x.start
-          )
-      })
-    }
-
-    def squashOldRuns: Seq[Run] = {
-      if (s.length > maxHistory) {
-        //s.dropRight(2) :+ s.last.mergeWith(s.dropRight(1).last)
-        Seq(s.head.mergeWith(s.drop(1).head)) ++ s.drop(2)
+          s
+        }
       }
       else {
         s
       }
     }
+
+    /** This function definitely matches netevmon */
+    def normalise: Seq[Run] = {
+      if (shouldNormalise) {
+        val total = s.filterNot(_.dist.variance == 0).map(_.prob).sum
+
+        // Special case here, where the probabilities have all gone to zero due
+        // to the PDF of all runs or something else. We'll just move all our
+        // probability to the first run.
+        if (total == 0) {
+          logger.info("All probabilities are 0!")
+          Run(s.head.uid,
+            s.head.dist,
+            1.0,
+            s.head.start
+          ) +: s.map(x => Run(
+            x.uid,
+            x.dist,
+            0.0,
+            x.start
+          )).drop(1)
+        }
+        else {
+          s.map(x =>
+            Run(
+              x.uid,
+              x.dist,
+              x.prob / total,
+              x.start
+            )
+          )
+        }
+      }
+      else {
+        s
+      }
+    }
+
+    def update(newlyMatureRuns: Seq[Run], value: MeasT): Seq[Run] = {
+      s
+        // We should add the new value to the current runs so that we can then
+        // update their probabilities. The newly mature runs already include the new
+        // value, so we do this before including them.
+        .addPoint(value)
+        // Once a run has matured, we add it to the runs that are being evaluated.
+        // It begins with the default probability (1.0).
+        .addRuns(newlyMatureRuns)
+        // Next, we apply growth probabilities. They depend on the value we just added.
+        .updateProbabilities(value)
+        // If there's too many runs, we condense them since some won't be useful anymore.
+        .squashOldRuns
+        // Finally, we make all the probabilities in the vector add to 1.
+        .normalise
+
+      val a = s.addPoint(value)
+      val b = a.addRuns(newlyMatureRuns)
+      val c = b.updateProbabilities(value)
+      val d = c.squashOldRuns
+      val e = d.normalise
+
+      e
+    }
+
+    def trim(index: Int): Seq[Run] = s
   }
 
   private val hazard = 1.0 / 200.0
@@ -162,6 +217,9 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
   private var currentRuns: Seq[Run] = Seq()
   private var immatureRuns: Seq[Run] = Seq()
+  private var normalRuns: Seq[Run] = Seq()
+  private var normalIsCurrent: Boolean = true
+  private var normalnormalindex: Int = _
 
   private var savedNormal: Run = _
 
@@ -173,17 +231,31 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
   private var consecutiveAnomaliesSameRun: Int = _
 
   private var lastMostLikelyIndex: Int = _
-  private var normalIndex: Int = _
+  private var prev_normal_max: Int = _
+  private var prev_current_max: Int = _
+
+  private val fakeRun = Run(-1, initialDistribution, 0.0, Instant.EPOCH)
 
   def open(config: ParameterTool): Unit = {
     writer.write("NewEntry,")
     writer.write("MostLikelyID,")
-    (0 to maxHistory).foreach(i => writer.write(s"uid$i,prob$i,n$i,mean$i,var$i,"))
+    writer.write("NormalIsCurrent,")
+    if (shouldSquash) {
+      (0 to maxHistory).foreach(i => writer.write(s"uid$i,prob$i,n$i,mean$i,var$i,"))
+    }
+    else {
+      (0 to 501).foreach(i => writer.write(s"uid$i,prob$i,n$i,mean$i,var$i,"))
+    }
     writer.println()
     writer.flush()
 
     writerPdf.write("NewEntry,")
-    (0 to maxHistory).foreach(i => writerPdf.write(s"pdf$i,"))
+    if (shouldSquash) {
+      (0 to maxHistory).foreach(i => writerPdf.write(s"pdf$i,"))
+    }
+    else {
+      (0 to 501).foreach(i => writerPdf.write(s"pdf$i,"))
+    }
     writerPdf.println()
     writerPdf.flush()
   }
@@ -192,12 +264,16 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     runIndexCounter = 0
     immatureRuns = Seq().addPoint(firstItem, newRun = true)
     currentRuns = Seq()
+    normalIsCurrent = true
+    normalRuns = Seq()
+    normalnormalindex = 0
 
     lastObserved = firstItem
 
     consecutiveAnomalies = 0
     consecutiveAnomaliesSameRun = 0
-    normalIndex = 0
+    prev_normal_max = 0
+    prev_current_max = 0
     lastMostLikelyIndex = 0
 
     // We don't need to set savedNormal here since it's overwritten whenever a
@@ -212,6 +288,9 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
                oldNormal: Run,
                newNormal: Run,
                value: MeasT): Unit = {
+
+    println(s"Event! oldNormal: $oldNormal, newNormal: $newNormal, value: $value")
+
     out.collect(
       ChangepointEvent(
         Map("type" -> "change"),
@@ -268,31 +347,28 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       return
     }
 
+    if (currentRuns.length + mature.length <= 1) {
+      currentRuns = currentRuns.addRuns(mature)
+      return
+    }
+
     // Save the current normal run. If data is still immature, put a placeholder down instead.
-    savedNormal = if (currentRuns.isDefinedAt(normalIndex)) {
-      currentRuns(normalIndex)
+    savedNormal = if (currentRuns.isDefinedAt(prev_normal_max)) {
+      currentRuns(prev_normal_max)
     }
     else {
-      Run(-1, initialDistribution, 0.0, Instant.EPOCH)
+      fakeRun
     }
 
-    // We should add the new value to the current runs so that we can then
-    // update their probabilities. The newly mature runs already include the new
-    // value, so we do this before including them.
-    currentRuns = currentRuns.addPoint(value)
-
-    // Once a run has matured, we add it to the runs that are being evaluated.
-    // It begins with the default probability (1.0).
-    currentRuns = currentRuns.addRuns(mature)
-
-    // Next, we apply growth probabilities. They depend on the value we just added.
-    currentRuns = currentRuns.updateProbabilities(value)
-
-    if (squash) {
-      currentRuns = currentRuns.squashOldRuns
+    val savedNormalRuns = if (normalIsCurrent) {
+      currentRuns.map(identity)
     }
-    if (normalise) {
-      currentRuns = currentRuns.normalise
+    else {
+      normalRuns.map(identity)
+    }
+    currentRuns = currentRuns.update(mature, value)
+    if (!normalIsCurrent) {
+      normalRuns = normalRuns.update(mature, value)
     }
 
     // If this happens, the squashing algorithm is a little overzealous.
@@ -303,60 +379,77 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     }
 
     val mostLikelyRun = currentRuns.maxBy(_.prob)
-    val mostLikelyRunIndex = currentRuns.zipWithIndex.maxBy(_._1.prob)._2
+    val current_maxI = currentRuns.zipWithIndex.maxBy(_._1.prob)._2
+
+    val mostLikelyNormalRun = if (normalRuns.nonEmpty) {
+      normalRuns.maxBy(_.prob)
+    }
+    else {
+      fakeRun
+    }
+    val normal_maxI = if (normalRuns.nonEmpty) {
+      normalRuns.zipWithIndex.maxBy(_._1.prob)._2
+    }
+    else {
+      -1
+    }
+    if (prev_current_max >= maxHistory - 1) {
+      prev_current_max -= 1
+    }
+    if (prev_normal_max >= maxHistory - 1) {
+      prev_normal_max -= 1
+    }
 
     // If this measurement doesn't match our current 'normal' run, update a counter.
-    if (normalIndex != mostLikelyRunIndex) {
+    if ((!normalIsCurrent && current_maxI != prev_normal_max + 1) ||
+      (normalIsCurrent && normal_maxI != prev_normal_max + 1)) {
+
       consecutiveAnomalies += 1
       //println(s"Anomaly $consecutiveAnomalies")
 
-      // If it's the same abnormal run as last time, there's a different counter.
-      if (lastMostLikelyIndex == mostLikelyRunIndex) {
-        consecutiveAnomaliesSameRun += 1
-        //println(s"Same Run Consecutive Anomaly $consecutiveAnomaliesSameRun")
+      normalRuns = savedNormalRuns.map(identity)
+
+      if (normalIsCurrent) {
+        prev_normal_max = prev_current_max
+      }
+      prev_current_max = current_maxI
+      normalIsCurrent = false
+    }
+    else {
+      if (normalIsCurrent) {
+        prev_current_max = current_maxI
       }
       else {
-        lastMostLikelyIndex = mostLikelyRunIndex
-        consecutiveAnomaliesSameRun = 0
-        //println("Different Run")
+        normalIsCurrent = true
+        currentRuns = normalRuns.map(identity)
+        prev_current_max = normal_maxI
       }
+
+      prev_normal_max = prev_current_max
+      consecutiveAnomalies = 0
     }
 
-    // After a few consecutive values that conform better to the same run,
-    // that run becomes the new 'normal'.
-    if (consecutiveAnomaliesSameRun > sameRunConsecutiveTriggerCount) {
+    if (consecutiveAnomalies > sameRunConsecutiveTriggerCount) {
+      newEvent(out, currentRuns(prev_current_max), currentRuns(current_maxI), value)
       consecutiveAnomalies = 0
       consecutiveAnomaliesSameRun = 0
-      normalIndex = mostLikelyRunIndex
 
-      //println("Trigger!")
+      currentRuns.trim(current_maxI)
 
-      // If the new normal is sufficiently different from the old one, we should
-      // generate an event.
-      if (differentEnough(savedNormal, mostLikelyRun)) {
-        //newEvent(out, savedNormal, mostLikelyRun, value)
-      }
-    }
-
-    // If the most likely run is changing a lot, we consider the sequence to be
-    // erratic. This should generate an event.
-    if (consecutiveAnomalies > erraticTriggerCount) {
-      //println("Erratic trigger!")
-      //newErraticEvent(out, value)
+      prev_normal_max = current_maxI
+      normalIsCurrent = true
       consecutiveAnomalies = 0
-      consecutiveAnomaliesSameRun = 0
     }
 
     writeState(value, mostLikelyRun)
   }
 
-  private val formatter: Run => String = { x =>
-    s"${x.uid},${x.prob},${x.dist.n},${x.dist.mean},${x.dist.variance}"
-  }
-
   private def writeState(value: MeasT, mostLikelyRun: Run): Unit = {
+    val formatter: Run => String = x => s"${x.uid},${x.prob},${x.dist.n},${x.dist.mean},${x.dist.variance}"
+
     writer.print(s"${initialDistribution.asInstanceOf[NormalDistribution[MeasT]].mapFunction(value)},")
-    writer.print(s"${mostLikelyRun.uid},")
+    writer.print(s"$prev_normal_max,")
+    writer.print(s"$normalIsCurrent,")
     currentRuns.foreach(x => writer.print(s"${formatter(x)},"))
     writer.println()
     writer.flush()
@@ -369,14 +462,14 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
   private val getFile = {
     s"${
-      if (normalise) {
+      if (shouldNormalise) {
         "Normalise"
       }
       else {
         "NoNormalise"
       }
     }-${
-      if (squash) {
+      if (shouldSquash) {
         "Squash"
       }
       else {
