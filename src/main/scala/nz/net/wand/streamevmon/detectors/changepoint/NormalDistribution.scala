@@ -55,15 +55,17 @@ case class NormalDistribution[T](
 
   /** Reflects normal_distribution.updateStatistics */
   override def withPoint(newT: T): NormalDistribution[T] = {
+    val N = n + 1
+
     val newValue = mapFunction(newT)
-    val newMean = ((mean * n) + newValue) / (n + 1)
+    val newMean = ((mean * N) + newValue) / (N + 1)
     val diff = (newValue - newMean) * (newValue - mean)
-    val newVariance = (variance * n + diff) / (n + 1)
+    val newVariance = (variance * N + diff) / (N + 1)
 
     NormalDistribution(
       newMean,
       newVariance,
-      n + 1,
+      N,
       mapFunction
     )
   }

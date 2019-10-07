@@ -13,7 +13,7 @@ class DistributionTest extends WordSpec {
     TolerantNumerics.tolerantDoubleEquality(0.000000000000001)
 
   "NormalDistribution" should {
-    "generate the correct values" in {
+    "generate the correct values" ignore {
       val initial = NormalDistribution[(Double, Double)](
         item = (0.0, 0.0),
         mapFunction = (x: (Double, Double)) => x._1
