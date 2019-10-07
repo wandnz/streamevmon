@@ -9,7 +9,7 @@ version := "0.1-SNAPSHOT"
 
 organization := "nz.net.wand"
 
-ThisBuild / scalaVersion := "2.12.9"
+ThisBuild / scalaVersion := "2.12.10"
 
 val flinkVersion = "1.9.0"
 val flinkDependencies = Seq(
@@ -18,7 +18,7 @@ val flinkDependencies = Seq(
   "org.apache.flink" %% "flink-table-api-scala" % flinkVersion
 )
 
-val chroniclerVersion = "0.5.5"
+val chroniclerVersion = "0.6.0"
 val influxDependencies = Seq(
   "com.github.fsanaulla" %% "chronicler-ahc-io" % chroniclerVersion,
   "com.github.fsanaulla" %% "chronicler-ahc-management" % chroniclerVersion,
@@ -26,7 +26,7 @@ val influxDependencies = Seq(
 )
 
 val postgresDependencies = Seq(
-  "org.postgresql" % "postgresql" % "9.4.1212",
+  "org.postgresql" % "postgresql" % "42.2.8",
   "org.squeryl" %% "squeryl" % "0.9.14"
 )
 
@@ -43,9 +43,9 @@ val logDependencies = Seq(
 
 val testDependencies = Seq(
   "org.scalatest" %% "scalatest" % "3.0.8" % "test",
-  "com.dimafeng" %% "testcontainers-scala" % "0.30.0" % "test",
-  "org.testcontainers" % "postgresql" % "1.12.0" % "test",
-  "org.testcontainers" % "influxdb" % "1.12.0" % "test"
+  "com.dimafeng" %% "testcontainers-scala" % "0.33.0" % "test",
+  "org.testcontainers" % "postgresql" % "1.12.2" % "test",
+  "org.testcontainers" % "influxdb" % "1.12.2" % "test"
 )
 
 lazy val root = (project in file(".")).
