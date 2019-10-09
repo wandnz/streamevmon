@@ -42,7 +42,6 @@ class MakeGraphs extends WordSpec {
         val process = source
           .process(detector)
           .name(detector.detectorName)
-          .setParallelism(1)
 
         process.print(s"${getClass.getSimpleName} sink")
 
@@ -50,7 +49,7 @@ class MakeGraphs extends WordSpec {
       }
 
       "all" in {
-        for (normalise <- Seq(true, false)) {
+        for (normalise <- Seq(true)) {
           for (squash <- Seq(true)) {
             println(s"normalise: $normalise, squash: $squash")
             doIt(normalise, squash)

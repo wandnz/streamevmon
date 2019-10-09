@@ -21,7 +21,7 @@ trait Distribution[T] {
 
   /** Returns a new Distribution after adjustment for the new point added to it.
     * Reflects normal_distribution.updateStatistics */
-  def withPoint(p: T): Distribution[T]
+  def withPoint(p: T, fakeN: Int): Distribution[T]
 
   val mean: Double
   val variance: Double

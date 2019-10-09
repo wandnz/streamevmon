@@ -39,7 +39,7 @@ class DistributionTest extends WordSpec {
              .map {
                case (((a, b), c), d) => (a, b, c, d)
              }) {
-        current = current.withPoint((i, i))
+        current = current.withPoint((i, i), 1)
 
         assert(current.mean === mean)
         assert(current.variance === variance)

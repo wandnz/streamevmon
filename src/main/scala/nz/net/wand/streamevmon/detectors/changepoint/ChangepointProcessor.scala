@@ -122,7 +122,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
         current_runs = current_runs.updated(r + 1, Run(
           current_runs(r + 1).uid,
-          current_runs(r).dist.withPoint(value),
+          current_runs(r).dist.withPoint(value, r + 1),
           current_runs(r).dist.pdf(value) * current_runs(r).prob * (1 - hazard),
           current_runs(r + 1).start
         ))
@@ -144,13 +144,13 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
         while (newRuns.length > maxHistory) {
           //s.dropRight(2) :+ s.last.mergeWith(s.dropRight(1).last)
           //Seq(s.head.mergeWith(s.drop(1).head)) ++ s.drop(2)
-          val maxhist = newRuns(maxHistory)
-          val maxhistMinusOne = newRuns(maxHistory - 1)
+          val maxhist = newRuns.last
+          val maxhistMinusOne = newRuns.dropRight(1).last
           newRuns = newRuns.dropRight(2) :+ Run(
-            maxhist.uid,
-            maxhist.dist,
+            maxhistMinusOne.uid,
+            maxhistMinusOne.dist,
             maxhist.prob + maxhistMinusOne.prob,
-            maxhist.start
+            maxhistMinusOne.start
           )
         }
         newRuns
@@ -160,10 +160,9 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       }
     }
 
-    /** This function definitely matches netevmon */
     def normalise: Seq[Run] = {
       if (shouldNormalise) {
-        val total = s.filterNot(_.dist.variance == 0).map(_.prob).sum
+        val total = s.map(_.prob).sum
 
         // Special case here, where the probabilities have all gone to zero due
         // to the PDF of all runs or something else. We'll just move all our
@@ -204,7 +203,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
         // We should add the new value to the current runs so that we can then
         // update their probabilities. The newly mature runs already include the new
         // value, so we do this before including them.
-        .addPoint(value, newRun)
+        //.addPoint(value, newRun, addNewRun = false)
         // Once a run has matured, we add it to the runs that are being evaluated.
         // It begins with the default probability (1.0).
         .addRuns(newlyMatureRuns)
@@ -216,7 +215,14 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
         .normalise
 
       val a = s.addPoint(value, newRun)
-      val b = a.addRuns(newlyMatureRuns)
+      //val b = a//.addRuns(newlyMatureRuns)
+      val theRun = a.last
+      val b = a.updated(a.length - 1, Run(
+        theRun.uid,
+        theRun.dist,
+        theRun.dist.pdf(value) * theRun.prob * (1 - hazard),
+        theRun.start
+      ))
       val c = b.updateProbabilities(value, newRun)
       val d = c.squashOldRuns
       val e = d.normalise
@@ -230,7 +236,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
   private def newRunFor(value: MeasT): Run = {
     Run(
       getNewRunIndex,
-      initialDistribution.withPoint(value),
+      initialDistribution.withPoint(value, 1),
       1.0,
       value.time
     )
@@ -288,7 +294,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     writer.write("MostLikelyID,")
     writer.write("NormalIsCurrent,")
     if (shouldSquash) {
-      (0 to maxHistory + 4).foreach(i => writer.write(s"uid$i,prob$i,n$i,mean$i,var$i,"))
+      (0 to maxHistory).foreach(i => writer.write(s"uid$i,prob$i,n$i,mean$i,var$i,"))
     }
     else {
       (0 to 510).foreach(i => writer.write(s"uid$i,prob$i,n$i,mean$i,var$i,"))
@@ -298,7 +304,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
     writerPdf.write("NewEntry,")
     if (shouldSquash) {
-      (0 to maxHistory + 4).foreach(i => writerPdf.write(s"pdf$i,"))
+      (0 to maxHistory).foreach(i => writerPdf.write(s"pdf$i,"))
     }
     else {
       (0 to 510).foreach(i => writerPdf.write(s"pdf$i,"))
@@ -309,7 +315,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
   def reset(firstItem: MeasT): Unit = {
     runIndexCounter = 0
-    immatureRuns = Seq().addPoint(firstItem, newRunFor(firstItem), addNewRun = true)
+    immatureRuns = Seq().addPoint(firstItem, newRunFor(firstItem))
     currentRuns = Seq()
     normalIsCurrent = true
     normalRuns = Seq()
@@ -327,9 +333,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     // new item is processed.
   }
 
-  def differentEnough(oldNormal: Run, newNormal: Run): Boolean = {
-    true
-  }
+  def differentEnough(oldNormal: Run, newNormal: Run): Boolean = true
 
   def newEvent(out: Collector[ChangepointEvent],
                oldNormal: Run,
@@ -384,23 +388,6 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       lastObserved = value
     }
 
-    // Update our playpen of immature runs. We don't need to bother applying
-    // probabilities to these yet, since they're excluded from evaluation.
-    val (mature, immature) = immatureRuns.addPoint(value, newRunFor(value), addNewRun = true).partition(_.isMature)
-    immatureRuns = immature
-
-    // If all our data is still immature, there's nothing else to do.
-    if (currentRuns.isEmpty && mature.isEmpty) {
-      return
-    }
-
-    /*
-    if (currentRuns.length + mature.length <= 1) {
-      currentRuns = currentRuns.addRuns(mature)
-      return
-    }
-    */
-
     // Save the current normal run. If data is still immature, put a placeholder down instead.
     savedNormal = if (currentRuns.isDefinedAt(prev_normal_max)) {
       currentRuns(prev_normal_max)
@@ -416,9 +403,9 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       normalRuns.copy
     }
 
-    currentRuns = currentRuns.update(mature, value)
+    currentRuns = currentRuns.update(Seq(), value)
     if (!normalIsCurrent) {
-      normalRuns = normalRuns.update(mature, value)
+      normalRuns = normalRuns.update(Seq(), value)
     }
 
     // If this happens, the squashing algorithm is a little overzealous.
@@ -429,7 +416,13 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     }
 
     val mostLikelyRun = currentRuns.maxBy(_.prob)
-    val current_maxI = currentRuns.zipWithIndex.maxBy(_._1.prob)._2
+    val current_maxI = //currentRuns.zipWithIndex.maxBy(_._1.prob)._2
+      if (currentRuns.length == 1) {
+        0
+      }
+      else {
+        currentRuns.dropRight(1).zipWithIndex.maxBy(_._1.prob)._2
+      }
 
     val mostLikelyNormalRun = if (normalRuns.nonEmpty) {
       normalRuns.maxBy(_.prob)

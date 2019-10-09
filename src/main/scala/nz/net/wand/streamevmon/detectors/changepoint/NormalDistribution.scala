@@ -34,7 +34,6 @@ case class NormalDistribution[T](
     // If the variance is 0, we should instead use some other small
     // value to prevent the PDF function from becoming a delta function,
     // which is 0 at all places except the mean, at which it is infinite.
-
     val maybeFakeVariance = if (variance == 0) {
       logger.info("PDF called with variance == 0!")
       y / 100
@@ -54,18 +53,23 @@ case class NormalDistribution[T](
   }
 
   /** Reflects normal_distribution.updateStatistics */
-  override def withPoint(newT: T): NormalDistribution[T] = {
-    val N = n + 1
+  override def withPoint(newT: T, fakeN: Int): NormalDistribution[T] = {
 
+    val fakeNForMean = if (fakeN == 1) {
+      0
+    }
+    else {
+      fakeN
+    }
     val newValue = mapFunction(newT)
-    val newMean = ((mean * N) + newValue) / (N + 1)
+    val newMean = ((mean * fakeNForMean) + newValue) / (fakeNForMean + 1)
     val diff = (newValue - newMean) * (newValue - mean)
-    val newVariance = (variance * N + diff) / (N + 1)
+    val newVariance = (variance * fakeN + diff) / (fakeN + 1)
 
     NormalDistribution(
       newMean,
       newVariance,
-      N,
+      fakeN,
       mapFunction
     )
   }
