@@ -229,8 +229,6 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
       e
     }
-
-    def trim(index: Int): Seq[Run] = s
   }
 
   private def newRunFor(value: MeasT): Run = {
@@ -291,7 +289,8 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
   def open(config: ParameterTool): Unit = {
     writer.write("NewEntry,")
-    writer.write("MostLikelyID,")
+    writer.write("PrevNormalMax,")
+    writer.write("CurrentMaxI,")
     writer.write("NormalIsCurrent,")
     if (shouldSquash) {
       (0 to maxHistory).foreach(i => writer.write(s"uid$i,prob$i,n$i,mean$i,var$i,"))
@@ -436,6 +435,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     else {
       -1
     }
+
     if (prev_current_max >= maxHistory - 1) {
       prev_current_max -= 1
     }
@@ -444,8 +444,9 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     }
 
     // If this measurement doesn't match our current 'normal' run, update a counter.
-    if ((!normalIsCurrent && current_maxI != prev_normal_max + 1) ||
-      (normalIsCurrent && normal_maxI != prev_normal_max + 1)) {
+    //if ((!normalIsCurrent && current_maxI != prev_normal_max) ||
+    //  (normalIsCurrent && normal_maxI != prev_normal_max)) {
+    if (current_maxI != prev_normal_max) {
 
       consecutiveAnomalies += 1
       //println(s"Anomaly $consecutiveAnomalies")
@@ -456,7 +457,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
         prev_normal_max = prev_current_max
       }
       prev_current_max = current_maxI
-      normalIsCurrent = false
+      //normalIsCurrent = false
     }
     else {
       if (normalIsCurrent) {
@@ -477,21 +478,23 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       consecutiveAnomalies = 0
       consecutiveAnomaliesSameRun = 0
 
-      currentRuns.trim(current_maxI)
-
       prev_normal_max = current_maxI
-      normalIsCurrent = true
+      //normalIsCurrent = true
       consecutiveAnomalies = 0
+
+      normalIsCurrent = false
     }
 
-    writeState(value, mostLikelyRun)
+    writeState(value, current_maxI)
+    normalIsCurrent = true
   }
 
-  private def writeState(value: MeasT, mostLikelyRun: Run): Unit = {
+  private def writeState(value: MeasT, mostLikelyUid: Int): Unit = {
     val formatter: Run => String = x => s"${x.uid},${x.prob},${x.dist.n},${x.dist.mean},${x.dist.variance}"
 
     writer.print(s"${initialDistribution.asInstanceOf[NormalDistribution[MeasT]].mapFunction(value)},")
     writer.print(s"$prev_normal_max,")
+    writer.print(s"$mostLikelyUid,")
     writer.print(s"$normalIsCurrent,")
     currentRuns.foreach(x => writer.print(s"${formatter(x)},"))
     writer.println()
