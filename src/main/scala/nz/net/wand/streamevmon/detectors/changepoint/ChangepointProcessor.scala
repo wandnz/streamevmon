@@ -116,6 +116,17 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
       e
     }
+
+    def filteredMaxBy(func: Run => Double): Int = {
+      // We discount the newly added run because its probability will be way
+      // too high until it gets another iteration or two under its belt.
+      if (s.length > 1) {
+        s.dropRight(1).zipWithIndex.maxBy(x => func(x._1))._2
+      }
+      else {
+        0
+      }
+    }
   }
 
   private def newRunFor(value: MeasT): Run = {
@@ -127,17 +138,26 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     )
   }
 
+  // == Configurable options ==
+
   private val hazard = 1.0 / 200.0
 
   /** The maximum number of runs to retain */
   private val maxHistory = 20
 
   /** The number of consecutive outliers that belong to the same run that must
-    * occur before we believe that run is the new normal.
+    * occur before we believe that run is the new normal and an event may have
+    * occurred.
     */
-  private val sameRunConsecutiveTriggerCount = 10
+  private val changepointTriggerCount = 10
+  /** If an outlier value is followed by more than this many normal values,
+    * we should ignore the outlier.
+    */
+  private val ignoreOutlierAfterNormalMeasurementCount = 1
 
   private val inactivityPurgeTime = Duration.ofSeconds(60)
+
+  // == End of configurable options ==
 
   private var runIndexCounter = -1
   private def getNewRunIndex: Int = {
@@ -146,26 +166,31 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
   }
 
   private var currentRuns: Seq[Run] = Seq()
-  private var normalIsCurrent: Boolean = true
+  private var normalRuns: Seq[Run] = Seq()
+  private var magicFlagOfGraphing: Boolean = true
 
   /** The last measurement we observed */
   private var lastObserved: MeasT = _
 
   /** The number of data points in a row that don't fit the expected data */
   private var consecutiveAnomalies: Int = _
+  private var consecutiveOutliers: Int = _
 
   private var previousMostLikelyIndex: Int = _
+
+  private var mostNormalRun: Run = _
 
   private val fakeRun = Run(-1, initialDistribution, 0.0, Instant.EPOCH)
 
   def reset(firstItem: MeasT): Unit = {
     runIndexCounter = -1
     currentRuns = Seq()
-    normalIsCurrent = true
+    magicFlagOfGraphing = true
 
     lastObserved = firstItem
 
     consecutiveAnomalies = 0
+    consecutiveOutliers = 0
     previousMostLikelyIndex = 0
   }
 
@@ -208,6 +233,16 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       lastObserved = value
     }
 
+    if (consecutiveAnomalies == 0) {
+      normalRuns = currentRuns.copy
+      mostNormalRun = if (normalRuns.nonEmpty) {
+        normalRuns(previousMostLikelyIndex)
+      }
+      else {
+        fakeRun
+      }
+    }
+
     // Process the new value: Create a new run, adjust the current runs, and
     // update the probabilities of the runs depending on the new measurement.
     currentRuns = currentRuns.update(value)
@@ -219,24 +254,41 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       return
     }
 
-    // Find the most likely run.
-    // We discount the newly added run because its probability will be way
-    // too high until it gets another iteration or two under its belt.
-    val mostLikelyIndex = if (currentRuns.length > 1) {
-      currentRuns.dropRight(1).zipWithIndex.maxBy(_._1.prob)._2
-    }
-    else {
-      0
-    }
+    // Find the most likely run, discounting the newly added one.
+    val mostLikelyIndex = currentRuns.filteredMaxBy(_.prob)
 
     // If the most likely run has changed, then the measurement doesn't match
     // our current model of the recent 'normal' behaviour of the measurements.
     // We'll update a counter to see if this happens for a while.
     if (mostLikelyIndex != previousMostLikelyIndex) {
       consecutiveAnomalies += 1
+
+      // This metric can determine if the measurements have returned to normal
+      // after a small number of outliers. If they have, we return the detector
+      // state to how it was before the outlier occurred and disregard
+      // measurements since the outlier. The current measurement, which follows
+      // our normal trend, is included.
+      val highestPdf = currentRuns.filteredMaxBy(_.dist.pdf(value))
+
+      if (highestPdf == currentRuns.length - 2) {
+        consecutiveOutliers += 1
+
+        if (consecutiveOutliers > ignoreOutlierAfterNormalMeasurementCount) {
+          consecutiveAnomalies = 0
+          consecutiveOutliers = 0
+          currentRuns = normalRuns.update(value)
+
+          writeState(value, mostLikelyIndex)
+          return
+        }
+      }
+      else {
+        consecutiveOutliers = 0
+      }
     }
     else {
       consecutiveAnomalies = 0
+      consecutiveOutliers = 0
     }
 
     // Save which run was most likely last time.
@@ -245,19 +297,18 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     // If we've had too many 'abnormal' measurements in a row, we might need to
     // emit an event. We'll also reset our counter and tweak a couple of other
     // values.
-    if (consecutiveAnomalies > sameRunConsecutiveTriggerCount) {
-      val oldNormal = currentRuns(previousMostLikelyIndex)
+    if (consecutiveAnomalies > changepointTriggerCount) {
       val newNormal = currentRuns(mostLikelyIndex)
-      if (differentEnough(oldNormal, newNormal)) {
-        newEvent(out, oldNormal, newNormal, value)
+      if (differentEnough(mostNormalRun, newNormal)) {
+        newEvent(out, mostNormalRun, newNormal, value)
       }
       consecutiveAnomalies = 0
 
-      normalIsCurrent = false //temp for graphing
+      magicFlagOfGraphing = false
     }
 
     writeState(value, mostLikelyIndex)
-    normalIsCurrent = true //temp for graphing
+    magicFlagOfGraphing = true
   }
 
   // ==== From here down is solely used for graphing
@@ -266,6 +317,8 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     writer.write("PrevNormalMax,")
     writer.write("CurrentMaxI,")
     writer.write("NormalIsCurrent,")
+    writer.write("ConsecutiveAnomalies,")
+    writer.write("ConsecutiveOutliers,")
     (0 to maxHistory).foreach(i => writer.write(s"uid$i,prob$i,n$i,mean$i,var$i,"))
     writer.println()
     writer.flush()
@@ -282,7 +335,9 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     writer.print(s"${initialDistribution.asInstanceOf[NormalDistribution[MeasT]].mapFunction(value)},")
     writer.print(s"$previousMostLikelyIndex,")
     writer.print(s"$mostLikelyUid,")
-    writer.print(s"$normalIsCurrent,")
+    writer.print(s"$magicFlagOfGraphing,")
+    writer.print(s"$consecutiveAnomalies,")
+    writer.print(s"$consecutiveOutliers,")
     currentRuns.foreach(x => writer.print(s"${formatter(x)},"))
     writer.println()
     writer.flush()
