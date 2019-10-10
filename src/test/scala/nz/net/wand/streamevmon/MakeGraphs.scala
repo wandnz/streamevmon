@@ -13,7 +13,7 @@ class MakeGraphs extends WordSpec {
   "Graphs" when {
     "ChangepointProcessor" when {
 
-      def doIt(normalise: Boolean, squash: Boolean): Unit = {
+      def doIt(): Unit = {
         val env = StreamExecutionEnvironment.getExecutionEnvironment
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
@@ -34,9 +34,7 @@ class MakeGraphs extends WordSpec {
 
         val detector =
           new ChangepointDetector[LatencyTSAmpICMP, NormalDistribution[LatencyTSAmpICMP]](
-            new NormalDistribution[LatencyTSAmpICMP](0, 10000 * 10000, n = 0, mapFunction = _.average),
-            normalise,
-            squash
+            new NormalDistribution[LatencyTSAmpICMP](0, 10000 * 10000, n = 0, mapFunction = _.average)
           )
 
         val process = source
@@ -49,12 +47,7 @@ class MakeGraphs extends WordSpec {
       }
 
       "all" in {
-        for (normalise <- Seq(true)) {
-          for (squash <- Seq(true)) {
-            println(s"normalise: $normalise, squash: $squash")
-            doIt(normalise, squash)
-          }
-        }
+        doIt()
       }
     }
   }
