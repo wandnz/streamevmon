@@ -26,6 +26,7 @@ class MakeGraphs extends WordSpec {
             new LatencyTSAmpFileInputFormat,
             //"data/latency-ts-i/ampicmp/waikato-xero-ipv4.series.small"
             "data/latency-ts-i/ampicmp/waikato-xero-ipv4.series.change"
+            //"data/latency-ts-i/ampicmp/waikato-xero-ipv4.series.change2"
             //"data/latency-ts-i/ampicmp/series/waikato-xero-ipv4.series"
           )
           .name("Latency TS I AMP ICMP Parser")

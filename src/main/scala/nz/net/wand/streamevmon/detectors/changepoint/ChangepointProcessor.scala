@@ -78,7 +78,6 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       // to the PDF of all runs or something else. We'll just move all our
       // probability to the first run.
       if (total == 0) {
-        logger.info("All probabilities are 0!")
         Run(s.head.uid,
           s.head.dist,
           1.0,
@@ -156,6 +155,9 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
   private val ignoreOutlierAfterNormalMeasurementCount = 1
 
   private val inactivityPurgeTime = Duration.ofSeconds(60)
+  private val minimumEventInterval = Duration.ofSeconds(10)
+
+  private val severityThreshold = 30
 
   // == End of configurable options ==
 
@@ -171,6 +173,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
   /** The last measurement we observed */
   private var lastObserved: MeasT = _
+  private var lastEventTime: Option[Instant] = None
 
   /** The number of data points in a row that don't fit the expected data */
   private var consecutiveAnomalies: Int = _
@@ -178,7 +181,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
   private var previousMostLikelyIndex: Int = _
 
-  private var mostNormalRun: Run = _
+  private var compositeOldNormal: Run = _
 
   private val fakeRun = Run(-1, initialDistribution, 0.0, Instant.EPOCH)
 
@@ -194,21 +197,50 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     previousMostLikelyIndex = 0
   }
 
-  def differentEnough(oldNormal: Run, newNormal: Run): Boolean = true
+  def getSeverity(oldNormal    : Run, newNormal: Run): Int = {
+    println(s"Old normal: $oldNormal")
+    println(s"New normal: $newNormal")
+    val absDiff = Math.abs(oldNormal.dist.mean - newNormal.dist.mean)
+    val relativeDiff = absDiff / Math.min(oldNormal.dist.mean, newNormal.dist.mean)
+    val normalRelDiff = if (relativeDiff > 1.0) {
+      1 - (1 / relativeDiff)
+    }
+    else {
+      relativeDiff
+    }
+    (normalRelDiff * 100).toInt
+  }
 
   // TODO: Calculate times and detection latency correctly
   def newEvent(out: Collector[ChangepointEvent],
                oldNormal: Run,
                newNormal: Run,
-               value: MeasT): Unit = {
+               value: MeasT,
+               severity: Int
+  ): Unit = {
+    if (Duration
+      .between(value.time, lastEventTime.getOrElse(value.time))
+      .compareTo(minimumEventInterval) > 0) {
+
+      lastEventTime = Some(value.time)
+    }
+
+
     out.collect(
       ChangepointEvent(
-        Map("type" -> "change"),
+        Map("type" -> "changepoint"),
         value.stream,
-        0,
-        newNormal.start,
-        value.time.toEpochMilli - newNormal.start.toEpochMilli,
-        "Changepoint"
+        severity,
+        oldNormal.start,
+        value.time.toEpochMilli - oldNormal.start.toEpochMilli,
+        s"Latency ${
+          if (oldNormal.dist.mean > newNormal.dist.mean) {
+            "decreased"
+          }
+          else {
+            "increased"
+          }
+        } from ${oldNormal.dist.mean.toInt} to ${newNormal.dist.mean.toInt}"
       ))
   }
 
@@ -233,10 +265,20 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       lastObserved = value
     }
 
+    // If we're in a normal state, we'll update our note of our normal-state
+    // runs. We'll also make a composite of the most recent time and the
+    // mean with the most data in it in case there's a changepoint after this,
+    // so we can use the nicest numbers for determining if it's different enough
+    // and to show the end-user.
     if (consecutiveAnomalies == 0) {
       normalRuns = currentRuns.copy
-      mostNormalRun = if (normalRuns.nonEmpty) {
-        normalRuns(previousMostLikelyIndex)
+      compositeOldNormal = if (normalRuns.nonEmpty) {
+        Run(
+          -2,
+          normalRuns(normalRuns.filteredMaxBy(_.dist.n)).dist,
+          -2.0,
+          normalRuns(previousMostLikelyIndex).start
+        )
       }
       else {
         fakeRun
@@ -266,7 +308,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       // This metric can determine if the measurements have returned to normal
       // after a small number of outliers. If they have, we return the detector
       // state to how it was before the outlier occurred and disregard
-      // measurements since the outlier. The current measurement, which follows
+      // outlier measurements. The current measurement, which follows
       // our normal trend, is included.
       val highestPdf = currentRuns.filteredMaxBy(_.dist.pdf(value))
 
@@ -295,12 +337,16 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     previousMostLikelyIndex = mostLikelyIndex
 
     // If we've had too many 'abnormal' measurements in a row, we might need to
-    // emit an event. We'll also reset our counter and tweak a couple of other
-    // values.
+    // emit an event. We'll also reset to a fresh state, since most of the old
+    // runs have a lot of data from before the changepoint.
+    // TODO: Are there any runs that only have data from after the changepoint?
+    // This would help us get regenerate our maxHistory a bit quicker.
     if (consecutiveAnomalies > changepointTriggerCount) {
-      val newNormal = currentRuns(mostLikelyIndex)
-      if (differentEnough(mostNormalRun, newNormal)) {
-        newEvent(out, mostNormalRun, newNormal, value)
+      val newNormal = currentRuns.filter(_.dist.n == 1).head
+      val severity = getSeverity(compositeOldNormal, newNormal)
+      if (severity > severityThreshold) {
+        newEvent(out, compositeOldNormal, newNormal, value, severity)
+        reset(value)
       }
       consecutiveAnomalies = 0
 
