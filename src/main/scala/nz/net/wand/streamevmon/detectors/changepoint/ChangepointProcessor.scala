@@ -57,11 +57,11 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     * They don't really do anything anymore, but it's reasonably useful to
     * track the progression of runs within the data structures.
     */
-  private var runIndexCounter = -1
+  private var runUidCounter = -1
 
-  private def getNewRunIndex: Int = {
-    runIndexCounter += 1
-    runIndexCounter
+  private def getNewRunUid: Int = {
+    runUidCounter += 1
+    runUidCounter
   }
 
   /** The current runs that reflect a set of rolling distribution models of the
@@ -70,17 +70,19 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     *
     * A run also contains a unique ID, a probability, and a start time.
     */
-  private var currentRuns: Seq[Run] = Seq.empty[Run]
+  private var currentRuns: Seq[Run] = Seq()
 
   /** The state of currentRuns at the time immediately before anomalous
     * measurements start to roll in. This is used to get the value of the "old
     * normal" when checking to see if a sufficiently significant event has
-    * occurred.
+    * occurred. It's also used to restore the runs when a lonely outlier is
+    * detected.
     */
-  private var normalRuns: Seq[Run] = Seq.empty[Run]
+  private var normalRuns: Seq[Run] = Seq()
 
   /** A persistent fake run made from attributes of a couple of values from
-    * normalRuns. Has the same purpose as normalRuns.
+    * normalRuns. Used as the comparison to see if the event is significant
+    * enough.
     */
   private var compositeOldNormal: Run = _
 
@@ -93,6 +95,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     * too long since the last measurement.
     */
   private var lastObserved: MeasT = _
+
   /** The last time an event was emitted. Used to stop us from throwing out a
     * whole bunch of events in a row if the data is going crazy.
     */
@@ -102,6 +105,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     * If this gets higher than changepointTriggerCount, an event might happen.
     */
   private var consecutiveAnomalies: Int = _
+
   /** The number of normal values that have happened after an outlier. If this
     * gets higher than ignoreOutlierAfterNormalMeasurementCount, the runs are
     * reset to how they were before that outlier, and the outlier is dropped.
@@ -109,41 +113,53 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
   private var consecutiveNormalAfterOutlier: Int = _
 
   /** The run index that was the most likely match for the last measurement.
-    * Used to check if it's changed.
+    * Used to check if the most likely run has changed.
     */
   private var previousMostLikelyIndex: Int = _
-
-  /** This magical flag goes low when we're checking if a significant event
-    * has happened. It's solely used for graphs.
-    */
-  private var magicFlagOfGraphing: Boolean = true
 
   /** Resets the detector to a clean state.
     *
     * @param firstItem The first measurement of the clean state.
     */
   def reset(firstItem: MeasT): Unit = {
-    runIndexCounter = -1
-    currentRuns = Seq.empty[Run]
-    magicFlagOfGraphing = true
-
-    lastObserved = firstItem
+    runUidCounter = -1
+    currentRuns = Seq()
+    normalRuns = Seq()
 
     consecutiveAnomalies = 0
     consecutiveNormalAfterOutlier = 0
     previousMostLikelyIndex = 0
+
+    lastObserved = firstItem
+
+    magicFlagOfGraphing = true
   }
 
+  /** Generates a new run for a particular measurement. This should only be
+    * called once per measurement, since getNewRunUid will be different each
+    * time and the calculations in .withPoint could be time-consuming.
+    *
+    * New runs start with a probability of 1.0.
+    */
   override protected def newRunFor(value: MeasT): Run = {
     Run(
-      getNewRunIndex,
+      getNewRunUid,
       initialDistribution.withPoint(value, 1).asInstanceOf[DistT],
       1.0,
       value.time
     )
   }
 
-  def getSeverity(oldNormal    : Run, newNormal: Run): Int = {
+  /** Determines the severity of a changepoint event. If the severity is higher
+    * than the specified threshold, it is emitted, otherwise ignored.
+    *
+    * @param oldNormal A run representing the state of measurements before the
+    *                  changepoint.
+    * @param newNormal A run representing measurements after the changepoint.
+    *
+    * @return A value from 0-100 representing the severity of the changepoint.
+    */
+  def getSeverity(oldNormal: Run, newNormal: Run): Int = {
     val absDiff = Math.abs(oldNormal.dist.mean - newNormal.dist.mean)
     val relativeDiff = absDiff / Math.min(oldNormal.dist.mean, newNormal.dist.mean)
     val normalRelDiff = if (relativeDiff > 1.0) {
@@ -155,6 +171,15 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     (normalRelDiff * 100).toInt
   }
 
+  /** Outputs an event if it has been sufficiently long since the last one.
+    *
+    * @param out       The collector to output the event to.
+    * @param oldNormal The run representing the state of measurements before the
+    *                  changepoint.
+    * @param newNormal The run representing measurements after the changepoint.
+    * @param value     The most recent measurement, which is after the changepoint.
+    * @param severity  The severity of the event as returned by getSeverity.
+    */
   def newEvent(out: Collector[ChangepointEvent],
                oldNormal: Run,
                newNormal: Run,
@@ -186,6 +211,12 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     }
   }
 
+  /** Processes a new measurement, producing zero or one events. This function
+    * is called by Flink, and is the entrypoint to the detector.
+    *
+    * @param value The new measurement.
+    * @param out   The collector to submit new events to.
+    */
   def processElement(
       value: MeasT,
       out: Collector[ChangepointEvent]
@@ -193,7 +224,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
     // If this is the first item observed, we start from fresh.
     // If it's been a while since our last measurement, our old runs probably
-    // aren't much use anymore, so we should start over as well.
+    // aren't much use anymore, so we should start over here as well.
     if (lastObserved == null ||
         Duration
           .between(lastObserved.time, value.time)
@@ -203,11 +234,14 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     }
 
     // Update the last observed value if it was the most recent one seen.
+    // Out of order events will otherwise be processed as though they were the
+    // most recent event, which may not be what we want!
+    // TODO: Investigate out of order behaviour.
     if (!Duration.between(lastObserved.time, value.time).isNegative) {
       lastObserved = value
     }
 
-    // If we're in a normal state, we'll update our note of our normal-state
+    // If we're in a normal state, we'll update the note of our normal-state
     // runs. We'll also make a composite of the most recent time and the
     // mean with the most data in it in case there's a changepoint after this,
     // so we can use the nicest numbers for determining if it's different enough
@@ -231,14 +265,15 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     // update the probabilities of the runs depending on the new measurement.
     currentRuns = currentRuns.update(value)
 
-    // If this happens, something is probably wrong with the squashing algorithm.
+    // This should only trigger if the squashing algorithm is messed up, and
+    // shouldn't happen. It's here for safety.
     if (currentRuns.isEmpty) {
       logger.error("There were no runs left after applying growth probabilities! Resetting detector.")
       reset(value)
       return
     }
 
-    // Find the most likely run, discounting the newly added one.
+    // Find the most likely run, discounting the newly added run.
     val mostLikelyIndex = currentRuns.filteredMaxBy(_.prob)
 
     // If the most likely run has changed, then the measurement doesn't match
@@ -275,7 +310,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       consecutiveNormalAfterOutlier = 0
     }
 
-    // Save which run was most likely last time.
+    // Save which run was most likely so it can be compared next iteration.
     previousMostLikelyIndex = mostLikelyIndex
 
     // If we've had too many 'abnormal' measurements in a row, we might need to
@@ -292,6 +327,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       }
       consecutiveAnomalies = 0
 
+      // ==== From here down is solely used for graphing
       magicFlagOfGraphing = false
     }
 
@@ -299,7 +335,11 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     magicFlagOfGraphing = true
   }
 
-  // ==== From here down is solely used for graphing
+  /** This magical flag goes low when we're checking if a significant event
+    * has happened. It's solely used for graphs.
+    */
+  private var magicFlagOfGraphing: Boolean = true
+
   def open(config: ParameterTool): Unit = {
     writer.write("NewEntry,")
     writer.write("PrevNormalMax,")
