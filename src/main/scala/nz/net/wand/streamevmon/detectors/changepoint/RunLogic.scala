@@ -58,8 +58,8 @@ private[changepoint] trait RunLogic[MeasT <: Measurement, DistT <: Distribution[
         // This value ends out being (1 - sum(prob)) for all prob in current_runs.
         current_weight += current_runs(r).dist.pdf(value) * current_runs(r).prob * hazard
 
-        // The (r+1)th run gets its distribution and probability overwritten
-        // with an updated copy of the (r)th run's distribution+prob.
+        // The (r+1)th run gets overwritten with an updated copy of the (r)th
+        // run. As such, the runs propagate towards the end of the array.
         current_runs = current_runs.updated(
           r + 1,
           Run(
@@ -70,6 +70,8 @@ private[changepoint] trait RunLogic[MeasT <: Measurement, DistT <: Distribution[
         )
       }
 
+      // The first run is overwritten with the new run, since its updated copy
+      // was propagated up with the others.
       // The new run gets the leftover probability.
       Run(
         newRun.dist,
