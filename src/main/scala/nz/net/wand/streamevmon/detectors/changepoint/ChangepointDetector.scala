@@ -5,14 +5,22 @@ import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.Logging
 
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
-import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.util.Collector
 
-class ChangepointDetector[MeasT <: Measurement: TypeInformation, DistT <: Distribution[MeasT]](
+/** Wrapper class for [[ChangepointProcessor]].
+  * This part does Flink stuff, and stores the ChangepointProcessor in a way that
+  * Flink should be able to serialise to restore saved state.
+  *
+  * @param initialDistribution The distribution that should be used as a base
+  *                            when adding new measurements to the runs.
+  * @tparam MeasT The type of [[nz.net.wand.streamevmon.measurements.Measurement]] we're receiving.
+  * @tparam DistT The type of [[Distribution]] to model recent measurements with.
+  */
+class ChangepointDetector[MeasT <: Measurement, DistT <: Distribution[MeasT]](
   initialDistribution: DistT
 ) extends KeyedProcessFunction[Int, MeasT, ChangepointEvent]
     with Logging {

@@ -16,7 +16,12 @@ private[changepoint] trait RunLogic[MeasT <: Measurement, DistT <: Distribution[
   // use them here.
   protected val hazard: Double
   protected val maxHistory: Int
-  protected def newRunFor(value: MeasT): Run
+
+  protected def newRunFor(value: MeasT, probability: Double): Run
+
+  import scala.language.implicitConversions
+
+  implicit def DistToDistT(d: Distribution[MeasT]): DistT = d.asInstanceOf[DistT]
 
   /** We keep a number of runs that contain probability distributions for the
     * last several measurements. Each of these has a probability to be the most
@@ -37,47 +42,50 @@ private[changepoint] trait RunLogic[MeasT <: Measurement, DistT <: Distribution[
 
     def copy: Seq[Run] = s.map(identity)
 
-    def addRun(newRun: Run): Seq[Run] = {
-      s :+ newRun
+    /** As the standard maxBy function, but we discount the rightmost value
+      * since its probability is way too high.
+      *
+      * @return The index of the item returning the highest value when func is
+      *         applied to it.
+      */
+    def filteredMaxBy(func: Run => Double): Int = {
+      // We discount the newly added run because its probability will be way
+      // too high until it gets another iteration or two under its belt.
+      if (s.length > 1) {
+        s.dropRight(1).zipWithIndex.maxBy(x => func(x._1))._2
+      }
+      else {
+        0
+      }
     }
 
     /** Updates the distributions for all the runs with the data from the new
-      * measurement, and adjusts the run probabilities accordingly. This is the
-      * heavy math part of the algorithm.
+      * measurement, and adjusts the run probabilities accordingly. It also adds
+      * a new run, which might get squashed later.
       *
-      * @param value  The new measurement.
-      * @param newRun The new run that started with the new measurement.
+      * This method does most of the heavy lifting of the algorithm.
+      *
+      * @param value The new measurement.
       */
-    def updateProbabilities(value: MeasT, newRun: Run): Seq[Run] = {
-      var current_runs = s
-      var current_weight = 0.0
+    def applyNewMeasurement(value: MeasT): Seq[Run] = {
+      var updatedRuns = s
+      var remainingProbability = 0.0
 
-      // We iterate over the array in reverse order, but skip the last one
-      // because it's about to get overwritten.
-      (current_runs.length - 2 to 0 by -1).foreach { r =>
-        // This value ends out being (1 - sum(prob)) for all prob in current_runs.
-        current_weight += current_runs(r).dist.pdf(value) * current_runs(r).prob * hazard
+      updatedRuns = s.zipWithIndex.map { r =>
+        // This value ends out being (1 - sum(prob)) for all prob in updatedRuns.
+        remainingProbability += r._1.dist.pdf(value) * r._1.prob * hazard
 
-        // The (r+1)th run gets overwritten with an updated copy of the (r)th
-        // run. As such, the runs propagate towards the end of the array.
-        current_runs = current_runs.updated(
-          r + 1,
-          Run(
-            current_runs(r).dist.withPoint(value, r + 1).asInstanceOf[DistT],
-            current_runs(r).dist.pdf(value) * current_runs(r).prob * (1 - hazard),
-            current_runs(r).start
-          )
+        // Each run's distribution gets updated to include the new value in the model,
+        // and the probabilities are updated according to the paper.
+        Run(
+          r._1.dist.withPoint(value, r._2 + 1),
+          r._1.dist.pdf(value) * r._1.prob * (1 - hazard),
+          r._1.start
         )
       }
 
-      // The first run is overwritten with the new run, since its updated copy
-      // was propagated up with the others.
-      // The new run gets the leftover probability.
-      Run(
-        newRun.dist,
-        current_weight,
-        newRun.start
-      ) +: current_runs.drop(1)
+      // Slap the new run on the front. It gets the rest of the probability.
+      newRunFor(value, remainingProbability) +: updatedRuns
     }
 
     /** We comply with the maxHistory setting by squashing the oldest runs
@@ -91,9 +99,10 @@ private[changepoint] trait RunLogic[MeasT <: Measurement, DistT <: Distribution[
       while (newRuns.length > maxHistory) {
         val lastRun = newRuns.last
         val secondLastRun = newRuns.dropRight(1).last
+
         newRuns = newRuns.dropRight(2) :+ Run(
           secondLastRun.dist,
-          lastRun.prob + secondLastRun.prob,
+          secondLastRun.prob + lastRun.prob,
           secondLastRun.start
         )
       }
@@ -120,33 +129,13 @@ private[changepoint] trait RunLogic[MeasT <: Measurement, DistT <: Distribution[
     }
 
     def update(value: MeasT): Seq[Run] = {
-      val newRun = newRunFor(value)
-
-      // Add a new run created from the new measurement.
-      s.addRun(newRun)
+      s
         // Apply probability changes according to the value of the new measurement.
-        .updateProbabilities(value, newRun)
+        .applyNewMeasurement(value)
         // Condense old runs to comply with the maxRuns setting.
         .squashOldRuns
         // Normalise the probabilities so they all add to 1.
         .normalise
-    }
-
-    /** As the standard maxBy function, but we discount the rightmost value
-      * since its probability is way too high.
-      *
-      * @return The index of the item returning the highest value when func is
-      *         applied to it.
-      */
-    def filteredMaxBy(func: Run => Double): Int = {
-      // We discount the newly added run because its probability will be way
-      // too high until it gets another iteration or two under its belt.
-      if (s.length > 1) {
-        s.dropRight(1).zipWithIndex.maxBy(x => func(x._1))._2
-      }
-      else {
-        0
-      }
     }
   }
 }

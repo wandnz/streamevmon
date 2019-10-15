@@ -7,6 +7,10 @@ import org.scalactic.{Equality, TolerantNumerics}
 /** An implementation of a normal distribution whose parameters are based on
   * the points provided to it.
   *
+  * @param n           The number of measurements that have been used to create the
+  *                    distribution parameters. Note that using .withPoint allows the
+  *                    caller to supply a custom n, so this might not actually reflect
+  *                    the true number. The calculations do work out though.
   * @param mapFunction The function to apply to elements of type T to obtain the
   *                    relevant data for this distribution. In the case of an
   *                    ICMP measurement, the relevant data is most likely the
@@ -35,7 +39,7 @@ case class NormalDistribution[T](
     // value to prevent the PDF function from becoming a delta function,
     // which is 0 at all places except the mean, at which it is infinite.
     val maybeFakeVariance = if (variance == 0) {
-      logger.info("PDF called with variance == 0!")
+      logger.warn("PDF called with variance == 0!")
       y / 100
     }
     else {
@@ -52,24 +56,22 @@ case class NormalDistribution[T](
     pdf(mapFunction(x))
   }
 
-  /** Reflects normal_distribution.updateStatistics */
-  override def withPoint(newT: T, fakeN: Int): NormalDistribution[T] = {
-
-    val fakeNForMean = if (fakeN == 1) {
+  override def withPoint(newT: T, newN: Int): NormalDistribution[T] = {
+    val fakeNForMean = if (newN == 1) {
       0
     }
     else {
-      fakeN
+      newN
     }
     val newValue = mapFunction(newT)
     val newMean = ((mean * fakeNForMean) + newValue) / (fakeNForMean + 1)
     val diff = (newValue - newMean) * (newValue - mean)
-    val newVariance = (variance * fakeN + diff) / (fakeN + 1)
+    val newVariance = (variance * newN + diff) / (newN + 1)
 
     NormalDistribution(
       newMean,
       newVariance,
-      fakeN,
+      newN,
       mapFunction
     )
   }

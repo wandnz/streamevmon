@@ -17,22 +17,19 @@ trait Distribution[T] {
     * [[https://en.wikipedia.org/wiki/Probability_density_function]]
     */
   def pdf(x: Double): Double
+
+  /** The probability density function, returning the relative likelihood for a
+    * continuous random variable to take the value that arises after applying
+    * mapFunction to x.
+    *
+    * [[https://en.wikipedia.org/wiki/Probability_density_function]]
+    */
   def pdf(x: T): Double
 
-  /** Returns a new Distribution after adjustment for the new point added to it.
-    * Reflects normal_distribution.updateStatistics */
-  def withPoint(p: T, fakeN: Int): Distribution[T]
+  /** Returns a new Distribution after adjustment for the new point added to it. */
+  def withPoint(p: T, newN: Int): Distribution[T]
 
   val mean: Double
   val variance: Double
   val n: Int
-}
-
-object Distribution {
-
-  def apply[T](dist: Distribution[T]): Distribution[T] = {
-    dist match {
-      case d: NormalDistribution[T] => NormalDistribution(d)
-    }
-  }
 }

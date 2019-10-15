@@ -10,6 +10,14 @@ import java.time.{Duration, Instant}
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.util.Collector
 
+/** This is the main class for the changepoint detector module. See the package
+  * description for a high-level description.
+  *
+  * @param initialDistribution The distribution that should be used as a base
+  *                            when adding new measurements to the runs.
+  * @tparam MeasT The type of [[nz.net.wand.streamevmon.measurements.Measurement]] we're receiving.
+  * @tparam DistT The type of [[Distribution]] to model recent measurements with.
+  */
 class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
   initialDistribution: DistT
 ) extends RunLogic[MeasT, DistT] with Logging {
@@ -57,7 +65,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     * recently observed measurements. For example, if DistT is a normal
     * distribution, the runs would contain averages and variances.
     *
-    * A run also contains a unique ID, a probability, and a start time.
+    * A run also contains a probability and a start time.
     */
   private var currentRuns: Seq[Run] = Seq()
 
@@ -121,13 +129,11 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
   /** Generates a new run for a particular measurement. This should only be
     * called once per measurement, since the calculations in .withPoint could
     * be time-consuming.
-    *
-    * New runs start with a probability of 1.0.
     */
-  override protected def newRunFor(value: MeasT): Run = {
+  override protected def newRunFor(value: MeasT, probability: Double): Run = {
     Run(
-      initialDistribution.withPoint(value, 1).asInstanceOf[DistT],
-      1.0,
+      initialDistribution.withPoint(value, 1),
+      probability,
       value.time
     )
   }

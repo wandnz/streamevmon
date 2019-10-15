@@ -99,8 +99,7 @@ case class PostgresConnection(
   user        : String,
   password    : String,
   caching_ttl : Int
-) extends Caching
-          with Logging {
+) extends Caching with Logging {
 
   @transient private[this] lazy val ttl: Option[FiniteDuration] = {
     if (caching_ttl == 0) {
