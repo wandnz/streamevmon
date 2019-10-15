@@ -53,17 +53,6 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
   //endregion
 
-  /** This value and function are used to generate new unique run indices.
-    * They don't really do anything anymore, but it's reasonably useful to
-    * track the progression of runs within the data structures.
-    */
-  private var runUidCounter = -1
-
-  private def getNewRunUid: Int = {
-    runUidCounter += 1
-    runUidCounter
-  }
-
   /** The current runs that reflect a set of rolling distribution models of the
     * recently observed measurements. For example, if DistT is a normal
     * distribution, the runs would contain averages and variances.
@@ -85,11 +74,6 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     * enough.
     */
   private var compositeOldNormal: Run = _
-
-  /** This gets put into compositeOldNormal if normalRuns is empty. That
-    * shouldn't really happen, but it's here just in case.
-    */
-  private val fakeRun = Run(-1, initialDistribution, 0.0, Instant.EPOCH)
 
   /** The last measurement we observed. Used to clear all our data if it's been
     * too long since the last measurement.
@@ -122,7 +106,6 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     * @param firstItem The first measurement of the clean state.
     */
   def reset(firstItem: MeasT): Unit = {
-    runUidCounter = -1
     currentRuns = Seq()
     normalRuns = Seq()
 
@@ -136,14 +119,13 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
   }
 
   /** Generates a new run for a particular measurement. This should only be
-    * called once per measurement, since getNewRunUid will be different each
-    * time and the calculations in .withPoint could be time-consuming.
+    * called once per measurement, since the calculations in .withPoint could
+    * be time-consuming.
     *
     * New runs start with a probability of 1.0.
     */
   override protected def newRunFor(value: MeasT): Run = {
     Run(
-      getNewRunUid,
       initialDistribution.withPoint(value, 1).asInstanceOf[DistT],
       1.0,
       value.time
@@ -250,14 +232,13 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       normalRuns = currentRuns.copy
       compositeOldNormal = if (normalRuns.nonEmpty) {
         Run(
-          -2,
           normalRuns(normalRuns.filteredMaxBy(_.dist.n)).dist,
           -2.0,
           normalRuns(previousMostLikelyIndex).start
         )
       }
       else {
-        fakeRun
+        Run(initialDistribution, -1.0, Instant.EPOCH)
       }
     }
 
@@ -347,7 +328,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     writer.write("NormalIsCurrent,")
     writer.write("ConsecutiveAnomalies,")
     writer.write("ConsecutiveOutliers,")
-    (0 to maxHistory).foreach(i => writer.write(s"uid$i,prob$i,n$i,mean$i,var$i,"))
+    (0 to maxHistory).foreach(i => writer.write(s"prob$i,n$i,mean$i,var$i,"))
     writer.println()
     writer.flush()
 
@@ -357,12 +338,12 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     writerPdf.flush()
   }
 
-  private def writeState(value: MeasT, mostLikelyUid: Int): Unit = {
-    val formatter: Run => String = x => s"${x.uid},${x.prob},${x.dist.n},${x.dist.mean},${x.dist.variance}"
+  private def writeState(value: MeasT, mostLikelyIndex: Int): Unit = {
+    val formatter: Run => String = x => s"${x.prob},${x.dist.n},${x.dist.mean},${x.dist.variance}"
 
     writer.print(s"${initialDistribution.asInstanceOf[NormalDistribution[MeasT]].mapFunction(value)},")
     writer.print(s"$previousMostLikelyIndex,")
-    writer.print(s"$mostLikelyUid,")
+    writer.print(s"$mostLikelyIndex,")
     writer.print(s"$magicFlagOfGraphing,")
     writer.print(s"$consecutiveAnomalies,")
     writer.print(s"$consecutiveNormalAfterOutlier,")

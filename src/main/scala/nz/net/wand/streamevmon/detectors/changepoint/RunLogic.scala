@@ -24,7 +24,6 @@ private[changepoint] trait RunLogic[MeasT <: Measurement, DistT <: Distribution[
     * noticing differences in which run is most likely.
     */
   private[changepoint] case class Run(
-      uid: Int,
       dist: DistT,
       prob: Double,
       start: Instant
@@ -64,7 +63,6 @@ private[changepoint] trait RunLogic[MeasT <: Measurement, DistT <: Distribution[
         current_runs = current_runs.updated(
           r + 1,
           Run(
-            current_runs(r + 1).uid,
             current_runs(r).dist.withPoint(value, r + 1).asInstanceOf[DistT],
             current_runs(r).dist.pdf(value) * current_runs(r).prob * (1 - hazard),
             current_runs(r).start
@@ -74,7 +72,6 @@ private[changepoint] trait RunLogic[MeasT <: Measurement, DistT <: Distribution[
 
       // The new run gets the leftover probability.
       Run(
-        newRun.uid,
         newRun.dist,
         current_weight,
         newRun.start
@@ -93,7 +90,6 @@ private[changepoint] trait RunLogic[MeasT <: Measurement, DistT <: Distribution[
         val lastRun = newRuns.last
         val secondLastRun = newRuns.dropRight(1).last
         newRuns = newRuns.dropRight(2) :+ Run(
-          secondLastRun.uid,
           secondLastRun.dist,
           lastRun.prob + secondLastRun.prob,
           secondLastRun.start
@@ -112,12 +108,12 @@ private[changepoint] trait RunLogic[MeasT <: Measurement, DistT <: Distribution[
       // We'll just move all our probability to the newest run. This indicates
       // a potential changepoint.
       if (total == 0) {
-        Run(s.head.uid, s.head.dist, 1.0, s.head.start) +: s
-          .map(x => Run(x.uid, x.dist, 0.0, x.start))
+        Run(s.head.dist, 1.0, s.head.start) +: s
+          .map(x => Run(x.dist, 0.0, x.start))
           .drop(1)
       }
       else {
-        s.map(x => Run(x.uid, x.dist, x.prob / total, x.start))
+        s.map(x => Run(x.dist, x.prob / total, x.start))
       }
     }
 
