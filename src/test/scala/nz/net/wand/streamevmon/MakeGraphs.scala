@@ -35,7 +35,7 @@ class MakeGraphs extends WordSpec {
 
         val detector =
           new ChangepointDetector[LatencyTSAmpICMP, NormalDistribution[LatencyTSAmpICMP]](
-            new NormalDistribution[LatencyTSAmpICMP](0, 10000 * 10000, n = 0, mapFunction = _.average)
+            new NormalDistribution[LatencyTSAmpICMP](mean = 0, mapFunction = _.average)
           )
 
         val process = source

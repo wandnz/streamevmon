@@ -20,10 +20,11 @@ import org.scalactic.{Equality, TolerantNumerics}
   */
 case class NormalDistribution[T](
   mean: Double,
-  variance: Double,
-  n: Int = 0,
-  mapFunction: T => Double
-) extends Distribution[T] with Logging {
+  mapFunction: T => Double,
+  variance: Double = NormalDistribution.defaultVariance,
+  n   : Int = 0
+)
+  extends Distribution[T] with Logging {
 
   @transient implicit private[this] val doubleEquality: Equality[Double] =
     TolerantNumerics.tolerantDoubleEquality(1E-15)
@@ -68,24 +69,19 @@ case class NormalDistribution[T](
     val diff = (newValue - newMean) * (newValue - mean)
     val newVariance = (variance * newN + diff) / (newN + 1)
 
-    NormalDistribution(
-      newMean,
-      newVariance,
-      newN,
-      mapFunction
-    )
+    NormalDistribution(newMean, mapFunction, newVariance, newN)
   }
 }
 
 object NormalDistribution {
 
-  val defaultVariance: Int = 10000 * 10000
+  private val defaultVariance: Int = 10000 * 10000
 
   def apply[T](dist: NormalDistribution[T]): NormalDistribution[T] = {
-    NormalDistribution(dist.mean, dist.variance, dist.n, dist.mapFunction)
+    NormalDistribution(dist.mean, dist.mapFunction, dist.variance, dist.n)
   }
 
   def apply[T](item: T, mapFunction: T => Double): NormalDistribution[T] = {
-    NormalDistribution(mapFunction(item), defaultVariance, 1, mapFunction)
+    NormalDistribution(mapFunction(item), mapFunction, defaultVariance, n = 1)
   }
 }

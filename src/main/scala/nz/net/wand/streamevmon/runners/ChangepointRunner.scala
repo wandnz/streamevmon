@@ -27,7 +27,7 @@ object ChangepointRunner {
 
     val detector = new ChangepointDetector
                          [LatencyTSAmpICMP, NormalDistribution[LatencyTSAmpICMP]](
-      new NormalDistribution(0, 10000 * 10000, mapFunction = _.average)
+      new NormalDistribution(mean = 0, mapFunction = _.average)
     )
 
     val process = source

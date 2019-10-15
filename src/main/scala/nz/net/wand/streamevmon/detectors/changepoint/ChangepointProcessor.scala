@@ -24,12 +24,6 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
   //region Configurable options
 
-  /** Controls the decay rate of the probabilities of old runs.
-    * A hazard closer to 1.0 will tend to be more sensitive. This value does not
-    * appear to normally need tweaking.
-    */
-  protected override val hazard: Double = 1.0 / 200.0
-
   /** The maximum number of runs to retain. */
   protected override val maxHistory: Int = 20
 
@@ -60,6 +54,13 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
   private val severityThreshold = 30
 
   //endregion
+
+  /** Controls the decay rate of the probabilities of old runs. A hazard closer
+    * to 1.0 will tend to be more sensitive. The value selected generally
+    * provides consistent, useful results. Allowing configuration would likely
+    * only cause confusion.
+    */
+  protected override val hazard: Double = 1.0 / 200.0
 
   /** The current runs that reflect a set of rolling distribution models of the
     * recently observed measurements. For example, if DistT is a normal
