@@ -21,7 +21,7 @@ private[changepoint] trait RunLogic[MeasT <: Measurement, DistT <: Distribution[
 
   // A couple of configuration values and methods are passed upwards so we can
   // use them here.
-  protected val maxHistory: Int
+  protected var maxHistory: Int
 
   protected def newRunFor(value: MeasT, probability: Double): Run
 

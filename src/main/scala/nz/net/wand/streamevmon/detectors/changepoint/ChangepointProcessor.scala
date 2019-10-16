@@ -25,33 +25,33 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
   //region Configurable options
 
   /** The maximum number of runs to retain. */
-  protected override val maxHistory: Int = 20
+  protected override var maxHistory: Int = _
 
   /** The number of similar consecutive outliers that must be observed before
     * the measurements are considered to be an event. Higher numbers will
     * increase detection latency.
     */
-  private val changepointTriggerCount = 10
+  private var changepointTriggerCount: Int = _
 
   /** If an outlier value is followed by more than this many normal values,
     * we should ignore the outlier. Small values of this option protect against
     * small numbers of outliers, such as momentary large increases in latency.
     */
-  private val ignoreOutlierAfterNormalMeasurementCount = 1
+  private var ignoreOutlierAfterNormalMeasurementCount: Int = _
 
   /** If there are no measurements for this many seconds, we should drop all
     * our data and start again, since the old data is no longer useful.
     */
-  private val inactivityPurgeTime = Duration.ofSeconds(60)
+  private var inactivityPurgeTime: Duration = _
 
   /** There must be at least this long between emitting events. */
-  private val minimumEventInterval = Duration.ofSeconds(10)
+  private var minimumEventInterval: Duration = _
 
   /** If the proportional (percentage) change in latency is greater than this
     * number, an event will be emitted. A larger number will cause smaller
     * changes to be ignored.
     */
-  private val severityThreshold = 30
+  private var severityThreshold: Int = _
 
   //endregion
 
@@ -208,9 +208,12 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     // If it's been a while since our last measurement, our old runs probably
     // aren't much use anymore, so we should start over here as well.
     if (lastObserved == null ||
+      (
+        !inactivityPurgeTime.isZero &&
         Duration
           .between(lastObserved.time, value.time)
-          .compareTo(inactivityPurgeTime) > 0) {
+          .compareTo(inactivityPurgeTime) > 0)
+    ) {
       reset(value)
       return
     }
@@ -322,6 +325,15 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
   private var magicFlagOfGraphing: Boolean = true
 
   def open(config: ParameterTool): Unit = {
+
+    val prefix = "detector.changepoint"
+    maxHistory = config.getInt(s"$prefix.maxHistory")
+    changepointTriggerCount = config.getInt(s"$prefix.triggerCount")
+    ignoreOutlierAfterNormalMeasurementCount = config.getInt(s"$prefix.ignoreOutlierNormalCount")
+    inactivityPurgeTime = Duration.ofSeconds(config.getInt(s"$prefix.inactivityPurgeTime"))
+    minimumEventInterval = Duration.ofSeconds(config.getInt(s"$prefix.minimumEventInterval"))
+    severityThreshold = config.getInt(s"$prefix.severityThreshold")
+
     writer.write("NewEntry,")
     writer.write("PrevNormalMax,")
     writer.write("CurrentMaxI,")
