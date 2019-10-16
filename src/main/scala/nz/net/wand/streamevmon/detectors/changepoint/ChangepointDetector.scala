@@ -17,7 +17,7 @@ import org.apache.flink.util.Collector
   *
   * @param initialDistribution The distribution that should be used as a base
   *                            when adding new measurements to the runs.
-  * @tparam MeasT The type of [[nz.net.wand.streamevmon.measurements.Measurement]] we're receiving.
+  * @tparam MeasT The type of [[nz.net.wand.streamevmon.measurements.Measurement Measurement]] we're receiving.
   * @tparam DistT The type of [[Distribution]] to model recent measurements with.
   */
 class ChangepointDetector[MeasT <: Measurement, DistT <: Distribution[MeasT]](

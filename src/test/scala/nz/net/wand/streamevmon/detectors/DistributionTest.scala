@@ -43,7 +43,7 @@ class DistributionTest extends WordSpec {
 
         assert(current.mean === mean)
         assert(current.variance === variance)
-        assert(current.pdf(1) === pdf)
+        assert(current.pdf((1, 1)) === pdf)
       }
     }
   }

@@ -12,13 +12,6 @@ trait Distribution[T] {
   val distributionName: String
 
   /** The probability density function, returning the relative likelihood for a
-    * continuous random variable to take the value x.
-    *
-    * [[https://en.wikipedia.org/wiki/Probability_density_function]]
-    */
-  def pdf(x: Double): Double
-
-  /** The probability density function, returning the relative likelihood for a
     * continuous random variable to take the value that arises after applying
     * mapFunction to x.
     *

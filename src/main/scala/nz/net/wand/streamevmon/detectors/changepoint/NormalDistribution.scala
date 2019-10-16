@@ -22,7 +22,7 @@ case class NormalDistribution[T](
   mean: Double,
   mapFunction: T => Double,
   variance: Double = NormalDistribution.defaultVariance,
-  n   : Int = 0
+  n: Int = 0
 )
   extends Distribution[T] with Logging {
 
@@ -35,7 +35,9 @@ case class NormalDistribution[T](
 
   override val distributionName: String = "Normal Distribution"
 
-  override def pdf(y: Double): Double = {
+  override def pdf(x: T): Double = {
+    val y = mapFunction(x)
+
     // If the variance is 0, we should instead use some other small
     // value to prevent the PDF function from becoming a delta function,
     // which is 0 at all places except the mean, at which it is infinite.
@@ -51,10 +53,6 @@ case class NormalDistribution[T](
     val a = 1.0 / (sqrt(2.0 * PI) * sqrt(maybeFakeVariance))
     val b = a * exp(-(((y - mean) * (y - mean)) / (2.0 * maybeFakeVariance)))
     b
-  }
-
-  override def pdf(x: T): Double = {
-    pdf(mapFunction(x))
   }
 
   override def withPoint(newT: T, newN: Int): NormalDistribution[T] = {
@@ -73,6 +71,8 @@ case class NormalDistribution[T](
   }
 }
 
+/** Companion object with some constructors and the default variance value.
+  */
 object NormalDistribution {
 
   private val defaultVariance: Int = 10000 * 10000

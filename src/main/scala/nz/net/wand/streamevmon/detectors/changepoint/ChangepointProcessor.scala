@@ -15,7 +15,7 @@ import org.apache.flink.util.Collector
   *
   * @param initialDistribution The distribution that should be used as a base
   *                            when adding new measurements to the runs.
-  * @tparam MeasT The type of [[nz.net.wand.streamevmon.measurements.Measurement]] we're receiving.
+  * @tparam MeasT The type of [[nz.net.wand.streamevmon.measurements.Measurement Measurement]] we're receiving.
   * @tparam DistT The type of [[Distribution]] to model recent measurements with.
   */
 class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
@@ -54,13 +54,6 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
   private val severityThreshold = 30
 
   //endregion
-
-  /** Controls the decay rate of the probabilities of old runs. A hazard closer
-    * to 1.0 will tend to be more sensitive. The value selected generally
-    * provides consistent, useful results. Allowing configuration would likely
-    * only cause confusion.
-    */
-  protected override val hazard: Double = 1.0 / 200.0
 
   /** The current runs that reflect a set of rolling distribution models of the
     * recently observed measurements. For example, if DistT is a normal

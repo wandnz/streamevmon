@@ -12,23 +12,29 @@ import java.time.Instant
   */
 private[changepoint] trait RunLogic[MeasT <: Measurement, DistT <: Distribution[MeasT]] {
 
+  /** Controls the decay rate of the probabilities of old runs. A hazard closer
+    * to 1.0 will tend to be more sensitive. The value selected generally
+    * provides consistent, useful results. Allowing configuration would likely
+    * only cause confusion.
+    */
+  private val hazard: Double = 1.0 / 200.0
+
   // A couple of configuration values and methods are passed upwards so we can
   // use them here.
-  protected val hazard: Double
   protected val maxHistory: Int
 
   protected def newRunFor(value: MeasT, probability: Double): Run
 
   import scala.language.implicitConversions
 
-  implicit def DistToDistT(d: Distribution[MeasT]): DistT = d.asInstanceOf[DistT]
+  implicit protected def DistToDistT(d: Distribution[MeasT]): DistT = d.asInstanceOf[DistT]
 
   /** We keep a number of runs that contain probability distributions for the
     * last several measurements. Each of these has a probability to be the most
     * likely run for any given measurement, and we track changepoints by
     * noticing differences in which run is most likely.
     */
-  private[changepoint] case class Run(
+  protected case class Run(
       dist: DistT,
       prob: Double,
       start: Instant
