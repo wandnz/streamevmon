@@ -3,6 +3,7 @@
   <component name="ScalaCompilerConfiguration">
     <option name="deprecationWarnings" value="true" />
     <option name="explainTypeErrors" value="true" />
+    <option name="incrementalityType" value="SBT" />
     <profile name="sbt 1" modules="Streamevmon,mainRunner" />
   </component>
 </project>

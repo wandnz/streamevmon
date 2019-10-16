@@ -8,6 +8,7 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
+            <option value="$PROJECT_DIR$/../../../dwo4-caches/idea/target/streamevmon/scala-2.12" />
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/mainRunner" />
             <option value="$PROJECT_DIR$/project" />
