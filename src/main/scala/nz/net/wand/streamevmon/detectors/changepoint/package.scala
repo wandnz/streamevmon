@@ -6,6 +6,8 @@ package nz.net.wand.streamevmon.detectors
   * while the class to be instantiated for use with Flink is [[nz.net.wand.streamevmon.detectors.changepoint.ChangepointDetector ChangepointDetector]].
   *
   * It accepts any type of measurement, and outputs [[nz.net.wand.streamevmon.events.ChangepointEvent ChangepointEvents]].
+  * A map function should be supplied which turns the input measurement into the
+  * Double type metric that is being detected upon.
   *
   * It implements a changepoint detector as outlined by Ryan Prescott Adams
   * and David J.C. MacKay in the paper "Bayesian Online Changepoint Detection"

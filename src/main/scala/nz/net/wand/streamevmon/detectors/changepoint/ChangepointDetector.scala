@@ -17,6 +17,12 @@ import org.apache.flink.util.Collector
   *
   * @param initialDistribution The distribution that should be used as a base
   *                            when adding new measurements to the runs.
+  * @param shouldDoGraphs      When true, .csv files are output into the ./out/graphs
+  *                            directory which can be used to produce graphs of the
+  *                            state of the detector. Defaults to false.
+  * @param filename            When shouldDoGraphs is true, this filename is combined with
+  *                            the values of the parameters set in the global configuration
+  *                            to create the filename of the .csv files output.
   * @tparam MeasT The type of [[nz.net.wand.streamevmon.measurements.Measurement Measurement]] we're receiving.
   * @tparam DistT The type of [[Distribution]] to model recent measurements with.
   */

@@ -10,11 +10,11 @@ import org.scalactic.{Equality, TolerantNumerics}
   * @param n           The number of measurements that have been used to create the
   *                    distribution parameters. Note that using .withPoint allows the
   *                    caller to supply a custom n, so this might not actually reflect
-  *                    the true number. The calculations do work out though.
+  *                    the true number.
   * @param mapFunction The function to apply to elements of type T to obtain the
-  *                    relevant data for this distribution. In the case of an
-  *                    ICMP measurement, the relevant data is most likely the
-  *                    latency.
+  *                    relevant data for this distribution.  For example, an
+  *                    ICMP measurement would most likely have its latency value
+  *                    extracted.
   *
   * @see [[https://en.wikipedia.org/wiki/Normal_distribution]]
   */
