@@ -21,7 +21,9 @@ import org.apache.flink.util.Collector
   * @tparam DistT The type of [[Distribution]] to model recent measurements with.
   */
 class ChangepointDetector[MeasT <: Measurement, DistT <: Distribution[MeasT]](
-  initialDistribution: DistT
+  initialDistribution: DistT,
+  shouldDoGraphs     : Boolean = false,
+  filename           : Option[String] = None
 ) extends KeyedProcessFunction[Int, MeasT, ChangepointEvent]
     with Logging {
 
@@ -45,7 +47,7 @@ class ChangepointDetector[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       out: Collector[ChangepointEvent]
   ): Unit = {
     if (processor.value == null) {
-      processor.update(new ChangepointProcessor[MeasT, DistT](initialDistribution))
+      processor.update(new ChangepointProcessor[MeasT, DistT](initialDistribution, shouldDoGraphs, filename))
       processor.value.open(
         getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
       )

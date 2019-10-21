@@ -7,6 +7,7 @@ import nz.net.wand.streamevmon.Logging
 import java.io.{File, PrintWriter}
 import java.time.{Duration, Instant}
 
+import org.apache.commons.io.FilenameUtils
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.util.Collector
 
@@ -19,7 +20,9 @@ import org.apache.flink.util.Collector
   * @tparam DistT The type of [[Distribution]] to model recent measurements with.
   */
 class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
-  initialDistribution: DistT
+  initialDistribution: DistT,
+  shouldDoGraphs     : Boolean,
+  filename           : Option[String]
 ) extends RunLogic[MeasT, DistT] with Logging {
 
   //region Configurable options
@@ -117,7 +120,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
     lastObserved = firstItem
 
-    magicFlagOfGraphing = true
+    magicFlagOfGraphing = 0
   }
 
   /** Generates a new run for a particular measurement. This should only be
@@ -226,6 +229,10 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       lastObserved = value
     }
 
+    if (previousMostLikelyIndex >= currentRuns.length) {
+      previousMostLikelyIndex = currentRuns.length - 1
+    }
+
     // If we're in a normal state, we'll update the note of our normal-state
     // runs. We'll also make a composite of the most recent time and the
     // mean with the most data in it in case there's a changepoint after this,
@@ -308,21 +315,19 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       if (severity > severityThreshold) {
         newEvent(out, compositeOldNormal, newNormal, value, severity)
         reset(value)
+        magicFlagOfGraphing = severity
       }
       consecutiveAnomalies = 0
-
-      // ==== From here down is solely used for graphing
-      magicFlagOfGraphing = false
     }
 
     writeState(value, mostLikelyIndex)
-    magicFlagOfGraphing = true
+    magicFlagOfGraphing = 0
   }
 
-  /** This magical flag goes low when we're checking if a significant event
-    * has happened. It's solely used for graphs.
+  /** This magical flag becomes the severity of events that occur, or 0 if there
+    * aren't any this iteration. It's solely used for graphs.
     */
-  private var magicFlagOfGraphing: Boolean = true
+  private var magicFlagOfGraphing: Int = 0
 
   def open(config: ParameterTool): Unit = {
 
@@ -334,23 +339,31 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     minimumEventInterval = Duration.ofSeconds(config.getInt(s"$prefix.minimumEventInterval"))
     severityThreshold = config.getInt(s"$prefix.severityThreshold")
 
-    writer.write("NewEntry,")
-    writer.write("PrevNormalMax,")
-    writer.write("CurrentMaxI,")
-    writer.write("NormalIsCurrent,")
-    writer.write("ConsecutiveAnomalies,")
-    writer.write("ConsecutiveOutliers,")
-    (0 to maxHistory).foreach(i => writer.write(s"prob$i,n$i,mean$i,var$i,"))
-    writer.println()
-    writer.flush()
+    if (shouldDoGraphs) {
+      writer = new PrintWriter(new File(s"./out/graphs/$getFile.csv"))
+      writerPdf = new PrintWriter(new File(s"./out/graphs/pdf/$getFile-pdf.csv"))
 
-    writerPdf.write("NewEntry,")
-    (0 to maxHistory).foreach(i => writerPdf.write(s"pdf$i,"))
-    writerPdf.println()
-    writerPdf.flush()
+      writer.write("NewEntry,")
+      writer.write("PrevNormalMax,")
+      writer.write("CurrentMaxI,")
+      writer.write("NormalIsCurrent,")
+      writer.write("ConsecutiveAnomalies,")
+      writer.write("ConsecutiveOutliers,")
+      (0 to maxHistory).foreach(i => writer.write(s"prob$i,n$i,mean$i,var$i,"))
+      writer.println()
+      writer.flush()
+
+      writerPdf.write("NewEntry,")
+      (0 to maxHistory).foreach(i => writerPdf.write(s"pdf$i,"))
+      writerPdf.println()
+      writerPdf.flush()
+    }
   }
 
   private def writeState(value: MeasT, mostLikelyIndex: Int): Unit = {
+    if (!shouldDoGraphs) {
+      return
+    }
     val formatter: Run => String = x => s"${x.prob},${x.dist.n},${x.dist.mean},${x.dist.variance}"
 
     writer.print(s"${initialDistribution.asInstanceOf[NormalDistribution[MeasT]].mapFunction(value)},")
@@ -369,7 +382,13 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     writerPdf.flush()
   }
 
-  private val getFile = "Normalise-Squash"
-  private val writer = new PrintWriter(new File(s"../plot-ltsi/processed/$getFile.csv"))
-  private val writerPdf = new PrintWriter(new File(s"../plot-ltsi/processed/pdf/$getFile-pdf.csv"))
+  private def getFile: String = if (shouldDoGraphs) {
+    s"${FilenameUtils.getBaseName(filename.get)}-$maxHistory-$changepointTriggerCount-$severityThreshold"
+  }
+  else {
+    ""
+  }
+
+  private var writer: PrintWriter = _
+  private var writerPdf: PrintWriter = _
 }
