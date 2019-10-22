@@ -26,8 +26,7 @@ case class NormalDistribution[T](
 )
   extends Distribution[T] with Logging {
 
-  @transient implicit private[this] val doubleEquality: Equality[Double] =
-    TolerantNumerics.tolerantDoubleEquality(1E-15)
+  import NormalDistribution._
 
   override def toString: String = {
     s"${getClass.getSimpleName}(n=$n,mean=$mean,variance=$variance)"
@@ -41,7 +40,7 @@ case class NormalDistribution[T](
     // If the variance is 0, we should instead use some other small
     // value to prevent the PDF function from becoming a delta function,
     // which is 0 at all places except the mean, at which it is infinite.
-    val maybeFakeVariance = if (variance == 0) {
+    val maybeFakeVariance = if (doubleEquality.areEqual(variance, 0.0)) {
       logger.warn("PDF called with variance == 0!")
       y / 100
     }
@@ -75,7 +74,10 @@ case class NormalDistribution[T](
   */
 object NormalDistribution {
 
-  private val defaultVariance: Int = 10000 * 10000
+  implicit private[changepoint] val doubleEquality: Equality[Double] =
+    TolerantNumerics.tolerantDoubleEquality(1E-15)
+
+  private[changepoint] val defaultVariance: Double = 1E8
 
   def apply[T](dist: NormalDistribution[T]): NormalDistribution[T] = {
     NormalDistribution(dist.mean, dist.mapFunction, dist.variance, dist.n)

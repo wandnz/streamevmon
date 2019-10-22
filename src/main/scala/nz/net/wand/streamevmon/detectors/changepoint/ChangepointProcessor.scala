@@ -12,7 +12,7 @@ import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.util.Collector
 
 /** This is the main class for the changepoint detector module. See the package
-  * description for a high-level description.
+  * description for a high-level overview.
   *
   * @param initialDistribution The distribution that should be used as a base
   *                            when adding new measurements to the runs.
@@ -313,8 +313,6 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     // If we've had too many 'abnormal' measurements in a row, we might need to
     // emit an event. We'll also reset to a fresh state, since most of the old
     // runs have a lot of data from before the changepoint.
-    // TODO: Are there any runs that only have data from after the changepoint?
-    // This would help us get regenerate our maxHistory a bit quicker.
     if (consecutiveAnomalies > changepointTriggerCount) {
       val newNormal = currentRuns.filter(_.dist.n == 1).head
       val severity = getSeverity(compositeOldNormal, newNormal)
@@ -335,6 +333,13 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     */
   private var magicFlagOfGraphing: Int = 0
 
+  /** This function is called once on the creation of the object, before any
+    * other functions are called. It configures the object using the parameters
+    * obtained from the global configuration, then (if required) sets up the
+    * graphing output files.
+    *
+    * @param config A ParameterTool containing the program global configuration.
+    */
   def open(config: ParameterTool): Unit = {
 
     val prefix = "detector.changepoint"
@@ -366,6 +371,12 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     }
   }
 
+  /** Prints the current state of the detector into the graphing output files.
+    * Should be called once per measurement received.
+    *
+    * @param value           The measurement received.
+    * @param mostLikelyIndex The index of the most likely run.
+    */
   private def writeState(value: MeasT, mostLikelyIndex: Int): Unit = {
     if (!shouldDoGraphs) {
       return
@@ -388,6 +399,8 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     writerPdf.flush()
   }
 
+  /** @return The filename that should be used for the graphing output files.
+    */
   private def getFile: String = if (shouldDoGraphs) {
     s"${FilenameUtils.getBaseName(filename.get)}-$maxHistory-$changepointTriggerCount-$severityThreshold"
   }
