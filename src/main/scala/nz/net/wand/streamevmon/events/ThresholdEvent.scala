@@ -7,9 +7,11 @@ import java.util.concurrent.TimeUnit
   * latency than expected.
   */
 case class ThresholdEvent(
-    tags: Map[String, String] = Map(),
-    severity: Int,
-    time: Instant
+  tags: Map[String, String] = Map(),
+  severity: Int,
+  eventTime: Instant,
+  detectionLatency: Long,
+  description: String
 ) extends Event {
 
   final override val measurementName: String = ThresholdEvent.measurementName
@@ -23,8 +25,8 @@ case class ThresholdEvent(
         ""
       }
     }" +
-      s"severity=${severity}i " +
-      TimeUnit.MILLISECONDS.toNanos(time.toEpochMilli)
+      s"""severity=${severity}i,detection_latency=${detectionLatency}i,description="$description" """ +
+      TimeUnit.MILLISECONDS.toNanos(eventTime.toEpochMilli)
   }
 
   override def toString: String = {

@@ -47,10 +47,16 @@ project for - Scala 2.12 and Flink 1.9.0.
 
 ## Extending this project
 
-If you want to add additional detection algorithms to this project, the
-process is fairly straightforward. All code can be found in src/main, with the 
-vast majority in the scala folder. You are encouraged to also write additional
-tests if you add new code.
+Extending this project is fairly straightforward. All code can be found in
+src/main, with the vast majority in the scala folder. You are encouraged to also
+write additional tests if you add new code.
 
 The project has a few main packages, and some classes which belong to the base
 package. See the documentation for descriptions of the packages.
+
+To add a new detection algorithm, a new package should be created within
+nz.net.wand.streamevmon.detectors, with a descriptive name. A high-level
+description and configuration details should be placed in the documentation of
+the package object. Finally, an entrypoint that runs the detector in a Flink
+environment should be created in the nz.net.wand.streamevmon.runners package.
+See the changepoint detector for an example of a reasonably complex detector.

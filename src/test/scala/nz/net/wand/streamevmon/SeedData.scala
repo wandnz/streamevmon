@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon
 
-import nz.net.wand.streamevmon.events.ThresholdEvent
+import nz.net.wand.streamevmon.events.{ChangepointEvent, ThresholdEvent}
 import nz.net.wand.streamevmon.measurements._
 
 import java.time.Instant
@@ -322,31 +322,6 @@ object SeedData {
     )
   }
 
-  object thresholdEvent {
-
-    val withTags: ThresholdEvent = ThresholdEvent(
-      severity = 10,
-      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
-      tags = Map(
-        "stream" -> "1",
-        "type" -> "test"
-      )
-    )
-
-    val withTagsAsString: String =
-      s"${ThresholdEvent.measurementName},stream=1,type=test severity=10i 1564713045000000000"
-    val withTagsAsLineProtocol: String = "stream=1,type=test severity=10i 1564713045000000000"
-
-    val withoutTags: ThresholdEvent = ThresholdEvent(
-      severity = 10,
-      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L))
-    )
-
-    val withoutTagsAsString: String =
-      s"${ThresholdEvent.measurementName} severity=10i 1564713045000000000"
-    val withoutTagsAsLineProtocol: String = "severity=10i 1564713045000000000"
-  }
-
   object latencyTs {
 
     val ampLine = "callplus-afrinic-ipv6,1391079600,462691,0.000"
@@ -428,5 +403,65 @@ object SeedData {
         435.366, 435.381, 435.444, 435.800, 435.802, 436.056, 436.230, 436.240, 436.400, 436.410,
         588.667)
     )
+  }
+
+  object thresholdEvent {
+
+    val withTags: ThresholdEvent = ThresholdEvent(
+      severity = 10,
+      eventTime = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
+      detectionLatency = 12345,
+      tags = Map(
+        "stream" -> "1",
+        "type" -> "test",
+      ),
+      description = "A test event :)"
+    )
+
+    val withTagsAsString: String =
+      s"""${ThresholdEvent.measurementName},stream=1,type=test severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
+    val withTagsAsLineProtocol: String = """stream=1,type=test severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
+
+    val withoutTags: ThresholdEvent = ThresholdEvent(
+      severity = 10,
+      eventTime = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
+      detectionLatency = 12345,
+      description = "A test event :)"
+    )
+
+    val withoutTagsAsString: String =
+      s"""${ThresholdEvent.measurementName} severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
+    val withoutTagsAsLineProtocol: String = """severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
+  }
+
+  object changepointEvent {
+
+    val withTags: ChangepointEvent = ChangepointEvent(
+      severity = 10,
+      eventTime = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
+      detectionLatency = 12345,
+      stream = 1,
+      tags = Map(
+        "type" -> "test",
+        "moreTags" -> "test2"
+      ),
+      description = "A test event :)"
+    )
+
+    val withTagsAsString: String =
+      s"""${ChangepointEvent.measurementName},type=test,moreTags=test2,stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
+    val withTagsAsLineProtocol: String = """type=test,moreTags=test2,stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
+
+    val withoutTags: ChangepointEvent = ChangepointEvent(
+      severity = 10,
+      eventTime = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
+      detectionLatency = 12345,
+      stream = 1,
+      description = "A test event :)"
+    )
+
+    val withoutTagsAsString: String =
+      s"""${ChangepointEvent.measurementName},stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
+    val withoutTagsAsLineProtocol: String = """stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
   }
 }
