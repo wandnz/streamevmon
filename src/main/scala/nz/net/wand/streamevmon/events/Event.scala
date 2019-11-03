@@ -54,12 +54,11 @@ abstract class Event {
   def toLineProtocol: String
 }
 
-/** Conversion util for Chronicler database writes.
-  */
+/** Conversion util for Chronicler database writes. */
 object Event {
-  implicit val writer: InfluxWriter[Event] = EventWriter()
+  def getWriter[T <: Event]: InfluxWriter[T] = EventWriter[T]()
 
-  private case class EventWriter() extends InfluxWriter[Event] {
-    override def write(obj: Event): ErrorOr[String] = Right(obj.toLineProtocol)
+  case class EventWriter[T <: Event]() extends InfluxWriter[T] {
+    override def write(obj: T): ErrorOr[String] = Right(obj.toLineProtocol)
   }
 }

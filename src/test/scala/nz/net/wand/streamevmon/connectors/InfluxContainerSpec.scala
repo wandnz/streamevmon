@@ -1,5 +1,6 @@
 package nz.net.wand.streamevmon.connectors
 
+import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.InfluxSinkFunction
 
 import com.dimafeng.testcontainers.ForAllTestContainer
@@ -11,6 +12,7 @@ import scala.collection.JavaConverters._
 import scala.concurrent.duration.Duration
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.reflect.ClassTag
 
 class InfluxContainerSpec extends WordSpec with ForAllTestContainer {
   override val container: InfluxDBContainer = InfluxDBContainer("alpine")
@@ -79,8 +81,8 @@ class InfluxContainerSpec extends WordSpec with ForAllTestContainer {
     ParameterTool.fromMap(getInfluxConfigMap(subscriptionName, listenAddress).asJava)
   }
 
-  protected def getSinkFunction: InfluxSinkFunction = {
-    val sink = new InfluxSinkFunction
+  protected def getSinkFunction[T <: Event : ClassTag]: InfluxSinkFunction[T] = {
+    val sink = new InfluxSinkFunction[T]
 
     sink.host = container.address
     sink.port = container.port

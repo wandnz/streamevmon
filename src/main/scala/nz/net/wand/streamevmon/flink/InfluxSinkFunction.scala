@@ -11,6 +11,7 @@ import org.apache.flink.streaming.api.functions.sink.RichSinkFunction
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
+import scala.reflect.ClassTag
 
 /** A [[https://ci.apache.org/projects/flink/flink-docs-stable/api/java/org/apache/flink/streaming/api/functions/sink/SinkFunction.html SinkFunction]]
   * which stores Event objects in InfluxDB.
@@ -40,7 +41,7 @@ import scala.concurrent.duration.Duration
   * @see [[https://ci.apache.org/projects/flink/flink-docs-stable/dev/table/sourceSinks.html]]
   * @see [[nz.net.wand.streamevmon.connectors.InfluxConnection InfluxConnection]]
   */
-class InfluxSinkFunction extends RichSinkFunction[Event] {
+class InfluxSinkFunction[T <: Event : ClassTag] extends RichSinkFunction[T] {
 
   private[streamevmon] var host: String = _
 
@@ -99,16 +100,18 @@ class InfluxSinkFunction extends RichSinkFunction[Event] {
   /** Teardown method for RichFunctions. Occurs after all calls to `invoke()`.
     */
   override def close(): Unit = {
-    influx.close()
+    if (influx != null) {
+      influx.close()
+    }
   }
 
   /** Called when new data arrives to the sink, and passes it to InfluxDB via bahir InfluxDBSink.
     *
     * @param value The data to send to InfluxDB.
     */
-  override def invoke(value: Event): Unit = {
-    val meas = influx.measurement[Event](database, value.measurementName)
+  override def invoke(value: T): Unit = {
+    val meas = influx.measurement[T](database, value.measurementName)
 
-    Await.result(meas.write(value)(Event.writer), Duration.Inf)
+    Await.result(meas.write(value)(Event.getWriter), Duration.Inf)
   }
 }

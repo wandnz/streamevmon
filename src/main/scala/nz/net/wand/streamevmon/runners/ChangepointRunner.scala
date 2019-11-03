@@ -1,12 +1,15 @@
 package nz.net.wand.streamevmon.runners
 
-import nz.net.wand.streamevmon.flink.LatencyTSAmpFileInputFormat
-import nz.net.wand.streamevmon.measurements.LatencyTSAmpICMP
+import nz.net.wand.streamevmon.flink.{InfluxSinkFunction, MeasurementSubscriptionSourceFunction}
+import nz.net.wand.streamevmon.measurements.{ICMP, Measurement}
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.changepoint._
+import nz.net.wand.streamevmon.events.ChangepointEvent
 
+import java.time.Duration
+
+import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.scala._
-import org.apache.flink.streaming.api.TimeCharacteristic
 
 /** This is the main runner for the changepoint detector, which is
   * found in the [[nz.net.wand.streamevmon.detectors.changepoint]] package.
@@ -27,17 +30,19 @@ object ChangepointRunner {
 
     env.disableOperatorChaining
 
-    val filename = "data/latency-ts-i/ampicmp/series/waikato-xero-ipv4.series"
+    env.enableCheckpointing(Duration.ofSeconds(30).toMillis, CheckpointingMode.EXACTLY_ONCE)
 
     val source = env
-      .readFile(new LatencyTSAmpFileInputFormat, filename)
-      .name("Latency TS I AMP ICMP Parser")
+      .addSource(new MeasurementSubscriptionSourceFunction)
+      .name("Measurement Subscription")
       .setParallelism(1)
+      .filter(_.isInstanceOf[ICMP])
+      .filter(_.asInstanceOf[ICMP].loss != 0)
       .keyBy(_.stream)
 
     val detector = new ChangepointDetector
-                         [LatencyTSAmpICMP, NormalDistribution[LatencyTSAmpICMP]](
-      new NormalDistribution(mean = 0, mapFunction = _.average)
+                         [Measurement, NormalDistribution[Measurement]](
+      new NormalDistribution(mean = 0, mapFunction = _.asInstanceOf[ICMP].median.get)
     )
 
     val process = source
@@ -45,7 +50,7 @@ object ChangepointRunner {
       .name(detector.detectorName)
       .setParallelism(1)
 
-    process.print(s"${getClass.getSimpleName} sink")
+    process.addSink(new InfluxSinkFunction[ChangepointEvent])
 
     env.execute("Latency TS I AMP ICMP -> Changepoint Detector")
   }

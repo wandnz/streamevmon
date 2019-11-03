@@ -67,7 +67,7 @@ class EndToEndTest extends InfluxContainerSpec {
       env.getConfig.setGlobalJobParameters(getInfluxConfig("EndToEndTest"))
 
       val sourceFunction = new MeasurementSubscriptionSourceFunction
-      val sinkFunction = getSinkFunction
+      val sinkFunction = getSinkFunction[Event]
 
       val processFunction: ProcessAllWindowFunction[Measurement, Event, TimeWindow] =
         new ProcessAllWindowFunction[Measurement, Event, TimeWindow] {
