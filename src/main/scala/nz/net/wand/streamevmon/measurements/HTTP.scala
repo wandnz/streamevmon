@@ -32,6 +32,8 @@ object HTTP extends MeasurementFactory {
 
   final override val table_name: String = "data_amp_http"
 
+  override def columnNames: Seq[String] = getColumnNames[HTTP]
+
   override def create(subscriptionLine: String): Option[HTTP] = {
     val data = subscriptionLine.split(Array(',', ' '))
     val namedData = data.drop(1).dropRight(1)

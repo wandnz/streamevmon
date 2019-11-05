@@ -36,6 +36,29 @@ object ICMP extends MeasurementFactory {
 
   final override val table_name: String = "data_amp_icmp"
 
+  override def columnNames: Seq[String] = getColumnNames[ICMP]
+
+  def apply(
+    stream: Int,
+    loss: Int,
+    lossrate: Double,
+    median: Option[Int],
+    packet_size: Int,
+    results: Int,
+    rtts: String,
+    time: Instant
+  ): ICMP =
+    new ICMP(
+      stream,
+      loss,
+      lossrate,
+      median,
+      packet_size,
+      results,
+      getRtts(rtts),
+      time
+    )
+
   override def create(subscriptionLine: String): Option[ICMP] = {
     val data = subscriptionLine.split(Array(',', ' '))
     val namedData = data.drop(1).dropRight(1)

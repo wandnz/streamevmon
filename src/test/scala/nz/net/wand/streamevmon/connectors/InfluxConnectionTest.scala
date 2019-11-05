@@ -44,12 +44,12 @@ class InfluxConnectionTest extends InfluxContainerSpec {
                 // We have to do a deep comparison here since Chronicler changed
                 // their SubscriptionInfo to use an Array instead of a Seq, which
                 // breaks simple comparisons.
-                assert(c.subscriptions.filter { s =>
+                assert(c.subscriptions.exists { s =>
                   s.rpName == e.rpName &&
-                  s.subsName == e.subsName &&
-                  s.destType == e.destType &&
-                  s.addresses.deep == e.addresses.deep
-                }.nonEmpty)
+                    s.subsName == e.subsName &&
+                    s.destType == e.destType &&
+                    s.addresses.deep == e.addresses.deep
+                })
             }
           }
           else {
@@ -59,12 +59,12 @@ class InfluxConnectionTest extends InfluxContainerSpec {
             }
             else {
               rightDb.foreach { c =>
-                assert(c.subscriptions.filter { s =>
+                assert(!c.subscriptions.exists { s =>
                   s.rpName == e.rpName &&
                     s.subsName == e.subsName &&
                     s.destType == e.destType &&
                     s.addresses.deep == e.addresses.deep
-                }.isEmpty)
+                })
               }
             }
           }
@@ -140,7 +140,7 @@ class InfluxConnectionTest extends InfluxContainerSpec {
     }
 
     "add a subscription" in {
-      val influx = getInflux("addRemove")
+      val influx = getInfluxSubscriber("addRemove")
 
       val expected = getExpectedSubscriptionInfo(influx)
 
@@ -150,7 +150,7 @@ class InfluxConnectionTest extends InfluxContainerSpec {
     }
 
     "remove a subscription" in {
-      val influx = getInflux("addRemove")
+      val influx = getInfluxSubscriber("addRemove")
       val expected = getExpectedSubscriptionInfo(influx)
 
       checkSubscription(influx, expected, checkPresent = true)
@@ -161,14 +161,14 @@ class InfluxConnectionTest extends InfluxContainerSpec {
     }
 
     "clobber an existing subscription" in {
-      val influx = getInflux("clobber")
+      val influx = getInfluxSubscriber("clobber")
       val expected = getExpectedSubscriptionInfo(influx)
 
       Await.result(influx.addSubscription(), Duration.Inf)
 
       checkSubscription(influx, expected, checkPresent = true)
 
-      val newInflux = getInflux("clobber", "different-address")
+      val newInflux = getInfluxSubscriber("clobber", "different-address")
       val newExpected = getExpectedSubscriptionInfo(newInflux)
       Await.result(newInflux.addOrUpdateSubscription(), Duration.Inf)
 
@@ -220,7 +220,7 @@ class InfluxConnectionTest extends InfluxContainerSpec {
     }
 
     "receive valid data" in {
-      val influx = getInflux("receiveData")
+      val influx = getInfluxSubscriber("receiveData")
 
       sendDataAnd(
         afterSend = { () =>

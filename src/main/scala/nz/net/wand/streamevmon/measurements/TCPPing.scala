@@ -37,6 +37,31 @@ final case class TCPPing(
 object TCPPing extends MeasurementFactory {
   final override val table_name: String = "data_amp_tcpping"
 
+  override def columnNames: Seq[String] = getColumnNames[TCPPing]
+
+  def apply(
+    stream: Int,
+    icmperrors: Int,
+    loss  : Int,
+    lossrate: Double,
+    median: Option[Int],
+    packet_size: Int,
+    results: Int,
+    rtts: String,
+    time: Instant
+  ): TCPPing =
+    new TCPPing(
+      stream,
+      icmperrors,
+      loss,
+      lossrate,
+      median,
+      packet_size,
+      results,
+      getRtts(rtts),
+      time
+    )
+
   override def create(subscriptionLine: String): Option[TCPPing] = {
     val data = subscriptionLine.split(Array(',', ' '))
     val namedData = data.drop(1).dropRight(1)

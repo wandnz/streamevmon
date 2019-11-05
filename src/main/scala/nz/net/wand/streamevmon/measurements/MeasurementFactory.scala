@@ -2,6 +2,8 @@ package nz.net.wand.streamevmon.measurements
 
 import nz.net.wand.streamevmon.connectors.PostgresConnection
 
+import scala.reflect.runtime.universe._
+
 /** Mixed into companion objects of concrete [[Measurement]] classes.
   * Provides helper functions for common requirements to generate objects.
   *
@@ -13,6 +15,14 @@ trait MeasurementFactory {
   /** The name of the InfluxDB table corresponding to a measurement type.
     */
   val table_name: String
+
+  protected def getColumnNames[T <: Measurement : TypeTag]: Seq[String] = {
+    "time" +: typeOf[T].members.sorted.collect {
+      case m: MethodSymbol if m.isCaseAccessor => m.name.toString
+    }.filterNot(_ == "time")
+  }
+
+  def columnNames: Seq[String]
 
   /** Searches a group of 'key=value' pairs for a particular key, and returns the
     * value.

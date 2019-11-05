@@ -26,6 +26,8 @@ object Traceroute extends MeasurementFactory {
 
   final override val table_name: String = "data_amp_traceroute_pathlen"
 
+  override def columnNames: Seq[String] = getColumnNames[Traceroute]
+
   override def create(subscriptionLine: String): Option[Traceroute] = {
     val data = subscriptionLine.split(Array(',', ' '))
     val namedData = data.drop(1).dropRight(1)

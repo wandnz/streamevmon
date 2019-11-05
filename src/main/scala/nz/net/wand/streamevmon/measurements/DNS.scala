@@ -60,6 +60,8 @@ object DNS extends MeasurementFactory {
 
   final override val table_name: String = "data_amp_dns"
 
+  override def columnNames: Seq[String] = getColumnNames[DNS]
+
   override def create(subscriptionLine: String): Option[DNS] = {
     val data = subscriptionLine.split(Array(',', ' '))
     val namedData = data.drop(1).dropRight(1)

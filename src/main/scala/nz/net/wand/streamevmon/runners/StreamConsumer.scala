@@ -42,8 +42,7 @@ object StreamConsumer extends Logging {
           override def extractTimestamp(element: RichMeasurement): Long = element.time.toEpochMilli
         })
 
-    val measurementWindows =
-      streamWithWatermarks.windowAll(TumblingEventTimeWindows.of(Time.seconds(windowSize)))
+    val measurementWindows = streamWithWatermarks.windowAll(TumblingEventTimeWindows.of(Time.milliseconds(windowSize)))
 
     val eventStream = measurementWindows
       .process(processFunction)

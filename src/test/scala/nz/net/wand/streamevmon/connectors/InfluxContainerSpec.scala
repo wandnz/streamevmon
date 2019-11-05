@@ -29,7 +29,7 @@ class InfluxContainerSpec extends WordSpec with ForAllTestContainer {
       Duration.Inf)
   }
 
-  protected def getInflux(
+  protected def getInfluxSubscriber(
     subscriptionName: String,
     listenAddress: String = null
   ): InfluxConnection = {
@@ -46,6 +46,17 @@ class InfluxContainerSpec extends WordSpec with ForAllTestContainer {
       },
       0,
       5,
+      container.address,
+      container.port,
+      container.username,
+      container.password
+    )
+  }
+
+  protected def getInfluxHistory: InfluxHistoryConnection = {
+    InfluxHistoryConnection(
+      container.database,
+      container.retentionPolicy,
       container.address,
       container.port,
       container.username,
