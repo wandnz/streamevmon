@@ -10,7 +10,7 @@ import java.time.Instant
   *
   * @see [[ChangepointProcessor]]
   */
-private[changepoint] trait RunLogic[MeasT <: Measurement, DistT <: Distribution[MeasT]] {
+trait RunLogic[MeasT <: Measurement, DistT <: Distribution[MeasT]] {
 
   /** Controls the decay rate of the probabilities of old runs. A hazard closer
     * to 1.0 will tend to be more sensitive. The value selected generally
@@ -34,7 +34,7 @@ private[changepoint] trait RunLogic[MeasT <: Measurement, DistT <: Distribution[
     * likely run for any given measurement, and we track changepoints by
     * noticing differences in which run is most likely.
     */
-  protected case class Run(
+  case class Run(
       dist: DistT,
       prob: Double,
       start: Instant

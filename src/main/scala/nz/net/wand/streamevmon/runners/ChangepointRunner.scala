@@ -26,18 +26,24 @@ object ChangepointRunner {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
+    System.setProperty("influx.dataSource.subscriptionName", "ChangepointDetector")
+
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
     env.disableOperatorChaining
 
-    env.enableCheckpointing(Duration.ofSeconds(30).toMillis, CheckpointingMode.EXACTLY_ONCE)
+    env.enableCheckpointing(Duration.ofSeconds(5).toMillis, CheckpointingMode.EXACTLY_ONCE)
+
+    env.registerType(classOf[NormalDistribution[Measurement]])
 
     val source = env
       .addSource(new MeasurementSubscriptionSourceFunction)
       .name("Measurement Subscription")
       .setParallelism(1)
       .filter(_.isInstanceOf[ICMP])
-      .filter(_.asInstanceOf[ICMP].loss != 0)
+      .name("Is ICMP?")
+      .filter(_.asInstanceOf[ICMP].loss == 0)
+      .name("Has data?")
       .keyBy(_.stream)
 
     val detector = new ChangepointDetector
@@ -51,7 +57,8 @@ object ChangepointRunner {
       .setParallelism(1)
 
     process.addSink(new InfluxSinkFunction[ChangepointEvent])
+      .name("Influx Sink")
 
-    env.execute("Latency TS I AMP ICMP -> Changepoint Detector")
+    env.execute("Measurement subscription -> Changepoint Detector")
   }
 }

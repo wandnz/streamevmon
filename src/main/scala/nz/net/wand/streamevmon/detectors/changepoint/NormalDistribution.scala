@@ -74,7 +74,7 @@ case class NormalDistribution[T](
   */
 object NormalDistribution {
 
-  implicit private[changepoint] val doubleEquality: Equality[Double] =
+  @transient implicit private[changepoint] val doubleEquality: Equality[Double] =
     TolerantNumerics.tolerantDoubleEquality(1E-15)
 
   private[changepoint] val defaultVariance: Double = 1E8

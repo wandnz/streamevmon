@@ -112,6 +112,8 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     */
   private var previousMostLikelyIndex: Int = _
 
+  private val fakeRun = Run(initialDistribution, -1.0, Instant.EPOCH)
+
   /** Resets the detector to a clean state.
     *
     * @param firstItem The first measurement of the clean state.
@@ -119,6 +121,8 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
   def reset(firstItem: MeasT): Unit = {
     currentRuns = Seq()
     normalRuns = Seq()
+
+    compositeOldNormal = fakeRun
 
     consecutiveAnomalies = 0
     consecutiveNormalAfterOutlier = 0
@@ -202,6 +206,8 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     }
   }
 
+  var counter = 0
+
   /** Processes a new measurement, producing zero or one events. This function
     * is called by Flink, and is the entrypoint to the detector.
     *
@@ -212,6 +218,11 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       value: MeasT,
       out: Collector[ChangepointEvent]
   ): Unit = {
+
+    counter += 1
+    logger.error(s"Stream: ${value.stream} Counter: $counter")
+    logger.error(s"FakeRun: $fakeRun")
+    logger.error(s"MapFunction: ${fakeRun.dist.mapFunction}")
 
     // If this is the first item observed, we start from fresh.
     // If it's been a while since our last measurement, our old runs probably
@@ -254,7 +265,7 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
         )
       }
       else {
-        Run(initialDistribution, -1.0, Instant.EPOCH)
+        fakeRun
       }
     }
 
