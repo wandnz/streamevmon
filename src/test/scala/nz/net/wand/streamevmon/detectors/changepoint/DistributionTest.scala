@@ -1,5 +1,6 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
+import org.apache.flink.streaming.api.scala._
 import org.scalatest.WordSpec
 
 import scala.language.implicitConversions
@@ -10,11 +11,16 @@ class DistributionTest extends WordSpec {
 
   "NormalDistribution" should {
     "generate the correct values" in {
-      val initial = NormalDistribution[Double](
+      class BoringDoubleToDouble extends MapFunction[Double] {
+        override def apply(t: Double): Double = t
+
+        override def apply(): MapFunction[Double] = new BoringDoubleToDouble
+      }
+      val initial = new NormalDistribution[Double](
         mean = 0.0,
         n = 0,
         variance = 1E8,
-        mapFunction = (x: Double) => x
+        mapFunction = new BoringDoubleToDouble
       )
 
       assert(initial.mean === 0.0)

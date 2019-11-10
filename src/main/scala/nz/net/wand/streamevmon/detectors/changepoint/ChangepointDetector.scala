@@ -38,11 +38,20 @@ class ChangepointDetector[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
   private var processor: ValueState[ChangepointProcessor[MeasT, DistT]] = _
 
+  var counter: ValueState[Int] = _
+
   override def open(parameters: Configuration): Unit = {
     processor = getRuntimeContext.getState(
       new ValueStateDescriptor[ChangepointProcessor[MeasT, DistT]](
         "Changepoint Processor",
-        createTypeInformation[ChangepointProcessor[MeasT, DistT]]
+        TypeInformation.of(classOf[ChangepointProcessor[MeasT, DistT]])
+      )
+    )
+
+    counter = getRuntimeContext.getState(
+      new ValueStateDescriptor[Int](
+        "Counter",
+        TypeInformation.of(classOf[Int])
       )
     )
   }
@@ -52,11 +61,19 @@ class ChangepointDetector[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       ctx: KeyedProcessFunction[Int, MeasT, ChangepointEvent]#Context,
       out: Collector[ChangepointEvent]
   ): Unit = {
+    counter.update(counter.value + 1)
+    if (value.stream == 3) {
+      logger.info(s"Outer counter: ${counter.value}")
+    }
+
     if (processor.value == null) {
       processor.update(new ChangepointProcessor[MeasT, DistT](initialDistribution, shouldDoGraphs, filename))
       processor.value.open(
         getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
       )
+    }
+    if (!processor.value.isOpen) {
+      logger.error("Calling processElement without opening first!?!")
     }
     processor.value.processElement(value, out)
   }

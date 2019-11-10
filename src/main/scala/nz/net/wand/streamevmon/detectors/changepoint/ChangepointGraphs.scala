@@ -6,6 +6,7 @@ import nz.net.wand.streamevmon.Configuration
 
 import java.io.File
 
+import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.streaming.api.scala.{StreamExecutionEnvironment, _}
 import org.apache.flink.streaming.api.TimeCharacteristic
 
@@ -43,9 +44,20 @@ object ChangepointGraphs {
       .filter(_.lossrate == 0.0)
       .keyBy(_.stream)
 
+    implicit val ti: TypeInformation[NormalDistribution[LatencyTSAmpICMP]] = TypeInformation.of(classOf[NormalDistribution[LatencyTSAmpICMP]])
+
+    case class TsIcmpToAverage() extends MapFunction[LatencyTSAmpICMP] {
+      override def apply(t: LatencyTSAmpICMP): Double = t.average
+
+      override def apply(): MapFunction[LatencyTSAmpICMP] = new TsIcmpToAverage
+    }
+
     val detector =
       new ChangepointDetector[LatencyTSAmpICMP, NormalDistribution[LatencyTSAmpICMP]](
-        new NormalDistribution[LatencyTSAmpICMP](mean = 0, mapFunction = _.average),
+        new NormalDistribution[LatencyTSAmpICMP](
+          mean = 0,
+          mapFunction = new TsIcmpToAverage
+        ),
         shouldDoGraphs = true,
         Some(file)
       )

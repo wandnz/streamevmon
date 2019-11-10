@@ -4,13 +4,15 @@ import nz.net.wand.streamevmon.measurements.Measurement
 
 import java.time.Instant
 
+import org.apache.flink.api.common.typeinfo.TypeInformation
+
 /** This trait is simply used to separate the run processing logic from the main
   * algorithm logic, since otherwise the class is hard to read since it does a
   * lot of different things.
   *
   * @see [[ChangepointProcessor]]
   */
-trait RunLogic[MeasT <: Measurement, DistT <: Distribution[MeasT]] {
+abstract class RunLogic[MeasT <: Measurement : TypeInformation, DistT <: Distribution[MeasT] : TypeInformation] {
 
   /** Controls the decay rate of the probabilities of old runs. A hazard closer
     * to 1.0 will tend to be more sensitive. The value selected generally

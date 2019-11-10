@@ -1,5 +1,7 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
+import org.apache.flink.api.common.typeinfo.TypeInformation
+
 /** A trait mixed into classes representing continuous probability distributions
   * that evolve as more data is provided to them.
   *
@@ -16,7 +18,7 @@ trait Distribution[T] {
     * for this distribution. For example, an ICMP measurement would most likely
     * have its latency value extracted.
     */
-  val mapFunction: T => Double
+  val mapFunction: MapFunction[T]
 
   /** The probability density function, returning the relative likelihood for a
     * continuous random variable to take the value that arises after applying
@@ -32,4 +34,10 @@ trait Distribution[T] {
   val mean: Double
   val variance: Double
   val n: Int
+}
+
+abstract class MapFunction[T: TypeInformation] extends Serializable {
+  def apply(t: T): Double
+
+  def apply(): MapFunction[T]
 }

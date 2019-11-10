@@ -8,6 +8,7 @@ import nz.net.wand.streamevmon.events.ChangepointEvent
 
 import java.time.Duration
 
+import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.scala._
 
@@ -32,9 +33,7 @@ object ChangepointRunner {
 
     env.disableOperatorChaining
 
-    env.enableCheckpointing(Duration.ofSeconds(5).toMillis, CheckpointingMode.EXACTLY_ONCE)
-
-    env.registerType(classOf[NormalDistribution[Measurement]])
+    env.enableCheckpointing(Duration.ofSeconds(10).toMillis, CheckpointingMode.EXACTLY_ONCE)
 
     val source = env
       .addSource(new MeasurementSubscriptionSourceFunction)
@@ -46,9 +45,17 @@ object ChangepointRunner {
       .name("Has data?")
       .keyBy(_.stream)
 
+    implicit val ti: TypeInformation[NormalDistribution[Measurement]] = TypeInformation.of(classOf[NormalDistribution[Measurement]])
+
+    class IcmpToMedian() extends MapFunction[Measurement] with Serializable {
+      override def apply(t: Measurement): Double = t.asInstanceOf[ICMP].median.get
+
+      override def apply(): MapFunction[Measurement] = new IcmpToMedian
+    }
+
     val detector = new ChangepointDetector
                          [Measurement, NormalDistribution[Measurement]](
-      new NormalDistribution(mean = 0, mapFunction = _.asInstanceOf[ICMP].median.get)
+      new NormalDistribution(mean = 0, mapFunction = new IcmpToMedian)
     )
 
     val process = source

@@ -5,9 +5,10 @@ import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.Logging
 
 import java.io.{File, PrintWriter}
-import java.time.{Duration, Instant}
+import java.time.{Duration, Instant, ZoneId}
 
 import org.apache.commons.io.FilenameUtils
+import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.util.Collector
 
@@ -344,6 +345,8 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     */
   private var magicFlagOfGraphing: Int = 0
 
+  var isOpen = false
+
   /** This function is called once on the creation of the object, before any
     * other functions are called. It configures the object using the parameters
     * obtained from the global configuration, then (if required) sets up the
@@ -352,6 +355,9 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     * @param config A ParameterTool containing the program global configuration.
     */
   def open(config: ParameterTool): Unit = {
+
+    logger.warn("open() called")
+    isOpen = true
 
     val prefix = "detector.changepoint"
     maxHistory = config.getInt(s"$prefix.maxHistory")
