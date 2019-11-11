@@ -15,9 +15,6 @@ import org.apache.flink.streaming.api.scala._
 /** This is the main runner for the changepoint detector, which is
   * found in the [[nz.net.wand.streamevmon.detectors.changepoint]] package.
   *
-  * This runner uses the [[nz.net.wand.streamevmon.flink.LatencyTSAmpFileInputFormat LatencyTSAmpFileInputFormat]],
-  * which must be supplied with files from the Latency TS I dataset.
-  *
   * @see [[nz.net.wand.streamevmon.detectors.changepoint the package description]] for details.
   * @see [[nz.net.wand.streamevmon.detectors.changepoint.ChangepointGraphs ChangepointGraphs]] for an alternative bulk runner.
   */
@@ -49,7 +46,6 @@ object ChangepointRunner {
 
     class IcmpToMedian() extends MapFunction[Measurement] with Serializable {
       override def apply(t: Measurement): Double = t.asInstanceOf[ICMP].median.get
-
       override def apply(): MapFunction[Measurement] = new IcmpToMedian
     }
 

@@ -5,10 +5,10 @@ import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.Logging
 
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
+import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
-import org.apache.flink.streaming.api.scala._
 import org.apache.flink.util.Collector
 
 /** Wrapper class for [[ChangepointProcessor]].
@@ -26,7 +26,7 @@ import org.apache.flink.util.Collector
   * @tparam MeasT The type of [[nz.net.wand.streamevmon.measurements.Measurement Measurement]] we're receiving.
   * @tparam DistT The type of [[Distribution]] to model recent measurements with.
   */
-class ChangepointDetector[MeasT <: Measurement, DistT <: Distribution[MeasT]](
+class ChangepointDetector[MeasT <: Measurement : TypeInformation, DistT <: Distribution[MeasT] : TypeInformation](
   initialDistribution: DistT,
   shouldDoGraphs     : Boolean = false,
   filename           : Option[String] = None
@@ -38,20 +38,11 @@ class ChangepointDetector[MeasT <: Measurement, DistT <: Distribution[MeasT]](
 
   private var processor: ValueState[ChangepointProcessor[MeasT, DistT]] = _
 
-  var counter: ValueState[Int] = _
-
   override def open(parameters: Configuration): Unit = {
     processor = getRuntimeContext.getState(
       new ValueStateDescriptor[ChangepointProcessor[MeasT, DistT]](
         "Changepoint Processor",
         TypeInformation.of(classOf[ChangepointProcessor[MeasT, DistT]])
-      )
-    )
-
-    counter = getRuntimeContext.getState(
-      new ValueStateDescriptor[Int](
-        "Counter",
-        TypeInformation.of(classOf[Int])
       )
     )
   }
@@ -61,19 +52,11 @@ class ChangepointDetector[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       ctx: KeyedProcessFunction[Int, MeasT, ChangepointEvent]#Context,
       out: Collector[ChangepointEvent]
   ): Unit = {
-    counter.update(counter.value + 1)
-    if (value.stream == 3) {
-      logger.info(s"Outer counter: ${counter.value}")
-    }
-
     if (processor.value == null) {
       processor.update(new ChangepointProcessor[MeasT, DistT](initialDistribution, shouldDoGraphs, filename))
       processor.value.open(
         getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
       )
-    }
-    if (!processor.value.isOpen) {
-      logger.error("Calling processElement without opening first!?!")
     }
     processor.value.processElement(value, out)
   }

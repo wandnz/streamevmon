@@ -5,7 +5,7 @@ import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.Logging
 
 import java.io.{File, PrintWriter}
-import java.time.{Duration, Instant, ZoneId}
+import java.time.{Duration, Instant}
 
 import org.apache.commons.io.FilenameUtils
 import org.apache.flink.api.common.typeinfo.TypeInformation
@@ -26,7 +26,7 @@ import org.apache.flink.util.Collector
   * @tparam MeasT The type of [[nz.net.wand.streamevmon.measurements.Measurement Measurement]] we're receiving.
   * @tparam DistT The type of [[Distribution]] to model recent measurements with.
   */
-class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
+case class ChangepointProcessor[MeasT <: Measurement : TypeInformation, DistT <: Distribution[MeasT] : TypeInformation](
   initialDistribution: DistT,
   shouldDoGraphs     : Boolean,
   filename           : Option[String]
@@ -113,7 +113,16 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     */
   private var previousMostLikelyIndex: Int = _
 
+  /** Used as a default value for compositeOldNormal. It shouldn't ever be used
+    * as part of event generation, and a default value is simpler than using
+    * an Option.
+    */
   private val fakeRun = Run(initialDistribution, -1.0, Instant.EPOCH)
+
+  /** Whether open() has been called yet. If it hasn't been called when
+    * processElement is called, we throw an exception since our state is invalid.
+    */
+  private var isOpen = false
 
   /** Resets the detector to a clean state.
     *
@@ -207,8 +216,6 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     }
   }
 
-  var counter = 0
-
   /** Processes a new measurement, producing zero or one events. This function
     * is called by Flink, and is the entrypoint to the detector.
     *
@@ -219,11 +226,9 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
       value: MeasT,
       out: Collector[ChangepointEvent]
   ): Unit = {
-
-    counter += 1
-    logger.error(s"Stream: ${value.stream} Counter: $counter")
-    logger.error(s"FakeRun: $fakeRun")
-    logger.error(s"MapFunction: ${fakeRun.dist.mapFunction}")
+    if (!isOpen) {
+      throw new IllegalStateException("processElement() was called before open()!")
+    }
 
     // If this is the first item observed, we start from fresh.
     // If it's been a while since our last measurement, our old runs probably
@@ -345,8 +350,6 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     */
   private var magicFlagOfGraphing: Int = 0
 
-  var isOpen = false
-
   /** This function is called once on the creation of the object, before any
     * other functions are called. It configures the object using the parameters
     * obtained from the global configuration, then (if required) sets up the
@@ -355,8 +358,6 @@ class ChangepointProcessor[MeasT <: Measurement, DistT <: Distribution[MeasT]](
     * @param config A ParameterTool containing the program global configuration.
     */
   def open(config: ParameterTool): Unit = {
-
-    logger.warn("open() called")
     isOpen = true
 
     val prefix = "detector.changepoint"
