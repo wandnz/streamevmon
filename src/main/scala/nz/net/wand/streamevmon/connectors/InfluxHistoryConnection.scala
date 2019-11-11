@@ -7,11 +7,24 @@ import java.time.Instant
 
 import com.github.fsanaulla.chronicler.ahc.io.{AhcIOClient, InfluxIO}
 import com.github.fsanaulla.chronicler.core.model.{InfluxCredentials, InfluxReader}
+import org.apache.flink.api.java.utils.ParameterTool
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.Await
 import scala.reflect._
+
+object InfluxHistoryConnection {
+  def apply(p: ParameterTool, configPrefix: String = "influx.dataSource"): InfluxHistoryConnection =
+    InfluxHistoryConnection(
+      p.get(s"$configPrefix.databaseName"),
+      p.get(s"$configPrefix.databaseName"),
+      p.get(s"$configPrefix.serverName"),
+      p.getInt(s"$configPrefix.portNumber"),
+      p.get(s"$configPrefix.user"),
+      p.get(s"$configPrefix.password")
+    )
+}
 
 case class InfluxHistoryConnection(
     dbName: String,
@@ -42,6 +55,17 @@ case class InfluxHistoryConnection(
     else {
       None
     }
+  }
+
+  def getAllData(
+    start: Instant = Instant.EPOCH,
+    end  : Instant = Instant.now()
+  ): Seq[Measurement] = {
+    getIcmpData(start, end) ++
+      getDnsData(start, end) ++
+      getHttpData(start, end) ++
+      getTcppingData(start, end) ++
+      getTracerouteData(start, end)
   }
 
   private def getData[T: ClassTag](

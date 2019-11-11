@@ -18,7 +18,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.sys.ShutdownHookThread
 
-/** Contains additional apply methods for the companion class.
+/** Contains additional constructors and private methods for the companion class.
   */
 object InfluxConnection {
 
@@ -95,7 +95,7 @@ object InfluxConnection {
 
 /** InfluxDB subscription manager which produces corresponding ServerSockets.
   *
-  * Used in [[nz.net.wand.streamevmon.flink.InfluxSubscriptionSourceFunction InfluxSubscriptionSourceFunction]].
+  * Used in [[nz.net.wand.streamevmon.flink.InfluxSourceFunction InfluxSourceFunction]].
   *
   * ==Configuration==
   *

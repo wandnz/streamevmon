@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.runners
 
-import nz.net.wand.streamevmon.flink.{InfluxSinkFunction, MeasurementSubscriptionSourceFunction}
+import nz.net.wand.streamevmon.flink.{InfluxSinkFunction, MeasurementSourceFunction}
 import nz.net.wand.streamevmon.measurements.{ICMP, Measurement}
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.changepoint._
@@ -33,7 +33,7 @@ object ChangepointRunner {
     env.enableCheckpointing(Duration.ofSeconds(10).toMillis, CheckpointingMode.EXACTLY_ONCE)
 
     val source = env
-      .addSource(new MeasurementSubscriptionSourceFunction)
+      .addSource(new MeasurementSourceFunction)
       .name("Measurement Subscription")
       .setParallelism(1)
       .filter(_.isInstanceOf[ICMP])

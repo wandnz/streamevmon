@@ -66,7 +66,7 @@ class EndToEndTest extends InfluxContainerSpec {
 
       env.getConfig.setGlobalJobParameters(getInfluxConfig("EndToEndTest"))
 
-      val sourceFunction = new MeasurementSubscriptionSourceFunction
+      val sourceFunction = new MeasurementSourceFunction
       val sinkFunction = getSinkFunction[Event]
 
       val processFunction: ProcessAllWindowFunction[Measurement, Event, TimeWindow] =
@@ -136,7 +136,7 @@ class EndToEndTest extends InfluxContainerSpec {
     }
   }
 
-  "MeasurementSubscriptionSourceFunction" should {
+  "MeasurementSourceFunction" should {
 
     def sendData(andThen: () => Any = () => Unit): Unit = {
       val db = InfluxIO(container.address, container.port, Some(container.credentials))
@@ -168,7 +168,7 @@ class EndToEndTest extends InfluxContainerSpec {
 
       def setEmpty(boolean: Boolean): Unit = EndToEndTest.noDataReceived = boolean
 
-      val func = new MeasurementSubscriptionSourceFunction
+      val func = new MeasurementSourceFunction
       func.overrideConfig(influxConfig)
 
       val ctx = new MockSourceContext[Measurement] {

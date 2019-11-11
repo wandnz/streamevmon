@@ -76,5 +76,15 @@ class InfluxHistoryConnectionTest extends InfluxContainerSpec with BeforeAndAfte
           )
           .head)
     }
+
+    "get all data" in {
+      assert(Seq(
+        SeedData.icmp.expected,
+        SeedData.dns.expected,
+        SeedData.http.expected,
+        SeedData.tcpping.expected,
+        SeedData.traceroute.expected
+      ) === getInfluxHistory.getAllData())
+    }
   }
 }

@@ -8,7 +8,7 @@ import nz.net.wand.streamevmon.measurements._
   * == Live AMP Data ==
   *
   * This section describes the classes created to represent data gathered by an
-  * [[nz.net.wand.streamevmon.flink.InfluxSubscriptionSourceFunction InfluxSubscriptionSourceFunction]].
+  * [[nz.net.wand.streamevmon.flink.InfluxSourceFunction InfluxSourceFunction]].
   * This data comes directly from InfluxDB as it is being inserted, so should
   * be a comprehensive representation of AMP measurements.
   *
@@ -55,7 +55,5 @@ import nz.net.wand.streamevmon.measurements._
   * Use the [[nz.net.wand.streamevmon.flink.LatencyTSAmpFileInputFormat LatencyTSAmpFileInputFormat]]
   * and [[nz.net.wand.streamevmon.flink.LatencyTSSmokepingFileInputFormat LatencyTSSmokepingFileInputFormat]]
   * functions to ingest this dataset, as shown in [[nz.net.wand.streamevmon.runners.LatencyTSPrinter LatencyTSPrinter]].
-  *
-  * @groupname amp Live AMP Measurements
   */
 package object measurements {}
