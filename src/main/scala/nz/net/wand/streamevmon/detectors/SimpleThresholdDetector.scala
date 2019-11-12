@@ -16,16 +16,16 @@ import org.apache.flink.util.Collector
   * @tparam T This class can accept any type of Measurement, but only provides
   *           output if the measurement is a RichICMP.
   */
-class SimpleThresholdDetector[T <: Measurement]
+class SimpleThresholdDetector[T <: Measurement](threshold: Int = 1000)
     extends ProcessAllWindowFunction[T, Event, TimeWindow] {
 
-  private val description = "Median latency was over 1000"
+  private val description = s"Median latency was over $threshold"
 
   override def process(context: Context, elements: Iterable[T], out: Collector[Event]): Unit = {
     elements
       .filter(_.isInstanceOf[RichICMP])
       .map(_.asInstanceOf[RichICMP])
-      .filter(_.median.getOrElse(0) > 1000)
+      .filter(_.median.getOrElse(Int.MinValue) > threshold)
       .foreach(
         m =>
           out.collect(
@@ -35,7 +35,7 @@ class SimpleThresholdDetector[T <: Measurement]
               ),
               severity = 10,
               eventTime = m.time,
-              detectionLatency = 0,
+              detectionLatency = m.median.getOrElse(Int.MinValue).toLong,
               description = description
             )
         )

@@ -27,8 +27,9 @@ object StreamConsumer extends Logging {
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
+    val threshold = 0
     val sourceFunction = new RichMeasurementSourceFunction
-    val processFunction = new SimpleThresholdDetector[RichMeasurement]
+    val processFunction = new SimpleThresholdDetector[RichMeasurement](threshold)
     val sinkFunction = new InfluxSinkFunction[Event]
     val windowSize = 1
 
@@ -46,7 +47,7 @@ object StreamConsumer extends Logging {
 
     val eventStream = measurementWindows
       .process(processFunction)
-      .name("Simple Rich ICMP Threshold Filter")
+      .name(s"Simple Rich ICMP Threshold Filter (${threshold}ms)")
 
     eventStream
       .addSink(sinkFunction)
