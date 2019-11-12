@@ -116,6 +116,10 @@ abstract class InfluxSourceFunction[T <: Measurement]
       maxLateness = params.getInt("flink.maxLateness")
     }
 
+    if (getRuntimeContext.getNumberOfParallelSubtasks > 1) {
+      throw new IllegalStateException("Parallelism for this SourceFunction must be 1.")
+    }
+
     // Listen for new data
     if (!startListener()) {
       logger.error(s"Failed to start listener.")
@@ -140,7 +144,9 @@ abstract class InfluxSourceFunction[T <: Measurement]
           case None => logger.error(s"Historical entry failed to parse: $m")
         }
       }
-      lastMeasurementTime = historicalData.maxBy(_.time).time
+      if (historicalData.nonEmpty) {
+        lastMeasurementTime = historicalData.maxBy(_.time).time
+      }
 
       val listenLoop = Future(listen(ctx))
 

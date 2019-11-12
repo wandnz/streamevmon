@@ -105,7 +105,7 @@ class InfluxSinkFunction[T <: Event : ClassTag] extends RichSinkFunction[T] {
     }
   }
 
-  /** Called when new data arrives to the sink, and passes it to InfluxDB via bahir InfluxDBSink.
+  /** Called when new data arrives to the sink, and passes it to InfluxDB.
     *
     * @param value The data to send to InfluxDB.
     */
