@@ -9,7 +9,10 @@ import com.github.fsanaulla.chronicler.core.model.InfluxWriter
   * network measurements which may indicate that something is wrong with the
   * network.
   */
-abstract class Event {
+abstract class Event extends Serializable {
+
+  /** Flink TypeExtractor wants a field with a getter and setter, so here it is. */
+  private[events] var absolutelyUnusedField = true
 
   /** Events should declare at least one tag that distinguishes them from other
     * events of the same type.
