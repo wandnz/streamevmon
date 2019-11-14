@@ -7,7 +7,7 @@ import java.time.Instant
 import org.apache.flink.api.common.typeinfo.TypeInformation
 
 /** This trait is simply used to separate the run processing logic from the main
-  * algorithm logic, since otherwise the class is hard to read since it does a
+  * algorithm logic, since otherwise the class is hard to read as it does a
   * lot of different things.
   *
   * @see [[ChangepointProcessor]]

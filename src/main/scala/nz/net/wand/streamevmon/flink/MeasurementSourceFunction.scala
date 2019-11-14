@@ -10,9 +10,7 @@ import java.time.Duration
 class MeasurementSourceFunction(fetchHistory: Duration = Duration.ZERO)
     extends InfluxSourceFunction[Measurement](fetchHistory) {
 
-  override protected def processHistoricalMeasurement(
-      measurement: Measurement
-  ): Option[Measurement] = {
+  override protected def processHistoricalMeasurement(measurement: Measurement): Option[Measurement] = {
     Some(measurement)
   }
 

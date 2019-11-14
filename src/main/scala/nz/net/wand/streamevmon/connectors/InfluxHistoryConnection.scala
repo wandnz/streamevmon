@@ -14,11 +14,24 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.Await
 import scala.reflect._
 
+/** Additional constructors for the companion class.
+  */
 object InfluxHistoryConnection {
+
+  /** Creates a new InfluxHistoryConnection from the given config. Expects all fields
+    * specified in the companion class' main documentation to be present.
+    *
+    * @param p            The configuration to use. Generally obtained from the Flink
+    *                     global configuration.
+    * @param configPrefix A custom config prefix to use, in case the configuration
+    *                     object is not as expected.
+    *
+    * @return A new InfluxHistoryConnection object.
+    */
   def apply(p: ParameterTool, configPrefix: String = "influx.dataSource"): InfluxHistoryConnection =
     InfluxHistoryConnection(
       p.get(s"$configPrefix.databaseName"),
-      p.get(s"$configPrefix.databaseName"),
+      p.get(s"$configPrefix.retentionPolicy"),
       p.get(s"$configPrefix.serverName"),
       p.getInt(s"$configPrefix.portNumber"),
       p.get(s"$configPrefix.user"),
@@ -26,6 +39,38 @@ object InfluxHistoryConnection {
     )
 }
 
+/** InfluxDB connector which allows retrieving historical data.
+  *
+  * Used in [[nz.net.wand.streamevmon.flink.InfluxSourceFunction InfluxSourceFunction]]
+  * to catch up with data missed since the last checkpoint, and to get some history
+  * at first startup.
+  *
+  * ==Configuration==
+  *
+  * This class is configured by the `influx.dataSource` config key group, which
+  * also configures [[InfluxConnection]].
+  *
+  * - `databaseName`: The name of the InfluxDB database to retrieve data from.
+  * Default "nntsc".
+  *
+  * - `retentionPolicy`: The name of the retention policy to retrieve data from.
+  * Default "nntscdefault".
+  *
+  * - `serverName`: The address that InfluxDB can be found at.
+  * Default "localhost".
+  *
+  * - `portNumber`: The port that InfluxDB is listening on.
+  * Default 8086.
+  *
+  * - `user`: The username that should be used to connect to InfluxDB.
+  * Default "cuz"
+  *
+  * - `password`: The password that should be used to connect to InfluxDB.
+  * Default "".
+  *
+  * @see [[nz.net.wand.streamevmon.flink.InfluxSinkFunction InfluxSinkFunction]]
+  * @see [[PostgresConnection]]
+  */
 case class InfluxHistoryConnection(
     dbName: String,
     rpName: String,
@@ -57,6 +102,12 @@ case class InfluxHistoryConnection(
     }
   }
 
+  /** Gets historical data for all supported measurement types over the specified
+    * time range. All measurements returned should have a time between start and
+    * end.
+    *
+    * @return A collection of Measurements of varying types, or an empty collection.
+    */
   def getAllData(
     start: Instant = Instant.EPOCH,
     end  : Instant = Instant.now()
@@ -68,7 +119,21 @@ case class InfluxHistoryConnection(
       getTracerouteData(start, end)
   }
 
-  private def getData[T: ClassTag](
+  /** This method does the heavy lifting of actually getting data from the DB.
+    *
+    * @param tableName   The table from which to get measurements - this should
+    *                    be the table_name field attached to the object of type T.
+    * @param columnNames The names of every column in the database for the chosen
+    *                    table. This should be the columnNames field attached to
+    *                    the object of type T.
+    * @param reader      An InfluxReader object. See [[InfluxSchema]].
+    * @param start       The oldest time to gather measurements from.
+    * @param end         The newest time to gather measurements from.
+    * @tparam T The type of Measurement the result is expected to be.
+    *
+    * @return
+    */
+  private def getData[T <: Measurement : ClassTag](
       tableName: String,
       columnNames: Seq[String],
       reader: InfluxReader[T],
@@ -92,6 +157,13 @@ case class InfluxHistoryConnection(
     }
   }
 
+  /** Get some ICMP measurements from InfluxDB.
+    *
+    * @param start The oldest measurement should be no older than this.
+    * @param end   The newest measurement should be no newer than this.
+    *
+    * @return A collection of ICMP measurements, or an empty collection.
+    */
   def getIcmpData(
       start: Instant = Instant.EPOCH,
       end: Instant = Instant.now()
@@ -105,6 +177,13 @@ case class InfluxHistoryConnection(
     )
   }
 
+  /** Get some DNS measurements from InfluxDB.
+    *
+    * @param start The oldest measurement should be no older than this.
+    * @param end   The newest measurement should be no newer than this.
+    *
+    * @return A collection of DNS measurements, or an empty collection.
+    */
   def getDnsData(
       start: Instant = Instant.EPOCH,
       end: Instant = Instant.now()
@@ -118,6 +197,13 @@ case class InfluxHistoryConnection(
     )
   }
 
+  /** Get some HTTP measurements from InfluxDB.
+    *
+    * @param start The oldest measurement should be no older than this.
+    * @param end   The newest measurement should be no newer than this.
+    *
+    * @return A collection of HTTP measurements, or an empty collection.
+    */
   def getHttpData(
       start: Instant = Instant.EPOCH,
       end: Instant = Instant.now()
@@ -131,6 +217,13 @@ case class InfluxHistoryConnection(
     )
   }
 
+  /** Get some TCPPing measurements from InfluxDB.
+    *
+    * @param start The oldest measurement should be no older than this.
+    * @param end   The newest measurement should be no newer than this.
+    *
+    * @return A collection of TCPPing measurements, or an empty collection.
+    */
   def getTcppingData(
       start: Instant = Instant.EPOCH,
       end: Instant = Instant.now()
@@ -144,6 +237,13 @@ case class InfluxHistoryConnection(
     )
   }
 
+  /** Get some Traceroute measurements from InfluxDB.
+    *
+    * @param start The oldest measurement should be no older than this.
+    * @param end   The newest measurement should be no newer than this.
+    *
+    * @return A collection of Traceroute measurements, or an empty collection.
+    */
   def getTracerouteData(
       start: Instant = Instant.EPOCH,
       end: Instant = Instant.now()

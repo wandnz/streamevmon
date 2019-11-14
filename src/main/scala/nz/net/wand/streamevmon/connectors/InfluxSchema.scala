@@ -8,6 +8,17 @@ import com.github.fsanaulla.chronicler.core.alias.ErrorOr
 import com.github.fsanaulla.chronicler.core.model.InfluxReader
 import org.typelevel.jawn.ast.JArray
 
+/** Declares the Reader objects for measurements obtained directly from InfluxDB
+  * via Chronicler by [[InfluxHistoryConnection]]. These are used to convert the
+  * JArray objects into Measurement objects, and unfortunately involve a lot of
+  * hard-coding. The Measurement.columnNames function allows us to ensure that
+  * the results are ordered consistently, no matter whether the tables get
+  * sorted by Influx differently. Chronicler notes that Influx sorts columns
+  * alphabetically, but doing it this way lets us write slightly nicer code.
+  *
+  * We don't bother implementing the readUnsafe functions, since they haven't
+  * been observed to be called.
+  */
 object InfluxSchema {
 
   val icmpReader: InfluxReader[ICMP] = new InfluxReader[ICMP] {

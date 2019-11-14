@@ -11,7 +11,7 @@ import org.apache.flink.util.Collector
   *
   * Examines [[nz.net.wand.streamevmon.measurements.RichICMP RichICMP]]
   * objects, and emits events with a constant severity if the median value is
-  * greater than 1000.
+  * greater than the specified value (default 1000).
   *
   * @tparam T This class can accept any type of Measurement, but only provides
   *           output if the measurement is a RichICMP.

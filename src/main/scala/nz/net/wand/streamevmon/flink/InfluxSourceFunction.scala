@@ -12,7 +12,7 @@ import java.util.{List => JavaList}
 import org.apache.commons.lang3.time.DurationFormatUtils
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.streaming.api.checkpoint.ListCheckpointed
-import org.apache.flink.streaming.api.functions.source.SourceFunction
+import org.apache.flink.streaming.api.functions.source.{RichSourceFunction, SourceFunction}
 
 import scala.collection.JavaConverters._
 import scala.concurrent.{Await, Future}
@@ -40,7 +40,7 @@ import scala.concurrent.duration.{Duration => ScalaDuration}
   * Default 1.
   *
   * If a custom configuration is desired, the overrideConfig function can be
-  * called before any calls to [[run]]. This will replace the configuration
+  * called before any calls to run(). This will replace the configuration
   * obtained from Flink's global configuration storage.
   *
   * This custom configuration is also used to configure the
@@ -56,7 +56,8 @@ import scala.concurrent.duration.{Duration => ScalaDuration}
 abstract class InfluxSourceFunction[T <: Measurement](
   fetchHistory: Duration = Duration.ZERO
 )
-  extends GloballyStoppableFunction[T]
+  extends RichSourceFunction[T]
+          with GloballyStoppableFunction
           with Logging
           with ListCheckpointed[Instant] {
 
@@ -218,9 +219,6 @@ abstract class InfluxSourceFunction[T <: Measurement](
     logger.info("Stopping listener...")
     isRunning = false
   }
-
-  /** Stops the source, allowing the listen loop to finish. */
-  def stop(): Unit = cancel()
 
   private[this] def startListener(): Boolean = {
     influxConnection match {

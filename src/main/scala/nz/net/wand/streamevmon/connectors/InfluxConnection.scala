@@ -99,7 +99,8 @@ object InfluxConnection {
   *
   * ==Configuration==
   *
-  * This class is configured by the `influx.dataSource` config key group.
+  * This class is configured by the `influx.dataSource` config key group, which
+  * also configures [[InfluxHistoryConnection]].
   *
   * - `listenAddress`: The address to listen on for this subscription.
   * If not specified, this will be automatically generated at runtime by
@@ -274,7 +275,7 @@ case class InfluxConnection(
                     logger.debug(s"Removed subscription $subscriptionName")
                   }
                   catch {
-                    case ex@(_: Exception) =>
+                    case ex: Exception =>
                       logger.debug(
                         s"Could not remove subscription $subscriptionName: ${ex.getMessage}")
                   }
