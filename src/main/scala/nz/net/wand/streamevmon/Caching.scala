@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon
 
-import net.spy.memcached.compat.log.SimpleLoggerWrapper
+import net.spy.memcached.compat.log.SLF4JLogger
 import org.apache.flink.api.java.utils.ParameterTool
 import scalacache.{sync, Cache}
 import scalacache.caffeine._
@@ -51,7 +51,7 @@ trait Caching {
   @transient private var memcachedCache: Cache[Option[Any]] = _
 
   // Ensure memcached uses the correct logging implementation.
-  System.setProperty("net.spy.log.LoggerImpl", classOf[SimpleLoggerWrapper].getCanonicalName)
+  System.setProperty("net.spy.log.LoggerImpl", classOf[SLF4JLogger].getCanonicalName)
 
   /** Sets up a connection to a Memcached instance, and starts to use it for
     * all new caching operations.
