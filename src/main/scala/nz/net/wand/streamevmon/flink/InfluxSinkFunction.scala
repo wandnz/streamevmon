@@ -68,6 +68,12 @@ class InfluxSinkFunction[T <: Event : ClassTag] extends RichSinkFunction[T]
 
   private[this] val bufferedEvents: ListBuffer[T] = ListBuffer()
 
+  private[this] var overrideParams: Option[ParameterTool] = None
+
+  def overrideConfig(config: ParameterTool): Unit = {
+    overrideParams = Some(config)
+  }
+
   private[this] def getWithFallback(parameters: ParameterTool, key: String): String = {
     val result = parameters.get(s"influx.sink.$key", "unset-sink-config-option")
     if (result == "unset-sink-config-option") {
@@ -93,7 +99,12 @@ class InfluxSinkFunction[T <: Event : ClassTag] extends RichSinkFunction[T]
     * @param parameters Ignored.
     */
   override def open(parameters: flinkconf.Configuration): Unit = {
-    val p = getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
+    val p = if (overrideParams.isDefined) {
+      overrideParams.get
+    }
+    else {
+      getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
+    }
 
     host = getHost(p)
     port = getWithFallback(p, "portNumber").toInt

@@ -53,8 +53,9 @@ import scala.concurrent.duration.{Duration => ScalaDuration}
   * @see [[MeasurementSourceFunction]]
   * @see [[RichMeasurementSourceFunction]]
   */
-abstract class InfluxSourceFunction[T <: Measurement]
-(fetchHistory: Duration = Duration.ZERO)
+abstract class InfluxSourceFunction[T <: Measurement](
+  fetchHistory: Duration = Duration.ZERO
+)
   extends GloballyStoppableFunction[T]
           with Logging
           with ListCheckpointed[Instant] {
@@ -93,7 +94,7 @@ abstract class InfluxSourceFunction[T <: Measurement]
 
   private[this] var overrideParams: Option[ParameterTool] = None
 
-  private[flink] def overrideConfig(config: ParameterTool): Unit = {
+  def overrideConfig(config               : ParameterTool): Unit = {
     overrideParams = Some(config)
   }
 

@@ -64,6 +64,9 @@ class InfluxContainerSpec extends WordSpec with ForAllTestContainer {
     )
   }
 
+  /** @param listenAddress This defaults to null so that the ParameterTool
+    *                      won't set the key.
+    */
   protected def getInfluxConfigMap(
     subscriptionName: String,
     listenAddress: String = null
@@ -81,6 +84,7 @@ class InfluxContainerSpec extends WordSpec with ForAllTestContainer {
       "influx.dataSource.user" -> container.username,
       "influx.dataSource.password" -> container.password,
       "influx.sink.databaseName" -> container.database,
+      "influx.sink.retentionPolicy" -> container.retentionPolicy,
       "flink.maxLateness" -> "1"
     )
   }
