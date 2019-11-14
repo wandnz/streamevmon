@@ -15,7 +15,7 @@ import org.apache.flink.streaming.api.functions.source.RichSourceFunction
   */
 abstract class GloballyStoppableFunction[T] extends RichSourceFunction[T] with Logging {
 
-  def shouldShutdown: Boolean = GSFCompanion.shouldShutdown
+  def shouldShutdown: Boolean = GloballyStoppableFunction.shouldShutdown
 
   /** Signals all running StoppableSourceFunctions to stop. Use this when you
     * want the pipeline to exit, since there doesn't appear to be a good way of
@@ -23,15 +23,11 @@ abstract class GloballyStoppableFunction[T] extends RichSourceFunction[T] with L
     */
   def shutdownAll(): Unit = {
     logger.info(s"Shutting down all SourceFunctions")
-    GSFCompanion.shouldShutdown = true
+    GloballyStoppableFunction.shouldShutdown = true
   }
 }
 
-/** Companion object for GloballyStoppableFunction, containing the shared flag.
-  *
-  * This can't be named GloballyStoppableFunction since that breaks references
-  * to SourceFunction.SourceContext.
-  */
-private[this] object GSFCompanion {
+/** Companion object for GloballyStoppableFunction, containing the shared flag. */
+private[this] object GloballyStoppableFunction {
   private[flink] var shouldShutdown = false
 }
