@@ -1,7 +1,6 @@
 package nz.net.wand.streamevmon.measurements
 
-import nz.net.wand.streamevmon.connectors.PostgresContainerSpec
-import nz.net.wand.streamevmon.SeedData
+import nz.net.wand.streamevmon.{PostgresContainerSpec, SeedData}
 
 class MeasurementMetaCreateTest extends PostgresContainerSpec {
   "PostgresConnection" should {

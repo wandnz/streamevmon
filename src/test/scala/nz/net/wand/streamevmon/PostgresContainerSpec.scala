@@ -1,4 +1,6 @@
-package nz.net.wand.streamevmon.connectors
+package nz.net.wand.streamevmon
+
+import nz.net.wand.streamevmon.connectors.PostgresConnection
 
 import java.sql.DriverManager
 

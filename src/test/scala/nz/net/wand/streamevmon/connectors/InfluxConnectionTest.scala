@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.connectors
 
+import nz.net.wand.streamevmon.{InfluxContainerSpec, SeedData}
 import nz.net.wand.streamevmon.measurements.MeasurementFactory
-import nz.net.wand.streamevmon.SeedData
 
 import java.io.{BufferedReader, InputStreamReader}
 import java.net.{ServerSocket, SocketTimeoutException}

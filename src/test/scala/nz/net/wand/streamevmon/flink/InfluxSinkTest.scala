@@ -1,8 +1,7 @@
-package nz.net.wand.streamevmon.connectors
+package nz.net.wand.streamevmon.flink
 
+import nz.net.wand.streamevmon.{InfluxContainerSpec, SeedData}
 import nz.net.wand.streamevmon.events.{ChangepointEvent, Event, ThresholdEvent}
-import nz.net.wand.streamevmon.flink.InfluxSinkFunction
-import nz.net.wand.streamevmon.SeedData
 
 import java.time.Instant
 

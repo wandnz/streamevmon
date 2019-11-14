@@ -1,5 +1,6 @@
-package nz.net.wand.streamevmon.connectors
+package nz.net.wand.streamevmon
 
+import nz.net.wand.streamevmon.connectors.{InfluxConnection, InfluxHistoryConnection}
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.InfluxSinkFunction
 

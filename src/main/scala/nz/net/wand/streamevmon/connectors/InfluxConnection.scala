@@ -26,7 +26,7 @@ object InfluxConnection {
     * addresses that aren't "site-local", meaning they are outside of the
     * reserved private address space.
     */
-  private[connectors] def getListenAddress: String = {
+  def getListenAddress: String = {
     try {
       val nonLoopbacks = JavaConverters
         .asScalaBufferConverter(Collections.list(NetworkInterface.getNetworkInterfaces))
@@ -58,7 +58,7 @@ object InfluxConnection {
     }
   }
 
-  private[this] def getOrFindListenAddress(address: String): String = {
+  def getOrFindListenAddress(address: String): String = {
     if (address == null) {
       getListenAddress
     }

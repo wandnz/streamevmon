@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.connectors
+package nz.net.wand.streamevmon
 
 import com.dimafeng.testcontainers.SingleContainer
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials

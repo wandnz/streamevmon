@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.connectors
 
-import nz.net.wand.streamevmon.SeedData
+import nz.net.wand.streamevmon.{InfluxContainerSpec, SeedData}
 
 import com.github.fsanaulla.chronicler.ahc.io.InfluxIO
 import org.scalatest.BeforeAndAfter
