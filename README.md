@@ -43,7 +43,7 @@ To generate a JAR file to run on a real Flink cluster, go to the sbt shell
 This will generate a JAR file with all the required dependencies included.
 You can then upload it to a running Flink cluster. Be sure that your Flink
 instance is running the same versions of Flink and Scala as you built this
-project for - Scala 2.12 and Flink 1.9.0.
+project for - Scala 2.12 and Flink 1.9.1.
 
 ## Extending this project
 

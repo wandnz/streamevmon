@@ -38,14 +38,14 @@ val cacheDependencies = Seq(
 )
 
 val logDependencies = Seq(
-  "org.slf4j" % "slf4j-simple" % "1.7.28"
+  "org.slf4j" % "slf4j-simple" % "1.7.29"
 )
 
 val testDependencies = Seq(
   "org.scalatest" %% "scalatest" % "3.0.8" % "test",
   "com.dimafeng" %% "testcontainers-scala" % "0.33.0" % "test",
-  "org.testcontainers" % "postgresql" % "1.12.2" % "test",
-  "org.testcontainers" % "influxdb" % "1.12.2" % "test"
+  "org.testcontainers" % "postgresql" % "1.12.3" % "test",
+  "org.testcontainers" % "influxdb" % "1.12.3" % "test"
 )
 
 lazy val root = (project in file(".")).
