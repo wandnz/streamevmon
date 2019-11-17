@@ -35,11 +35,13 @@ object ChangepointRunner {
     val source = env
       .addSource(new MeasurementSourceFunction)
       .name("Measurement Subscription")
-      .setParallelism(1)
+      .uid("changepoint-measurement-sourcefunction")
       .filter(_.isInstanceOf[ICMP])
       .name("Is ICMP?")
+      .uid("changepoint-filter-is-icmp")
       .filter(_.asInstanceOf[ICMP].loss == 0)
       .name("Has data?")
+      .uid("changepoint-filter-has-data")
       .keyBy(_.stream)
 
     implicit val ti: TypeInformation[NormalDistribution[Measurement]] = TypeInformation.of(classOf[NormalDistribution[Measurement]])
@@ -57,10 +59,11 @@ object ChangepointRunner {
     val process = source
       .process(detector)
       .name(detector.detectorName)
-      .setParallelism(1)
+      .uid("changepoint-processor")
 
     process.addSink(new InfluxSinkFunction[ChangepointEvent])
       .name("Influx Sink")
+      .uid("changepoint-influx-sink")
 
     env.execute("Measurement subscription -> Changepoint Detector")
   }
