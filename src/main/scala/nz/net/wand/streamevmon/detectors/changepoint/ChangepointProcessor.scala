@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
-import nz.net.wand.streamevmon.events.ChangepointEvent
+import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.Logging
 
@@ -185,11 +185,12 @@ case class ChangepointProcessor[MeasT <: Measurement : TypeInformation, DistT <:
     * @param value     The most recent measurement, which is after the changepoint.
     * @param severity  The severity of the event as returned by getSeverity.
     */
-  def newEvent(out: Collector[ChangepointEvent],
-               oldNormal: Run,
-               newNormal: Run,
-               value: MeasT,
-               severity: Int
+  def newEvent(
+    out: Collector[Event],
+    oldNormal     : Run,
+    newNormal     : Run,
+    value         : MeasT,
+    severity      : Int
   ): Unit = {
     if (Duration
       .between(lastEventTime.getOrElse(Instant.EPOCH), value.time)
@@ -198,12 +199,12 @@ case class ChangepointProcessor[MeasT <: Measurement : TypeInformation, DistT <:
       lastEventTime = Some(value.time)
 
       out.collect(
-        ChangepointEvent(
-          Map("type" -> "changepoint"),
+        new Event(
+          "changepoint_events",
           value.stream,
           severity,
-          oldNormal.start,
-          value.time.toEpochMilli - oldNormal.start.toEpochMilli,
+          value.time,
+          Duration.between(oldNormal.start, value.time),
           s"Latency ${
             if (oldNormal.dist.mean > newNormal.dist.mean) {
               "decreased"
@@ -211,8 +212,10 @@ case class ChangepointProcessor[MeasT <: Measurement : TypeInformation, DistT <:
             else {
               "increased"
             }
-          } from ${oldNormal.dist.mean.toInt} to ${newNormal.dist.mean.toInt}"
-        ))
+          } from ${oldNormal.dist.mean.toInt} to ${newNormal.dist.mean.toInt}",
+          Map()
+        )
+      )
     }
   }
 
@@ -223,8 +226,8 @@ case class ChangepointProcessor[MeasT <: Measurement : TypeInformation, DistT <:
     * @param out   The collector to submit new events to.
     */
   def processElement(
-      value: MeasT,
-      out: Collector[ChangepointEvent]
+    value: MeasT,
+    out: Collector[Event]
   ): Unit = {
     if (!isOpen) {
       throw new IllegalStateException("processElement() was called before open()!")

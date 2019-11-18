@@ -1,9 +1,9 @@
 package nz.net.wand.streamevmon
 
-import nz.net.wand.streamevmon.events.{ChangepointEvent, ThresholdEvent}
+import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements._
 
-import java.time.Instant
+import java.time.{Duration, Instant}
 import java.util.concurrent.TimeUnit
 
 object SeedData {
@@ -405,63 +405,36 @@ object SeedData {
     )
   }
 
-  object thresholdEvent {
-
-    val withTags: ThresholdEvent = ThresholdEvent(
+  object event {
+    val withTags: Event = Event(
+      eventType = "threshold_events",
+      stream = 1,
       severity = 10,
-      eventTime = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
-      detectionLatency = 12345,
+      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
+      detectionLatency = Duration.ofNanos(12345),
+      description = "A test event :)",
       tags = Map(
-        "stream" -> "1",
         "type" -> "test",
+        "secondTag" -> "alsoTest"
       ),
-      description = "A test event :)"
     )
 
     val withTagsAsString: String =
-      s"""${ThresholdEvent.measurementName},stream=1,type=test severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
-    val withTagsAsLineProtocol: String = """stream=1,type=test severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
+      s"""threshold_events,type=test,secondTag=alsoTest,stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
+    val withTagsAsLineProtocol: String = """type=test,secondTag=alsoTest,stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
 
-    val withoutTags: ThresholdEvent = ThresholdEvent(
+    val withoutTags: Event = Event(
+      eventType = "changepoint_events",
+      stream = 1,
       severity = 10,
-      eventTime = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
-      detectionLatency = 12345,
-      description = "A test event :)"
+      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
+      detectionLatency = Duration.ofNanos(12345),
+      description = "A test event :)",
+      tags = Map(),
     )
 
     val withoutTagsAsString: String =
-      s"""${ThresholdEvent.measurementName} severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
-    val withoutTagsAsLineProtocol: String = """severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
-  }
-
-  object changepointEvent {
-
-    val withTags: ChangepointEvent = ChangepointEvent(
-      severity = 10,
-      eventTime = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
-      detectionLatency = 12345,
-      stream = 1,
-      tags = Map(
-        "type" -> "test",
-        "moreTags" -> "test2"
-      ),
-      description = "A test event :)"
-    )
-
-    val withTagsAsString: String =
-      s"""${ChangepointEvent.measurementName},type=test,moreTags=test2,stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
-    val withTagsAsLineProtocol: String = """type=test,moreTags=test2,stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
-
-    val withoutTags: ChangepointEvent = ChangepointEvent(
-      severity = 10,
-      eventTime = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
-      detectionLatency = 12345,
-      stream = 1,
-      description = "A test event :)"
-    )
-
-    val withoutTagsAsString: String =
-      s"""${ChangepointEvent.measurementName},stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
+      s"""changepoint_events,stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
     val withoutTagsAsLineProtocol: String = """stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
   }
 }

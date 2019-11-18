@@ -4,7 +4,6 @@ import nz.net.wand.streamevmon.flink.{InfluxSinkFunction, MeasurementSourceFunct
 import nz.net.wand.streamevmon.measurements.{ICMP, Measurement}
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.changepoint._
-import nz.net.wand.streamevmon.events.ChangepointEvent
 
 import java.time.Duration
 
@@ -61,7 +60,7 @@ object ChangepointRunner {
       .name(detector.detectorName)
       .uid("changepoint-processor")
 
-    process.addSink(new InfluxSinkFunction[ChangepointEvent])
+    process.addSink(new InfluxSinkFunction)
       .name("Influx Sink")
       .uid("changepoint-influx-sink")
 

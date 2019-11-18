@@ -18,7 +18,6 @@ import scala.collection.mutable.ListBuffer
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
-import scala.reflect.ClassTag
 
 /** A [[https://ci.apache.org/projects/flink/flink-docs-stable/api/java/org/apache/flink/streaming/api/functions/sink/SinkFunction.html SinkFunction]]
   * which stores Event objects in InfluxDB.
@@ -48,9 +47,10 @@ import scala.reflect.ClassTag
   * @see [[https://ci.apache.org/projects/flink/flink-docs-stable/dev/table/sourceSinks.html]]
   * @see [[nz.net.wand.streamevmon.connectors.InfluxConnection InfluxConnection]]
   */
-class InfluxSinkFunction[T <: Event : ClassTag] extends RichSinkFunction[T]
-                                                        with ListCheckpointed[T]
-                                                        with Logging {
+class InfluxSinkFunction
+  extends RichSinkFunction[Event]
+          with ListCheckpointed[Event]
+          with Logging {
 
   private[streamevmon] var host: String = _
 
@@ -66,7 +66,7 @@ class InfluxSinkFunction[T <: Event : ClassTag] extends RichSinkFunction[T]
 
   private[this] var influx: AhcIOClient = _
 
-  private[this] val bufferedEvents: ListBuffer[T] = ListBuffer()
+  private[this] val bufferedEvents: ListBuffer[Event] = ListBuffer()
 
   private[this] var overrideParams: Option[ParameterTool] = None
 
@@ -139,9 +139,9 @@ class InfluxSinkFunction[T <: Event : ClassTag] extends RichSinkFunction[T]
     *
     * @param value The data to send to InfluxDB.
     */
-  override def invoke(value: T): Unit = {
+  override def invoke(value: Event): Unit = {
     bufferedEvents.append(value)
-    val meas = influx.measurement[T](database, value.measurementName)
+    val meas = influx.measurement[Event](database, value.eventType)
 
     var success = false
     while (!success) {
@@ -161,11 +161,11 @@ class InfluxSinkFunction[T <: Event : ClassTag] extends RichSinkFunction[T]
     }
   }
 
-  override def snapshotState(checkpointId: Long, timestamp: Long): JList[T] = {
+  override def snapshotState(checkpointId: Long, timestamp: Long): JList[Event] = {
     bufferedEvents.asJava
   }
 
-  override def restoreState(state: JList[T]): Unit = {
+  override def restoreState(state: JList[Event]): Unit = {
     bufferedEvents ++= state.asScala
   }
 }

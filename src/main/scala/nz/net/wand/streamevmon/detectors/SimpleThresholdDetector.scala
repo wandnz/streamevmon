@@ -1,7 +1,9 @@
 package nz.net.wand.streamevmon.detectors
 
-import nz.net.wand.streamevmon.events.{Event, ThresholdEvent}
+import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{Measurement, RichICMP}
+
+import java.time.Duration
 
 import org.apache.flink.streaming.api.scala.function.ProcessAllWindowFunction
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
@@ -19,26 +21,23 @@ import org.apache.flink.util.Collector
 class SimpleThresholdDetector[T <: Measurement](threshold: Int = 1000)
     extends ProcessAllWindowFunction[T, Event, TimeWindow] {
 
-  private val description = s"Median latency was over $threshold"
-
   override def process(context: Context, elements: Iterable[T], out: Collector[Event]): Unit = {
     elements
       .filter(_.isInstanceOf[RichICMP])
       .map(_.asInstanceOf[RichICMP])
       .filter(_.median.getOrElse(Int.MinValue) > threshold)
-      .foreach(
-        m =>
-          out.collect(
-            ThresholdEvent(
-              tags = Map(
-                "stream" -> m.stream.toString
-              ),
-              severity = 10,
-              eventTime = m.time,
-              detectionLatency = m.median.getOrElse(Int.MinValue).toLong,
-              description = description
-            )
+      .foreach { m =>
+        out.collect(
+          new Event(
+            "threshold_events",
+            m.stream,
+            severity = 10,
+            m.time,
+            Duration.ZERO,
+            s"Median latency was over $threshold",
+            Map()
+          )
         )
-      )
+      }
   }
 }

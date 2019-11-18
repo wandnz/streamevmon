@@ -1,7 +1,9 @@
 package nz.net.wand.streamevmon.detectors.loss
 
-import nz.net.wand.streamevmon.events.LossEvent
+import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements._
+
+import java.time.Duration
 
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.api.common.typeinfo.TypeInformation
@@ -18,7 +20,7 @@ import scala.reflect._
   * @tparam MeasT The type of Measurement to ingest.
   */
 class LossDetector[MeasT <: Measurement: ClassTag]()
-    extends KeyedProcessFunction[Int, MeasT, LossEvent] {
+  extends KeyedProcessFunction[Int, MeasT, Event] {
 
   /** The maximum number of measurements to retain. */
   var maxHistory: Int = _
@@ -95,9 +97,9 @@ class LossDetector[MeasT <: Measurement: ClassTag]()
     * @param out The collector to output events into.
     */
   override def processElement(
-      value: MeasT,
-      ctx: KeyedProcessFunction[Int, MeasT, LossEvent]#Context,
-      out: Collector[LossEvent]
+    value: MeasT,
+    ctx  : KeyedProcessFunction[Int, MeasT, Event]#Context,
+    out  : Collector[Event]
   ): Unit = {
     // Setup if we need it.
     if (recentsStorage.value == null) {
@@ -126,13 +128,14 @@ class LossDetector[MeasT <: Measurement: ClassTag]()
       if (newConsecutive >= consecutiveCount) {
         val oldest = getOldestConsecutiveLoss
         out.collect(
-          LossEvent(
-            Map("type" -> "consecutive_loss"),
+          new Event(
+            "loss_events",
             value.stream,
             (newConsecutive.toDouble / maxHistory.toDouble).toInt,
             value.time,
+            Duration.between(oldest.time, value.time),
             s"Consecutive loss became worse! $newConsecutive in a row.",
-            value.time.toEpochMilli - oldest.time.toEpochMilli
+            Map("type" -> "consecutive_loss")
           )
         )
       }
@@ -143,15 +146,16 @@ class LossDetector[MeasT <: Measurement: ClassTag]()
         if (newCount >= lossCount) {
           val oldest = getOldestLoss
           out.collect(
-            LossEvent(
-              Map("type" -> "loss_ratio"),
+            new Event(
+              "loss_events",
               value.stream,
-              (getLossCount.toDouble / maxHistory.toDouble).toInt,
-              oldest.time,
+              (newConsecutive.toDouble / maxHistory.toDouble).toInt,
+              value.time,
+              Duration.between(oldest.time, value.time),
               s"Loss ratio became worse! $oldCount/${recents.length} -> $newCount/${recents.length}",
-              // The detection latency field here is a little meaningless, but that's fine.
-              value.time.toEpochMilli - oldest.time.toEpochMilli
-            ))
+              Map("type" -> "loss_ratio")
+            )
+          )
         }
       }
     }

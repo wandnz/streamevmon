@@ -1,25 +1,25 @@
 package nz.net.wand.streamevmon.flink
 
 import nz.net.wand.streamevmon.{InfluxContainerSpec, SeedData}
-import nz.net.wand.streamevmon.events.{ChangepointEvent, Event, ThresholdEvent}
+import nz.net.wand.streamevmon.events.Event
 
-import java.time.Instant
+import java.time.{Instant, Duration => JavaDuration}
 
 import com.github.fsanaulla.chronicler.ahc.io.InfluxIO
 
 import scala.concurrent.Await
-import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.{Duration => ScalaDuration}
 
 class InfluxSinkTest extends InfluxContainerSpec {
   "InfluxSink" should {
     "write data to InfluxDB" in {
-      val sink = new InfluxSinkFunction[Event]
+      val sink = new InfluxSinkFunction
       sink.overrideConfig(getInfluxConfig("no-subscription"))
       sink.open(null)
 
-      sink.invoke(SeedData.thresholdEvent.withTags)
-      sink.invoke(SeedData.changepointEvent.withTags)
+      sink.invoke(SeedData.event.withTags)
+      sink.invoke(SeedData.event.withoutTags)
 
       sink.close()
 
@@ -28,55 +28,53 @@ class InfluxSinkTest extends InfluxContainerSpec {
 
       Await.result(
         db.readJson(
-          s"SELECT time,moreTags,type,stream,severity,detection_latency,description FROM ${ChangepointEvent.measurementName}")
+          s"SELECT time,stream,severity,detection_latency,description FROM ${SeedData.event.withoutTags.eventType}")
           .map(e => {
             if (e.isLeft) {
-              println(e)
-              fail("No data was placed in InfluxDB")
+              fail(e.left.get)
             }
             val arr = e.right.get.head
             assert(
-              ChangepointEvent(
-                Map(
-                  "moreTags" -> arr.get(1).toString.drop(1).dropRight(1),
-                  "type" -> arr.get(2).toString.drop(1).dropRight(1)
-                ),
-                arr.get(3).toString.drop(1).dropRight(1).toInt,
-                arr.get(4).asInt,
-                Instant.parse(arr.get(0).toString.drop(1).dropRight(1)),
-                arr.get(5).asInt,
-                arr.get(6).toString.drop(1).dropRight(1)
+              Event(
+                eventType = SeedData.event.withoutTags.eventType,
+                stream = arr.get(1).toString.drop(1).dropRight(1).toInt,
+                severity = arr.get(2).asInt,
+                time = Instant.parse(arr.get(0).toString.drop(1).dropRight(1)),
+                detectionLatency = JavaDuration.ofNanos(arr.get(3).asInt),
+                description = arr.get(4).asString,
+                tags = Map()
               )
-                === SeedData.changepointEvent.withTags
+                === SeedData.event.withoutTags
             )
           }),
-        Duration.Inf
+        ScalaDuration.Inf
       )
 
       Await.result(
         db.readJson(
-          s"SELECT time,stream,type,severity,detection_latency,description FROM ${ThresholdEvent.measurementName}")
+          s"SELECT time,type,secondTag,stream,severity,detection_latency,description FROM ${SeedData.event.withTags.eventType}")
           .map(e => {
             if (e.isLeft) {
-              println(e)
-              fail("No data was placed in InfluxDB")
+              fail(e.left.get)
             }
             val arr = e.right.get.head
             assert(
-              ThresholdEvent(
-                Map(
-                  "stream" -> arr.get(1).toString.drop(1).dropRight(1),
-                  "type" -> arr.get(2).toString.drop(1).dropRight(1)
-                ),
-                arr.get(3).asInt,
-                Instant.parse(arr.get(0).toString.drop(1).dropRight(1)),
-                arr.get(4).asInt,
-                arr.get(5).toString.drop(1).dropRight(1)
+              Event(
+                eventType = SeedData.event.withTags.eventType,
+                stream = arr.get(3).toString.drop(1).dropRight(1).toInt,
+                severity = arr.get(4).asInt,
+                time = Instant.parse(arr.get(0).toString.drop(1).dropRight(1)),
+                detectionLatency = JavaDuration.ofNanos(arr.get(5).asInt),
+                description = arr.get(6).asString,
+                tags = Map(
+                  "type" -> arr.get(1).asString,
+                  "secondTag" -> arr.get(2).asString
+                )
               )
-                === SeedData.thresholdEvent.withTags
+                === SeedData.event.withTags
             )
           }),
-        Duration.Inf
+        ScalaDuration.Inf
       )
     }
   }

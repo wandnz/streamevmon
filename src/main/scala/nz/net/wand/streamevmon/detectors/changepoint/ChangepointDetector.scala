@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
-import nz.net.wand.streamevmon.events.ChangepointEvent
+import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.Logging
 
@@ -30,8 +30,8 @@ class ChangepointDetector[MeasT <: Measurement : TypeInformation, DistT <: Distr
   initialDistribution: DistT,
   shouldDoGraphs     : Boolean = false,
   filename           : Option[String] = None
-) extends KeyedProcessFunction[Int, MeasT, ChangepointEvent]
-    with Logging {
+) extends KeyedProcessFunction[Int, MeasT, Event]
+          with Logging {
 
   final val detectorName = s"Changepoint Detector (${initialDistribution.distributionName})"
   final val eventDescription = s"Changepoint Event"
@@ -48,9 +48,9 @@ class ChangepointDetector[MeasT <: Measurement : TypeInformation, DistT <: Distr
   }
 
   override def processElement(
-      value: MeasT,
-      ctx: KeyedProcessFunction[Int, MeasT, ChangepointEvent]#Context,
-      out: Collector[ChangepointEvent]
+    value: MeasT,
+    ctx: KeyedProcessFunction[Int, MeasT, Event]#Context,
+    out  : Collector[Event]
   ): Unit = {
     if (processor.value == null) {
       processor.update(new ChangepointProcessor[MeasT, DistT](initialDistribution, shouldDoGraphs, filename))

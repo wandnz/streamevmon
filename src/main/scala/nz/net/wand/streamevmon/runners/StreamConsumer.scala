@@ -2,7 +2,6 @@ package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.{Configuration, Logging}
 import nz.net.wand.streamevmon.detectors.SimpleThresholdDetector
-import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink._
 import nz.net.wand.streamevmon.measurements.RichMeasurement
 
@@ -30,7 +29,7 @@ object StreamConsumer extends Logging {
     val threshold = 0
     val sourceFunction = new RichMeasurementSourceFunction
     val processFunction = new SimpleThresholdDetector[RichMeasurement](threshold)
-    val sinkFunction = new InfluxSinkFunction[Event]
+    val sinkFunction = new InfluxSinkFunction
     val windowSize = 1
 
     val measurementStream = env
