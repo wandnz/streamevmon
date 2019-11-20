@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
 import nz.net.wand.streamevmon.Logging
+import nz.net.wand.streamevmon.detectors.MapFunction
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.scalactic.{Equality, TolerantNumerics}
@@ -20,10 +21,10 @@ import org.scalactic.{Equality, TolerantNumerics}
   * @see [[https://en.wikipedia.org/wiki/Normal_distribution]]
   */
 case class NormalDistribution[T: TypeInformation](
-  mean: Double,
-  mapFunction: MapFunction[T],
-  variance: Double = NormalDistribution.defaultVariance,
-  n: Int = 0
+  mean       : Double,
+  mapFunction: MapFunction[T, Double],
+  variance   : Double = NormalDistribution.defaultVariance,
+  n          : Int = 0
 )
   extends Distribution[T] with Logging {
 
@@ -84,7 +85,7 @@ object NormalDistribution {
     NormalDistribution(dist.mean, dist.mapFunction, dist.variance, dist.n)
   }
 
-  def apply[T: TypeInformation](item: T, mapFunction: MapFunction[T]): NormalDistribution[T] = {
+  def apply[T: TypeInformation](item: T, mapFunction: MapFunction[T, Double]): NormalDistribution[T] = {
     NormalDistribution(mapFunction(item), mapFunction, defaultVariance, n = 1)
   }
 }

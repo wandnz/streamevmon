@@ -4,6 +4,7 @@ import nz.net.wand.streamevmon.flink.{InfluxSinkFunction, MeasurementSourceFunct
 import nz.net.wand.streamevmon.measurements.{ICMP, Measurement}
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.changepoint._
+import nz.net.wand.streamevmon.detectors.MapFunction
 
 import java.time.Duration
 
@@ -18,7 +19,6 @@ import org.apache.flink.streaming.api.scala._
   * @see [[nz.net.wand.streamevmon.detectors.changepoint.ChangepointGraphs ChangepointGraphs]] for an alternative bulk runner.
   */
 object ChangepointRunner {
-
   def main(args: Array[String]): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
@@ -45,9 +45,10 @@ object ChangepointRunner {
 
     implicit val ti: TypeInformation[NormalDistribution[Measurement]] = TypeInformation.of(classOf[NormalDistribution[Measurement]])
 
-    class IcmpToMedian() extends MapFunction[Measurement] with Serializable {
+    class IcmpToMedian() extends MapFunction[Measurement, Double] with Serializable {
       override def apply(t: Measurement): Double = t.asInstanceOf[ICMP].median.get
-      override def apply(): MapFunction[Measurement] = new IcmpToMedian
+
+      override def apply(): MapFunction[Measurement, Double] = new IcmpToMedian
     }
 
     val detector = new ChangepointDetector
