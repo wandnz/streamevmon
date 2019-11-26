@@ -6,7 +6,7 @@ package nz.net.wand.streamevmon.detectors
   * while the class to be instantiated for use with Flink is [[nz.net.wand.streamevmon.detectors.changepoint.ChangepointDetector ChangepointDetector]].
   *
   * It accepts any type of measurement, and outputs Changepoint Events.
-  * A [[nz.net.wand.streamevmon.detectors.changepoint.MapFunction MapFunction]]
+  * A [[nz.net.wand.streamevmon.detectors.MapFunction MapFunction]]
   * implementation should be supplied which turns the input measurement into the
   * Double type metric that is being detected upon. Note that this map function
   * '''must''' be a standalone, named class in order for Flink to serialise it

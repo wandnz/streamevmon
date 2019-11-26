@@ -23,15 +23,15 @@ class LossDetector[MeasT <: Measurement: ClassTag]()
   extends KeyedProcessFunction[Int, MeasT, Event] {
 
   /** The maximum number of measurements to retain. */
-  var maxHistory: Int = _
+  private var maxHistory: Int = _
 
   /** The number of lossy measurements in the last maxHistory number of
     * measurements that must occur before an event is emitted.
     */
-  var lossCount: Int = _
+  private var lossCount: Int = _
 
   /** The number of consecutive lossy measurements before an event is emitted. */
-  var consecutiveCount: Int = _
+  private var consecutiveCount: Int = _
 
   final val detectorName = s"Loss Detector"
 
