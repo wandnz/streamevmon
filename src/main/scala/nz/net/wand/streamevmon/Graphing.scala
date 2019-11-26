@@ -11,7 +11,7 @@ import org.jfree.data.time.{Second, TimeSeries, TimeSeriesCollection}
 import org.jfree.graphics2d.svg.{SVGGraphics2D, SVGUtils}
 
 /** Allows an easier interface for producing graphs from detectors. Runners
-  * should call enablePlotting on the instance while defining the Flink pipeline.
+  * should call enableGraphing on the instance while defining the Flink pipeline.
   * Implementations should call registerSeries the appropriate number of times
   * during setup, addToSeries for each point to be added to the graph, and
   * saveGraph during cleanup.
@@ -26,7 +26,7 @@ trait Graphing {
 
   private var points: Map[String, Series] = _
 
-  def enablePlotting(filename: String, title: String): Unit = {
+  def enableGraphing(filename: String, title: String): Unit = {
     doGraphs = true
     graphFilename = filename
     graphTitle = title
