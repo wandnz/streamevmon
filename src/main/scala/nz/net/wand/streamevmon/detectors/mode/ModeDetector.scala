@@ -17,22 +17,75 @@ import org.apache.flink.util.Collector
 import scala.collection.mutable
 import scala.reflect._
 
+/** This detector measures the mode value of recent measurements, and inspects
+  * the value for significant changes over time.
+  *
+  * @tparam MeasT The type of measurement to analyse.
+  */
 class ModeDetector[MeasT <: Measurement : ClassTag]
   extends KeyedProcessFunction[Int, MeasT, Event]
           with Graphing {
 
   final val detectorName = "Mode Detector"
 
+  /** The maximum number of measurements to retain. */
   private var maxHistory: Int = _
 
+  /** The minimum number of times a value must occur in recent history to be
+    * considered an event-worthy mode.
+    */
   private var minFrequency: Int = _
 
+  /** The primary mode must occur this many more times than the secondary mode
+    * in recent history to be considered event-worthy.
+    */
   private var minProminence: Int = _
 
+  /** The minimum change amount threshold for a mode change to be event-worthy.
+    * For example with the default value, a change from 12 to 13 is ignored,
+    * but a change from 2 to 13 is significant.
+    */
   private var threshold: Double = _
 
+  /** The amount of time between measurements before history is forgotten. */
   private var inactivityPurgeTime: Duration = _
 
+  // These case classes just made the code look a bit nicer than using tuples
+  // everywhere. Can't figure out how to make Flink recognise them as POJOs
+  // though, so unfortunately they use the Kryo serialiser (but tuples do too).
+  private case class Mode(value: Int, count: Int)
+
+  private object Mode {
+    def apply(input: (Int, Int)): Mode = Mode(input._1, input._2)
+  }
+
+  private case class HistoryItem(id: Int, value: MeasT)
+
+  private case class ModeTuple(primary: Mode, secondary: Mode, lastEvent: Mode)
+
+  /** The time of the last measurement we saw. Used along with inactivityPurgeTime. */
+  private var lastObserved: ValueState[Instant] = _
+
+  /** Our record of recent history. Maximum size is maxHistory.
+    *
+    */
+  private var history: ValueState[mutable.Queue[HistoryItem]] = _
+
+  /** Keeps track of our primary and secondary modes, and the last event we had.
+    * The secondary mode doesn't really need to be persistent, but the code is
+    * a little nicer. The last event might be updated even if we don't emit an
+    * event due to checks on change severity and how the change happened.
+    */
+  private var modeIndexes: ValueState[ModeTuple] = _
+
+  /** A default value for modeIndexes so that we can tell if we've had an event
+    * before.
+    */
+  private val unsetModeIndexes: ModeTuple = ModeTuple(Mode(-1, -2), Mode(-3, -4), Mode(-5, -6))
+
+  /** Called during initialisation. Sets up persistent state variables and
+    * configuration.
+    */
   override def open(parameters: Configuration): Unit = {
     lastObserved = getRuntimeContext.getState(
       new ValueStateDescriptor[Instant](
@@ -63,38 +116,32 @@ class ModeDetector[MeasT <: Measurement : ClassTag]
     threshold = config.getDouble("detector.mode.threshold")
     inactivityPurgeTime = Duration.ofSeconds(config.getInt("detector.mode.inactivityPurgeTime"))
 
+    // This only needs to be 2 or so, but we've got a bit of breathing room to
+    // let us function properly.
     if (maxHistory < 5) {
       throw new IllegalArgumentException("maxHistory set too low! Must be at least 5.")
     }
 
+    // TODO: This needs to move outside this class.
     enablePlotting("/scratch/dwo4/graphs/mode.svg", detectorName)
     registerSeries("Mode Count", paint = Color.RED)
     registerSeries("Secondary Mode Count", paint = Color.BLUE)
   }
 
+  /** Save a graph when we're done (if that function is enabled) */
   override def close(): Unit = saveGraph()
 
-  private var lastObserved: ValueState[Instant] = _
-
-  private var history: ValueState[mutable.Queue[HistoryItem]] = _
-
-  private case class Mode(value: Double, count: Int)
-  private object Mode { def apply(input: (Double, Int)): Mode = Mode(input._1, input._2) }
-
-  private case class HistoryItem(id: Int, value: MeasT)
-
-  private case class ModeTuple(primary: Mode, secondary: Mode, lastEvent: Mode)
-
-  private var modeIndexes: ValueState[ModeTuple] = _
-
-  private val unsetModeIndexes: ModeTuple = ModeTuple(Mode(-1, -2), Mode(-3, -4), Mode(-5, -6))
-
+  /** Resets the state of the detector. Happens on the first measurement, and
+    * any time there's been a reasonable amount of time between the last one and
+    * a new one.
+    */
   def reset(value: MeasT): Unit = {
     lastObserved.update(value.time)
     history.update(mutable.Queue())
     modeIndexes.update(unsetModeIndexes)
   }
 
+  /** We ditch lossy values. */
   def isLossy(value: MeasT): Boolean = {
     value match {
       case t: ICMP               => t.loss > 0
@@ -109,13 +156,21 @@ class ModeDetector[MeasT <: Measurement : ClassTag]
     }
   }
 
-  def mapFunction(value: MeasT): Double = {
+  /** Maps a supported measurement to a useful value. Downscales them in order
+    * for our mode detector to bucket values instead of using the raw, jittery
+    * mesaurements.
+    *
+    * The downscaling method is naive and hasn't been strongly tested. It will
+    * probably fail on low-latency links by making values too small, but that
+    * just means that no events will be emitted.
+    */
+  def mapFunction(value: MeasT): Int = {
     value match {
-      case t: ICMP               => t.median.get
-      case t: DNS                => t.rtt.get
-      case t: TCPPing            => t.median.get
+      case t: ICMP => t.median.get / 1000
+      case t: DNS => t.rtt.get / 1000
+      case t: TCPPing => t.median.get / 1000
       case t: LatencyTSAmpICMP => t.average / 1000
-      case t: LatencyTSSmokeping => t.median.get
+      case t: LatencyTSSmokeping => (t.median.get / 1000).toInt
       case _ =>
         throw new IllegalArgumentException(
           s"Unsupported measurement type for Mode Detector: $value"
@@ -123,9 +178,21 @@ class ModeDetector[MeasT <: Measurement : ClassTag]
     }
   }
 
+  /** Finds the modes of the new dataset. If there's only one unique value,
+    * we'll put down a dummy secondary value. This shouldn't be an issue, since
+    * if there's one unique value it's been a very outstanding mode for quite a
+    * while, and the gates in processValue won't get near any that touch the
+    * secondary mode. If the history list is empty, an exception will be thrown,
+    * but it shouldn't happen since this function only gets called after a
+    * measurement has been added.
+    */
   def updateModes(): Unit = {
-    val groupedAndSorted =
-      history.value.groupBy(x => mapFunction(x.value)).mapValues(_.size).toList.sortBy(_._2).reverse
+    val groupedAndSorted = history.value
+      .groupBy(x => mapFunction(x.value))
+      .mapValues(_.size)
+      .toList
+      .sortBy(_._2)
+      .reverse
 
     if (groupedAndSorted.length > 1) {
       modeIndexes.update(
@@ -149,12 +216,15 @@ class ModeDetector[MeasT <: Measurement : ClassTag]
     }
   }
 
+  /** Outputs a new event. The detection latency is 0. The severity
+    * reflects the size of the change in mode values.
+    */
   def newEvent(value: MeasT, out: Collector[Event]): Unit = {
     out.collect(
       new Event(
         "mode_events",
         value.stream,
-        (modeIndexes.value.primary.count.toDouble / maxHistory.toDouble).toInt,
+        (modeIndexes.value.primary.count.toDouble / maxHistory.toDouble * 100).toInt, //TODO: This calculation should be more sensible.
         value.time,
         Duration.ZERO,
         s"Mode changed from ${modeIndexes.value.lastEvent.value} to ${modeIndexes.value.primary.value}!",
@@ -163,11 +233,14 @@ class ModeDetector[MeasT <: Measurement : ClassTag]
     )
   }
 
+  /** Called once per measurement. Generates zero or one events. */
   override def processElement(
       value: MeasT,
       ctx: KeyedProcessFunction[Int, MeasT, Event]#Context,
       out: Collector[Event]
   ): Unit = {
+    // If this is the first measurement or it's been too long since the last one,
+    // we'll reset everything.
     if (lastObserved.value == null ||
         (!inactivityPurgeTime.isZero &&
         Duration
@@ -202,6 +275,7 @@ class ModeDetector[MeasT <: Measurement : ClassTag]
     addToSeries("Mode Count", modeIndexes.value.primary.count, value.time)
     addToSeries("Secondary Mode Count", modeIndexes.value.secondary.count, value.time)
 
+    // If our history isn't full yet, there's no point checking for events.
     if (history.value.length < maxHistory) {
       return
     }
@@ -220,26 +294,61 @@ class ModeDetector[MeasT <: Measurement : ClassTag]
 
     // If the primary mode doesn't stick out a lot from the secondary mode,
     // it's not an event.
-    // newModes.secondary will be (-1,-1) if there is only one value in history.
+    // newModes.secondary.count will be <0 if there is only one value in history.
     // This is fine, since we shouldn't make it past the "has the mode changed"
-    // barrier in this case. Even if we did, the mode would be very prominent.
+    // barrier in this case.
     if (newModes.primary.count - newModes.secondary.count < minProminence) {
+      return
+    }
+
+    // This will update our lastEvent record to the new mode. From here on,
+    // a mode update has been successfully detected, but the gates will
+    // consider whether it's important enough to notify about.
+    def updateLastEvent(): Unit = {
+      modeIndexes.update(
+        ModeTuple(
+          modeIndexes.value.primary,
+          modeIndexes.value.secondary,
+          modeIndexes.value.primary
+        )
+      )
+    }
+
+    // If the previous mode doesn't exist in the buffer anymore, it isn't really
+    // fair to call this a mode change. Rather, we obviously haven't had a mode
+    // for a long time and now we are settling into a constant pattern again.
+    // It's not our job to report on changes in the overall time series pattern.
+    if (!history.value.exists(x => mapFunction(x.value) == newModes.lastEvent.value)) {
+      updateLastEvent()
+      return
+    }
+
+    // We'll steal some maths from the old version of this detector to generate
+    // a reasonable importance threshold value.
+    // The threshold ensures that there's a reasonable amount of change between
+    // the old and new modes, or else we'll just send a bunch of events for
+    // small changes or measurement noise. Using a logarithm lets us require a
+    // larger relative change when modes are small.
+    val thresh = {
+      val calculatedThreshold = newModes.lastEvent.value / Math.log(newModes.lastEvent.value)
+      if (calculatedThreshold < threshold) {
+        threshold
+      }
+      else {
+        calculatedThreshold
+      }
+    }
+    if (Math.abs(newModes.lastEvent.value - newModes.primary.value) < thresh) {
+      updateLastEvent()
       return
     }
 
     // If we've made it all the way down here, it must be an event, unless this
     // seems to be the first standout mode. In that case, we don't know enough
     // about what happened in the past to talk about it.
-    if (modeIndexes.value.lastEvent.value != unsetModeIndexes.lastEvent.value) {
+    if (newModes.lastEvent.value != unsetModeIndexes.lastEvent.value) {
       newEvent(value, out)
     }
-    // We want to update the lastEvent mode record no matter what.
-    modeIndexes.update(
-      ModeTuple(
-        modeIndexes.value.primary,
-        modeIndexes.value.secondary,
-        modeIndexes.value.primary
-      )
-    )
+    updateLastEvent()
   }
 }

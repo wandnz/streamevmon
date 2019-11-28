@@ -10,7 +10,7 @@ import nz.net.wand.streamevmon.detectors.MapFunction
   *           [[ChangepointDetector]].
   *
   * @see [[NormalDistribution]]
-  * @see [[org.apache.flink.api.common.functions.MapFunction]]
+  * @see [[MapFunction]]
   */
 trait Distribution[T] {
 
