@@ -26,6 +26,11 @@ trait Graphing {
 
   private var points: Map[String, Series] = _
 
+  /** Turns on plotting for the object inheriting this trait.
+    *
+    * @param filename The destination of the resulting graph. Saved as an svg.
+    * @param title    The title of the graph.
+    */
   def enablePlotting(filename: String, title: String): Unit = {
     doGraphs = true
     graphFilename = filename
@@ -73,7 +78,9 @@ trait Graphing {
       paint: Paint = Color.BLACK,
       thickness: Float = 1
   ): Unit = {
-    points = points + (name -> Series(Seq(), SeriesConfig(paint, new BasicStroke(thickness), kind)))
+    if (doGraphs) {
+      points = points + (name -> Series(Seq(), SeriesConfig(paint, new BasicStroke(thickness), kind)))
+    }
   }
 
   /** Adds a point to a series. If the series has not yet been registered, it
@@ -86,17 +93,19 @@ trait Graphing {
     *             Epoch.
     */
   protected def addToSeries(name: String, value: Double, time: Long): Unit = {
-    if (points.contains(name)) {
-      points = points + (
-        name -> Series(
-          points(name).points :+ Point(value, time),
-          points(name).config
-        )
-      )
-    }
-    else {
-      registerSeries(name)
-      addToSeries(name, value, time)
+    if (doGraphs) {
+      if (points.contains(name)) {
+        points = points + (
+          name -> Series(
+            points(name).points :+ Point(value, time),
+            points(name).config
+          )
+          )
+      }
+      else {
+        registerSeries(name)
+        addToSeries(name, value, time)
+      }
     }
   }
 
@@ -115,6 +124,10 @@ trait Graphing {
   /** Create and save the graph produced from all data given so far.
     */
   protected def saveGraph(): Unit = {
+    if (!doGraphs) {
+      return
+    }
+
     // Set up some holders for the chart and data.
     val dataset = new TimeSeriesCollection()
     val chart = ChartFactory.createTimeSeriesChart(
