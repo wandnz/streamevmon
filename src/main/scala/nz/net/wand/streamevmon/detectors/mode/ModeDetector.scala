@@ -2,7 +2,9 @@ package nz.net.wand.streamevmon.detectors.mode
 
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements._
+import nz.net.wand.streamevmon.Graphing
 
+import java.awt.Color
 import java.time.{Duration, Instant}
 
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
@@ -15,7 +17,9 @@ import org.apache.flink.util.Collector
 import scala.collection.mutable
 import scala.reflect._
 
-class ModeDetector[MeasT <: Measurement: ClassTag] extends KeyedProcessFunction[Int, MeasT, Event] {
+class ModeDetector[MeasT <: Measurement : ClassTag]
+  extends KeyedProcessFunction[Int, MeasT, Event]
+          with Graphing {
 
   final val detectorName = "Mode Detector"
 
@@ -38,16 +42,16 @@ class ModeDetector[MeasT <: Measurement: ClassTag] extends KeyedProcessFunction[
     )
 
     history = getRuntimeContext.getState(
-      new ValueStateDescriptor[mutable.Queue[(Int, MeasT)]](
+      new ValueStateDescriptor[mutable.Queue[HistoryItem]](
         "History",
-        TypeInformation.of(classOf[mutable.Queue[(Int, MeasT)]])
+        TypeInformation.of(classOf[mutable.Queue[HistoryItem]])
       )
     )
 
     modeIndexes = getRuntimeContext.getState(
-      new ValueStateDescriptor[(Mode, Mode)](
+      new ValueStateDescriptor[ModeTuple](
         "Modes",
-        TypeInformation.of(classOf[(Mode, Mode)])
+        TypeInformation.of(classOf[ModeTuple])
       )
     )
 
@@ -62,21 +66,33 @@ class ModeDetector[MeasT <: Measurement: ClassTag] extends KeyedProcessFunction[
     if (maxHistory < 5) {
       throw new IllegalArgumentException("maxHistory set too low! Must be at least 5.")
     }
+
+    enablePlotting("/scratch/dwo4/graphs/mode.svg", detectorName)
+    registerSeries("Mode Count", paint = Color.RED)
+    registerSeries("Secondary Mode Count", paint = Color.BLUE)
   }
+
+  override def close(): Unit = saveGraph()
 
   private var lastObserved: ValueState[Instant] = _
 
-  private var history: ValueState[mutable.Queue[(Int, MeasT)]] = _
+  private var history: ValueState[mutable.Queue[HistoryItem]] = _
 
   private case class Mode(value: Double, count: Int)
   private object Mode { def apply(input: (Double, Int)): Mode = Mode(input._1, input._2) }
 
-  private var modeIndexes: ValueState[(Mode, Mode)] = _
+  private case class HistoryItem(id: Int, value: MeasT)
+
+  private case class ModeTuple(primary: Mode, secondary: Mode, lastEvent: Mode)
+
+  private var modeIndexes: ValueState[ModeTuple] = _
+
+  private val unsetModeIndexes: ModeTuple = ModeTuple(Mode(-1, -2), Mode(-3, -4), Mode(-5, -6))
 
   def reset(value: MeasT): Unit = {
     lastObserved.update(value.time)
     history.update(mutable.Queue())
-    modeIndexes.update(Mode(-1, -1), Mode(-1, -1))
+    modeIndexes.update(unsetModeIndexes)
   }
 
   def isLossy(value: MeasT): Boolean = {
@@ -98,7 +114,7 @@ class ModeDetector[MeasT <: Measurement: ClassTag] extends KeyedProcessFunction[
       case t: ICMP               => t.median.get
       case t: DNS                => t.rtt.get
       case t: TCPPing            => t.median.get
-      case t: LatencyTSAmpICMP   => t.average
+      case t: LatencyTSAmpICMP => t.average / 1000
       case t: LatencyTSSmokeping => t.median.get
       case _ =>
         throw new IllegalArgumentException(
@@ -109,12 +125,28 @@ class ModeDetector[MeasT <: Measurement: ClassTag] extends KeyedProcessFunction[
 
   def updateModes(): Unit = {
     val groupedAndSorted =
-      history.value.groupBy(x => mapFunction(x._2)).mapValues(_.size).toList.sortBy(_._2).reverse
-    modeIndexes.update(
-      (
-        Mode(groupedAndSorted.head),
-        Mode(groupedAndSorted.drop(1).head)
-      ))
+      history.value.groupBy(x => mapFunction(x.value)).mapValues(_.size).toList.sortBy(_._2).reverse
+
+    if (groupedAndSorted.length > 1) {
+      modeIndexes.update(
+        ModeTuple(
+          Mode(groupedAndSorted.head),
+          Mode(groupedAndSorted.drop(1).head),
+          modeIndexes.value.lastEvent
+        ))
+    }
+    else if (groupedAndSorted.length == 1) {
+      modeIndexes.update(
+        ModeTuple(
+          Mode(groupedAndSorted.head),
+          Mode(-2, -2),
+          modeIndexes.value.lastEvent
+        )
+      )
+    }
+    else {
+      throw new IllegalStateException("Grouped recent values was empty!")
+    }
   }
 
   def newEvent(value: MeasT, out: Collector[Event]): Unit = {
@@ -122,10 +154,10 @@ class ModeDetector[MeasT <: Measurement: ClassTag] extends KeyedProcessFunction[
       new Event(
         "mode_events",
         value.stream,
-        (modeIndexes.value._1.count.toDouble / maxHistory.toDouble).toInt,
+        (modeIndexes.value.primary.count.toDouble / maxHistory.toDouble).toInt,
         value.time,
         Duration.ZERO,
-        s"New mode appeared! ${modeIndexes.value._1}",
+        s"Mode changed from ${modeIndexes.value.lastEvent.value} to ${modeIndexes.value.primary.value}!",
         Map()
       )
     )
@@ -154,44 +186,60 @@ class ModeDetector[MeasT <: Measurement: ClassTag] extends KeyedProcessFunction[
     }
 
     def getNewUid: Int = {
-      if (history.value.nonEmpty)
-        history.value.maxBy(_._1)._1 + 1
+      if (history.value.nonEmpty) {
+        history.value.maxBy(_.id).id + 1
+      }
       else 0
     }
 
     // Add the value into the queue.
-    history.value.enqueue((getNewUid, value))
+    history.value.enqueue(HistoryItem(getNewUid, value))
     if (history.value.length > maxHistory) {
       history.value.dequeue()
     }
-    else {
-      // If the queue isn't full yet, just give up.
+
+    updateModes()
+    addToSeries("Mode Count", modeIndexes.value.primary.count, value.time)
+    addToSeries("Secondary Mode Count", modeIndexes.value.secondary.count, value.time)
+
+    if (history.value.length < maxHistory) {
       return
     }
 
-    val oldModes = modeIndexes.value
-
-    updateModes()
-
-    def newModes: (Mode, Mode) = modeIndexes.value
+    def newModes: ModeTuple = modeIndexes.value
 
     // If the primary mode hasn't changed, it's not an event.
-    if (oldModes._1.value == newModes._1.value) {
+    if (newModes.lastEvent.value == newModes.primary.value) {
       return
     }
 
     // If the primary mode isn't particularly outstanding, it's not an event.
-    if (newModes._1.count < minFrequency) {
+    if (newModes.primary.count < minFrequency) {
       return
     }
 
     // If the primary mode doesn't stick out a lot from the secondary mode,
     // it's not an event.
-    if (newModes._1.count - newModes._2.count < minProminence) {
+    // newModes.secondary will be (-1,-1) if there is only one value in history.
+    // This is fine, since we shouldn't make it past the "has the mode changed"
+    // barrier in this case. Even if we did, the mode would be very prominent.
+    if (newModes.primary.count - newModes.secondary.count < minProminence) {
       return
     }
 
-    // If we've made it all the way down here, it must be an event.
-    newEvent(value, out)
+    // If we've made it all the way down here, it must be an event, unless this
+    // seems to be the first standout mode. In that case, we don't know enough
+    // about what happened in the past to talk about it.
+    if (modeIndexes.value.lastEvent.value != unsetModeIndexes.lastEvent.value) {
+      newEvent(value, out)
+    }
+    // We want to update the lastEvent mode record no matter what.
+    modeIndexes.update(
+      ModeTuple(
+        modeIndexes.value.primary,
+        modeIndexes.value.secondary,
+        modeIndexes.value.primary
+      )
+    )
   }
 }

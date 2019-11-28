@@ -5,9 +5,9 @@ import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.flink.LatencyTSAmpFileInputFormat
 import nz.net.wand.streamevmon.measurements._
 
-import java.time.Duration
+import java.io.File
 
-import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
+import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
 
 /** Main runner for mode change detector, detailed in the
@@ -15,7 +15,7 @@ import org.apache.flink.streaming.api.scala._
   */
 object ModeRunner {
 
-  def main(args: Array[String]): Unit = {
+  def doIt(args: Array[String], filename: String): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
@@ -25,17 +25,16 @@ object ModeRunner {
 
     env.disableOperatorChaining
 
-    env.enableCheckpointing(Duration.ofSeconds(10).toMillis, CheckpointingMode.EXACTLY_ONCE)
+    //env.enableCheckpointing(Duration.ofSeconds(10).toMillis, CheckpointingMode.EXACTLY_ONCE)
 
     val source = env
-    /*
-      .addSource(new MeasurementSourceFunction)
-      .setParallelism(1)
-      .name("Measurement Subscription")
-      .uid("mode-measurement-sourcefunction")
-       */
-      .readFile(new LatencyTSAmpFileInputFormat,
-                "data/latency-ts-i/ampicmp/series/waikato-xero-ipv4.series")
+      /*
+          .addSource(new MeasurementSourceFunction)
+          .setParallelism(1)
+          .name("Measurement Subscription")
+          .uid("mode-measurement-sourcefunction")
+      */
+      .readFile(new LatencyTSAmpFileInputFormat, filename)
       .setParallelism(1)
       .name("Latency TS AMP Input")
       .keyBy(_.stream)
@@ -54,8 +53,28 @@ object ModeRunner {
       .uid("mode-influx-sink")
      */
 
-    process.print("Mode Event")
+    process.print(s"Mode Event ($filename)")
 
     env.execute("Measurement subscription -> Mode Detector")
+  }
+
+  def main(args: Array[String]): Unit = {
+    def getListOfFiles(dir: String): Seq[String] = {
+      val file = new File(dir)
+      file.listFiles
+        .filter(_.isFile)
+        .map(_.getPath)
+        .toList
+    }
+
+    /*
+    for (file <- getListOfFiles("data/latency-ts-i/ampicmp/series")) {
+      println(file)
+
+      doIt(args, file)
+    }
+
+     */
+    doIt(args, "data/latency-ts-i/ampicmp/series/waikato-xero-ipv4.series")
   }
 }
