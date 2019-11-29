@@ -122,8 +122,6 @@ class ModeDetector[MeasT <: Measurement : ClassTag]
       throw new IllegalArgumentException("maxHistory set too low! Must be at least 5.")
     }
 
-    // TODO: This needs to move outside this class.
-    enablePlotting("/scratch/dwo4/graphs/mode.svg", detectorName)
     registerSeries("Mode Count", paint = Color.RED)
     registerSeries("Secondary Mode Count", paint = Color.BLUE)
   }
@@ -220,11 +218,69 @@ class ModeDetector[MeasT <: Measurement : ClassTag]
     * reflects the size of the change in mode values.
     */
   def newEvent(value: MeasT, out: Collector[Event]): Unit = {
+    // I stole this from netevmon's Event::eventMagnitudeLatency. The comments
+    // up until out.collect are verbatim, and not written by me.
+    val old = modeIndexes.value.lastEvent.value
+    val current = modeIndexes.value.primary.value
+    val max = Math.max(old, current)
+    val min = Math.min(old, current)
+
+    /* How this formula was derived:
+     *  For a selection of latency values, I determined the increase that
+     *  was required before I would consider the change to be significant.
+     *  Examples:
+     *     0.5 -> 5, 3 -> 9, 8 -> 16, 100 -> 130, 300 -> 350, 400 -> 450
+     *
+     *  Then I used R to find the formula of the line that best fit
+     *  those known points. This line can now act as my baseline for
+     *  magnitude, where all points on the line are approximately the
+     *  same magnitude.
+     */
+    val basemag = {
+      val maybe = if (min < 0.1) {
+        4.8
+      }
+      else {
+        Math.exp(-0.17949 * Math.log(min) + 1.13489)
+      }
+
+      /* Avoid exponential decay after about 450ms, otherwise even minor
+       * changes will appear to be massively significant.
+       */
+      if (maybe < 1.1) {
+        1.1
+      }
+      else {
+        maybe
+      }
+    }
+
+    val severity = {
+      /* A magnitude of 30 is equivalent to a point on my baseline.
+       * Otherwise, we adjust the magnitude based on the relative difference
+       * between the change observed and the change required to reach the
+       * baseline.
+       */
+      val maybe = 30 * ((max - min) / ((basemag - 1) * min))
+      /* Adjust magnitudes that are outside our 1-100 scale to fall inside
+       * the scale.
+       */
+      if (maybe < 1) {
+        1
+      }
+      else if (maybe > 100) {
+        100
+      }
+      else {
+        maybe.toInt
+      }
+    }
+
     out.collect(
       new Event(
         "mode_events",
         value.stream,
-        (modeIndexes.value.primary.count.toDouble / maxHistory.toDouble * 100).toInt, //TODO: This calculation should be more sensible.
+        severity,
         value.time,
         Duration.ZERO,
         s"Mode changed from ${modeIndexes.value.lastEvent.value} to ${modeIndexes.value.primary.value}!",
