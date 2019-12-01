@@ -40,7 +40,7 @@ object ModeRunner {
       .keyBy(_.stream)
 
     val detector = new ModeDetector[LatencyTSAmpICMP]
-    detector.enablePlotting("out/graphs/mode.svg", detector.detectorName)
+    detector.enableGraphing("out/graphs/mode.svg", detector.detectorName)
 
     val process = source
       .process(detector)
