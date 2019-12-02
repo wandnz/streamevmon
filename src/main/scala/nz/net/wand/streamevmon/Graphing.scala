@@ -24,7 +24,7 @@ trait Graphing {
   protected val graphWidth: Int = 1600
   protected val graphHeight: Int = 900
 
-  private var points: Map[String, Series] = _
+  @transient private var points: Map[String, Series] = _
 
   /** Turns on plotting for the object inheriting this trait.
     *
@@ -36,10 +36,6 @@ trait Graphing {
     graphFilename = filename
     graphTitle = title
     points = Map()
-  }
-
-  protected object SeriesType extends Enumeration {
-    val Line, Events: Value = Value
   }
 
   private case class SeriesConfig(
@@ -199,4 +195,8 @@ trait Graphing {
     chart.draw(svg, new Rectangle(graphWidth, graphHeight))
     SVGUtils.writeToSVG(new File(graphFilename), svg.getSVGElement)
   }
+}
+
+protected object SeriesType extends Enumeration {
+  @transient val Line, Events: Value = Value
 }

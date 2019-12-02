@@ -1,5 +1,6 @@
 package nz.net.wand.streamevmon.detectors.mode
 
+import nz.net.wand.streamevmon.detectors.mode.ModeDetector._
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements._
 import nz.net.wand.streamevmon.Graphing
@@ -15,14 +16,13 @@ import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.util.Collector
 
 import scala.collection.mutable
-import scala.reflect._
 
 /** This detector measures the mode value of recent measurements, and inspects
   * the value for significant changes over time.
   *
   * @tparam MeasT The type of measurement to analyse.
   */
-class ModeDetector[MeasT <: Measurement : ClassTag]
+class ModeDetector[MeasT <: Measurement]
   extends KeyedProcessFunction[Int, MeasT, Event]
           with Graphing {
 
@@ -50,25 +50,10 @@ class ModeDetector[MeasT <: Measurement : ClassTag]
   /** The amount of time between measurements before history is forgotten. */
   private var inactivityPurgeTime: Duration = _
 
-  // These case classes just made the code look a bit nicer than using tuples
-  // everywhere. Can't figure out how to make Flink recognise them as POJOs
-  // though, so unfortunately they use the Kryo serialiser (but tuples do too).
-  private case class Mode(value: Int, count: Int)
-
-  private object Mode {
-    def apply(input: (Int, Int)): Mode = Mode(input._1, input._2)
-  }
-
-  private case class HistoryItem(id: Int, value: MeasT)
-
-  private case class ModeTuple(primary: Mode, secondary: Mode, lastEvent: Mode)
-
   /** The time of the last measurement we saw. Used along with inactivityPurgeTime. */
   private var lastObserved: ValueState[Instant] = _
 
-  /** Our record of recent history. Maximum size is maxHistory.
-    *
-    */
+  /** Our record of recent history. Maximum size is maxHistory. */
   private var history: ValueState[mutable.Queue[HistoryItem]] = _
 
   /** Keeps track of our primary and secondary modes, and the last event we had.
@@ -186,7 +171,7 @@ class ModeDetector[MeasT <: Measurement : ClassTag]
     */
   def updateModes(): Unit = {
     val groupedAndSorted = history.value
-      .groupBy(x => mapFunction(x.value))
+      .groupBy(x => x.value)
       .mapValues(_.size)
       .toList
       .sortBy(_._2)
@@ -322,7 +307,7 @@ class ModeDetector[MeasT <: Measurement : ClassTag]
     }
 
     // Add the value into the queue.
-    history.value.enqueue(HistoryItem(getNewUid, value))
+    history.value.enqueue(HistoryItem(getNewUid, mapFunction(value)))
     if (history.value.length > maxHistory) {
       history.value.dequeue()
     }
@@ -374,7 +359,7 @@ class ModeDetector[MeasT <: Measurement : ClassTag]
     // fair to call this a mode change. Rather, we obviously haven't had a mode
     // for a long time and now we are settling into a constant pattern again.
     // It's not our job to report on changes in the overall time series pattern.
-    if (!history.value.exists(x => mapFunction(x.value) == newModes.lastEvent.value)) {
+    if (!history.value.exists(x => x.value == newModes.lastEvent.value)) {
       updateLastEvent()
       return
     }
@@ -407,4 +392,21 @@ class ModeDetector[MeasT <: Measurement : ClassTag]
     }
     updateLastEvent()
   }
+}
+
+// These case classes just made the code look a bit nicer than using tuples
+// everywhere. Flink doesn't appear to recognise them as POJOs, so they have to
+// be serialised via Kryo, the same as tuples.
+private object ModeDetector {
+
+  case class Mode(value: Int, count: Int)
+
+  object Mode {
+    def apply(input: (Int, Int)): Mode = Mode(input._1, input._2)
+  }
+
+  case class HistoryItem(id: Int, value: Int)
+
+  case class ModeTuple(primary: Mode, secondary: Mode, lastEvent: Mode)
+
 }
