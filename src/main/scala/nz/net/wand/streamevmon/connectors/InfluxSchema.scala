@@ -57,29 +57,57 @@ object InfluxSchema {
       val cols = DNS.columnNames
 
       try {
-        Right(
-          DNS(
-            js.get(cols.indexOf("stream")).asString.toInt,
-            Some(js.get(cols.indexOf("flag_aa")).asBoolean),
-            Some(js.get(cols.indexOf("flag_ad")).asBoolean),
-            Some(js.get(cols.indexOf("flag_cd")).asBoolean),
-            Some(js.get(cols.indexOf("flag_qr")).asBoolean),
-            Some(js.get(cols.indexOf("flag_ra")).asBoolean),
-            Some(js.get(cols.indexOf("flag_rd")).asBoolean),
-            Some(js.get(cols.indexOf("flag_tc")).asBoolean),
-            js.get(cols.indexOf("lossrate")).asDouble,
-            Some(js.get(cols.indexOf("opcode")).asInt),
-            js.get(cols.indexOf("query_len")).asInt,
-            Some(js.get(cols.indexOf("rcode")).asInt),
-            js.get(cols.indexOf("requests")).asInt,
-            Some(js.get(cols.indexOf("response_size")).asInt),
-            Some(js.get(cols.indexOf("rtt")).asInt),
-            Some(js.get(cols.indexOf("total_additional")).asInt),
-            Some(js.get(cols.indexOf("total_answer")).asInt),
-            Some(js.get(cols.indexOf("total_authority")).asInt),
-            Some(js.get(cols.indexOf("ttl")).asInt),
-            Instant.parse(js.get(cols.indexOf("time")).asString)
-          ))
+        if (js.get(cols.indexOf("lossrate")).asInt > 0) {
+          Right(
+            DNS(
+              js.get(cols.indexOf("stream")).asString.toInt,
+              None,
+              None,
+              None,
+              None,
+              None,
+              None,
+              None,
+              js.get(cols.indexOf("lossrate")).asDouble,
+              None,
+              js.get(cols.indexOf("query_len")).asInt,
+              None,
+              js.get(cols.indexOf("requests")).asInt,
+              None,
+              None,
+              None,
+              None,
+              None,
+              None,
+              Instant.parse(js.get(cols.indexOf("time")).asString)
+            )
+          )
+        }
+        else {
+          Right(
+            DNS(
+              js.get(cols.indexOf("stream")).asString.toInt,
+              Some(js.get(cols.indexOf("flag_aa")).asBoolean),
+              Some(js.get(cols.indexOf("flag_ad")).asBoolean),
+              Some(js.get(cols.indexOf("flag_cd")).asBoolean),
+              Some(js.get(cols.indexOf("flag_qr")).asBoolean),
+              Some(js.get(cols.indexOf("flag_ra")).asBoolean),
+              Some(js.get(cols.indexOf("flag_rd")).asBoolean),
+              Some(js.get(cols.indexOf("flag_tc")).asBoolean),
+              js.get(cols.indexOf("lossrate")).asDouble,
+              Some(js.get(cols.indexOf("opcode")).asInt),
+              js.get(cols.indexOf("query_len")).asInt,
+              Some(js.get(cols.indexOf("rcode")).asInt),
+              js.get(cols.indexOf("requests")).asInt,
+              Some(js.get(cols.indexOf("response_size")).asInt),
+              Some(js.get(cols.indexOf("rtt")).asInt),
+              Some(js.get(cols.indexOf("total_additional")).asInt),
+              Some(js.get(cols.indexOf("total_answer")).asInt),
+              Some(js.get(cols.indexOf("total_authority")).asInt),
+              Some(js.get(cols.indexOf("ttl")).asInt),
+              Instant.parse(js.get(cols.indexOf("time")).asString)
+            ))
+        }
       } catch {
         case e: Exception => Left(e)
       }

@@ -23,6 +23,20 @@ object SeedData {
     val subscriptionLine =
       "data_amp_icmp,stream=3 loss=0i,lossrate=0.0,median=225i,packet_size=520i,results=1i,rtts=\"[225]\" 1563761840000000000"
 
+    val lossySubscriptionLine =
+      "data_amp_icmp,stream=3 loss=1i,lossrate=1.0,packet_size=520i,results=1i,rtts=\"[None]\" 1574696840000000000"
+
+    val lossyExpected = ICMP(
+      stream = 3,
+      loss = 1,
+      lossrate = 1.0,
+      median = None,
+      packet_size = 520,
+      results = 1,
+      rtts = Seq(None),
+      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1574696840000000000L))
+    )
+
     val expected = ICMP(
       stream = 3,
       loss = 0,
@@ -121,6 +135,31 @@ object SeedData {
 
     val subscriptionLine =
       "data_amp_dns,stream=1 flag_aa=False,flag_ad=False,flag_cd=False,flag_qr=True,flag_ra=True,flag_rd=False,flag_tc=False,lossrate=0.0,opcode=0i,query_len=40i,rcode=0i,requests=1i,response_size=68i,rtt=35799i,total_additional=1i,total_answer=1i,total_authority=0i,ttl=0i 1563761841000000000"
+    val lossySubscriptionLine =
+      "data_amp_dns,stream=1 lossrate=1.0,query_len=40i,requests=1i 1573020910000000000"
+
+    val lossyExpected = DNS(
+      stream = 1,
+      flag_aa = None,
+      flag_ad = None,
+      flag_cd = None,
+      flag_qr = None,
+      flag_ra = None,
+      flag_rd = None,
+      flag_tc = None,
+      lossrate = 1.0,
+      opcode = None,
+      query_len = 40,
+      rcode = None,
+      requests = 1,
+      response_size = None,
+      rtt = None,
+      total_additional = None,
+      total_answer = None,
+      total_authority = None,
+      ttl = None,
+      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1573020910000000000L))
+    )
 
     val expected = DNS(
       stream = 1,

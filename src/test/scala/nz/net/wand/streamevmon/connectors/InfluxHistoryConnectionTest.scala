@@ -22,26 +22,22 @@ class InfluxHistoryConnectionTest extends InfluxContainerSpec with BeforeAndAfte
     }
   }
 
-  private def fillInflux(): Unit = {
-    val db = InfluxIO(container.address, container.port, Some(container.credentials))
-      .database(container.database)
-    Await.result(
-      db.bulkWriteNative(
-        Seq(
-          SeedData.icmp.subscriptionLine,
-          SeedData.dns.subscriptionLine,
-          SeedData.traceroute.subscriptionLine,
-          SeedData.http.subscriptionLine,
-          SeedData.tcpping.subscriptionLine
-        )),
-      Duration.Inf
-    )
-  }
-
   "InfluxHistoryConnection" should {
-
     before {
-      fillInflux()
+      Await.result(
+        InfluxIO(container.address, container.port, Some(container.credentials))
+          .database(container.database)
+          .bulkWriteNative(
+            Seq(
+              SeedData.icmp.subscriptionLine,
+              SeedData.dns.subscriptionLine,
+              SeedData.traceroute.subscriptionLine,
+              SeedData.http.subscriptionLine,
+              SeedData.tcpping.subscriptionLine
+            )
+          ),
+        Duration.Inf
+      )
     }
 
     "get ICMP data" in {
