@@ -12,8 +12,8 @@ AMP cluster is storing data in. A custom sink exists which can store detected
 events into an InfluxDB instance (the same as the source instance, or another),
 so that the events can later be visualised by a system like Grafana.
 
-The project is written almost completely in Scala, and uses IntelliJ as a
-development environment, with sbt as a build tool.
+The project is written in Scala, and uses IntelliJ as a development environment,
+with sbt as a build tool.
 
 ## Building and Testing
 
@@ -22,10 +22,10 @@ be configured with the Scala plugin.
 
 It should be enough to simply open the folder with IntelliJ, make sure that SBT
 changes are imported and scalafmt is downloaded, and click the Build button.
-The default entrypoint is StreamConsumer, which requires a running and
+The default entrypoint is the UnifiedEntrypoint, which requires a running and
 accessible instance of InfluxDB (and PostgreSQL if RichMeasurements are used).
-The locations of these databases when the program is run in IntelliJ can be
-configured using conf/streamevmon.properties.
+The locations of these databases can be configured using
+`conf/streamevmon.properties`.
 
 To run automated tests, right-click on the test/scala/nz.net.wand.streamevmon/
 folder and select "Run ScalaTests in 'streamevmon'". You should have the ability
@@ -43,20 +43,27 @@ To generate a JAR file to run on a real Flink cluster, go to the sbt shell
 This will generate a JAR file with all the required dependencies included.
 You can then upload it to a running Flink cluster. Be sure that your Flink
 instance is running the same versions of Flink and Scala as you built this
-project for - Scala 2.12 and Flink 1.9.1.
+project for - currently Scala 2.12 and Flink 1.9.1.
 
 ## Extending this project
 
 Extending this project is fairly straightforward. All code can be found in
-src/main, with the vast majority in the scala folder. You are encouraged to also
-write additional tests if you add new code.
+`src/main/scala`. You are encouraged to also write additional tests if you add
+new code.
 
 The project has a few main packages, and some classes which belong to the base
-package. See the documentation for descriptions of the packages.
+package. See the ScalaDoc documentation for descriptions of the packages.
 
 To add a new detection algorithm, a new package should be created within
-nz.net.wand.streamevmon.detectors, with a descriptive name. A high-level
+`nz.net.wand.streamevmon.detectors`, with a descriptive name. A high-level
 description and configuration details should be placed in the documentation of
 the package object. Finally, an entrypoint that runs the detector in a Flink
-environment should be created in the nz.net.wand.streamevmon.runners package.
-See the changepoint detector for an example of a reasonably complex detector.
+environment should be created in the `nz.net.wand.streamevmon.runners` package.
+See the `mode` package for an example of a reasonably simple stateful detector.
+
+Once your detector is complete, you should also add it to the `UnifiedRunner`.
+This will make it run in the default entrypoint for the program, along with the
+other enabled detectors. While extending the runner, you can also decide what
+type of measurements you want to accept, such as selecting from ICMP, DNS, or
+other measurement types, and whether you want lossy measurements to be filtered
+out before they get to you.
