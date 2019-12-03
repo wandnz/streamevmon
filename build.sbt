@@ -76,7 +76,7 @@ Compile / run := Defaults.runTask(Compile / run / fullClasspath,
 Compile / run / fork := true
 Global / cancelable := true
 
-mainClass in assembly := Some("nz.net.wand.streamevmon.runners.ChangepointRunner")
+mainClass in assembly := Some("nz.net.wand.streamevmon.runners.UnifiedRunner")
 
 // Make tests in sbt shell more reliable
 fork := true
