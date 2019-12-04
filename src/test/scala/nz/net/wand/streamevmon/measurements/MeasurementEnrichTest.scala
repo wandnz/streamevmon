@@ -8,38 +8,23 @@ class MeasurementEnrichTest extends PostgresContainerSpec {
     lazy val pg = getPostgres
 
     "obtain the correct RichICMP object" in {
-      assert(
-        MeasurementFactory.enrichMeasurement(pg, SeedData.icmp.expected) ===
-          Some(SeedData.icmp.expectedRich)
-      )
+      MeasurementFactory.enrichMeasurement(pg, SeedData.icmp.expected) shouldBe Some(SeedData.icmp.expectedRich)
     }
 
     "obtain the correct RichDNS object" in {
-      assert(
-        MeasurementFactory.enrichMeasurement(pg, SeedData.dns.expected) ===
-          Some(SeedData.dns.expectedRich)
-      )
+      MeasurementFactory.enrichMeasurement(pg, SeedData.dns.expected) shouldBe Some(SeedData.dns.expectedRich)
     }
 
     "obtain the correct RichTraceroute object" in {
-      assert(
-        MeasurementFactory.enrichMeasurement(pg, SeedData.traceroute.expected) ===
-          Some(SeedData.traceroute.expectedRich)
-      )
+      MeasurementFactory.enrichMeasurement(pg, SeedData.traceroute.expected) shouldBe Some(SeedData.traceroute.expectedRich)
     }
 
     "obtain the correct RichTcpping object" in {
-      assert(
-        MeasurementFactory.enrichMeasurement(pg, SeedData.tcpping.expected) ===
-          Some(SeedData.tcpping.expectedRich)
-      )
+      MeasurementFactory.enrichMeasurement(pg, SeedData.tcpping.expected) shouldBe Some(SeedData.tcpping.expectedRich)
     }
 
     "obtain the correct RichHTTP object" in {
-      assert(
-        MeasurementFactory.enrichMeasurement(pg, SeedData.http.expected) ===
-          Some(SeedData.http.expectedRich)
-      )
+      MeasurementFactory.enrichMeasurement(pg, SeedData.http.expected) shouldBe Some(SeedData.http.expectedRich)
     }
   }
 }

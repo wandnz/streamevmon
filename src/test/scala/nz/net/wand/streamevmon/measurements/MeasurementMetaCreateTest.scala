@@ -7,38 +7,23 @@ class MeasurementMetaCreateTest extends PostgresContainerSpec {
     lazy val pg = getPostgres
 
     "obtain correct ICMPMeta" in {
-      assert(
-        pg.getMeta(SeedData.icmp.expected) ===
-          Some(SeedData.icmp.expectedMeta)
-      )
+      pg.getMeta(SeedData.icmp.expected) shouldBe Some(SeedData.icmp.expectedMeta)
     }
 
     "obtain correct DNSMeta" in {
-      assert(
-        pg.getMeta(SeedData.dns.expected) ===
-          Some(SeedData.dns.expectedMeta)
-      )
+      pg.getMeta(SeedData.dns.expected) shouldBe Some(SeedData.dns.expectedMeta)
     }
 
     "obtain correct TracerouteMeta" in {
-      assert(
-        pg.getMeta(SeedData.traceroute.expected) ===
-          Some(SeedData.traceroute.expectedMeta)
-      )
+      pg.getMeta(SeedData.traceroute.expected) shouldBe Some(SeedData.traceroute.expectedMeta)
     }
 
     "obtain correct TCPPingMeta" in {
-      assert(
-        pg.getMeta(SeedData.tcpping.expected) ===
-          Some(SeedData.tcpping.expectedMeta)
-      )
+      pg.getMeta(SeedData.tcpping.expected) shouldBe Some(SeedData.tcpping.expectedMeta)
     }
 
     "obtain correct HTTPMeta" in {
-      assert(
-        pg.getMeta(SeedData.http.expected) ===
-          Some(SeedData.http.expectedMeta)
-      )
+      pg.getMeta(SeedData.http.expected) shouldBe Some(SeedData.http.expectedMeta)
     }
 
     "obtain several correct Meta objects" in {
@@ -51,11 +36,11 @@ class MeasurementMetaCreateTest extends PostgresContainerSpec {
       ).foreach {
         case Some(x) =>
           x match {
-            case _: ICMPMeta       => assert(x === SeedData.icmp.expectedMeta)
-            case _: DNSMeta        => assert(x === SeedData.dns.expectedMeta)
-            case _: TracerouteMeta => assert(x === SeedData.traceroute.expectedMeta)
-            case _: TCPPingMeta    => assert(x === SeedData.tcpping.expectedMeta)
-            case _: HTTPMeta       => assert(x === SeedData.http.expectedMeta)
+            case _: ICMPMeta => x shouldBe SeedData.icmp.expectedMeta
+            case _: DNSMeta => x shouldBe SeedData.dns.expectedMeta
+            case _: TracerouteMeta => x shouldBe SeedData.traceroute.expectedMeta
+            case _: TCPPingMeta => x shouldBe SeedData.tcpping.expectedMeta
+            case _: HTTPMeta => x shouldBe SeedData.http.expectedMeta
             case _                 => fail("Created a type we didn't recognise")
           }
         case None => fail("Failed to create an object")

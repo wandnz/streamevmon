@@ -1,13 +1,13 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
 import nz.net.wand.streamevmon.detectors.MapFunction
+import nz.net.wand.streamevmon.TestBase
 
 import org.apache.flink.streaming.api.scala._
-import org.scalatest.WordSpec
 
 import scala.language.implicitConversions
 
-class DistributionTest extends WordSpec {
+class DistributionTest extends TestBase {
 
   import NormalDistribution._
 
@@ -25,8 +25,9 @@ class DistributionTest extends WordSpec {
         mapFunction = new BoringDoubleToDouble
       )
 
-      assert(initial.mean === 0.0)
-      assert(initial.variance === 1E8)
+      // shouldEqual correctly uses scalactic DoubleEquality, while shouldBe doesn't.
+      initial.mean shouldEqual 0.0
+      initial.variance shouldEqual 1E8
 
       // I ran some maths externally to get the mean and PDF numbers. The variances
       // are just taken from the actual results, which isn't super useful, but
@@ -36,8 +37,8 @@ class DistributionTest extends WordSpec {
       // for the given progression of inputs.
       // The normal distribution is a bit wacky in that it fakes how many elements
       // are used in the calculation of the first mean.
-      assert(initial.pdf(0) === 0.00003989422804014325)
-      assert(initial.pdf(1) === 0.0000398942278406721)
+      initial.pdf(0) shouldEqual 0.00003989422804014325
+      initial.pdf(1) shouldEqual 0.0000398942278406721
 
       var current = initial
       val numbersToAdd = Seq(1.0, 0.5, -1.0, 2.0, -3.0, 4.0, -5.0)
@@ -48,16 +49,16 @@ class DistributionTest extends WordSpec {
         0.00008920620346597, 0.00009772049199778, 0.00010555019017665, 0.00011283787933200)
 
       var i = 0
-      for ((r, mean, variance, pdf) <- (numbersToAdd zip expectedMean zip expectedVar zip expectedPdf)
+      for ((newPoint, mean, variance, pdf) <- (numbersToAdd zip expectedMean zip expectedVar zip expectedPdf)
              .map {
-               case (((a, b), c), d) => (a, b, c, d)
+               case (((x, y), z), w) => (x, y, z, w)
              }) {
         i += 1
-        current = current.withPoint(r, i)
+        current = current.withPoint(newPoint, i)
 
-        assert(current.mean === mean)
-        assert(current.variance === variance)
-        assert(current.pdf(1) === pdf)
+        current.mean shouldEqual mean
+        current.variance shouldEqual variance
+        current.pdf(1) shouldEqual pdf
       }
     }
   }

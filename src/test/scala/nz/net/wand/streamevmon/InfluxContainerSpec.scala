@@ -6,14 +6,13 @@ import nz.net.wand.streamevmon.flink.InfluxSinkFunction
 import com.dimafeng.testcontainers.ForAllTestContainer
 import com.github.fsanaulla.chronicler.ahc.management.InfluxMng
 import org.apache.flink.api.java.utils.ParameterTool
-import org.scalatest.WordSpec
 
 import scala.collection.JavaConverters._
 import scala.concurrent.duration.Duration
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class InfluxContainerSpec extends WordSpec with ForAllTestContainer {
+class InfluxContainerSpec extends TestBase with ForAllTestContainer {
   override val container: InfluxDBContainer = InfluxDBContainer("alpine")
 
   override def afterStart(): Unit = {

@@ -33,38 +33,38 @@ class InfluxConnectionTest extends InfluxContainerSpec {
   ): Unit = {
     Await.result(
       influx.showSubscriptionsInfo.map {
-        case Left(a) => fail(s"Checking subscription failed: $a")
-        case Right(b) =>
-          val e = subscriptionInfo.subscriptions.head
+        case Left(exception) => fail(s"Checking subscription failed: $exception")
+        case Right(infos) =>
+          val firstInfo = subscriptionInfo.subscriptions.head
           if (checkPresent) {
-            val rightDb = b.filter(c => subscriptionInfo.dbName == c.dbName)
-            assert(rightDb.length >= 0)
+            val rightDb = infos.filter(c => subscriptionInfo.dbName == c.dbName)
+            rightDb.length should be >= 0
             rightDb.foreach {
               c =>
                 // We have to do a deep comparison here since Chronicler changed
                 // their SubscriptionInfo to use an Array instead of a Seq, which
                 // breaks simple comparisons.
-                assert(c.subscriptions.exists { s =>
-                  s.rpName == e.rpName &&
-                    s.subsName == e.subsName &&
-                    s.destType == e.destType &&
-                    s.addresses.deep == e.addresses.deep
-                })
+                c.subscriptions.foreach { s =>
+                  s.rpName shouldBe firstInfo.rpName
+                  s.subsName shouldBe firstInfo.subsName
+                  s.destType shouldBe firstInfo.destType
+                  s.addresses.deep shouldBe firstInfo.addresses.deep
+                }
             }
           }
           else {
-            val rightDb = b.filter(c => subscriptionInfo.dbName == c.dbName)
+            val rightDb = infos.filter(c => subscriptionInfo.dbName == c.dbName)
             if (rightDb.length == 0) {
               succeed
             }
             else {
               rightDb.foreach { c =>
-                assert(!c.subscriptions.exists { s =>
-                  s.rpName == e.rpName &&
-                    s.subsName == e.subsName &&
-                    s.destType == e.destType &&
-                    s.addresses.deep == e.addresses.deep
-                })
+                c.subscriptions.exists { s =>
+                  s.rpName == firstInfo.rpName &&
+                    s.subsName == firstInfo.subsName &&
+                    s.destType == firstInfo.destType &&
+                    s.addresses.deep == firstInfo.addresses.deep
+                } shouldBe false
               }
             }
           }
@@ -247,15 +247,15 @@ class InfluxConnectionTest extends InfluxContainerSpec {
                 .takeWhile(line => line != null)
                 .toList
 
-              assert(result.nonEmpty)
-              assert(result.exists(line => MeasurementFactory.createMeasurement(line).isDefined))
+              result.isEmpty shouldBe false
+              result.exists(line => MeasurementFactory.createMeasurement(line).isDefined) shouldBe true
 
             } catch {
               case _: SocketTimeoutException =>
             }
           }
 
-          assert(gotData)
+          gotData shouldBe true
 
           influx.stopSubscriptionListener(ssock)
         }

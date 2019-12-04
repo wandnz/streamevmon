@@ -34,18 +34,16 @@ class InfluxSinkTest extends InfluxContainerSpec {
               fail(e.left.get)
             }
             val arr = e.right.get.head
-            assert(
-              Event(
-                eventType = SeedData.event.withoutTags.eventType,
-                stream = arr.get(1).toString.drop(1).dropRight(1).toInt,
-                severity = arr.get(2).asInt,
-                time = Instant.parse(arr.get(0).toString.drop(1).dropRight(1)),
-                detectionLatency = JavaDuration.ofNanos(arr.get(3).asInt),
-                description = arr.get(4).asString,
-                tags = Map()
-              )
-                === SeedData.event.withoutTags
-            )
+
+            Event(
+              eventType = SeedData.event.withoutTags.eventType,
+              stream = arr.get(1).toString.drop(1).dropRight(1).toInt,
+              severity = arr.get(2).asInt,
+              time = Instant.parse(arr.get(0).toString.drop(1).dropRight(1)),
+              detectionLatency = JavaDuration.ofNanos(arr.get(3).asInt),
+              description = arr.get(4).asString,
+              tags = Map()
+            ) shouldBe SeedData.event.withoutTags
           }),
         ScalaDuration.Inf
       )
@@ -58,21 +56,19 @@ class InfluxSinkTest extends InfluxContainerSpec {
               fail(e.left.get)
             }
             val arr = e.right.get.head
-            assert(
-              Event(
-                eventType = SeedData.event.withTags.eventType,
-                stream = arr.get(3).toString.drop(1).dropRight(1).toInt,
-                severity = arr.get(4).asInt,
-                time = Instant.parse(arr.get(0).toString.drop(1).dropRight(1)),
-                detectionLatency = JavaDuration.ofNanos(arr.get(5).asInt),
-                description = arr.get(6).asString,
-                tags = Map(
-                  "type" -> arr.get(1).asString,
-                  "secondTag" -> arr.get(2).asString
-                )
+
+            Event(
+              eventType = SeedData.event.withTags.eventType,
+              stream = arr.get(3).toString.drop(1).dropRight(1).toInt,
+              severity = arr.get(4).asInt,
+              time = Instant.parse(arr.get(0).toString.drop(1).dropRight(1)),
+              detectionLatency = JavaDuration.ofNanos(arr.get(5).asInt),
+              description = arr.get(6).asString,
+              tags = Map(
+                "type" -> arr.get(1).asString,
+                "secondTag" -> arr.get(2).asString
               )
-                === SeedData.event.withTags
-            )
+            ) shouldBe SeedData.event.withTags
           }),
         ScalaDuration.Inf
       )

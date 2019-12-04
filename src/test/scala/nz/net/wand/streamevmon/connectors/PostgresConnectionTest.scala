@@ -9,7 +9,7 @@ class PostgresConnectionTest extends PostgresContainerSpec {
     "successfully connect with raw JDBC" in {
       val connection =
         DriverManager.getConnection(container.jdbcUrl, container.username, container.password)
-      assert(connection.isValid(0))
+      connection.isValid(0) shouldBe true
       connection.close()
     }
 
@@ -17,9 +17,9 @@ class PostgresConnectionTest extends PostgresContainerSpec {
       import PostgresSchema._
       import SquerylEntrypoint._
 
-      assert(transaction(icmpMeta.allRows.toList) === SeedData.icmp.allExpectedMeta)
-      assert(transaction(dnsMeta.allRows.toList) === SeedData.dns.allExpectedMeta)
-      assert(transaction(tracerouteMeta.allRows.toList) === SeedData.traceroute.allExpectedMeta)
+      transaction(icmpMeta.allRows.toList) shouldBe SeedData.icmp.allExpectedMeta
+      transaction(dnsMeta.allRows.toList) shouldBe SeedData.dns.allExpectedMeta
+      transaction(tracerouteMeta.allRows.toList) shouldBe SeedData.traceroute.allExpectedMeta
     }
   }
 }

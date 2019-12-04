@@ -1,44 +1,27 @@
 package nz.net.wand.streamevmon.measurements
 
-import nz.net.wand.streamevmon.SeedData
+import nz.net.wand.streamevmon.{SeedData, TestBase}
 
-import org.scalatest.WordSpec
-
-class RichMeasurementCreateTest extends WordSpec {
+class RichMeasurementCreateTest extends TestBase {
   "Children of RichMeasurement.create" should {
     "merge an ICMP and ICMPMeta object" in {
-      assert(
-        RichICMP.create(SeedData.icmp.expected, SeedData.icmp.expectedMeta) ===
-          Some(SeedData.icmp.expectedRich)
-      )
+      RichICMP.create(SeedData.icmp.expected, SeedData.icmp.expectedMeta) shouldBe Some(SeedData.icmp.expectedRich)
     }
 
     "merge a DNS and DNSMeta object" in {
-      assert(
-        RichDNS.create(SeedData.dns.expected, SeedData.dns.expectedMeta) ===
-          Some(SeedData.dns.expectedRich)
-      )
+      RichDNS.create(SeedData.dns.expected, SeedData.dns.expectedMeta) shouldBe Some(SeedData.dns.expectedRich)
     }
 
     "merge a Traceroute and TracerouteMeta object" in {
-      assert(
-        RichTraceroute.create(SeedData.traceroute.expected, SeedData.traceroute.expectedMeta) ===
-          Some(SeedData.traceroute.expectedRich)
-      )
+      RichTraceroute.create(SeedData.traceroute.expected, SeedData.traceroute.expectedMeta) shouldBe Some(SeedData.traceroute.expectedRich)
     }
 
     "merge a TCPPing and TCPPingMeta object" in {
-      assert(
-        RichTCPPing.create(SeedData.tcpping.expected, SeedData.tcpping.expectedMeta) ===
-          Some(SeedData.tcpping.expectedRich)
-      )
+      RichTCPPing.create(SeedData.tcpping.expected, SeedData.tcpping.expectedMeta) shouldBe Some(SeedData.tcpping.expectedRich)
     }
 
     "merge an HTTP and HTTPMeta object" in {
-      assert(
-        RichHTTP.create(SeedData.http.expected, SeedData.http.expectedMeta) ===
-          Some(SeedData.http.expectedRich)
-      )
+      RichHTTP.create(SeedData.http.expected, SeedData.http.expectedMeta) shouldBe Some(SeedData.http.expectedRich)
     }
   }
 }

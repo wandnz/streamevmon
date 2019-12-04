@@ -14,33 +14,27 @@ class LossyInfluxHistoryTest extends InfluxContainerSpec with BeforeAndAfter {
   "InfluxIO" should {
     "write and read lossy data" when {
       before {
-        assert(
-          Await
-            .result(
-              InfluxIO(container.address, container.port, Some(container.credentials))
-                .database(container.database)
-                .bulkWriteNative(
-                  Seq(
-                    SeedData.icmp.subscriptionLine,
-                    SeedData.icmp.lossySubscriptionLine,
-                    SeedData.dns.subscriptionLine,
-                    SeedData.dns.lossySubscriptionLine
-                  )),
-              Duration.Inf
-            )
-            .isRight
-        )
+        Await
+          .result(
+            InfluxIO(container.address, container.port, Some(container.credentials))
+              .database(container.database)
+              .bulkWriteNative(
+                Seq(
+                  SeedData.icmp.subscriptionLine,
+                  SeedData.icmp.lossySubscriptionLine,
+                  SeedData.dns.subscriptionLine,
+                  SeedData.dns.lossySubscriptionLine
+                )),
+            Duration.Inf
+          ) should not be a[Throwable]
       }
 
       "icmp" in {
-        assert(
-          Seq(SeedData.icmp.expected, SeedData.icmp.lossyExpected) === getInfluxHistory
-            .getIcmpData())
+        getInfluxHistory.getIcmpData() shouldBe Seq(SeedData.icmp.expected, SeedData.icmp.lossyExpected)
       }
 
       "dns" in {
-        assert(
-          Seq(SeedData.dns.expected, SeedData.dns.lossyExpected) === getInfluxHistory.getDnsData())
+        getInfluxHistory.getDnsData() shouldBe Seq(SeedData.dns.expected, SeedData.dns.lossyExpected)
       }
 
       "tcpping" ignore {

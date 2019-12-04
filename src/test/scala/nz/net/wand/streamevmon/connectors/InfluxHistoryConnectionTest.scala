@@ -3,13 +3,12 @@ package nz.net.wand.streamevmon.connectors
 import nz.net.wand.streamevmon.{InfluxContainerSpec, SeedData}
 
 import com.github.fsanaulla.chronicler.ahc.io.InfluxIO
-import org.scalatest.BeforeAndAfter
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 
-class InfluxHistoryConnectionTest extends InfluxContainerSpec with BeforeAndAfter {
+class InfluxHistoryConnectionTest extends InfluxContainerSpec {
   "InfluxDB container" should {
     "successfully ping" in {
       val influx =
@@ -41,46 +40,45 @@ class InfluxHistoryConnectionTest extends InfluxContainerSpec with BeforeAndAfte
     }
 
     "get ICMP data" in {
-      assert(SeedData.icmp.expected === getInfluxHistory.getIcmpData().head)
+      getInfluxHistory.getIcmpData().head shouldBe SeedData.icmp.expected
     }
 
     "get DNS data" in {
-      assert(SeedData.dns.expected === getInfluxHistory.getDnsData().head)
+      getInfluxHistory.getDnsData().head shouldBe SeedData.dns.expected
     }
 
     "get HTTP data" in {
-      assert(SeedData.http.expected === getInfluxHistory.getHttpData().head)
+      getInfluxHistory.getHttpData().head shouldBe SeedData.http.expected
     }
 
     "get TCPPing data" in {
-      assert(SeedData.tcpping.expected === getInfluxHistory.getTcppingData().head)
+      getInfluxHistory.getTcppingData().head shouldBe SeedData.tcpping.expected
     }
 
     "get Traceroute data" in {
-      assert(SeedData.traceroute.expected === getInfluxHistory.getTracerouteData().head)
+      getInfluxHistory.getTracerouteData().head shouldBe SeedData.traceroute.expected
     }
 
     "get data between a time range" in {
       val conn = getInfluxHistory
-      assert(Seq() === conn.getIcmpData(end = SeedData.icmp.expected.time.minusSeconds(10)))
-      assert(Seq() === conn.getIcmpData(start = SeedData.icmp.expected.time.plusSeconds(10)))
-      assert(
-        SeedData.icmp.expected === conn
-          .getIcmpData(
-            start = SeedData.icmp.expected.time.minusSeconds(10),
-            end = SeedData.icmp.expected.time.plusSeconds(10)
-          )
-          .head)
+      conn.getIcmpData(end = SeedData.icmp.expected.time.minusSeconds(10)) shouldBe Seq()
+      conn.getIcmpData(start = SeedData.icmp.expected.time.plusSeconds(10)) shouldBe Seq()
+      conn
+        .getIcmpData(
+          start = SeedData.icmp.expected.time.minusSeconds(10),
+          end = SeedData.icmp.expected.time.plusSeconds(10)
+        )
+        .head shouldBe SeedData.icmp.expected
     }
 
     "get all data" in {
-      assert(Seq(
+      getInfluxHistory.getAllData() shouldBe Seq(
         SeedData.icmp.expected,
         SeedData.dns.expected,
         SeedData.http.expected,
         SeedData.tcpping.expected,
         SeedData.traceroute.expected
-      ) === getInfluxHistory.getAllData())
+      )
     }
   }
 }
