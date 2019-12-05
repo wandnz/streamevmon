@@ -47,8 +47,6 @@ object ChangepointRunner {
 
     class IcmpToMedian() extends MapFunction[Measurement, Double] with Serializable {
       override def apply(t: Measurement): Double = t.asInstanceOf[ICMP].median.get
-
-      override def apply(): MapFunction[Measurement, Double] = new IcmpToMedian
     }
 
     val detector = new ChangepointDetector

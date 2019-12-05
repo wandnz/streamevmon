@@ -49,8 +49,6 @@ object ChangepointGraphs {
 
     case class TsIcmpToAverage() extends MapFunction[LatencyTSAmpICMP, Double] {
       override def apply(t: LatencyTSAmpICMP): Double = t.average
-
-      override def apply(): MapFunction[LatencyTSAmpICMP, Double] = new TsIcmpToAverage
     }
 
     val detector =

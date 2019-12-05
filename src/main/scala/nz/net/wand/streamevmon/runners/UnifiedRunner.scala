@@ -28,8 +28,6 @@ object UnifiedRunner {
 
   class IcmpToMedian() extends MapFunction[Measurement, Double] with Serializable {
     override def apply(t: Measurement): Double = t.asInstanceOf[ICMP].median.get
-
-    override def apply(): MapFunction[Measurement, Double] = new IcmpToMedian
   }
 
   implicit class DataStreamExtensions(source: DataStream[Measurement]) {

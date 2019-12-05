@@ -15,8 +15,6 @@ class DistributionTest extends TestBase {
     "generate the correct values" in {
       class BoringDoubleToDouble extends MapFunction[Double, Double] {
         override def apply(t: Double): Double = t
-
-        override def apply(): MapFunction[Double, Double] = new BoringDoubleToDouble
       }
       val initial = new NormalDistribution[Double](
         mean = 0.0,

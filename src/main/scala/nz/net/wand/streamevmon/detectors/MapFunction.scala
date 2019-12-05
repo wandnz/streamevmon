@@ -21,5 +21,5 @@ import org.apache.flink.api.common.typeinfo.TypeInformation
 abstract class MapFunction[I: TypeInformation, O: TypeInformation] extends Serializable {
   def apply(t: I): O
 
-  def apply(): MapFunction[I, O]
+  def apply(): MapFunction[I, O] = getClass.newInstance()
 }
