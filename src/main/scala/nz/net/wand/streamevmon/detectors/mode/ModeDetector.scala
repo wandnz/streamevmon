@@ -12,6 +12,8 @@ import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.api.common.typeinfo._
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.configuration.Configuration
+import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
+import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.util.Collector
 
@@ -24,7 +26,8 @@ import scala.collection.mutable
   */
 class ModeDetector[MeasT <: Measurement]
   extends KeyedProcessFunction[Int, MeasT, Event]
-          with Graphing {
+          with Graphing
+          with CheckpointedFunction {
 
   final val detectorName = "Mode Detector"
 
@@ -67,6 +70,11 @@ class ModeDetector[MeasT <: Measurement]
     * before.
     */
   private val unsetModeIndexes: ModeTuple = ModeTuple(Mode(-1, -2), Mode(-3, -4), Mode(-5, -6))
+
+  /** This gets set true when initializeState is called, and false when the
+    * first measurement arrives. It help us avoid serialisation issues.
+    */
+  private var justInitialised = false
 
   /** Called during initialisation. Sets up persistent state variables and
     * configuration.
@@ -303,7 +311,21 @@ class ModeDetector[MeasT <: Measurement]
       if (history.value.nonEmpty) {
         history.value.maxBy(_.id).id + 1
       }
-      else 0
+      else {
+        0
+      }
+    }
+
+    // There's a strange issue where the first item added to the queue after
+    // restoring state from a checkpoint will instead result in the addition of
+    // a 'super-null' value, which will throw a NoSuchElementException whenever
+    // it is accessed via iteration rather than just returning null as usual.
+    // This appears to stop that value from appearing, thus retaining the sanity
+    // of the program. Of course, it's otherwise a waste of time and memory, so
+    // we try to do it as little as possible.
+    if (justInitialised) {
+      history.update(history.value.map(identity))
+      justInitialised = false
     }
 
     // Add the value into the queue.
@@ -391,6 +413,15 @@ class ModeDetector[MeasT <: Measurement]
       newEvent(value, out)
     }
     updateLastEvent()
+  }
+
+  override def snapshotState(context: FunctionSnapshotContext): Unit = {}
+
+  override def initializeState(context: FunctionInitializationContext): Unit = {
+    // We don't care about manually storing state, so we just enable the flag
+    // that lets us get around the fact that state restoration occasionally
+    // breaks queues.
+    justInitialised = true
   }
 }
 

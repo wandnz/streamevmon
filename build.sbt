@@ -48,10 +48,13 @@ val graphDependencies = Seq(
 excludeDependencies += "org.slf4j" % "slf4j-log4j12"
 
 val testDependencies = Seq(
-  "org.scalatest" %% "scalatest" % "3.0.8" % "test",
-  "com.dimafeng" %% "testcontainers-scala" % "0.33.0" % "test",
-  "org.testcontainers" % "postgresql" % "1.12.3" % "test",
-  "org.testcontainers" % "influxdb" % "1.12.3" % "test"
+  "org.apache.flink" %% "flink-test-utils" % flinkVersion % Test,
+  "org.apache.flink" %% "flink-runtime" % flinkVersion % Test classifier "tests",
+  "org.apache.flink" %% "flink-streaming-java" % flinkVersion % Test classifier "tests",
+  "org.scalatest" %% "scalatest" % "3.0.8" % Test,
+  "com.dimafeng" %% "testcontainers-scala" % "0.33.0" % Test,
+  "org.testcontainers" % "postgresql" % "1.12.3" % Test,
+  "org.testcontainers" % "influxdb" % "1.12.3" % Test
 )
 
 lazy val root = (project in file(".")).
