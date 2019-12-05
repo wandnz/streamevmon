@@ -9,6 +9,8 @@ import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.configuration.Configuration
+import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
+import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.util.Collector
 
@@ -19,8 +21,9 @@ import scala.reflect._
   *
   * @tparam MeasT The type of Measurement to ingest.
   */
-class LossDetector[MeasT <: Measurement: ClassTag]()
-  extends KeyedProcessFunction[Int, MeasT, Event] {
+class LossDetector[MeasT <: Measurement : ClassTag]
+  extends KeyedProcessFunction[Int, MeasT, Event]
+          with CheckpointedFunction {
 
   /** The maximum number of measurements to retain. */
   private var maxHistory: Int = _
@@ -37,7 +40,13 @@ class LossDetector[MeasT <: Measurement: ClassTag]()
 
   private var recentsStorage: ValueState[mutable.Queue[MeasT]] = _
 
+  /** This gets set true when initializeState is called, and false when the
+    * first measurement arrives. It help us avoid serialisation issues.
+    */
+  private var justInitialised = false
+
   /** Called once on instance creation. Sets up recentsStorage and gets config.
+    *
     * @param parameters Ignored.
     */
   override def open(parameters: Configuration): Unit = {
@@ -110,6 +119,12 @@ class LossDetector[MeasT <: Measurement: ClassTag]()
     // be stateful, but it's easier to just recalculate it.
     val oldCount = getLossCount
 
+    // Avoid checkpoint restoration issues. See ModeDetector for details.
+    if (justInitialised) {
+      recentsStorage.update(recentsStorage.value.map(identity))
+      justInitialised = false
+    }
+
     // Update the queue.
     recents.enqueue(value)
     if (recents.length > maxHistory) {
@@ -159,5 +174,11 @@ class LossDetector[MeasT <: Measurement: ClassTag]()
         }
       }
     }
+  }
+
+  override def snapshotState(context: FunctionSnapshotContext): Unit = {}
+
+  override def initializeState(context: FunctionInitializationContext): Unit = {
+    justInitialised = true
   }
 }
