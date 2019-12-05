@@ -165,15 +165,7 @@ case class ChangepointProcessor[MeasT <: Measurement : TypeInformation, DistT <:
     * @return A value from 0-100 representing the severity of the changepoint.
     */
   def getSeverity(oldNormal: Run, newNormal: Run): Int = {
-    val absDiff = Math.abs(oldNormal.dist.mean - newNormal.dist.mean)
-    val relativeDiff = absDiff / Math.min(oldNormal.dist.mean, newNormal.dist.mean)
-    val normalRelDiff = if (relativeDiff > 1.0) {
-      1 - (1 / relativeDiff)
-    }
-    else {
-      relativeDiff
-    }
-    (normalRelDiff * 100).toInt
+    Event.changeMagnitudeSeverity(oldNormal.dist.mean, newNormal.dist.mean)
   }
 
   /** Outputs an event if it has been sufficiently long since the last one.

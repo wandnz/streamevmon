@@ -73,4 +73,68 @@ object Event {
   case class EventWriter[T <: Event]() extends InfluxWriter[T] {
     override def write(obj: T): ErrorOr[String] = Right(obj.toLineProtocol)
   }
+
+  /** A severity calculation for a change in magnitude of a value, such as when
+    * the rolling average of a latency measurement changes significantly.
+    *
+    * @return A value between 0-100 representing the severity.
+    */
+  def changeMagnitudeSeverity(old: Double, current: Double): Int = {
+    // I stole this from netevmon's Event::eventMagnitudeLatency. The comments
+    // up until out.collect are verbatim, and not written by me.
+    val max = Math.max(old, current)
+    val min = Math.min(old, current)
+
+    /* How this formula was derived:
+     *  For a selection of latency values, I determined the increase that
+     *  was required before I would consider the change to be significant.
+     *  Examples:
+     *     0.5 -> 5, 3 -> 9, 8 -> 16, 100 -> 130, 300 -> 350, 400 -> 450
+     *
+     *  Then I used R to find the formula of the line that best fit
+     *  those known points. This line can now act as my baseline for
+     *  magnitude, where all points on the line are approximately the
+     *  same magnitude.
+     */
+    val basemag = {
+      val maybe = if (min < 0.1) {
+        4.8
+      }
+      else {
+        Math.exp(-0.17949 * Math.log(min) + 1.13489)
+      }
+
+      /* Avoid exponential decay after about 450ms, otherwise even minor
+       * changes will appear to be massively significant.
+       */
+      if (maybe < 1.1) {
+        1.1
+      }
+      else {
+        maybe
+      }
+    }
+
+    val severity = {
+      /* A magnitude of 30 is equivalent to a point on my baseline.
+       * Otherwise, we adjust the magnitude based on the relative difference
+       * between the change observed and the change required to reach the
+       * baseline.
+       */
+      val maybe = 30 * ((max - min) / ((basemag - 1) * min))
+      /* Adjust magnitudes that are outside our 1-100 scale to fall inside
+       * the scale.
+       */
+      if (maybe < 1) {
+        1
+      }
+      else if (maybe > 100) {
+        100
+      }
+      else {
+        maybe.toInt
+      }
+    }
+    severity
+  }
 }
