@@ -20,6 +20,8 @@ final case class Traceroute(
       s"path_length=$path_length " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
+
+  override def isLossy: Boolean = false
 }
 
 object Traceroute extends MeasurementFactory {

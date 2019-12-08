@@ -43,6 +43,8 @@ case class LatencyTSSmokeping(
       }" +
       results.map(i => f"$i%.3f").mkString(",")
   }
+
+  override def isLossy: Boolean = loss > 0
 }
 
 object LatencyTSSmokeping {

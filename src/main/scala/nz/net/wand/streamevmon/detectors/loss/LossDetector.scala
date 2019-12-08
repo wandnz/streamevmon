@@ -69,41 +69,22 @@ class LossDetector[MeasT <: Measurement : ClassTag]
     consecutiveCount = config.getInt("detector.loss.consecutiveCount")
   }
 
-  /** Whether or not the given measurement is lossy. A more future-proof approach
-    * would be to accept a lambda argument to the class and use it as a map
-    * function like the Changepoint detector does, but it's more work than is
-    * really necessary. We can just expand this as we add more measurement types,
-    * as we'll only ever care about one field from each type.
-    */
-  private def isLossy(t: MeasT): Boolean = {
-    t match {
-      case t: ICMP               => t.loss > 0
-      case t: DNS                => t.lossrate > 0.0
-      case _: HTTP               => false // Can't tell
-      case t: TCPPing            => t.loss > 0
-      case _: Traceroute         => false // Can't tell
-      case t: LatencyTSAmpICMP   => t.lossrate > 0.0
-      case t: LatencyTSSmokeping => t.loss > 0
-      case _ =>
-        throw new IllegalArgumentException(
-          s"Unsupported measurement type for Loss Detector: $t"
-        )
-    }
-  }
-
   // Some helper functions here.
   private def recents: mutable.Queue[MeasT] = recentsStorage.value
 
-  private def getConsecutiveLoss: Int = recents.reverse.takeWhile(isLossy).length
-  private def getLossCount: Int = recents.count(isLossy)
+  private def getConsecutiveLoss: Int = recents.reverse.takeWhile(_.isLossy).length
 
-  private def getOldestConsecutiveLoss: MeasT = recents.reverse.takeWhile(isLossy).last
-  private def getOldestLoss: MeasT = recents.reverse.find(isLossy).get
+  private def getLossCount: Int = recents.count(_.isLossy)
+
+  private def getOldestConsecutiveLoss: MeasT = recents.reverse.takeWhile(_.isLossy).last
+
+  private def getOldestLoss: MeasT = recents.reverse.find(_.isLossy).get
 
   /** Called once per ingested measurement. Generates zero, one, or two events.
+    *
     * @param value The new measurement.
-    * @param ctx The context of this function.
-    * @param out The collector to output events into.
+    * @param ctx   The context of this function.
+    * @param out   The collector to output events into.
     */
   override def processElement(
     value: MeasT,

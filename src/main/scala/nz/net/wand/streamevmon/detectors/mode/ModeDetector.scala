@@ -132,21 +132,6 @@ class ModeDetector[MeasT <: Measurement]
     modeIndexes.update(unsetModeIndexes)
   }
 
-  /** We ditch lossy values. */
-  def isLossy(value: MeasT): Boolean = {
-    value match {
-      case t: ICMP               => t.loss > 0
-      case t: DNS                => t.lossrate > 0.0
-      case t: TCPPing            => t.loss > 0
-      case t: LatencyTSAmpICMP   => t.lossrate > 0.0
-      case t: LatencyTSSmokeping => t.loss > 0
-      case _ =>
-        throw new IllegalArgumentException(
-          s"Unsupported measurement type for Mode Detector: $value"
-        )
-    }
-  }
-
   /** Maps a supported measurement to a useful value. Downscales them in order
     * for our mode detector to bucket values instead of using the raw, jittery
     * mesaurements.
@@ -250,7 +235,7 @@ class ModeDetector[MeasT <: Measurement]
       lastObserved.update(value.time)
     }
 
-    if (isLossy(value)) {
+    if (value.isLossy) {
       return
     }
 

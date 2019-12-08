@@ -38,7 +38,7 @@ object ChangepointRunner {
       .filter(_.isInstanceOf[ICMP])
       .name("Is ICMP?")
       .uid("changepoint-filter-is-icmp")
-      .filter(_.asInstanceOf[ICMP].loss == 0)
+      .filter(!_.isLossy)
       .name("Has data?")
       .uid("changepoint-filter-has-data")
       .keyBy(_.stream)

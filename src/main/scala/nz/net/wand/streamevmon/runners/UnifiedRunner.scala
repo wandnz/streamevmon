@@ -40,7 +40,7 @@ object UnifiedRunner {
 
     implicit def notLossy[T <: Measurement: ClassTag]: DataStream[Measurement] = {
       source
-        .filter(_.asInstanceOf[ICMP].loss == 0)
+        .filter(!_.isLossy)
         .name("Is not lossy?")
         .uid(s"filter-has-data-${classTag[T].getClass.getSimpleName}")
     }

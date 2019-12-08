@@ -14,4 +14,10 @@ abstract class Measurement extends Serializable {
   /** The time at which the measurement occurred.
     */
   val time: Instant
+
+  /** @return True if the object represents a measurement that encountered loss.
+    *         If the type of measurement cannot record loss, this function will
+    *         return false.
+    */
+  def isLossy: Boolean
 }

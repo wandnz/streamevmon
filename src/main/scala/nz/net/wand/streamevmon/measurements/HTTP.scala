@@ -26,6 +26,8 @@ final case class HTTP(
       s"server_count=${server_count}i " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
+
+  override def isLossy: Boolean = false
 }
 
 object HTTP extends MeasurementFactory {

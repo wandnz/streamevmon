@@ -23,6 +23,8 @@ case class LatencyTSAmpICMP(
   override def toString: String = {
     f"$source-$destination-$family,${time.getEpochSecond.toInt},$average,$lossrate%.3f"
   }
+
+  override def isLossy: Boolean = lossrate > 0.0
 }
 
 object LatencyTSAmpICMP {

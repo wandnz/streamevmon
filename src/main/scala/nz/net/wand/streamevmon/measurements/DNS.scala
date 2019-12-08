@@ -54,6 +54,8 @@ final case class DNS(
       s"ttl=${ttl.map(x => s"${x}i").getOrElse("")} " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
+
+  override def isLossy: Boolean = lossrate > 0.0
 }
 
 object DNS extends MeasurementFactory {

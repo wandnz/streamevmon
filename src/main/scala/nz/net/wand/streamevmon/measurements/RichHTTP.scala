@@ -44,6 +44,8 @@ case class RichHTTP(
       s"server_count=${server_count}i " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
+
+  override def isLossy: Boolean = false
 }
 
 object RichHTTP extends RichMeasurementFactory {

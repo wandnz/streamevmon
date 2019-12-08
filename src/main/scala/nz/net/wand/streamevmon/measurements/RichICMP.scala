@@ -38,6 +38,8 @@ case class RichICMP(
       s"rtts=${rtts.map(x => x.getOrElse("None")).mkString("\"[", ",", "]\"")} " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
+
+  override def isLossy: Boolean = loss > 0
 }
 
 object RichICMP extends RichMeasurementFactory {

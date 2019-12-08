@@ -29,6 +29,8 @@ case class RichTraceroute(
       s"path_length=$path_length " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
+
+  override def isLossy: Boolean = false
 }
 
 object RichTraceroute extends RichMeasurementFactory {
