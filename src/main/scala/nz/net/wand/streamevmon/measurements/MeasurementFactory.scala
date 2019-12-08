@@ -57,7 +57,6 @@ trait MeasurementFactory {
     * @return A sequence of round-trip times.
     */
   protected[this] def getRtts(in: String): Seq[Option[Int]] = {
-    // TODO: Input assumed to be like "[1234, 3456]", including quotes
     in.drop(2).dropRight(2).split(',').map { x =>
       val y = x.trim
       if (y == "None") {

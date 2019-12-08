@@ -184,8 +184,8 @@ abstract class InfluxSourceFunction[T <: Measurement](
             sock.setSoTimeout(100)
             val reader = new BufferedReader(new InputStreamReader(sock.getInputStream))
 
-            // TODO: This is hardcoded for HTTP
-            // If we can get UDP/HTTPS working, this will need looking at to make it compatible.
+            // This is hardcoded for HTTP. If we ever care to make UDP or HTTPS
+            // work, this will need refactoring. Chances are we won't bother.
             Stream
               .continually {
                 reader.readLine

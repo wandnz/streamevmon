@@ -89,6 +89,7 @@ test in assembly := {}
 
 // exclude Scala library from assembly
 assembly / assemblyOption := (assembly / assemblyOption).value.copy(includeScala = false)
+assemblyPackageDependency / assemblyOption := (assemblyPackageDependency / assemblyOption).value.copy(includeScala = false)
 
 // exclude META-INF and use correct behaviour for duplicate library files
 assemblyMergeStrategy in assembly := {

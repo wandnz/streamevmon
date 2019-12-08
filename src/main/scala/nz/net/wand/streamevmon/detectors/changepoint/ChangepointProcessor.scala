@@ -242,7 +242,6 @@ case class ChangepointProcessor[MeasT <: Measurement : TypeInformation, DistT <:
     // Update the last observed value if it was the most recent one seen.
     // Out of order events will otherwise be processed as though they were the
     // most recent event, which may not be what we want!
-    // TODO: Investigate out of order behaviour.
     if (!Duration.between(lastObserved.time, value.time).isNegative) {
       lastObserved = value
     }
