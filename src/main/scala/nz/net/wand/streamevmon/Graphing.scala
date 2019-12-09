@@ -24,7 +24,7 @@ trait Graphing {
   protected val graphWidth: Int = 1600
   protected val graphHeight: Int = 900
 
-  @transient private var points: Map[String, Series] = _
+  private var points: Map[String, Series] = _
 
   /** Turns on plotting for the object inheriting this trait.
     *

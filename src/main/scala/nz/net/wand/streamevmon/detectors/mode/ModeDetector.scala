@@ -6,6 +6,7 @@ import nz.net.wand.streamevmon.measurements._
 import nz.net.wand.streamevmon.Graphing
 
 import java.awt.Color
+import java.math.{MathContext, RoundingMode}
 import java.time.{Duration, Instant}
 
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
@@ -132,26 +133,32 @@ class ModeDetector[MeasT <: Measurement]
     modeIndexes.update(unsetModeIndexes)
   }
 
-  /** Maps a supported measurement to a useful value. Downscales them in order
-    * for our mode detector to bucket values instead of using the raw, jittery
-    * mesaurements.
-    *
-    * The downscaling method is naive and hasn't been strongly tested. It will
-    * probably fail on low-latency links by making values too small, but that
-    * just means that no events will be emitted.
+  /** Maps a supported measurement to a useful value. We mostly deal with the
+    * downscaled, bucketed values to avoid using the raw, jittery measurements.
     */
-  def mapFunction(value: MeasT): Int = {
+  private def mapFunction(value: MeasT): Int = {
     value match {
-      case t: ICMP => t.median.get / 1000
-      case t: DNS => t.rtt.get / 1000
-      case t: TCPPing => t.median.get / 1000
-      case t: LatencyTSAmpICMP => t.average / 1000
-      case t: LatencyTSSmokeping => (t.median.get / 1000).toInt
+      case t: ICMP => t.median.get
+      case t: DNS => t.rtt.get
+      case t: TCPPing => t.median.get
+      case t: LatencyTSAmpICMP => t.average
+      case t: LatencyTSSmokeping => t.median.get.toInt
       case _ =>
         throw new IllegalArgumentException(
           s"Unsupported measurement type for Mode Detector: $value"
         )
     }
+  }
+
+  private val roundingAmount: MathContext = new MathContext(2, RoundingMode.FLOOR)
+
+  /** Buckets the input value in order to smooth out some of the natural jitter
+    * in higher-magnitude datasets. We round to 2 significant figures, and take
+    * the floor of the value. Flooring gives the same result as a division would
+    * while retaining the magnitude of the inputs.
+    */
+  private def scale(value: Int): Int = {
+    new java.math.BigDecimal(value).round(roundingAmount).intValue()
   }
 
   /** Finds the modes of the new dataset. If there's only one unique value,
@@ -162,8 +169,9 @@ class ModeDetector[MeasT <: Measurement]
     * but it shouldn't happen since this function only gets called after a
     * measurement has been added.
     */
-  def updateModes(): Unit = {
+  private def updateModes(): Unit = {
     val groupedAndSorted = history.value
+      .map(x => HistoryItem(x.id, scale(x.value)))
       .groupBy(x => x.value)
       .mapValues(_.size)
       .toList
@@ -195,11 +203,45 @@ class ModeDetector[MeasT <: Measurement]
   /** Outputs a new event. The detection latency is 0. The severity
     * reflects the size of the change in mode values.
     */
-  def newEvent(value: MeasT, out: Collector[Event]): Unit = {
+  private def newEvent(value: MeasT, out: Collector[Event]): Unit = {
     val old = modeIndexes.value.lastEvent.value
     val current = modeIndexes.value.primary.value
 
-    val severity = Event.changeMagnitudeSeverity(old, current)
+    // To compensate for the 2 significant figure bucketing, we adjust the
+    // values during the severity calculations to pretend that we only have
+    // those two figures. For example, a pair of 12000 and 30000 is changed to
+    // 12 and 30, which gives a much nicer severity calculation.
+
+    // The magnitude is the amount we need to divide by to reach the target
+    // value. log(0) is infinite, so we bypass that.
+    def getMagnitude(i: Int): Int = {
+      if (i == 0) {
+        0
+      }
+      else {
+        1 + Math.floor(Math.log10(i)).toInt
+      }
+    }
+
+    // If the two magnitudes are different, we go for the smaller one to preserve
+    // the significant figures. If they're the same, we subtract a little for
+    // the same goal (otherwise 12000 and 30000 would become 1 and 3).
+    val scaleFactor = {
+      val oldM = getMagnitude(old)
+      val currM = getMagnitude(current)
+      if (oldM == currM) {
+        oldM - 1
+      }
+      else {
+        Math.min(oldM, currM)
+      }
+    }
+
+    // Do the actual scaling, by just lopping off the right number of 0s.
+    def divideByScale(i: Int): Int = i / Math.pow(10, scaleFactor - 1).toInt
+
+    // And finally get the severity.
+    val severity = Event.changeMagnitudeSeverity(divideByScale(old), divideByScale(current))
 
     out.collect(
       new Event(
@@ -208,7 +250,7 @@ class ModeDetector[MeasT <: Measurement]
         severity,
         value.time,
         Duration.ZERO,
-        s"Mode changed from ${modeIndexes.value.lastEvent.value} to ${modeIndexes.value.primary.value}!",
+        s"Mode changed from $old to $current!",
         Map()
       )
     )
@@ -313,7 +355,7 @@ class ModeDetector[MeasT <: Measurement]
     // fair to call this a mode change. Rather, we obviously haven't had a mode
     // for a long time and now we are settling into a constant pattern again.
     // It's not our job to report on changes in the overall time series pattern.
-    if (!history.value.exists(x => x.value == newModes.lastEvent.value)) {
+    if (!history.value.exists(x => scale(x.value) == newModes.lastEvent.value)) {
       updateLastEvent()
       return
     }
