@@ -344,7 +344,7 @@ case class InfluxConnection(
   private[this] def checkConnection(influx: AhcManagementClient): Boolean = {
     Await.result(influx.ping.map {
       case Right(_) => true
-      case Left(_) => false
+      case Left(e) => throw e
     }, Duration.Inf)
   }
 
