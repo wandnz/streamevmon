@@ -13,9 +13,9 @@ ThisBuild / scalaVersion := "2.12.10"
 
 val flinkVersion = "1.9.1"
 val flinkDependencies = Seq(
-  "org.apache.flink" %% "flink-scala" % flinkVersion,
-  "org.apache.flink" %% "flink-streaming-scala" % flinkVersion,
-  "org.apache.flink" %% "flink-table-api-scala" % flinkVersion
+  "org.apache.flink" %% "flink-scala" % flinkVersion % Provided,
+  "org.apache.flink" %% "flink-streaming-scala" % flinkVersion % Provided,
+  "org.apache.flink" %% "flink-table-api-scala" % flinkVersion % Provided
 )
 
 val chroniclerVersion = "0.6.2"
@@ -38,7 +38,7 @@ val cacheDependencies = Seq(
 )
 
 val logDependencies = Seq(
-  "org.slf4j" % "slf4j-simple" % "1.7.29"
+  "org.slf4j" % "slf4j-simple" % "1.7.29" % Provided
 )
 
 val graphDependencies = Seq(
@@ -80,6 +80,9 @@ Compile / run / fork := true
 Global / cancelable := true
 
 mainClass in assembly := Some("nz.net.wand.streamevmon.runners.UnifiedRunner")
+assemblyExcludedJars in assembly := {
+  (fullClasspath in assembly).value.filter(_.data.getName.contains("scalatest"))
+}
 
 // Make tests in sbt shell more reliable
 fork := true
@@ -88,7 +91,8 @@ fork := true
 test in assembly := {}
 
 // exclude Scala library from assembly
-assembly / assemblyOption := (assembly / assemblyOption).value.copy(includeScala = false)
+assembly / assemblyOption := (assembly / assemblyOption).value.copy(includeScala = false, includeDependency = false)
+//assembly / assemblyOption := (assembly / assemblyOption).value.copy(includeScala = false, includeDependency = true)
 assemblyPackageDependency / assemblyOption := (assemblyPackageDependency / assemblyOption).value.copy(includeScala = false)
 
 // exclude META-INF and use correct behaviour for duplicate library files
