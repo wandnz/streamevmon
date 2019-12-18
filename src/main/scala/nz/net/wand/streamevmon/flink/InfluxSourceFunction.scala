@@ -15,9 +15,6 @@ import org.apache.flink.streaming.api.checkpoint.ListCheckpointed
 import org.apache.flink.streaming.api.functions.source.{RichSourceFunction, SourceFunction}
 
 import scala.collection.JavaConverters._
-import scala.concurrent.{Await, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.{Duration => ScalaDuration}
 
 /** Retrieves new data from InfluxDB as a streaming source function.
   *
@@ -150,9 +147,7 @@ abstract class InfluxSourceFunction[T <: Measurement](
         lastMeasurementTime = historicalData.maxBy(_.time).time
       }
 
-      val listenLoop = Future(listen(ctx))
-
-      Await.result(listenLoop, ScalaDuration.Inf)
+      listen(ctx)
 
       stopListener()
       logger.debug("Stopped listener")
