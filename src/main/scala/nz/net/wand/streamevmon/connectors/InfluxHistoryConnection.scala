@@ -2,6 +2,7 @@ package nz.net.wand.streamevmon.connectors
 
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.measurements._
+import nz.net.wand.streamevmon.measurements.bigdata._
 
 import java.time.Instant
 
@@ -144,8 +145,7 @@ case class InfluxHistoryConnection(
       case Some(db) =>
         val measurement = db.measurement[T](dbName, "")
         val query = s"SELECT ${columnNames.mkString("\"", "\",\"", "\"")} FROM $tableName " +
-          s"WHERE time > ${start.toEpochMilli * 1000000} AND time <= ${end.toEpochMilli * 1000000} " +
-          s"fill(-1)"
+          s"WHERE time > ${start.toEpochMilli * 1000000} AND time <= ${end.toEpochMilli * 1000000}"
         val future = measurement.read(query)(reader, classTag[T])
 
         Await.result(future.flatMap {
@@ -245,13 +245,26 @@ case class InfluxHistoryConnection(
     * @return A collection of Traceroute measurements, or an empty collection.
     */
   def getTracerouteData(
-      start: Instant = Instant.EPOCH,
-      end: Instant = Instant.now()
+    start: Instant = Instant.EPOCH,
+    end  : Instant = Instant.now()
   ): Seq[Traceroute] = {
     getData[Traceroute](
       Traceroute.table_name,
       Traceroute.columnNames,
       InfluxSchema.tracerouteReader,
+      start,
+      end
+    )
+  }
+
+  def getFlowStatistics(
+    start: Instant = Instant.EPOCH,
+    end  : Instant = Instant.now()
+  ): Seq[Flow] = {
+    getData[Flow](
+      Flow.table_name,
+      Flow.columnNames,
+      InfluxSchema.flowStatisticsReader,
       start,
       end
     )

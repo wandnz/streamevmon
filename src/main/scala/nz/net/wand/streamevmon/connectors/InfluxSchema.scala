@@ -6,7 +6,7 @@ import java.time.Instant
 
 import com.github.fsanaulla.chronicler.core.alias.ErrorOr
 import com.github.fsanaulla.chronicler.core.model.InfluxReader
-import org.typelevel.jawn.ast.JArray
+import org.typelevel.jawn.ast.{JArray, JValue}
 
 /** Declares the Reader objects for measurements obtained directly from InfluxDB
   * via Chronicler by [[InfluxHistoryConnection]]. These are used to convert the
@@ -21,6 +21,15 @@ import org.typelevel.jawn.ast.JArray
   */
 object InfluxSchema {
 
+  def nullToOption(v: JValue): Option[JValue] = {
+    if (v.isNull) {
+      None
+    }
+    else {
+      Some(v)
+    }
+  }
+
   val icmpReader: InfluxReader[ICMP] = new InfluxReader[ICMP] {
     override def read(js: JArray): ErrorOr[ICMP] = {
       val cols = ICMP.columnNames
@@ -30,15 +39,8 @@ object InfluxSchema {
           ICMP(
             js.get(cols.indexOf("stream")).asString.toInt,
             js.get(cols.indexOf("loss")).asInt,
-            js.get(cols.indexOf("lossrate")).asDouble, {
-              val median = js.get(cols.indexOf("median")).asInt
-              if (median == -1) {
-                None
-              }
-              else {
-                Some(median)
-              }
-            },
+            js.get(cols.indexOf("lossrate")).asDouble,
+            nullToOption(js.get(cols.indexOf("median"))).map(_.asInt),
             js.get(cols.indexOf("packet_size")).asInt,
             js.get(cols.indexOf("results")).asInt,
             s"'${js.get(cols.indexOf("rtts")).asString}'",
@@ -57,57 +59,29 @@ object InfluxSchema {
       val cols = DNS.columnNames
 
       try {
-        if (js.get(cols.indexOf("lossrate")).asInt > 0) {
-          Right(
-            DNS(
-              js.get(cols.indexOf("stream")).asString.toInt,
-              None,
-              None,
-              None,
-              None,
-              None,
-              None,
-              None,
-              js.get(cols.indexOf("lossrate")).asDouble,
-              None,
-              js.get(cols.indexOf("query_len")).asInt,
-              None,
-              js.get(cols.indexOf("requests")).asInt,
-              None,
-              None,
-              None,
-              None,
-              None,
-              None,
-              Instant.parse(js.get(cols.indexOf("time")).asString)
-            )
-          )
-        }
-        else {
-          Right(
-            DNS(
-              js.get(cols.indexOf("stream")).asString.toInt,
-              Some(js.get(cols.indexOf("flag_aa")).asBoolean),
-              Some(js.get(cols.indexOf("flag_ad")).asBoolean),
-              Some(js.get(cols.indexOf("flag_cd")).asBoolean),
-              Some(js.get(cols.indexOf("flag_qr")).asBoolean),
-              Some(js.get(cols.indexOf("flag_ra")).asBoolean),
-              Some(js.get(cols.indexOf("flag_rd")).asBoolean),
-              Some(js.get(cols.indexOf("flag_tc")).asBoolean),
-              js.get(cols.indexOf("lossrate")).asDouble,
-              Some(js.get(cols.indexOf("opcode")).asInt),
-              js.get(cols.indexOf("query_len")).asInt,
-              Some(js.get(cols.indexOf("rcode")).asInt),
-              js.get(cols.indexOf("requests")).asInt,
-              Some(js.get(cols.indexOf("response_size")).asInt),
-              Some(js.get(cols.indexOf("rtt")).asInt),
-              Some(js.get(cols.indexOf("total_additional")).asInt),
-              Some(js.get(cols.indexOf("total_answer")).asInt),
-              Some(js.get(cols.indexOf("total_authority")).asInt),
-              Some(js.get(cols.indexOf("ttl")).asInt),
-              Instant.parse(js.get(cols.indexOf("time")).asString)
-            ))
-        }
+        Right(
+          DNS(
+            js.get(cols.indexOf("stream")).asString.toInt,
+            nullToOption(js.get(cols.indexOf("flag_aa"))).map(_.asBoolean),
+            nullToOption(js.get(cols.indexOf("flag_ad"))).map(_.asBoolean),
+            nullToOption(js.get(cols.indexOf("flag_cd"))).map(_.asBoolean),
+            nullToOption(js.get(cols.indexOf("flag_qr"))).map(_.asBoolean),
+            nullToOption(js.get(cols.indexOf("flag_ra"))).map(_.asBoolean),
+            nullToOption(js.get(cols.indexOf("flag_rd"))).map(_.asBoolean),
+            nullToOption(js.get(cols.indexOf("flag_tc"))).map(_.asBoolean),
+            js.get(cols.indexOf("lossrate")).asDouble,
+            nullToOption(js.get(cols.indexOf("opcode"))).map(_.asInt),
+            js.get(cols.indexOf("query_len")).asInt,
+            nullToOption(js.get(cols.indexOf("rcode"))).map(_.asInt),
+            js.get(cols.indexOf("requests")).asInt,
+            nullToOption(js.get(cols.indexOf("response_size"))).map(_.asInt),
+            nullToOption(js.get(cols.indexOf("rtt"))).map(_.asInt),
+            nullToOption(js.get(cols.indexOf("total_additional"))).map(_.asInt),
+            nullToOption(js.get(cols.indexOf("total_answer"))).map(_.asInt),
+            nullToOption(js.get(cols.indexOf("total_authority"))).map(_.asInt),
+            nullToOption(js.get(cols.indexOf("ttl"))).map(_.asInt),
+            Instant.parse(js.get(cols.indexOf("time")).asString)
+          ))
       } catch {
         case e: Exception => Left(e)
       }
