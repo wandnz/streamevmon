@@ -22,7 +22,7 @@ import scala.reflect._
   * @tparam MeasT The type of Measurement to ingest.
   */
 class LossDetector[MeasT <: Measurement : ClassTag]
-  extends KeyedProcessFunction[Int, MeasT, Event]
+  extends KeyedProcessFunction[String, MeasT, Event]
           with CheckpointedFunction {
 
   /** The maximum number of measurements to retain. */
@@ -88,7 +88,7 @@ class LossDetector[MeasT <: Measurement : ClassTag]
     */
   override def processElement(
     value: MeasT,
-    ctx  : KeyedProcessFunction[Int, MeasT, Event]#Context,
+    ctx  : KeyedProcessFunction[String, MeasT, Event]#Context,
     out  : Collector[Event]
   ): Unit = {
     // Setup if we need it.

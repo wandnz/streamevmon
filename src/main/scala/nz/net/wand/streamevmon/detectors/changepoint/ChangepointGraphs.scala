@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
-import nz.net.wand.streamevmon.flink.LatencyTSAmpFileInputFormat
+import nz.net.wand.streamevmon.flink.{LatencyTSAmpFileInputFormat, MeasurementKeySelector}
 import nz.net.wand.streamevmon.measurements.LatencyTSAmpICMP
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.MapFunction
@@ -43,7 +43,7 @@ object ChangepointGraphs {
       .name("Latency TS I AMP ICMP Parser")
       .setParallelism(1)
       .filter(_.lossrate == 0.0)
-      .keyBy(_.stream)
+      .keyBy(new MeasurementKeySelector[LatencyTSAmpICMP])
 
     implicit val ti: TypeInformation[NormalDistribution[LatencyTSAmpICMP]] = TypeInformation.of(classOf[NormalDistribution[LatencyTSAmpICMP]])
 

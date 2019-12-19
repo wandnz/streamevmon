@@ -26,7 +26,7 @@ import scala.collection.mutable
   * @tparam MeasT The type of measurement to analyse.
   */
 class ModeDetector[MeasT <: Measurement]
-  extends KeyedProcessFunction[Int, MeasT, Event]
+  extends KeyedProcessFunction[String, MeasT, Event]
           with Graphing
           with CheckpointedFunction {
 
@@ -258,9 +258,9 @@ class ModeDetector[MeasT <: Measurement]
 
   /** Called once per measurement. Generates zero or one events. */
   override def processElement(
-      value: MeasT,
-      ctx: KeyedProcessFunction[Int, MeasT, Event]#Context,
-      out: Collector[Event]
+    value: MeasT,
+    ctx  : KeyedProcessFunction[String, MeasT, Event]#Context,
+    out  : Collector[Event]
   ): Unit = {
     // If this is the first measurement or it's been too long since the last one,
     // we'll reset everything.

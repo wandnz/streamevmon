@@ -6,7 +6,7 @@ import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, Norma
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.flink.{InfluxSinkFunction, MeasurementSourceFunction}
+import nz.net.wand.streamevmon.flink.{InfluxSinkFunction, MeasurementKeySelector, MeasurementSourceFunction}
 import nz.net.wand.streamevmon.measurements.{DNS, ICMP, Measurement}
 
 import java.time.Duration
@@ -81,19 +81,21 @@ object UnifiedRunner {
 
     env.enableCheckpointing(Duration.ofSeconds(10).toMillis, CheckpointingMode.EXACTLY_ONCE)
 
-    val influxSource = env
+    val measurementSource = env
       .addSource(new MeasurementSourceFunction)
       .name("Measurement Subscription")
       .uid("measurement-source")
 
-    val icmpStream = influxSource
+    val keySelector = new MeasurementKeySelector[Measurement]
+
+    val icmpStream = measurementSource
       .filterType[ICMP]
       .notLossy[ICMP]
-      .keyBy(_.stream)
+      .keyBy(keySelector)
 
-    val dnsStream = influxSource
+    val dnsStream = measurementSource
       .filterType[DNS]
-      .keyBy(_.stream)
+      .keyBy(keySelector)
 
     if (isEnabled(env, "changepoint")) {
       val changepoint = new ChangepointDetector[Measurement, NormalDistribution[Measurement]](

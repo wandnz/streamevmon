@@ -30,7 +30,7 @@ class ChangepointDetector[MeasT <: Measurement : TypeInformation, DistT <: Distr
   initialDistribution: DistT,
   shouldDoGraphs     : Boolean = false,
   filename           : Option[String] = None
-) extends KeyedProcessFunction[Int, MeasT, Event]
+) extends KeyedProcessFunction[String, MeasT, Event]
           with Logging {
 
   final val detectorName = s"Changepoint Detector (${initialDistribution.distributionName})"
@@ -49,7 +49,7 @@ class ChangepointDetector[MeasT <: Measurement : TypeInformation, DistT <: Distr
 
   override def processElement(
     value: MeasT,
-    ctx: KeyedProcessFunction[Int, MeasT, Event]#Context,
+    ctx  : KeyedProcessFunction[String, MeasT, Event]#Context,
     out  : Collector[Event]
   ): Unit = {
     if (processor.value == null) {

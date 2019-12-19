@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
-import nz.net.wand.streamevmon.flink.LatencyTSAmpFileInputFormat
+import nz.net.wand.streamevmon.flink.{LatencyTSAmpFileInputFormat, MeasurementKeySelector}
 import nz.net.wand.streamevmon.measurements._
 
 import java.io.File
@@ -37,7 +37,7 @@ object ModeRunner {
       .readFile(new LatencyTSAmpFileInputFormat, filename)
       .setParallelism(1)
       .name("Latency TS AMP Input")
-      .keyBy(_.stream)
+      .keyBy(new MeasurementKeySelector[LatencyTSAmpICMP])
 
     val detector = new ModeDetector[LatencyTSAmpICMP]
     detector.enableGraphing("out/graphs/mode.svg", detector.detectorName)

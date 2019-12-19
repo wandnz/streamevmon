@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
-import nz.net.wand.streamevmon.flink.{InfluxSinkFunction, MeasurementSourceFunction}
+import nz.net.wand.streamevmon.flink.{InfluxSinkFunction, MeasurementKeySelector, MeasurementSourceFunction}
 import nz.net.wand.streamevmon.measurements._
 
 import java.time.Duration
@@ -32,7 +32,7 @@ object LossRunner {
       .setParallelism(1)
       .name("Measurement Subscription")
       .uid("loss-measurement-sourcefunction")
-      .keyBy(_.stream)
+      .keyBy(new MeasurementKeySelector[Measurement])
 
     val detector = new LossDetector[Measurement]
 
