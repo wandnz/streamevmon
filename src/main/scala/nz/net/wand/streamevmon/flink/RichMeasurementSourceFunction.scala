@@ -11,8 +11,14 @@ import org.apache.flink.configuration.Configuration
 /** Receives [[nz.net.wand.streamevmon.measurements.RichMeasurement RichMeasurement]]
   * values from InfluxDB in a streaming fashion.
   */
-class RichMeasurementSourceFunction(fetchHistory: Duration = Duration.ZERO)
-    extends InfluxSourceFunction[RichMeasurement](fetchHistory) {
+class RichMeasurementSourceFunction(
+  configPrefix: String = "influx.dataSource",
+  fetchHistory: Duration = Duration.ZERO
+)
+  extends InfluxSourceFunction[RichMeasurement](
+    configPrefix,
+    fetchHistory
+  ) {
 
   private[this] var pgConnection: PostgresConnection = _
 

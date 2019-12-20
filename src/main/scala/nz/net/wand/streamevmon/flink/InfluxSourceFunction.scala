@@ -51,6 +51,7 @@ import scala.collection.JavaConverters._
   * @see [[RichMeasurementSourceFunction]]
   */
 abstract class InfluxSourceFunction[T <: Measurement](
+  configPrefix: String = "influx.dataSource",
   fetchHistory: Duration = Duration.ZERO
 )
   extends RichSourceFunction[T]
@@ -92,7 +93,7 @@ abstract class InfluxSourceFunction[T <: Measurement](
 
   private[this] var overrideParams: Option[ParameterTool] = None
 
-  def overrideConfig(config               : ParameterTool): Unit = {
+  def overrideConfig(config: ParameterTool): Unit = {
     overrideParams = Some(config)
   }
 
@@ -103,15 +104,15 @@ abstract class InfluxSourceFunction[T <: Measurement](
   override def run(ctx: SourceFunction.SourceContext[T]): Unit = {
     // Set up config
     if (overrideParams.isDefined) {
-      influxConnection = Some(InfluxConnection(overrideParams.get))
-      influxHistory = Some(InfluxHistoryConnection(overrideParams.get))
+      influxConnection = Some(InfluxConnection(overrideParams.get, configPrefix))
+      influxHistory = Some(InfluxHistoryConnection(overrideParams.get, configPrefix))
       maxLateness = overrideParams.get.getInt("flink.maxLateness")
     }
     else {
       val params: ParameterTool =
         getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
-      influxConnection = Some(InfluxConnection(params))
-      influxHistory = Some(InfluxHistoryConnection(params))
+      influxConnection = Some(InfluxConnection(params, configPrefix))
+      influxHistory = Some(InfluxHistoryConnection(params, configPrefix))
       maxLateness = params.getInt("flink.maxLateness")
     }
 

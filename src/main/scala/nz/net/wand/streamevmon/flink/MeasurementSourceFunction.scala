@@ -7,8 +7,14 @@ import java.time.Duration
 /** Receives [[nz.net.wand.streamevmon.measurements.Measurement Measurement]]
   * values from InfluxDB in a streaming fashion.
   */
-class MeasurementSourceFunction(fetchHistory: Duration = Duration.ZERO)
-    extends InfluxSourceFunction[Measurement](fetchHistory) {
+class MeasurementSourceFunction(
+  configPrefix: String = "influx.dataSource",
+  fetchHistory: Duration = Duration.ZERO
+)
+  extends InfluxSourceFunction[Measurement](
+    configPrefix,
+    fetchHistory
+  ) {
 
   override protected def processHistoricalMeasurement(measurement: Measurement): Option[Measurement] = {
     Some(measurement)
