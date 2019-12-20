@@ -1,7 +1,9 @@
 package nz.net.wand.streamevmon.connectors
 
 import nz.net.wand.streamevmon.measurements._
+import nz.net.wand.streamevmon.measurements.bigdata.Flow
 
+import java.net.InetAddress
 import java.time.Instant
 
 import com.github.fsanaulla.chronicler.core.alias.ErrorOr
@@ -155,11 +157,59 @@ object InfluxSchema {
             js.get(cols.indexOf("path_length")).asInt,
             Instant.parse(js.get(cols.indexOf("time")).asString)
           ))
-      } catch {
+      }
+      catch {
         case e: Exception => Left(e)
       }
     }
 
     override def readUnsafe(js: JArray): Traceroute = ???
+  }
+
+  val flowStatisticsReader: InfluxReader[Flow] = new InfluxReader[Flow] {
+    override def read(js: JArray): ErrorOr[Flow] = {
+      val cols = Flow.columnNames
+
+      try {
+        Right(
+          Flow(
+            js.get(cols.indexOf("capture_application")).asString,
+            js.get(cols.indexOf("capture_host")).asString,
+            js.get(cols.indexOf("stream")).asInt,
+            js.get(cols.indexOf("flow_type")).asString,
+            js.get(cols.indexOf("category")).asString,
+            js.get(cols.indexOf("protocol")).asString,
+            Instant.parse(js.get(cols.indexOf("time")).asString),
+            Instant.parse(js.get(cols.indexOf("start_time")).asString),
+            Option(Instant.parse(js.get(cols.indexOf("end_time")).asString)),
+            js.get(cols.indexOf("duration")).asDouble,
+            js.get(cols.indexOf("in_bytes")).asInt,
+            js.get(cols.indexOf("out_bytes")).asInt,
+            js.get(cols.indexOf("time_to_first_byte")).asDouble,
+            InetAddress.getByName(js.get(cols.indexOf("destination_ip")).asString),
+            js.get(cols.indexOf("destination_port")).asInt,
+            js.get(cols.indexOf("destination_ip_city")).asString,
+            js.get(cols.indexOf("destination_ip_country")).asString,
+            js.get(cols.indexOf("destination_ip_geohash")).asString,
+            js.get(cols.indexOf("destination_ip_geohash_value")).asString,
+            js.get(cols.indexOf("destination_ip_latitude")).asString,
+            js.get(cols.indexOf("destination_ip_longitude")).asString,
+            InetAddress.getByName(js.get(cols.indexOf("source_ip")).asString),
+            js.get(cols.indexOf("source_port")).asInt,
+            js.get(cols.indexOf("source_ip_city")).asString,
+            js.get(cols.indexOf("source_ip_country")).asString,
+            js.get(cols.indexOf("source_ip_geohash")).asString,
+            js.get(cols.indexOf("source_ip_geohash_value")).asString,
+            js.get(cols.indexOf("source_ip_latitude")).asString,
+            js.get(cols.indexOf("source_ip_longitude")).asString,
+          )
+        )
+      }
+      catch {
+        case e: Exception => Left(e)
+      }
+    }
+
+    override def readUnsafe(js: JArray): Flow = ???
   }
 }
