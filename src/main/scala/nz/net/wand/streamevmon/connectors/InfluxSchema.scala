@@ -2,6 +2,7 @@ package nz.net.wand.streamevmon.connectors
 
 import nz.net.wand.streamevmon.measurements._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow
+import nz.net.wand.streamevmon.measurements.bigdata.Flow.FlowType
 
 import java.net.InetAddress
 import java.time.Instant
@@ -176,7 +177,7 @@ object InfluxSchema {
             js.get(cols.indexOf("capture_application")).asString,
             js.get(cols.indexOf("capture_host")).asString,
             js.get(cols.indexOf("flow_id")).asInt,
-            js.get(cols.indexOf("type")).asString,
+            FlowType.withName(js.get(cols.indexOf("type")).asString),
             js.get(cols.indexOf("category")).asString,
             js.get(cols.indexOf("protocol")).asString,
             Instant.parse(js.get(cols.indexOf("time")).asString),
