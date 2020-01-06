@@ -2,6 +2,8 @@ package nz.net.wand.streamevmon.measurements
 
 import nz.net.wand.streamevmon.connectors.PostgresConnection
 
+import org.squeryl.annotations.Column
+
 import scala.reflect.runtime.universe._
 
 /** Mixed into companion objects of concrete [[Measurement]] classes.
@@ -16,10 +18,39 @@ trait MeasurementFactory {
     */
   val table_name: String
 
+  private[this] def getColumnNameOverrides[T <: Measurement : TypeTag]: Seq[(String, String)] =
+    symbolOf[T].toType.members.map { m =>
+      if (m.annotations.exists(a => a.tree.tpe <:< typeOf[Column])) {
+        (
+          m.name.toString.trim,
+          m
+            .annotations
+            .find(a => a.tree.tpe <:< typeOf[Column])
+            .get
+            .tree.children.tail.head
+            .collect { case Literal(Constant(value: String)) => value }
+            .head
+        )
+      }
+      else {
+        Nil
+      }
+    }.filterNot(_ == Nil).asInstanceOf[Seq[(String, String)]]
+
   protected def getColumnNames[T <: Measurement : TypeTag]: Seq[String] = {
+    val overrides = getColumnNameOverrides[T]
+
     "time" +: typeOf[T].members.sorted.collect {
       case m: MethodSymbol if m.isCaseAccessor => m.name.toString
-    }.filterNot(_ == "time")
+    }.filterNot(_ == "time").map { f =>
+      val ov = overrides.find(_._1 == f)
+      if (ov.isDefined) {
+        ov.get._2
+      }
+      else {
+        f
+      }
+    }
   }
 
   def columnNames: Seq[String]
