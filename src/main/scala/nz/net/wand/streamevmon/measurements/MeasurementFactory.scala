@@ -4,7 +4,9 @@ import nz.net.wand.streamevmon.connectors.PostgresConnection
 
 import org.squeryl.annotations.Column
 
+import scala.annotation.tailrec
 import scala.reflect.runtime.universe._
+import scala.util.control.Breaks._
 
 /** Mixed into companion objects of concrete [[Measurement]] classes.
   * Provides helper functions for common requirements to generate objects.
@@ -18,6 +20,12 @@ trait MeasurementFactory {
     */
   val table_name: String
 
+  /** Returns the overrides declared via @Column annotations to case class field
+    * names. The first item of each tuple is the field name, and the second
+    * element is the value placed in the annotation.
+    *
+    * @tparam T The type to determine the overrides for.
+    */
   private[this] def getColumnNameOverrides[T <: Measurement : TypeTag]: Seq[(String, String)] =
     symbolOf[T].toType.members.map { m =>
       if (m.annotations.exists(a => a.tree.tpe <:< typeOf[Column])) {
@@ -37,6 +45,9 @@ trait MeasurementFactory {
       }
     }.filterNot(_ == Nil).asInstanceOf[Seq[(String, String)]]
 
+  /** Returns a collection containing the database column names associated with
+    * a type, in the same order as the case class declares them.
+    */
   protected def getColumnNames[T <: Measurement : TypeTag]: Seq[String] = {
     val overrides = getColumnNameOverrides[T]
 
@@ -53,6 +64,9 @@ trait MeasurementFactory {
     }
   }
 
+  /** Returns a collection containing the database column names associated with
+    * this type, in the same order as they are declared.
+    */
   def columnNames: Seq[String]
 
   /** Searches a group of 'key=value' pairs for a particular key, and returns the
@@ -65,9 +79,51 @@ trait MeasurementFactory {
     */
   protected[this] def getNamedField(fields: Iterable[String], name: String): Option[String] = {
     fields
-      .filter(entry => entry.startsWith(name))
+      .filter(entry => name == entry.split('=')(0))
       .map(entry => entry.split('=')(1))
       .headOption
+  }
+
+  /** Like string.split(), but it ignores separators that are inside double quotes.
+    *
+    * @param line              The line to split.
+    * @param precedingElements The newly discovered elements are appended to this.
+    * @param separators        The separators to split on.
+    */
+  @tailrec
+  final protected[this] def splitLineProtocol(
+    line: String,
+    precedingElements: Seq[String] = Seq(),
+    separators: Seq[Char] = Seq(',', ' ')
+  ): Seq[String] = {
+    var splitPoint = -1
+    var quoteCount = 0
+    // Iterate through the string, looking for separators.
+    // Separators that are in quotes don't count, since they're part of a value.
+    // We stop when we find the first one.
+    breakable {
+      for (i <- Range(0, line.length)) {
+        if (line(i) == '"') {
+          quoteCount += 1
+        }
+        if (quoteCount % 2 == 0 && separators.contains(line(i))) {
+          splitPoint = i
+          break
+        }
+      }
+    }
+
+    // If there aren't any left, we'll complete the seq and return it.
+    if (splitPoint == -1) {
+      precedingElements :+ line
+    }
+    // Otherwise, we'll split around the separator and give the rest to the
+    // recursive function.
+    else {
+      val beforeSplit = line.substring(0, splitPoint)
+      val afterSplit = line.substring(splitPoint + 1)
+      splitLineProtocol(afterSplit, precedingElements :+ beforeSplit, separators)
+    }
   }
 
   /** Creates a Measurement from an InfluxDB subscription result, in Line Protocol format.

@@ -6,51 +6,52 @@ import nz.net.wand.streamevmon.measurements.bigdata.Flow.FlowType.FlowType
 
 import java.net.InetAddress
 import java.time.Instant
+import java.util.concurrent.TimeUnit
 
 import org.squeryl.annotations.Column
 
 case class Flow(
-  capture_application         : String,
-  capture_host: String,
+  capture_application: String,
+  capture_host                                                                                      : String,
 
   @Column("flow_id")
-  stream: Int,
+  stream                                                                                            : Int,
   @Column("type")
-  flow_type                   : FlowType,
-  category: String,
-  protocol                    : String,
+  flow_type: FlowType,
+  category                                                                                          : String,
+  protocol                                                                                          : String,
 
-  time                        : Instant, // time of current update
+  time                                                                                              : Instant,
   @Column("start_ts")
-  start_time                  : Instant, // time of flow start
+  start_time                                                                                        : Instant,
   @Column("end_ts")
-  end_time                    : Option[Instant], // time of flow end,
-  duration: Double,
+  end_time                                                                                          : Option[Instant],
+  duration                                                                                          : Double,
 
-  in_bytes                    : Int,
-  out_bytes                   : Int,
+  in_bytes                                                                                          : Int,
+  out_bytes                                                                                         : Int,
   @Column("ttfb")
-  time_to_first_byte          : Double,
+  time_to_first_byte                                                                                : Double,
 
-  destination_ip: InetAddress,
-  @Column("dst_port")
-  destination_port            : Int,
-  destination_ip_city: Option[String],
-  destination_ip_country      : Option[String],
-  destination_ip_geohash      : Option[String],
-  destination_ip_geohash_value: Option[Int],
-  destination_ip_latitude     : Option[Double],
-  destination_ip_longitude    : Option[Double],
-
-  source_ip: InetAddress,
+  source_ip                                                                                         : InetAddress,
   @Column("src_port")
-  source_port                 : Int,
-  source_ip_city              : Option[String],
-  source_ip_country           : Option[String],
-  source_ip_geohash           : Option[String],
-  source_ip_geohash_value     : Option[Int],
-  source_ip_latitude          : Option[Double],
-  source_ip_longitude         : Option[Double],
+  source_port                                                                                       : Int,
+  source_ip_city                                                                                    : Option[String],
+  source_ip_country: Option[String],
+  source_ip_geohash                                                                                 : Option[String],
+  source_ip_geohash_value                                                                           : Option[Int],
+  source_ip_latitude                                                                                : Option[Double],
+  source_ip_longitude                                                                               : Option[Double],
+
+  destination_ip                                                                                    : InetAddress,
+  @Column("dst_port")
+  destination_port                                                                                  : Int,
+  destination_ip_city                                                                               : Option[String],
+  destination_ip_country: Option[String],
+  destination_ip_geohash: Option[String],
+  destination_ip_geohash_value: Option[Int],
+  destination_ip_latitude: Option[Double],
+  destination_ip_longitude: Option[Double]
 ) extends Measurement {
   override def isLossy: Boolean = false
 
@@ -124,5 +125,45 @@ object Flow extends MeasurementFactory {
 
   override def columnNames: Seq[String] = getColumnNames[Flow]
 
-  override private[measurements] def create(subscriptionLine: String): Option[Flow] = ???
+  override private[measurements] def create(subscriptionLine: String): Option[Flow] = {
+    val data = splitLineProtocol(subscriptionLine)
+    if (data.head != table_name) {
+      None
+    }
+    else {
+      Some(
+        Flow(
+          getNamedField(data, "capture_application").get,
+          getNamedField(data, "capture_host").get,
+          getNamedField(data, "flow_id").get.dropRight(1).toInt,
+          FlowType.withName(getNamedField(data, "type").get),
+          getNamedField(data, "category").get,
+          getNamedField(data, "protocol").get,
+          Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(data.last.toLong)),
+          Instant.ofEpochMilli(getNamedField(data, "start_ts").get.dropRight(1).toLong),
+          getNamedField(data, "end_ts").map(e => Instant.ofEpochMilli(e.dropRight(1).toLong)),
+          getNamedField(data, "duration").get.toDouble,
+          getNamedField(data, "in_bytes").get.dropRight(1).toInt,
+          getNamedField(data, "out_bytes").get.dropRight(1).toInt,
+          getNamedField(data, "ttfb").get.toDouble,
+          InetAddress.getByName(getNamedField(data, "source_ip").get.drop(1).dropRight(1)),
+          getNamedField(data, "src_port").get.dropRight(1).toInt,
+          getNamedField(data, "source_ip_city"),
+          getNamedField(data, "source_ip_country"),
+          getNamedField(data, "source_ip_geohash"),
+          getNamedField(data, "source_ip_geohash_value").map(_.toInt),
+          getNamedField(data, "source_ip_latitude").map(_.toDouble),
+          getNamedField(data, "source_ip_longitude").map(_.toDouble),
+          InetAddress.getByName(getNamedField(data, "destination_ip").get.drop(1).dropRight(1)),
+          getNamedField(data, "dst_port").get.dropRight(1).toInt,
+          getNamedField(data, "destination_ip_city"),
+          getNamedField(data, "destination_ip_country"),
+          getNamedField(data, "destination_ip_geohash"),
+          getNamedField(data, "destination_ip_geohash_value").map(_.dropRight(1).toInt),
+          getNamedField(data, "destination_ip_latitude").map(_.toDouble),
+          getNamedField(data, "destination_ip_longitude").map(_.toDouble),
+        )
+      )
+    }
+  }
 }
