@@ -4,7 +4,8 @@ import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, Norma
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.detectors.MapFunction
-import nz.net.wand.streamevmon.measurements.{ICMP, Measurement}
+import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.amp.ICMP
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.streaming.api.scala._

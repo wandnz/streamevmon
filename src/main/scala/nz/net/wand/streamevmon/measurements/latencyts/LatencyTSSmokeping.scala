@@ -1,4 +1,6 @@
-package nz.net.wand.streamevmon.measurements
+package nz.net.wand.streamevmon.measurements.latencyts
+
+import nz.net.wand.streamevmon.measurements.RichMeasurement
 
 import java.time.Instant
 
@@ -8,7 +10,7 @@ import scala.math.round
   * in the Latency TS I dataset. Comparable to a RichICMP object, but missing
   * some fields.
   *
-  * @see [[RichICMP]]
+  * @see [[nz.net.wand.streamevmon.measurements.amp.RichICMP RichICMP]]
   * @see [[nz.net.wand.streamevmon.flink.LatencyTSSmokepingFileInputFormat LatencyTSSmokepingFileInputFormat]]
   * @see [[LatencyTSAmpICMP]]
   * @see [[https://wand.net.nz/wits/latency/1/]]

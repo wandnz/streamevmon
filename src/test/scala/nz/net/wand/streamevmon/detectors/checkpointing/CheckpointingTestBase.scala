@@ -3,7 +3,8 @@ package nz.net.wand.streamevmon.detectors.checkpointing
 import nz.net.wand.streamevmon.{Configuration, SeedData, TestBase}
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.MeasurementKeySelector
-import nz.net.wand.streamevmon.measurements.{ICMP, Measurement}
+import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.amp.ICMP
 
 import java.time.Instant
 

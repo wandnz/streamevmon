@@ -2,6 +2,7 @@ package nz.net.wand.streamevmon.connectors
 
 import nz.net.wand.streamevmon.{Caching, Logging}
 import nz.net.wand.streamevmon.measurements._
+import nz.net.wand.streamevmon.measurements.amp._
 
 import java.sql.DriverManager
 

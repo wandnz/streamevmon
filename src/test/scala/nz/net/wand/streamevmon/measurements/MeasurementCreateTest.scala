@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.measurements
 
 import nz.net.wand.streamevmon.{SeedData, TestBase}
+import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow
 
 class MeasurementCreateTest extends TestBase {

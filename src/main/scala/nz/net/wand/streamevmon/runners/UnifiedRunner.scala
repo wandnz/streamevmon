@@ -7,7 +7,8 @@ import nz.net.wand.streamevmon.detectors.loss.LossDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.{InfluxSinkFunction, MeasurementKeySelector, MeasurementSourceFunction}
-import nz.net.wand.streamevmon.measurements.{DNS, ICMP, Measurement}
+import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.amp._
 
 import java.time.Duration
 
@@ -23,7 +24,7 @@ import scala.reflect._
 
 object UnifiedRunner {
 
-  implicit val ti: TypeInformation[NormalDistribution[Measurement]] =
+  implicit val normalDistributionTypeInformation: TypeInformation[NormalDistribution[Measurement]] =
     TypeInformation.of(classOf[NormalDistribution[Measurement]])
 
   class IcmpToMedian() extends MapFunction[Measurement, Double] with Serializable {

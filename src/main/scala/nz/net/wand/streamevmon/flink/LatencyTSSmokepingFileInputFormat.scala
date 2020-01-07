@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.flink
 
-import nz.net.wand.streamevmon.measurements.LatencyTSSmokeping
+import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSSmokeping
 
 import org.apache.flink.api.common.io.GenericCsvInputFormat
 
@@ -9,7 +9,7 @@ import scala.collection.mutable
 /** An InputFormat which parses the Smokeping results from the Latency TS I
   * dataset.
   *
-  * @see [[nz.net.wand.streamevmon.measurements.LatencyTSSmokeping LatencyTSSmokeping]]
+  * @see [[nz.net.wand.streamevmon.measurements.latencyts.LatencyTSSmokeping LatencyTSSmokeping]]
   * @see [[https://wand.net.nz/wits/latency/1/]]
   */
 class LatencyTSSmokepingFileInputFormat extends GenericCsvInputFormat[LatencyTSSmokeping] {

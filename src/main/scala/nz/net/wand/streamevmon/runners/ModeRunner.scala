@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.runners
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.flink.{LatencyTSAmpFileInputFormat, MeasurementKeySelector}
-import nz.net.wand.streamevmon.measurements._
+import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
 
 import java.io.File
 

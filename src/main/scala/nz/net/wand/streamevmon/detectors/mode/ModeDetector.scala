@@ -4,6 +4,8 @@ import nz.net.wand.streamevmon.detectors.mode.ModeDetector._
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements._
 import nz.net.wand.streamevmon.Graphing
+import nz.net.wand.streamevmon.measurements.amp._
+import nz.net.wand.streamevmon.measurements.latencyts._
 
 import java.awt.Color
 import java.math.{MathContext, RoundingMode}

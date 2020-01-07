@@ -1,20 +1,21 @@
-package nz.net.wand.streamevmon.measurements
+package nz.net.wand.streamevmon.measurements.amp
+
+import nz.net.wand.streamevmon.measurements.MeasurementMeta
 
 import org.squeryl.annotations.Column
 
 /** Represents the metadata associated with the scheduled test that an AMP DNS
   * measurement is produced from.
   *
-  * @see [[TCPPing]]
-  * @see [[RichTCPPing]]
-  * @see [[https://github.com/wanduow/amplet2/wiki/amp-tcpping]]
+  * @see [[Traceroute]]
+  * @see [[RichTraceroute]]
+  * @see [[https://github.com/wanduow/amplet2/wiki/amp-trace]]
   */
-case class TCPPingMeta(
+case class TracerouteMeta(
     @Column("stream_id")
     stream: Int,
     source: String,
     destination: String,
-    port: Int,
     family: String,
     @Column("packet_size")
     packet_size_selection: String

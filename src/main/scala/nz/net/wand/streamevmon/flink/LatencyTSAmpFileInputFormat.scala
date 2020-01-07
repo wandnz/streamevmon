@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.flink
 
-import nz.net.wand.streamevmon.measurements.LatencyTSAmpICMP
+import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
 
 import org.apache.flink.api.common.io.GenericCsvInputFormat
 
@@ -9,7 +9,7 @@ import scala.collection.mutable
 /** An InputFormat which parses the AMP ICMP results from the Latency TS I
   * dataset.
   *
-  * @see [[nz.net.wand.streamevmon.measurements.LatencyTSAmpICMP LatencyTSAmpICMP]]
+  * @see [[nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP LatencyTSAmpICMP]]
   * @see [[https://wand.net.nz/wits/latency/1/]]
   */
 class LatencyTSAmpFileInputFormat extends GenericCsvInputFormat[LatencyTSAmpICMP] {

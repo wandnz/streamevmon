@@ -1,4 +1,6 @@
-package nz.net.wand.streamevmon.measurements
+package nz.net.wand.streamevmon.measurements.amp
+
+import nz.net.wand.streamevmon.measurements.MeasurementMeta
 
 import org.squeryl.annotations.Column
 

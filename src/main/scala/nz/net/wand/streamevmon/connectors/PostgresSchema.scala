@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.connectors
 
 import nz.net.wand.streamevmon.connectors.SquerylEntrypoint._
-import nz.net.wand.streamevmon.measurements._
+import nz.net.wand.streamevmon.measurements.amp._
 
 import org.squeryl.{Schema, Table}
 

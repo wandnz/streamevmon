@@ -1,7 +1,8 @@
 package nz.net.wand.streamevmon.detectors
 
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.measurements.{Measurement, RichICMP}
+import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.amp.RichICMP
 
 import java.time.Duration
 
@@ -11,7 +12,7 @@ import org.apache.flink.util.Collector
 
 /** Very basic example of threshold detection.
   *
-  * Examines [[nz.net.wand.streamevmon.measurements.RichICMP RichICMP]]
+  * Examines [[nz.net.wand.streamevmon.measurements.amp.RichICMP RichICMP]]
   * objects, and emits events with a constant severity if the median value is
   * greater than the specified value (default 1000).
   *

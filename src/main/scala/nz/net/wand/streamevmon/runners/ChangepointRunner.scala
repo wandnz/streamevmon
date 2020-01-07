@@ -1,10 +1,11 @@
 package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.flink.{InfluxSinkFunction, MeasurementKeySelector, MeasurementSourceFunction}
-import nz.net.wand.streamevmon.measurements.{ICMP, Measurement}
+import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.changepoint._
 import nz.net.wand.streamevmon.detectors.MapFunction
+import nz.net.wand.streamevmon.measurements.amp.ICMP
 
 import java.time.Duration
 

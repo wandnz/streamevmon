@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.connectors
 
-import nz.net.wand.streamevmon.measurements._
+import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow
 import nz.net.wand.streamevmon.measurements.bigdata.Flow.FlowType
 

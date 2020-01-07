@@ -1,16 +1,19 @@
-package nz.net.wand.streamevmon.measurements
+package nz.net.wand.streamevmon.measurements.amp
+
+import nz.net.wand.streamevmon.measurements.{Measurement, MeasurementFactory}
 
 import java.time.{Instant, ZoneId}
 import java.util.concurrent.TimeUnit
 
-/** Represents an AMP ICMP measurement.
+/** Represents an AMP TCPPing measurement.
   *
-  * @see [[ICMPMeta]]
-  * @see [[RichICMP]]
-  * @see [[https://github.com/wanduow/amplet2/wiki/amp-icmp]]
+  * @see [[TCPPingMeta]]
+  * @see [[RichTCPPing]]
+  * @see [[https://github.com/wanduow/amplet2/wiki/amp-tcpping]]
   */
-final case class ICMP(
+final case class TCPPing(
     stream: Int,
+    icmperrors: Int,
     loss: Int,
     lossrate: Double,
     median: Option[Int],
@@ -20,8 +23,9 @@ final case class ICMP(
     time: Instant
 ) extends Measurement {
   override def toString: String = {
-    s"${ICMP.table_name}," +
+    s"${TCPPing.table_name}," +
       s"stream=$stream " +
+      s"icmperrors=${icmperrors}i," +
       s"loss=${loss}i," +
       s"lossrate=$lossrate," +
       s"median=${median.map(x => s"${x}i").getOrElse("")}," +
@@ -34,24 +38,25 @@ final case class ICMP(
   override def isLossy: Boolean = loss > 0
 }
 
-object ICMP extends MeasurementFactory {
+object TCPPing extends MeasurementFactory {
+  final override val table_name: String = "data_amp_tcpping"
 
-  final override val table_name: String = "data_amp_icmp"
-
-  override def columnNames: Seq[String] = getColumnNames[ICMP]
+  override def columnNames: Seq[String] = getColumnNames[TCPPing]
 
   def apply(
     stream: Int,
-    loss: Int,
+    icmperrors: Int,
+    loss  : Int,
     lossrate: Double,
     median: Option[Int],
     packet_size: Int,
     results: Int,
     rtts: String,
     time: Instant
-  ): ICMP =
-    new ICMP(
+  ): TCPPing =
+    new TCPPing(
       stream,
+      icmperrors,
       loss,
       lossrate,
       median,
@@ -61,15 +66,16 @@ object ICMP extends MeasurementFactory {
       time
     )
 
-  override def create(subscriptionLine: String): Option[ICMP] = {
+  override def create(subscriptionLine: String): Option[TCPPing] = {
     val data = splitLineProtocol(subscriptionLine)
     if (data.head != table_name) {
       None
     }
     else {
       Some(
-        ICMP(
+        TCPPing(
           getNamedField(data, "stream").get.toInt,
+          getNamedField(data, "icmperrors").get.dropRight(1).toInt,
           getNamedField(data, "loss").get.dropRight(1).toInt,
           getNamedField(data, "lossrate").get.toDouble,
           getNamedField(data, "median").map(_.dropRight(1).toInt),

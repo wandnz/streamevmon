@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.measurements
 
 import nz.net.wand.streamevmon.connectors.PostgresConnection
+import nz.net.wand.streamevmon.measurements.amp._
 
 import org.squeryl.annotations.Column
 

@@ -1,6 +1,8 @@
 package nz.net.wand.streamevmon.flink
 
 import nz.net.wand.streamevmon.measurements._
+import nz.net.wand.streamevmon.measurements.amp._
+import nz.net.wand.streamevmon.measurements.latencyts._
 
 import org.apache.flink.api.java.functions.KeySelector
 
