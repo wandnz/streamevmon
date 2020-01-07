@@ -62,21 +62,20 @@ object ICMP extends MeasurementFactory {
     )
 
   override def create(subscriptionLine: String): Option[ICMP] = {
-    val data = subscriptionLine.split(Array(',', ' '))
-    val namedData = data.drop(1).dropRight(1)
-    if (data(0) != table_name) {
+    val data = splitLineProtocol(subscriptionLine)
+    if (data.head != table_name) {
       None
     }
     else {
       Some(
         ICMP(
-          getNamedField(namedData, "stream").get.toInt,
-          getNamedField(namedData, "loss").get.dropRight(1).toInt,
-          getNamedField(namedData, "lossrate").get.toDouble,
-          getNamedField(namedData, "median").map(_.dropRight(1).toInt),
-          getNamedField(namedData, "packet_size").get.dropRight(1).toInt,
-          getNamedField(namedData, "results").get.dropRight(1).toInt,
-          getRtts(getNamedField(namedData, "rtts").get),
+          getNamedField(data, "stream").get.toInt,
+          getNamedField(data, "loss").get.dropRight(1).toInt,
+          getNamedField(data, "lossrate").get.toDouble,
+          getNamedField(data, "median").map(_.dropRight(1).toInt),
+          getNamedField(data, "packet_size").get.dropRight(1).toInt,
+          getNamedField(data, "results").get.dropRight(1).toInt,
+          getRtts(getNamedField(data, "rtts").get),
           Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(data.last.toLong))
         ))
     }

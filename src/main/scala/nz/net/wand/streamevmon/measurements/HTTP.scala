@@ -37,19 +37,18 @@ object HTTP extends MeasurementFactory {
   override def columnNames: Seq[String] = getColumnNames[HTTP]
 
   override def create(subscriptionLine: String): Option[HTTP] = {
-    val data = subscriptionLine.split(Array(',', ' '))
-    val namedData = data.drop(1).dropRight(1)
-    if (data(0) != table_name) {
+    val data = splitLineProtocol(subscriptionLine)
+    if (data.head != table_name) {
       None
     }
     else {
       Some(
         HTTP(
-          getNamedField(namedData, "stream").get.toInt,
-          getNamedField(namedData, "bytes").get.dropRight(1).toInt,
-          getNamedField(namedData, "duration").get.dropRight(1).toInt,
-          getNamedField(namedData, "object_count").get.dropRight(1).toInt,
-          getNamedField(namedData, "server_count").get.dropRight(1).toInt,
+          getNamedField(data, "stream").get.toInt,
+          getNamedField(data, "bytes").get.dropRight(1).toInt,
+          getNamedField(data, "duration").get.dropRight(1).toInt,
+          getNamedField(data, "object_count").get.dropRight(1).toInt,
+          getNamedField(data, "server_count").get.dropRight(1).toInt,
           Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(data.last.toLong))
         ))
     }

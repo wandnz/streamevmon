@@ -31,16 +31,15 @@ object Traceroute extends MeasurementFactory {
   override def columnNames: Seq[String] = getColumnNames[Traceroute]
 
   override def create(subscriptionLine: String): Option[Traceroute] = {
-    val data = subscriptionLine.split(Array(',', ' '))
-    val namedData = data.drop(1).dropRight(1)
-    if (data(0) != table_name) {
+    val data = splitLineProtocol(subscriptionLine)
+    if (data.head != table_name) {
       None
     }
     else {
       Some(
         Traceroute(
-          getNamedField(namedData, "stream").get.toInt,
-          getNamedField(namedData, "path_length").get.toDouble,
+          getNamedField(data, "stream").get.toInt,
+          getNamedField(data, "path_length").get.toDouble,
           Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(data.last.toLong))
         ))
     }

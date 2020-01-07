@@ -65,33 +65,32 @@ object DNS extends MeasurementFactory {
   override def columnNames: Seq[String] = getColumnNames[DNS]
 
   override def create(subscriptionLine: String): Option[DNS] = {
-    val data = subscriptionLine.split(Array(',', ' '))
-    val namedData = data.drop(1).dropRight(1)
-    if (data(0) != table_name) {
+    val data = splitLineProtocol(subscriptionLine)
+    if (data.head != table_name) {
       None
     }
     else {
       Some(
         DNS(
-          getNamedField(namedData, "stream").get.toInt,
-          getNamedField(namedData, "flag_aa").map(_.toBoolean),
-          getNamedField(namedData, "flag_ad").map(_.toBoolean),
-          getNamedField(namedData, "flag_cd").map(_.toBoolean),
-          getNamedField(namedData, "flag_qr").map(_.toBoolean),
-          getNamedField(namedData, "flag_ra").map(_.toBoolean),
-          getNamedField(namedData, "flag_rd").map(_.toBoolean),
-          getNamedField(namedData, "flag_tc").map(_.toBoolean),
-          getNamedField(namedData, "lossrate").get.toDouble,
-          getNamedField(namedData, "opcode").map(_.dropRight(1).toInt),
-          getNamedField(namedData, "query_len").get.dropRight(1).toInt,
-          getNamedField(namedData, "rcode").map(_.dropRight(1).toInt),
-          getNamedField(namedData, "requests").get.dropRight(1).toInt,
-          getNamedField(namedData, "response_size").map(_.dropRight(1).toInt),
-          getNamedField(namedData, "rtt").map(_.dropRight(1).toInt),
-          getNamedField(namedData, "total_additional").map(_.dropRight(1).toInt),
-          getNamedField(namedData, "total_answer").map(_.dropRight(1).toInt),
-          getNamedField(namedData, "total_authority").map(_.dropRight(1).toInt),
-          getNamedField(namedData, "ttl").map(_.dropRight(1).toInt),
+          getNamedField(data, "stream").get.toInt,
+          getNamedField(data, "flag_aa").map(_.toBoolean),
+          getNamedField(data, "flag_ad").map(_.toBoolean),
+          getNamedField(data, "flag_cd").map(_.toBoolean),
+          getNamedField(data, "flag_qr").map(_.toBoolean),
+          getNamedField(data, "flag_ra").map(_.toBoolean),
+          getNamedField(data, "flag_rd").map(_.toBoolean),
+          getNamedField(data, "flag_tc").map(_.toBoolean),
+          getNamedField(data, "lossrate").get.toDouble,
+          getNamedField(data, "opcode").map(_.dropRight(1).toInt),
+          getNamedField(data, "query_len").get.dropRight(1).toInt,
+          getNamedField(data, "rcode").map(_.dropRight(1).toInt),
+          getNamedField(data, "requests").get.dropRight(1).toInt,
+          getNamedField(data, "response_size").map(_.dropRight(1).toInt),
+          getNamedField(data, "rtt").map(_.dropRight(1).toInt),
+          getNamedField(data, "total_additional").map(_.dropRight(1).toInt),
+          getNamedField(data, "total_answer").map(_.dropRight(1).toInt),
+          getNamedField(data, "total_authority").map(_.dropRight(1).toInt),
+          getNamedField(data, "ttl").map(_.dropRight(1).toInt),
           Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(data.last.toLong))
         ))
     }
