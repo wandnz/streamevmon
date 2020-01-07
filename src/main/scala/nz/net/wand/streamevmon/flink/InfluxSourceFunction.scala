@@ -136,7 +136,7 @@ abstract class InfluxSourceFunction[T <: Measurement](
       val timeSinceLastMeasurement = Duration.between(lastMeasurementTime, now)
       val historyString = DurationFormatUtils.formatDuration(timeSinceLastMeasurement.toMillis, "H:mm:ss")
       logger.info(s"Fetching data since $lastMeasurementTime ($historyString ago)")
-      val historicalData = influxHistory.get.getAllData(lastMeasurementTime, now)
+      val historicalData = influxHistory.get.getAllAmpData(lastMeasurementTime, now)
       historicalData.foreach { m =>
         processHistoricalMeasurement(m) match {
           case Some(value) => ctx.collect(value)

@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.detectors.mode
 
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector._
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.measurements._
+import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.Graphing
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.latencyts._

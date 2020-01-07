@@ -1,12 +1,12 @@
 package nz.net.wand.streamevmon.measurements
 
 import nz.net.wand.streamevmon.{SeedData, TestBase}
-import nz.net.wand.streamevmon.SeedData.latencyTs
+import nz.net.wand.streamevmon.measurements.latencyts._
 
 class LatencyTSCreateTest extends TestBase {
   "AMP ICMP result" should {
     "convert into a LatencyTSAmpICMP object" in {
-      LatencyTSAmpICMP.create(latencyTs.ampLine, SeedData.latencyTs.amp.stream) shouldBe SeedData.latencyTs.amp
+      LatencyTSAmpICMP.create(SeedData.latencyTs.ampLine, SeedData.latencyTs.amp.stream) shouldBe SeedData.latencyTs.amp
     }
   }
 

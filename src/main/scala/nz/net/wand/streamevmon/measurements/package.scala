@@ -7,15 +7,12 @@ import nz.net.wand.streamevmon.measurements._
   *
   * == Live AMP Data ==
   *
-  * This section describes the classes created to represent data gathered by an
-  * [[nz.net.wand.streamevmon.flink.InfluxSourceFunction InfluxSourceFunction]].
-  * This data comes directly from InfluxDB as it is being inserted, so should
-  * be a comprehensive representation of AMP measurements.
+  * The [[amp]] package represents data gathered by AMP, the Active Measurement
+  * Project. It should be a comprehensive representation of the measurements as
+  * they are stored in InfluxDB.
   *
-  * AMP reports measurements as a set of data unique to each individual
-  * measurement, along with a Stream ID used to link a series of measurements to
-  * some metadata about how they were gathered. This representation is mirrored
-  * here, meaning there are three types of AMP measurement object.
+  * There are three types of AMP measurement object, depending on how much
+  * metadata about the stream is included.
   *
   * - Classes which inherit from
   * [[Measurement Measurement]]
@@ -26,7 +23,7 @@ import nz.net.wand.streamevmon.measurements._
   *
   * - Classes which inherit from
   * [[MeasurementMeta MeasurementMeta]]
-  * represent data gathered from a database based on a measurement's stream ID.
+  * represent data gathered from PostgreSQL based on a measurement's stream ID.
   * This might include a test destination, a latency, or an address family.
   * These types also include the corresponding stream ID. They cannot be
   * directly enriched, but are used in order to enrich a Measurement. There is
@@ -38,6 +35,22 @@ import nz.net.wand.streamevmon.measurements._
   * represent a single measurement, along with all the metadata associated with
   * it. It is the union of a particular Measurement with its corresponding
   * MeasurementMeta.
+  *
+  * == Libtrace-Bigdata ==
+  *
+  * The [[bigdata]] package contains representations of the output of the
+  * [[https://github.com/jacobvw/libtrace-bigdata Libtrace-Bigdata]] packet
+  * analysis tool, created by Jacob van Walraven. The data can be gathered from
+  * InfluxDB either as it is inserted (via an InfluxSourceFunction) or
+  * historical data can be queried.
+  *
+  * Currently, only the flow_statistics table is supported, and is represented
+  * by the [[nz.net.wand.streamevmon.measurements.bigdata.Flow Flow]] class.
+  * While it has many fields, many are optional. The source and destination
+  * location fields are in order to support the output of the Maxmind plugin,
+  * which gives geolocation for IP addresses. These can also be accessed via the
+  * [[nz.net.wand.streamevmon.measurements.bigdata.Flow.Endpoint Endpoint]]
+  * objects named `source` and `destination`.
   *
   * == Latency TS I ==
   *

@@ -1,9 +1,9 @@
 package nz.net.wand.streamevmon.connectors
 
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.measurements._
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata._
+import nz.net.wand.streamevmon.measurements.Measurement
 
 import java.time.Instant
 
@@ -16,8 +16,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.Await
 import scala.reflect._
 
-/** Additional constructors for the companion class.
-  */
+/** Additional constructors for the companion class. */
 object InfluxHistoryConnection {
 
   /** Creates a new InfluxHistoryConnection from the given config. Expects all fields
@@ -82,8 +81,6 @@ case class InfluxHistoryConnection(
     influxPassword: String
 ) extends Logging {
 
-  private[connectors] def influxCredentials = InfluxCredentials(influxUsername, influxPassword)
-
   private[connectors] lazy val influx: Option[AhcIOClient] = getClient
 
   private[this] def checkConnection(influx: AhcIOClient): Boolean = {
@@ -93,15 +90,11 @@ case class InfluxHistoryConnection(
     }, Duration.Inf)
   }
 
+  /** @return The Influx IO connection, or None. */
   private[this] def getClient: Option[AhcIOClient] = {
-    def influx = InfluxIO(influxAddress, influxPort, Some(influxCredentials))
+    val influx: AhcIOClient = InfluxIO(influxAddress, influxPort, Some(InfluxCredentials(influxUsername, influxPassword)))
 
-    if (checkConnection(influx)) {
-      Some(influx)
-    }
-    else {
-      None
-    }
+    Some(influx).filter(checkConnection)
   }
 
   /** Gets historical data for all supported measurement types over the specified
@@ -110,9 +103,9 @@ case class InfluxHistoryConnection(
     *
     * @return A collection of Measurements of varying types, or an empty collection.
     */
-  def getAllData(
+  def getAllAmpData(
     start: Instant = Instant.EPOCH,
-    end  : Instant = Instant.now()
+    end: Instant = Instant.now()
   ): Seq[Measurement] = {
     getIcmpData(start, end) ++
       getDnsData(start, end) ++
@@ -158,7 +151,7 @@ case class InfluxHistoryConnection(
     }
   }
 
-  /** Get some ICMP measurements from InfluxDB.
+  /** Get some AMP ICMP measurements from InfluxDB.
     *
     * @param start The oldest measurement should be no older than this.
     * @param end   The newest measurement should be no newer than this.
@@ -178,7 +171,7 @@ case class InfluxHistoryConnection(
     )
   }
 
-  /** Get some DNS measurements from InfluxDB.
+  /** Get some AMP DNS measurements from InfluxDB.
     *
     * @param start The oldest measurement should be no older than this.
     * @param end   The newest measurement should be no newer than this.
@@ -198,7 +191,7 @@ case class InfluxHistoryConnection(
     )
   }
 
-  /** Get some HTTP measurements from InfluxDB.
+  /** Get some AMP HTTP measurements from InfluxDB.
     *
     * @param start The oldest measurement should be no older than this.
     * @param end   The newest measurement should be no newer than this.
@@ -218,7 +211,7 @@ case class InfluxHistoryConnection(
     )
   }
 
-  /** Get some TCPPing measurements from InfluxDB.
+  /** Get some AMP TCPPing measurements from InfluxDB.
     *
     * @param start The oldest measurement should be no older than this.
     * @param end   The newest measurement should be no newer than this.
@@ -238,7 +231,7 @@ case class InfluxHistoryConnection(
     )
   }
 
-  /** Get some Traceroute measurements from InfluxDB.
+  /** Get some AMP Traceroute measurements from InfluxDB.
     *
     * @param start The oldest measurement should be no older than this.
     * @param end   The newest measurement should be no newer than this.
@@ -258,6 +251,13 @@ case class InfluxHistoryConnection(
     )
   }
 
+  /** Get some libtrace-bigdata flow_statistics from InfluxDB
+    *
+    * @param start The oldest measurement should be no older than this.
+    * @param end   The newest measurement should be no newer than this.
+    *
+    * @return A collection of Flow measurements, or an empty collection.
+    */
   def getFlowStatistics(
     start: Instant = Instant.EPOCH,
     end  : Instant = Instant.now()

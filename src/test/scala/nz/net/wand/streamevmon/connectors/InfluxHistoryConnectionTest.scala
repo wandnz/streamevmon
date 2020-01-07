@@ -76,7 +76,7 @@ class InfluxHistoryConnectionTest extends InfluxContainerSpec {
     }
 
     "get all data" in {
-      getInfluxHistory.getAllData() shouldBe Seq(
+      getInfluxHistory.getAllAmpData() shouldBe Seq(
         SeedData.icmp.expected,
         SeedData.dns.expected,
         SeedData.http.expected,

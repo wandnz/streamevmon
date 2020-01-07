@@ -10,14 +10,16 @@ import java.util.concurrent.TimeUnit
 
 import org.squeryl.annotations.Column
 
+/** @see [[nz.net.wand.streamevmon.measurements]] for description.
+  */
 case class Flow(
-  capture_application: String,
+  capture_application                                                                               : String,
   capture_host                                                                                      : String,
 
   @Column("flow_id")
   stream                                                                                            : Int,
   @Column("type")
-  flow_type: FlowType,
+  flow_type                                                                                         : FlowType,
   category                                                                                          : String,
   protocol                                                                                          : String,
 
@@ -37,7 +39,7 @@ case class Flow(
   @Column("src_port")
   source_port                                                                                       : Int,
   source_ip_city                                                                                    : Option[String],
-  source_ip_country: Option[String],
+  source_ip_country                                                                                 : Option[String],
   source_ip_geohash                                                                                 : Option[String],
   source_ip_geohash_value                                                                           : Option[Int],
   source_ip_latitude                                                                                : Option[Double],
@@ -46,11 +48,11 @@ case class Flow(
   destination_ip                                                                                    : InetAddress,
   @Column("dst_port")
   destination_port                                                                                  : Int,
-  destination_ip_city                                                                               : Option[String],
+  destination_ip_city: Option[String],
   destination_ip_country: Option[String],
-  destination_ip_geohash: Option[String],
-  destination_ip_geohash_value: Option[Int],
-  destination_ip_latitude: Option[Double],
+  destination_ip_geohash                                                                            : Option[String],
+  destination_ip_geohash_value                                                                      : Option[Int],
+  destination_ip_latitude                                                                           : Option[Double],
   destination_ip_longitude: Option[Double]
 ) extends Measurement {
   override def isLossy: Boolean = false
@@ -89,6 +91,9 @@ case class Flow(
 
 object Flow extends MeasurementFactory {
 
+  /** Flow entries can be one of three types, depending on what part of a flow
+    * they represent. A flow usually has a start, an end, and 0 or more intervals.
+    */
   object FlowType extends Enumeration {
     type FlowType = Value
     val Start: Flow.FlowType.Value = Value("flow_start")

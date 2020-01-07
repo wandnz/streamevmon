@@ -1,7 +1,8 @@
 package nz.net.wand.streamevmon.flink
 
-import nz.net.wand.streamevmon.measurements._
+import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.measurements.amp._
+import nz.net.wand.streamevmon.measurements.bigdata._
 import nz.net.wand.streamevmon.measurements.latencyts._
 
 import org.apache.flink.api.java.functions.KeySelector
@@ -16,5 +17,6 @@ class MeasurementKeySelector[T <: Measurement] extends KeySelector[T, String] {
       case m@(_: Traceroute | _: RichTraceroute) => s"Traceroute-${m.stream}"
       case m@(_: LatencyTSAmpICMP) => s"LatencyTSAmpICMP-${m.stream}"
       case m@(_: LatencyTSSmokeping) => s"LatencyTSSmokeping-${m.stream}"
+      case m@(_: Flow) => s"Flow-${m.stream}"
     }
 }
