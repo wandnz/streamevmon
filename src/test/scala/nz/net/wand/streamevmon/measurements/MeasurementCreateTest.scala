@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.measurements
 
 import nz.net.wand.streamevmon.{SeedData, TestBase}
+import nz.net.wand.streamevmon.measurements.bigdata.Flow
 
 class MeasurementCreateTest extends TestBase {
   "Children of Measurement.create" should {
@@ -22,6 +23,10 @@ class MeasurementCreateTest extends TestBase {
 
     "convert an entry from a subscription into an HTTP object" in {
       HTTP.create(SeedData.http.subscriptionLine) shouldBe Some(SeedData.http.expected)
+    }
+
+    "convert many entries from a subscription into a Flow object" in {
+      SeedData.bigdata.flowsAsLineProtocol.map(l => Flow.create(l).get) shouldBe SeedData.bigdata.flowsExpected
     }
   }
 

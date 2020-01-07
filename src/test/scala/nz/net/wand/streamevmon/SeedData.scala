@@ -2,7 +2,9 @@ package nz.net.wand.streamevmon
 
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements._
+import nz.net.wand.streamevmon.measurements.bigdata.Flow
 
+import java.net.InetAddress
 import java.time.{Duration, Instant}
 import java.util.concurrent.TimeUnit
 
@@ -476,4 +478,77 @@ object SeedData {
       s"""changepoint_events,stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
     val withoutTagsAsLineProtocol: String = """stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
   }
+
+  object bigdata {
+    val flowsAsLineProtocol: Seq[String] = Seq(
+      """flow_statistics,capture_application=libtrace-bigdata,capture_host=libtrace-bigdata,category=ICMP,destination_ip_geohash=9ydqy0,protocol=ICMP,type=flow_interval flow_id=3i,start_ts=1578276733000i,duration=9.101833,ttfb=0.000000,source_ip="192.168.122.73",destination_ip="172.217.25.142",src_port=0i,dst_port=0i,in_bytes=560i,out_bytes=560i,destination_ip_longitude=-97.822000,destination_ip_latitude=37.751000,destination_ip_geohash_value=1i,destination_ip_country="United States" 1578276760000000000""",
+      """flow_statistics,capture_application=libtrace-bigdata,capture_host=libtrace-bigdata,category=Web,destination_ip_geohash=gcpvjf,protocol=HTTP,type=flow_start flow_id=39i,start_ts=1578276761000i,duration=0.527794,ttfb=0.527794,source_ip="192.168.122.73",destination_ip="91.189.88.31",src_port=53448i,dst_port=80i,in_bytes=217i,out_bytes=2896i,destination_ip_longitude=-0.093000,destination_ip_latitude=51.516400,destination_ip_geohash_value=1i,destination_ip_city="London",destination_ip_country="United Kingdom" 1578276761000000000"""
+    )
+
+    val flowsExpected: Seq[Flow] = Seq(
+      Flow(
+        "libtrace-bigdata",
+        "libtrace-bigdata",
+        3,
+        Flow.FlowType.Interval,
+        "ICMP",
+        "ICMP",
+        Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1578276760000000000L)),
+        Instant.ofEpochMilli(1578276733000L),
+        None,
+        9.101833,
+        560,
+        560,
+        0.000000,
+        InetAddress.getByName("192.168.122.73"),
+        0,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        InetAddress.getByName("172.217.25.142"),
+        0,
+        None,
+        Some("United States"),
+        Some("9ydqy0"),
+        Some(1),
+        Some(37.751),
+        Some(-97.822)
+      ),
+      Flow(
+        "libtrace-bigdata",
+        "libtrace-bigdata",
+        39,
+        Flow.FlowType.Start,
+        "Web",
+        "HTTP",
+        Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1578276761000000000L)),
+        Instant.ofEpochMilli(1578276761000L),
+        None,
+        0.527794,
+        217,
+        2896,
+        0.527794,
+        InetAddress.getByName("192.168.122.73"),
+        53448,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        InetAddress.getByName("91.189.88.31"),
+        80,
+        Some("London"),
+        Some("United Kingdom"),
+        Some("gcpvjf"),
+        Some(1),
+        Some(51.516400),
+        Some(-0.093000)
+      )
+    )
+  }
+
 }

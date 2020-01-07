@@ -33,7 +33,7 @@ class InfluxHistoryConnectionTest extends InfluxContainerSpec {
               SeedData.traceroute.subscriptionLine,
               SeedData.http.subscriptionLine,
               SeedData.tcpping.subscriptionLine
-            )
+            ) ++ SeedData.bigdata.flowsAsLineProtocol
           ),
         Duration.Inf
       )
@@ -57,6 +57,10 @@ class InfluxHistoryConnectionTest extends InfluxContainerSpec {
 
     "get Traceroute data" in {
       getInfluxHistory.getTracerouteData().head shouldBe SeedData.traceroute.expected
+    }
+
+    "get Flow data" in {
+      getInfluxHistory.getFlowStatistics() shouldBe SeedData.bigdata.flowsExpected
     }
 
     "get data between a time range" in {
