@@ -20,7 +20,7 @@ import scala.sys.ShutdownHookThread
 
 /** Contains additional constructors and private methods for the companion class.
   */
-object InfluxConnection {
+object InfluxConnection extends Logging {
 
   /** Gets an IPV4 address which should be visible to other hosts. Prefers
     * addresses that aren't "site-local", meaning they are outside of the
@@ -53,7 +53,7 @@ object InfluxConnection {
     }
     catch {
       case e: SocketException =>
-        println(s"couldn't get IP! $e")
+        logger.error(s"couldn't get IP! $e")
         "localhost"
     }
   }
@@ -67,29 +67,39 @@ object InfluxConnection {
     }
   }
 
+  private[this] def getWithFallback(p: ParameterTool, configPrefix: String, datatype: String, item: String): String = {
+    val result = p.get(s"$configPrefix.$datatype.$item", null)
+    if (result == null) {
+      p.get(s"$configPrefix.default.$item")
+    }
+    else {
+      result
+    }
+  }
+
   /** Creates a new InfluxConnection from the given config. Expects all fields
     * specified in the companion class' main documentation to be present.
     *
-    * @param p The configuration to use. Generally obtained from the Flink
-    *          global configuration.
+    * @param p            The configuration to use. Generally obtained from the Flink
+    *                     global configuration.
     * @param configPrefix A custom config prefix to use, in case the configuration
     *                     object is not as expected.
     *
     * @return A new InfluxConnection object.
     */
-  def apply(p: ParameterTool, configPrefix: String = "influx.dataSource"): InfluxConnection =
+  def apply(p: ParameterTool, configPrefix: String = "influx.dataSource", datatype: String = "amp"): InfluxConnection =
     InfluxConnection(
-      p.get(s"$configPrefix.subscriptionName"),
-      p.get(s"$configPrefix.databaseName"),
-      p.get(s"$configPrefix.retentionPolicyName"),
-      p.get(s"$configPrefix.listenProtocol"),
-      getOrFindListenAddress(p.get(s"$configPrefix.listenAddress")),
-      p.getInt(s"$configPrefix.listenPort"),
-      p.getInt(s"$configPrefix.listenBacklog"),
-      p.get(s"$configPrefix.serverName"),
-      p.getInt(s"$configPrefix.portNumber"),
-      p.get(s"$configPrefix.user"),
-      p.get(s"$configPrefix.password")
+      getWithFallback(p, configPrefix, datatype, "subscriptionName"),
+      getWithFallback(p, configPrefix, datatype, "databaseName"),
+      getWithFallback(p, configPrefix, datatype, "retentionPolicy"),
+      getWithFallback(p, configPrefix, datatype, "listenProtocol"),
+      getOrFindListenAddress(getWithFallback(p, configPrefix, datatype, "listenAddress")),
+      getWithFallback(p, configPrefix, datatype, "listenPort").toInt,
+      getWithFallback(p, configPrefix, datatype, "listenBacklog").toInt,
+      getWithFallback(p, configPrefix, datatype, "serverName"),
+      getWithFallback(p, configPrefix, datatype, "portNumber").toInt,
+      getWithFallback(p, configPrefix, datatype, "user"),
+      getWithFallback(p, configPrefix, datatype, "password")
     )
 }
 
@@ -100,7 +110,10 @@ object InfluxConnection {
   * ==Configuration==
   *
   * This class is configured by the `influx.dataSource` config key group, which
-  * also configures [[InfluxHistoryConnection]].
+  * also configures [[InfluxHistoryConnection]]. Note that this will take
+  * configuration from subgroups depending on the database being pulled from:
+  * If the object is retrieving AMP data, it will use `influx.dataSource.amp`,
+  * and fall back to `influx.dataSource.default` if keys are not found under `amp`.
   *
   * - `listenAddress`: The address to listen on for this subscription.
   * If not specified, this will be automatically generated at runtime by

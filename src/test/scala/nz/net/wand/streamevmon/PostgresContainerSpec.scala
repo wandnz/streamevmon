@@ -17,8 +17,8 @@ class PostgresContainerSpec extends TestBase with ForAllTestContainer {
         getClass.getClassLoader.getResourceAsStream("default.properties"))
 
       db.withUsername(params.get("postgres.dataSource.user"))
-      db.withPassword(params.get("postgres.dataSource.user"))
-      db.withDatabaseName(params.get("postgres.dataSource.user"))
+      db.withPassword(params.get("postgres.dataSource.password"))
+      db.withDatabaseName(params.get("postgres.dataSource.databaseName"))
 
       db.withInitScript("nntsc.sql")
 
@@ -32,7 +32,7 @@ class PostgresContainerSpec extends TestBase with ForAllTestContainer {
           "&& " +
           "su postgres -c '/usr/lib/postgresql/10/bin/pg_ctl reload' " +
           "&& " +
-          "echo 'Reloaded config' > /test.txt"
+          "echo 'Reloaded config' > /has-reloaded"
       )
       db.stop()
     })

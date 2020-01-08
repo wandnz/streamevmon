@@ -70,17 +70,17 @@ class InfluxContainerSpec extends TestBase with ForAllTestContainer {
     listenAddress: String = null
   ): Map[String, String] = {
     Map(
-      "influx.dataSource.subscriptionName" -> subscriptionName,
-      "influx.dataSource.databaseName" -> container.database,
-      "influx.dataSource.retentionPolicyName" -> container.retentionPolicy,
-      "influx.dataSource.listenProtocol" -> "http",
-      "influx.dataSource.listenAddress" -> listenAddress,
-      "influx.dataSource.listenPort" -> "0",
-      "influx.dataSource.listenBacklog" -> "5",
-      "influx.dataSource.serverName" -> container.address,
-      "influx.dataSource.portNumber" -> container.port.toString,
-      "influx.dataSource.user" -> container.username,
-      "influx.dataSource.password" -> container.password,
+      "influx.dataSource.default.subscriptionName" -> subscriptionName,
+      "influx.dataSource.default.databaseName" -> container.database,
+      "influx.dataSource.default.retentionPolicyName" -> container.retentionPolicy,
+      "influx.dataSource.default.listenProtocol" -> "http",
+      "influx.dataSource.default.listenAddress" -> listenAddress,
+      "influx.dataSource.default.listenPort" -> "0",
+      "influx.dataSource.default.listenBacklog" -> "5",
+      "influx.dataSource.default.serverName" -> container.address,
+      "influx.dataSource.default.portNumber" -> container.port.toString,
+      "influx.dataSource.default.user" -> container.username,
+      "influx.dataSource.default.password" -> container.password,
       "influx.sink.databaseName" -> container.database,
       "influx.sink.retentionPolicy" -> container.retentionPolicy,
       "flink.maxLateness" -> "1"

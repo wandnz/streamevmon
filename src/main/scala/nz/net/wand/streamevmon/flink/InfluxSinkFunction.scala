@@ -25,7 +25,10 @@ import scala.concurrent.duration.Duration
   * ==Configuration==
   *
   * This class is configured first by the `influx.sink` config key group, then
-  * by `influx.dataSource` if a key is not found under `sink`.
+  * by `influx.dataSource.default` and finally `influx.dataSource.amp` if a key
+  * is not found under `sink`. ''Note that this means the InfluxDB username and
+  * password will default to the credentials for an AMP Influx instance if not
+  * specified!''
   *
   * - `serverName`: '''Required'''. The host that is running InfluxDB.
   *
@@ -74,10 +77,19 @@ class InfluxSinkFunction
     overrideParams = Some(config)
   }
 
+  /** A pretty gross way of getting a key from the config structure, with
+    * preference for influx.sink and then influx.dataSource.default.
+    */
   private[this] def getWithFallback(parameters: ParameterTool, key: String): String = {
-    val result = parameters.get(s"influx.sink.$key", "unset-sink-config-option")
-    if (result == "unset-sink-config-option") {
-      parameters.get(s"influx.dataSource.$key", null)
+    var result = parameters.get(s"influx.sink.$key", null)
+    if (result == null) {
+      result = parameters.get(s"influx.dataSource.default.$key", null)
+      if (result == null) {
+        parameters.get(s"influx.dataSource.amp.$key", null)
+      }
+      else {
+        result
+      }
     }
     else {
       result
@@ -88,7 +100,7 @@ class InfluxSinkFunction
     val host = getWithFallback(p, "serverName")
     if (host == null) {
       throw new RuntimeException(
-        "You must specify the config key 'influx.dataSource.serverName' " +
+        "You must specify the config key 'influx.dataSource.default.serverName' " +
           "or 'influx.sink.serverName'.")
     }
     host

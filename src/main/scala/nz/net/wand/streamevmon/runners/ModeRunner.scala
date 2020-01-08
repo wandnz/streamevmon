@@ -19,7 +19,7 @@ object ModeRunner {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    System.setProperty("influx.dataSource.subscriptionName", "ModeDetector")
+    System.setProperty("influx.dataSource.default.subscriptionName", "ModeDetector")
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 

@@ -11,9 +11,7 @@ object BigDataRunner {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    System.setProperty("influx.dataSource.subscriptionName", "BigDataRunner")
-    System.setProperty("influx.dataSource.databaseName", "bigdata")
-    System.setProperty("influx.dataSource.retentionPolicyName", "autogen")
+    System.setProperty("influx.dataSource.default.subscriptionName", "BigDataRunner")
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 

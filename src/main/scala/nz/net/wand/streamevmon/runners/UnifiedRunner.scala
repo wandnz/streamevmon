@@ -74,7 +74,7 @@ object UnifiedRunner {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    System.setProperty("influx.dataSource.subscriptionName", "UnifiedRunner")
+    System.setProperty("influx.dataSource.amp.subscriptionName", "UnifiedRunner")
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 

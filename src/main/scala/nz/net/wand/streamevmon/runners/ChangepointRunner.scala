@@ -24,7 +24,7 @@ object ChangepointRunner {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    System.setProperty("influx.dataSource.subscriptionName", "ChangepointDetector")
+    System.setProperty("influx.dataSource.default.subscriptionName", "ChangepointDetector")
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 

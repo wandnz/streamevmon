@@ -18,12 +18,13 @@ object InfluxSourceReceiver {
 
     env.enableCheckpointing(10000, CheckpointingMode.EXACTLY_ONCE)
 
+    System.setProperty("influx.dataSource.default.subscriptionName", "InfluxSourceReceiver")
+
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
     env
       .addSource(new MeasurementSourceFunction(fetchHistory = Duration.ofMinutes(1)))
       .name("Measurement Subscription")
-      .filter(_.stream == 3)
       .map(i =>
         s"${i.getClass.getSimpleName}(${new SimpleDateFormat("HH:mm:ss").format(Date.from(i.time))})")
       .print("Measurement")

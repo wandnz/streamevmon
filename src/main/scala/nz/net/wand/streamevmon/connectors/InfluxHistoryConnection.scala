@@ -19,6 +19,16 @@ import scala.reflect._
 /** Additional constructors for the companion class. */
 object InfluxHistoryConnection {
 
+  private[this] def getWithFallback(p: ParameterTool, configPrefix: String, datatype: String, item: String): String = {
+    val result = p.get(s"$configPrefix.$datatype.$item", null)
+    if (result == null) {
+      p.get(s"$configPrefix.default.$item")
+    }
+    else {
+      result
+    }
+  }
+
   /** Creates a new InfluxHistoryConnection from the given config. Expects all fields
     * specified in the companion class' main documentation to be present.
     *
@@ -29,14 +39,14 @@ object InfluxHistoryConnection {
     *
     * @return A new InfluxHistoryConnection object.
     */
-  def apply(p: ParameterTool, configPrefix: String = "influx.dataSource"): InfluxHistoryConnection =
+  def apply(p: ParameterTool, configPrefix: String = "influx.dataSource", datatype: String = "amp"): InfluxHistoryConnection =
     InfluxHistoryConnection(
-      p.get(s"$configPrefix.databaseName"),
-      p.get(s"$configPrefix.retentionPolicy"),
-      p.get(s"$configPrefix.serverName"),
-      p.getInt(s"$configPrefix.portNumber"),
-      p.get(s"$configPrefix.user"),
-      p.get(s"$configPrefix.password")
+      getWithFallback(p, configPrefix, datatype, "databaseName"),
+      getWithFallback(p, configPrefix, datatype, "retentionPolicy"),
+      getWithFallback(p, configPrefix, datatype, "serverName"),
+      getWithFallback(p, configPrefix, datatype, "portNumber").toInt,
+      getWithFallback(p, configPrefix, datatype, "user"),
+      getWithFallback(p, configPrefix, datatype, "password")
     )
 }
 
@@ -48,8 +58,8 @@ object InfluxHistoryConnection {
   *
   * ==Configuration==
   *
-  * This class is configured by the `influx.dataSource` config key group, which
-  * also configures [[InfluxConnection]].
+  * This class is configured by the `influx.dataSource` config key group. See
+  * [[InfluxConnection]] for additional details on how to configure this class.
   *
   * - `databaseName`: The name of the InfluxDB database to retrieve data from.
   * Default "nntsc".

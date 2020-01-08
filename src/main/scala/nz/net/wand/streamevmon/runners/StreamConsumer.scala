@@ -24,6 +24,8 @@ object StreamConsumer extends Logging {
 
     env.enableCheckpointing(10000, CheckpointingMode.EXACTLY_ONCE)
 
+    System.setProperty("influx.dataSource.default.subscriptionName", "StreamConsumer")
+
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
     val threshold = 0
