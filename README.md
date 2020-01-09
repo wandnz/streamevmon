@@ -28,9 +28,8 @@ The locations of these databases can be configured using
 `conf/streamevmon.properties`.
 
 To run automated tests, right-click on the test/scala/nz.net.wand.streamevmon/
-folder and select "Run ScalaTests in 'streamevmon'". You should have the ability
-to run Docker containers for many of these tests to work. Some tests are
-sensitive to timing and may work if the test suite is ran a second time.
+folder and select "Run ScalaTests in 'streamevmon'". You need the ability
+to run Docker containers for many of these tests to work.
 
 To generate documentation, use the menu item "Tools > Generate Scaladoc".
 
@@ -45,25 +44,14 @@ You can then upload it to a running Flink cluster. Be sure that your Flink
 instance is running the same versions of Flink and Scala as you built this
 project for - currently Scala 2.12 and Flink 1.9.1.
 
+To create a JAR with only the program code, go to `build.sbt` and uncomment the
+following line near the bottom:
+
+`assembly / assemblyOption := (assembly / assemblyOption).value.copy(includeScala = false, includeDependency = false)`
+
+To create a JAR with only the dependencies (useful for creating a new Flink
+Docker image with required dependencies baked in), run `assemblyPackageDependency`.
+
 ## Extending this project
 
-Extending this project is fairly straightforward. All code can be found in
-`src/main/scala`. You are encouraged to also write additional tests if you add
-new code.
-
-The project has a few main packages, and some classes which belong to the base
-package. See the ScalaDoc documentation for descriptions of the packages.
-
-To add a new detection algorithm, a new package should be created within
-`nz.net.wand.streamevmon.detectors`, with a descriptive name. A high-level
-description and configuration details should be placed in the documentation of
-the package object. Finally, an entrypoint that runs the detector in a Flink
-environment should be created in the `nz.net.wand.streamevmon.runners` package.
-See the `mode` package for an example of a reasonably simple stateful detector.
-
-Once your detector is complete, you should also add it to the `UnifiedRunner`.
-This will make it run in the default entrypoint for the program, along with the
-other enabled detectors. While extending the runner, you can also decide what
-type of measurements you want to accept, such as selecting from ICMP, DNS, or
-other measurement types, and whether you want lossy measurements to be filtered
-out before they get to you.
+See [CONTRIBUTING](CONTRIBUTING.md).

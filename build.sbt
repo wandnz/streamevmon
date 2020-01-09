@@ -91,8 +91,8 @@ fork := true
 test in assembly := {}
 
 // exclude Scala library from assembly
-assembly / assemblyOption := (assembly / assemblyOption).value.copy(includeScala = false, includeDependency = false)
-//assembly / assemblyOption := (assembly / assemblyOption).value.copy(includeScala = false, includeDependency = true)
+//assembly / assemblyOption := (assembly / assemblyOption).value.copy(includeScala = false, includeDependency = false)
+assembly / assemblyOption := (assembly / assemblyOption).value.copy(includeScala = false, includeDependency = true)
 assemblyPackageDependency / assemblyOption := (assemblyPackageDependency / assemblyOption).value.copy(includeScala = false)
 
 // exclude META-INF and use correct behaviour for duplicate library files
