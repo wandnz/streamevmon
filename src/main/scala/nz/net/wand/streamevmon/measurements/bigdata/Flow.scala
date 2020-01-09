@@ -17,15 +17,15 @@ case class Flow(
   capture_host                                                                                      : String,
 
   @Column("flow_id")
-  stream                                                                                            : Int,
+  stream: Int,
   @Column("type")
-  flow_type                                                                                         : FlowType,
-  category                                                                                          : String,
-  protocol                                                                                          : String,
+  flow_type: FlowType,
+  category: String,
+  protocol: String,
 
-  time                                                                                              : Instant,
+  time: Instant,
   @Column("start_ts")
-  start_time                                                                                        : Instant,
+  start_time: Instant,
   @Column("end_ts")
   end_time                                                                                          : Option[Instant],
   duration                                                                                          : Double,
@@ -35,7 +35,7 @@ case class Flow(
   @Column("ttfb")
   time_to_first_byte                                                                                : Double,
 
-  source_ip                                                                                         : InetAddress,
+  source_ip                                                                                         : String,
   @Column("src_port")
   source_port                                                                                       : Int,
   source_ip_city                                                                                    : Option[String],
@@ -45,15 +45,15 @@ case class Flow(
   source_ip_latitude                                                                                : Option[Double],
   source_ip_longitude                                                                               : Option[Double],
 
-  destination_ip                                                                                    : InetAddress,
+  destination_ip                                                                                    : String,
   @Column("dst_port")
   destination_port                                                                                  : Int,
-  destination_ip_city: Option[String],
-  destination_ip_country: Option[String],
+  destination_ip_city                                                                               : Option[String],
+  destination_ip_country                                                                            : Option[String],
   destination_ip_geohash                                                                            : Option[String],
   destination_ip_geohash_value                                                                      : Option[Int],
   destination_ip_latitude                                                                           : Option[Double],
-  destination_ip_longitude: Option[Double]
+  destination_ip_longitude                                                                          : Option[Double]
 ) extends Measurement {
   override def isLossy: Boolean = false
 
@@ -107,7 +107,7 @@ object Flow extends MeasurementFactory {
     * bigdata daemon was running with geolocation enabled.
     */
   case class Endpoint(
-    ip           : InetAddress,
+    ip           : String,
     port         : Int,
     city         : Option[String],
     country      : Option[String],
@@ -117,6 +117,8 @@ object Flow extends MeasurementFactory {
     longitude    : Option[Double]
   ) {
     val includesGeolocation: Boolean = geohash.isDefined
+
+    lazy val address: InetAddress = InetAddress.getByName(ip)
 
     override def equals(o: Any): Boolean = o match {
       case o: Endpoint => (ip, port) == (o.ip, o.port)
@@ -151,7 +153,7 @@ object Flow extends MeasurementFactory {
           getNamedField(data, "in_bytes").get.dropRight(1).toInt,
           getNamedField(data, "out_bytes").get.dropRight(1).toInt,
           getNamedField(data, "ttfb").get.toDouble,
-          InetAddress.getByName(getNamedField(data, "source_ip").get.drop(1).dropRight(1)),
+          getNamedField(data, "source_ip").get.drop(1).dropRight(1),
           getNamedField(data, "src_port").get.dropRight(1).toInt,
           getNamedField(data, "source_ip_city").map(_.drop(1).dropRight(1)),
           getNamedField(data, "source_ip_country").map(_.drop(1).dropRight(1)),
@@ -159,7 +161,7 @@ object Flow extends MeasurementFactory {
           getNamedField(data, "source_ip_geohash_value").map(_.toInt),
           getNamedField(data, "source_ip_latitude").map(_.toDouble),
           getNamedField(data, "source_ip_longitude").map(_.toDouble),
-          InetAddress.getByName(getNamedField(data, "destination_ip").get.drop(1).dropRight(1)),
+          getNamedField(data, "destination_ip").get.drop(1).dropRight(1),
           getNamedField(data, "dst_port").get.dropRight(1).toInt,
           getNamedField(data, "destination_ip_city").map(_.drop(1).dropRight(1)),
           getNamedField(data, "destination_ip_country").map(_.drop(1).dropRight(1)),

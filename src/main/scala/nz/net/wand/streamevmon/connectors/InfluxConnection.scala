@@ -285,15 +285,15 @@ case class InfluxConnection(
                 sys.addShutdownHook {
                   try {
                     Await.result(dropSubscription(), Duration.Inf)
-                    logger.debug(s"Removed subscription $subscriptionName")
+                    logger.debug(s"Removed subscription $subscriptionName on $dbName at $influxAddress:$influxPort")
                   }
                   catch {
                     case ex: Exception =>
                       logger.debug(
-                        s"Could not remove subscription $subscriptionName: ${ex.getMessage}")
+                        s"Could not remove subscription $subscriptionName on $dbName at $influxAddress:$influxPort: ${ex.getMessage}")
                   }
                 })
-              logger.info(s"Added subscription $subscriptionName at ${destinations.mkString(",")}")
+              logger.info(s"Added subscription $subscriptionName on $dbName at $influxAddress:$influxPort to ${destinations.mkString(",")}")
               Future(Right(subscribeResult.right.get))
             }
             else {
@@ -315,12 +315,13 @@ case class InfluxConnection(
           if (!hook._2.isAlive) {
             try {
               hook._2.remove
-            } catch {
+            }
+            catch {
               case _: IllegalStateException => // Already shutting down, so the hook will run.
             }
           }
         }
-        logger.debug(s"Dropping subscription $subscriptionName")
+        logger.debug(s"Dropping subscription $subscriptionName on $dbName at $influxAddress:$influxPort")
         db.dropSubscription(subscriptionName, dbName, rpName)
       case None => Future(Left(new IllegalStateException("No influx connection.")))
     }
@@ -366,7 +367,7 @@ case class InfluxConnection(
     * @return A management client if the connection was valid, otherwise None.
     */
   private[this] def getManagement: Option[AhcManagementClient] = {
-    def influx = InfluxMng(influxAddress, influxPort, Some(influxCredentials))
+    def influx: AhcManagementClient = InfluxMng(influxAddress, influxPort, Some(influxCredentials))
 
     if (checkConnection(influx)) {
       Some(influx)

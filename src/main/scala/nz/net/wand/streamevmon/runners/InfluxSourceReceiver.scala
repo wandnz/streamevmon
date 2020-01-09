@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.Configuration
-import nz.net.wand.streamevmon.flink.MeasurementSourceFunction
+import nz.net.wand.streamevmon.flink.AmpMeasurementSourceFunction
 
 import java.text.SimpleDateFormat
 import java.time.Duration
@@ -23,7 +23,7 @@ object InfluxSourceReceiver {
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
     env
-      .addSource(new MeasurementSourceFunction(fetchHistory = Duration.ofMinutes(1)))
+      .addSource(new AmpMeasurementSourceFunction(fetchHistory = Duration.ofMinutes(1)))
       .name("Measurement Subscription")
       .map(i =>
         s"${i.getClass.getSimpleName}(${new SimpleDateFormat("HH:mm:ss").format(Date.from(i.time))})")

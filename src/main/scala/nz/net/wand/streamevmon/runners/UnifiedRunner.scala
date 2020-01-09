@@ -6,9 +6,10 @@ import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, Norma
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.flink.{InfluxSinkFunction, MeasurementKeySelector, MeasurementSourceFunction}
+import nz.net.wand.streamevmon.flink._
 import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.measurements.amp._
+import nz.net.wand.streamevmon.measurements.bigdata.Flow
 
 import java.time.Duration
 
@@ -74,7 +75,8 @@ object UnifiedRunner {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    System.setProperty("influx.dataSource.amp.subscriptionName", "UnifiedRunner")
+    System.setProperty("influx.dataSource.amp.subscriptionName", "AmpUnifiedRunner")
+    System.setProperty("influx.dataSource.bigdata.subscriptionName", "BigDataUnifiedRunner")
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
@@ -82,20 +84,29 @@ object UnifiedRunner {
 
     env.enableCheckpointing(Duration.ofSeconds(10).toMillis, CheckpointingMode.EXACTLY_ONCE)
 
-    val measurementSource = env
-      .addSource(new MeasurementSourceFunction)
-      .name("Measurement Subscription")
-      .uid("measurement-source")
+    val ampMeasurementSource = env
+      .addSource(new AmpMeasurementSourceFunction)
+      .name("AMP Measurement Subscription")
+      .uid("amp-measurement-source")
+
+    val bigdataMeasurementSource = env
+      .addSource(new BigDataSourceFunction)
+      .name("Libtrace-Bigdata Measurement Subscription")
+      .uid("bigdata-measurement-source")
 
     val keySelector = new MeasurementKeySelector[Measurement]
 
-    val icmpStream = measurementSource
+    val icmpStream = ampMeasurementSource
       .filterType[ICMP]
       .notLossy[ICMP]
       .keyBy(keySelector)
 
-    val dnsStream = measurementSource
+    val dnsStream = ampMeasurementSource
       .filterType[DNS]
+      .keyBy(keySelector)
+
+    val flowStatisticStream = bigdataMeasurementSource
+      .filterType[Flow]
       .keyBy(keySelector)
 
     if (isEnabled(env, "changepoint")) {
@@ -118,7 +129,7 @@ object UnifiedRunner {
     val allEvents = detectors.length match {
       case 0 => None
       case 1 => Some(detectors.head)
-      // :_* just forces a sequence into the shape of varags.
+      // :_* just forces a sequence into the shape of varargs.
       case _ => Some(detectors.head.union(detectors.drop(1): _*))
     }
 

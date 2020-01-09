@@ -29,7 +29,7 @@ object StreamConsumer extends Logging {
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
     val threshold = 0
-    val sourceFunction = new RichMeasurementSourceFunction
+    val sourceFunction = new AmpRichMeasurementSourceFunction
     val processFunction = new SimpleThresholdDetector[RichMeasurement](threshold)
     val sinkFunction = new InfluxSinkFunction
     val windowSize = 1

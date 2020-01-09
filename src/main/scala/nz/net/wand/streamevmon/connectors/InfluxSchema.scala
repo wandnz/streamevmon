@@ -4,7 +4,6 @@ import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow
 import nz.net.wand.streamevmon.measurements.bigdata.Flow.FlowType
 
-import java.net.InetAddress
 import java.time.Instant
 
 import com.github.fsanaulla.chronicler.core.alias.ErrorOr
@@ -187,7 +186,7 @@ object InfluxSchema {
             js.get(cols.indexOf("in_bytes")).asInt,
             js.get(cols.indexOf("out_bytes")).asInt,
             js.get(cols.indexOf("ttfb")).asDouble,
-            InetAddress.getByName(js.get(cols.indexOf("source_ip")).asString),
+            js.get(cols.indexOf("source_ip")).asString,
             js.get(cols.indexOf("src_port")).asInt,
             nullToOption(js.get(cols.indexOf("source_ip_city"))).map(_.asString),
             nullToOption(js.get(cols.indexOf("source_ip_country"))).map(_.asString),
@@ -195,7 +194,7 @@ object InfluxSchema {
             nullToOption(js.get(cols.indexOf("source_ip_geohash_value"))).map(_.asInt),
             nullToOption(js.get(cols.indexOf("source_ip_latitude"))).map(_.asDouble),
             nullToOption(js.get(cols.indexOf("source_ip_longitude"))).map(_.asDouble),
-            InetAddress.getByName(js.get(cols.indexOf("destination_ip")).asString),
+            js.get(cols.indexOf("destination_ip")).asString,
             js.get(cols.indexOf("dst_port")).asInt,
             nullToOption(js.get(cols.indexOf("destination_ip_city"))).map(_.asString),
             nullToOption(js.get(cols.indexOf("destination_ip_country"))).map(_.asString),

@@ -29,13 +29,6 @@ import scala.collection.JavaConverters._
   *
   * ==Configuration==
   *
-  * - flink.maxLateness: The number of seconds after receiving data that a
-  * watermark should be emitted for the time at which the data was received.
-  * After this watermark is emitted, any data which is received with a
-  * timestamp that occurs before that watermark is considered late. Currently,
-  * late data is dropped.
-  * Default 1.
-  *
   * If a custom configuration is desired, the overrideConfig function can be
   * called before any calls to run(). This will replace the configuration
   * obtained from Flink's global configuration storage.
@@ -47,11 +40,12 @@ import scala.collection.JavaConverters._
   *
   * @tparam T The type used to represent the data received.
   *
-  * @see [[MeasurementSourceFunction]]
-  * @see [[RichMeasurementSourceFunction]]
+  * @see [[AmpMeasurementSourceFunction]]
+  * @see [[AmpRichMeasurementSourceFunction]]
   */
 abstract class InfluxSourceFunction[T <: Measurement](
   configPrefix: String = "influx.dataSource",
+  datatype    : String = "amp",
   fetchHistory: Duration = Duration.ZERO
 )
   extends RichSourceFunction[T]
@@ -63,8 +57,6 @@ abstract class InfluxSourceFunction[T <: Measurement](
   @transient private[this] var isRunning = false
 
   private[this] var listener: Option[ServerSocket] = Option.empty
-
-  @transient private[this] var maxLateness: Int = 0
 
   @transient private[this] var influxConnection: Option[InfluxConnection] = None
 
@@ -104,16 +96,14 @@ abstract class InfluxSourceFunction[T <: Measurement](
   override def run(ctx: SourceFunction.SourceContext[T]): Unit = {
     // Set up config
     if (overrideParams.isDefined) {
-      influxConnection = Some(InfluxConnection(overrideParams.get, configPrefix))
-      influxHistory = Some(InfluxHistoryConnection(overrideParams.get, configPrefix))
-      maxLateness = overrideParams.get.getInt("flink.maxLateness")
+      influxConnection = Some(InfluxConnection(overrideParams.get, configPrefix, datatype))
+      influxHistory = Some(InfluxHistoryConnection(overrideParams.get, configPrefix, datatype))
     }
     else {
       val params: ParameterTool =
         getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
-      influxConnection = Some(InfluxConnection(params, configPrefix))
-      influxHistory = Some(InfluxHistoryConnection(params, configPrefix))
-      maxLateness = params.getInt("flink.maxLateness")
+      influxConnection = Some(InfluxConnection(params, configPrefix, datatype))
+      influxHistory = Some(InfluxHistoryConnection(params, configPrefix, datatype))
     }
 
     if (getRuntimeContext.getNumberOfParallelSubtasks > 1) {

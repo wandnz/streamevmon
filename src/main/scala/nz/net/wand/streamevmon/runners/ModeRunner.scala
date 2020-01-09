@@ -29,7 +29,7 @@ object ModeRunner {
 
     val source = env
       /*
-          .addSource(new MeasurementSourceFunction)
+          .addSource(new AmpMeasurementSourceFunction)
           .setParallelism(1)
           .name("Measurement Subscription")
           .uid("mode-measurement-sourcefunction")

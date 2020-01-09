@@ -2,6 +2,7 @@ package nz.net.wand.streamevmon.measurements
 
 import nz.net.wand.streamevmon.connectors.PostgresConnection
 import nz.net.wand.streamevmon.measurements.amp._
+import nz.net.wand.streamevmon.measurements.bigdata.Flow
 
 import org.squeryl.annotations.Column
 
@@ -194,8 +195,9 @@ object MeasurementFactory {
       case x if x.startsWith(DNS.table_name)        => DNS.create(x)
       case x if x.startsWith(Traceroute.table_name) => Traceroute.create(x)
       case x if x.startsWith(TCPPing.table_name)    => TCPPing.create(x)
-      case x if x.startsWith(HTTP.table_name)       => HTTP.create(x)
-      case _                                        => None
+      case x if x.startsWith(HTTP.table_name) => HTTP.create(x)
+      case x if x.startsWith(Flow.table_name) => Flow.create(x)
+      case _ => None
     }
   }
 
