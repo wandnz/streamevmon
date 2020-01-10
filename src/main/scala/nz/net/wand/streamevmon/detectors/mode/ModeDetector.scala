@@ -3,11 +3,9 @@ package nz.net.wand.streamevmon.detectors.mode
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector._
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.Measurement
-import nz.net.wand.streamevmon.Graphing
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.latencyts._
 
-import java.awt.Color
 import java.math.{MathContext, RoundingMode}
 import java.time.{Duration, Instant}
 
@@ -29,7 +27,6 @@ import scala.collection.mutable
   */
 class ModeDetector[MeasT <: Measurement]
   extends KeyedProcessFunction[String, MeasT, Event]
-          with Graphing
           with CheckpointedFunction {
 
   final val detectorName = "Mode Detector"
@@ -117,13 +114,7 @@ class ModeDetector[MeasT <: Measurement]
     if (maxHistory < 5) {
       throw new IllegalArgumentException("maxHistory set too low! Must be at least 5.")
     }
-
-    registerSeries("Mode Count", paint = Color.RED)
-    registerSeries("Secondary Mode Count", paint = Color.BLUE)
   }
-
-  /** Save a graph when we're done (if that function is enabled) */
-  override def close(): Unit = saveGraph()
 
   /** Resets the state of the detector. Happens on the first measurement, and
     * any time there's been a reasonable amount of time between the last one and
@@ -311,8 +302,6 @@ class ModeDetector[MeasT <: Measurement]
     }
 
     updateModes()
-    addToSeries("Mode Count", modeIndexes.value.primary.count, value.time)
-    addToSeries("Secondary Mode Count", modeIndexes.value.secondary.count, value.time)
 
     // If our history isn't full yet, there's no point checking for events.
     if (history.value.length < maxHistory) {

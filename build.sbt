@@ -41,12 +41,6 @@ val logDependencies = Seq(
   "org.slf4j" % "slf4j-simple" % "1.7.30" % Provided
 )
 
-val graphDependencies = Seq(
-  "org.jfree" % "jfreechart" % "1.5.0",
-  "org.jfree" % "jfreesvg" % "3.4"
-)
-excludeDependencies += "org.slf4j" % "slf4j-log4j12"
-
 val testDependencies = Seq(
   "org.apache.flink" %% "flink-test-utils" % flinkVersion % Test,
   "org.apache.flink" %% "flink-runtime" % flinkVersion % Test classifier "tests",
@@ -65,7 +59,6 @@ lazy val root = (project in file(".")).
       postgresDependencies ++
       cacheDependencies ++
       logDependencies ++
-        graphDependencies ++
       testDependencies
   )
 

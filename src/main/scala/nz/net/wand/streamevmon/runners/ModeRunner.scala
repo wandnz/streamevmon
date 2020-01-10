@@ -40,7 +40,6 @@ object ModeRunner {
       .keyBy(new MeasurementKeySelector[LatencyTSAmpICMP])
 
     val detector = new ModeDetector[LatencyTSAmpICMP]
-    detector.enableGraphing("out/graphs/mode.svg", detector.detectorName)
 
     val process = source
       .process(detector)
