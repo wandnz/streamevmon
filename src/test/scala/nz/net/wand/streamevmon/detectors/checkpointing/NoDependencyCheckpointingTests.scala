@@ -3,9 +3,7 @@ package nz.net.wand.streamevmon.detectors.checkpointing
 import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, NormalDistribution}
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
-import nz.net.wand.streamevmon.detectors.MapFunction
 import nz.net.wand.streamevmon.measurements.Measurement
-import nz.net.wand.streamevmon.measurements.amp.ICMP
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.streaming.api.scala._
@@ -17,13 +15,9 @@ class NoDependencyCheckpointingTests extends CheckpointingTestBase {
         implicit val ti: TypeInformation[NormalDistribution[Measurement]] =
           TypeInformation.of(classOf[NormalDistribution[Measurement]])
 
-        class IcmpToMedian() extends MapFunction[Measurement, Double] with Serializable {
-          override def apply(t: Measurement): Double = t.asInstanceOf[ICMP].median.get
-        }
-
         implicit val detector: ChangepointDetector[Measurement, NormalDistribution[Measurement]] =
           new ChangepointDetector[Measurement, NormalDistribution[Measurement]](
-            new NormalDistribution[Measurement](mean = 0, new IcmpToMedian)
+            new NormalDistribution[Measurement](mean = 0)
           )
 
         var harness = newHarness

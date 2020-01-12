@@ -1,7 +1,9 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
-import nz.net.wand.streamevmon.detectors.MapFunction
 import nz.net.wand.streamevmon.TestBase
+import nz.net.wand.streamevmon.measurements.Measurement
+
+import java.time.Instant
 
 import org.apache.flink.streaming.api.scala._
 
@@ -13,14 +15,19 @@ class DistributionTest extends TestBase {
 
   "NormalDistribution" should {
     "generate the correct values" in {
-      class BoringDoubleToDouble extends MapFunction[Double, Double] {
-        override def apply(t: Double): Double = t
+      case class JustADouble(d: Double) extends Measurement {
+        override val stream: Int = -1
+        override val time: Instant = Instant.EPOCH
+
+        override def isLossy: Boolean = false
+
+        override var defaultValue: Option[Double] = Some(d)
       }
-      val initial = new NormalDistribution[Double](
+
+      val initial = new NormalDistribution[JustADouble](
         mean = 0.0,
         n = 0,
-        variance = 1E8,
-        mapFunction = new BoringDoubleToDouble
+        variance = 1E8
       )
 
       // shouldEqual correctly uses scalactic DoubleEquality, while shouldBe doesn't.
@@ -35,8 +42,8 @@ class DistributionTest extends TestBase {
       // for the given progression of inputs.
       // The normal distribution is a bit wacky in that it fakes how many elements
       // are used in the calculation of the first mean.
-      initial.pdf(0) shouldEqual 0.00003989422804014325
-      initial.pdf(1) shouldEqual 0.0000398942278406721
+      initial.pdf(JustADouble(0)) shouldEqual 0.00003989422804014325
+      initial.pdf(JustADouble(1)) shouldEqual 0.0000398942278406721
 
       var current = initial
       val numbersToAdd = Seq(1.0, 0.5, -1.0, 2.0, -3.0, 4.0, -5.0)
@@ -52,11 +59,11 @@ class DistributionTest extends TestBase {
                case (((x, y), z), w) => (x, y, z, w)
              }) {
         i += 1
-        current = current.withPoint(newPoint, i)
+        current = current.withPoint(JustADouble(newPoint), i)
 
         current.mean shouldEqual mean
         current.variance shouldEqual variance
-        current.pdf(1) shouldEqual pdf
+        current.pdf(JustADouble(1)) shouldEqual pdf
       }
     }
   }

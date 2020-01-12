@@ -81,6 +81,8 @@ case class RichDNS(
   }
 
   override def isLossy: Boolean = lossrate > 0.0
+
+  var defaultValue: Option[Double] = rtt.map(_.toDouble)
 }
 
 object RichDNS extends RichMeasurementFactory {

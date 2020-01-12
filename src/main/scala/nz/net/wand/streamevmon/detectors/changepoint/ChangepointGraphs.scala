@@ -2,7 +2,6 @@ package nz.net.wand.streamevmon.detectors.changepoint
 
 import nz.net.wand.streamevmon.flink.{LatencyTSAmpFileInputFormat, MeasurementKeySelector}
 import nz.net.wand.streamevmon.Configuration
-import nz.net.wand.streamevmon.detectors.MapFunction
 import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
 
 import java.io.File
@@ -47,16 +46,9 @@ object ChangepointGraphs {
 
     implicit val ti: TypeInformation[NormalDistribution[LatencyTSAmpICMP]] = TypeInformation.of(classOf[NormalDistribution[LatencyTSAmpICMP]])
 
-    case class TsIcmpToAverage() extends MapFunction[LatencyTSAmpICMP, Double] {
-      override def apply(t: LatencyTSAmpICMP): Double = t.average
-    }
-
     val detector =
       new ChangepointDetector[LatencyTSAmpICMP, NormalDistribution[LatencyTSAmpICMP]](
-        new NormalDistribution[LatencyTSAmpICMP](
-          mean = 0,
-          mapFunction = new TsIcmpToAverage
-        ),
+        new NormalDistribution[LatencyTSAmpICMP](mean = 0),
         shouldDoGraphs = true,
         Some(file)
       )

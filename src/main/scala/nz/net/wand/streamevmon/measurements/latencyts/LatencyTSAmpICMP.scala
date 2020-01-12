@@ -27,6 +27,8 @@ case class LatencyTSAmpICMP(
   }
 
   override def isLossy: Boolean = lossrate > 0.0
+
+  var defaultValue: Option[Double] = Some(average)
 }
 
 object LatencyTSAmpICMP {

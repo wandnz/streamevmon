@@ -42,6 +42,8 @@ case class RichICMP(
   }
 
   override def isLossy: Boolean = loss > 0
+
+  var defaultValue: Option[Double] = median.map(_.toDouble)
 }
 
 object RichICMP extends RichMeasurementFactory {

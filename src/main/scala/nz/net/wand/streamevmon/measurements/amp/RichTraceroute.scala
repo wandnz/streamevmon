@@ -33,6 +33,8 @@ case class RichTraceroute(
   }
 
   override def isLossy: Boolean = false
+
+  var defaultValue: Option[Double] = Some(path_length)
 }
 
 object RichTraceroute extends RichMeasurementFactory {

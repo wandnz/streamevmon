@@ -34,6 +34,8 @@ final case class ICMP(
   }
 
   override def isLossy: Boolean = loss > 0
+
+  var defaultValue: Option[Double] = median.map(_.toDouble)
 }
 
 object ICMP extends MeasurementFactory {

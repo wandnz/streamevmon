@@ -47,6 +47,8 @@ case class LatencyTSSmokeping(
   }
 
   override def isLossy: Boolean = loss > 0
+
+  var defaultValue: Option[Double] = median
 }
 
 object LatencyTSSmokeping {

@@ -46,6 +46,8 @@ case class RichTCPPing(
   }
 
   override def isLossy: Boolean = loss > 0
+
+  var defaultValue: Option[Double] = median.map(_.toDouble)
 }
 
 object RichTCPPing extends RichMeasurementFactory {

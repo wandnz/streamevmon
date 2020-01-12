@@ -48,6 +48,8 @@ case class RichHTTP(
   }
 
   override def isLossy: Boolean = false
+
+  var defaultValue: Option[Double] = Some(bytes)
 }
 
 object RichHTTP extends RichMeasurementFactory {

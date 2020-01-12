@@ -36,6 +36,8 @@ final case class TCPPing(
   }
 
   override def isLossy: Boolean = loss > 0
+
+  var defaultValue: Option[Double] = median.map(_.toDouble)
 }
 
 object TCPPing extends MeasurementFactory {

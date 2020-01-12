@@ -4,7 +4,6 @@ import nz.net.wand.streamevmon.flink.{AmpMeasurementSourceFunction, InfluxSinkFu
 import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.changepoint._
-import nz.net.wand.streamevmon.detectors.MapFunction
 import nz.net.wand.streamevmon.measurements.amp.ICMP
 
 import java.time.Duration
@@ -46,13 +45,9 @@ object ChangepointRunner {
 
     implicit val ti: TypeInformation[NormalDistribution[Measurement]] = TypeInformation.of(classOf[NormalDistribution[Measurement]])
 
-    class IcmpToMedian() extends MapFunction[Measurement, Double] with Serializable {
-      override def apply(t: Measurement): Double = t.asInstanceOf[ICMP].median.get
-    }
-
     val detector = new ChangepointDetector
                          [Measurement, NormalDistribution[Measurement]](
-      new NormalDistribution(mean = 0, mapFunction = new IcmpToMedian)
+      new NormalDistribution(mean = 0)
     )
 
     val process = source

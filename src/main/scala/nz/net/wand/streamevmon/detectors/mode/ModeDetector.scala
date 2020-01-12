@@ -3,8 +3,6 @@ package nz.net.wand.streamevmon.detectors.mode
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector._
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.Measurement
-import nz.net.wand.streamevmon.measurements.amp._
-import nz.net.wand.streamevmon.measurements.latencyts._
 
 import java.math.{MathContext, RoundingMode}
 import java.time.{Duration, Instant}
@@ -124,23 +122,6 @@ class ModeDetector[MeasT <: Measurement]
     lastObserved.update(value.time)
     history.update(mutable.Queue())
     modeIndexes.update(unsetModeIndexes)
-  }
-
-  /** Maps a supported measurement to a useful value. We mostly deal with the
-    * downscaled, bucketed values to avoid using the raw, jittery measurements.
-    */
-  private def mapFunction(value: MeasT): Int = {
-    value match {
-      case t: ICMP => t.median.get
-      case t: DNS => t.rtt.get
-      case t: TCPPing => t.median.get
-      case t: LatencyTSAmpICMP => t.average
-      case t: LatencyTSSmokeping => t.median.get.toInt
-      case _ =>
-        throw new IllegalArgumentException(
-          s"Unsupported measurement type for Mode Detector: $value"
-        )
-    }
   }
 
   private val roundingAmount: MathContext = new MathContext(2, RoundingMode.FLOOR)
@@ -296,7 +277,7 @@ class ModeDetector[MeasT <: Measurement]
     }
 
     // Add the value into the queue.
-    history.value.enqueue(HistoryItem(getNewUid, mapFunction(value)))
+    history.value.enqueue(HistoryItem(getNewUid, value.defaultValue.get.toInt))
     if (history.value.length > maxHistory) {
       history.value.dequeue()
     }

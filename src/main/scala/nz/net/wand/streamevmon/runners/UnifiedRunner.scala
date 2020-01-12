@@ -1,7 +1,6 @@
 package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.Configuration
-import nz.net.wand.streamevmon.detectors.MapFunction
 import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, NormalDistribution}
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
@@ -27,10 +26,6 @@ object UnifiedRunner {
 
   implicit val normalDistributionTypeInformation: TypeInformation[NormalDistribution[Measurement]] =
     TypeInformation.of(classOf[NormalDistribution[Measurement]])
-
-  class IcmpToMedian() extends MapFunction[Measurement, Double] with Serializable {
-    override def apply(t: Measurement): Double = t.asInstanceOf[ICMP].median.get
-  }
 
   implicit class DataStreamExtensions(source: DataStream[Measurement]) {
     implicit def filterType[T <: Measurement: ClassTag]: DataStream[Measurement] = {
@@ -111,7 +106,7 @@ object UnifiedRunner {
 
     if (isEnabled(env, "changepoint")) {
       val changepoint = new ChangepointDetector[Measurement, NormalDistribution[Measurement]](
-        new NormalDistribution(mean = 0, mapFunction = new IcmpToMedian)
+        new NormalDistribution(mean = 0)
       )
       icmpStream.addDetector(changepoint, changepoint.detectorName, "changepoint-detector")
     }

@@ -395,7 +395,7 @@ case class ChangepointProcessor[MeasT <: Measurement : TypeInformation, DistT <:
     }
     val formatter: Run => String = x => s"${x.prob},${x.dist.n},${x.dist.mean},${x.dist.variance}"
 
-    writer.print(s"${initialDistribution.asInstanceOf[NormalDistribution[MeasT]].mapFunction(value)},")
+    writer.print(s"${value.defaultValue},")
     writer.print(s"$previousMostLikelyIndex,")
     writer.print(s"$mostLikelyIndex,")
     writer.print(s"$magicFlagOfGraphing,")
@@ -405,7 +405,7 @@ case class ChangepointProcessor[MeasT <: Measurement : TypeInformation, DistT <:
     writer.println()
     writer.flush()
 
-    writerPdf.print(s"${initialDistribution.asInstanceOf[NormalDistribution[MeasT]].mapFunction(value)},")
+    writerPdf.print(s"${value.defaultValue},")
     currentRuns.foreach(x => writerPdf.print(s"${x.dist.pdf(value)},"))
     writerPdf.println()
     writerPdf.flush()

@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
-import nz.net.wand.streamevmon.detectors.MapFunction
+import nz.net.wand.streamevmon.measurements.Measurement
 
 /** Mixed into classes representing continuous probability distributions
   * that evolve as more data is provided to them.
@@ -10,22 +10,14 @@ import nz.net.wand.streamevmon.detectors.MapFunction
   *           [[ChangepointDetector]].
   *
   * @see [[NormalDistribution]]
-  * @see [[MapFunction]]
   */
-trait Distribution[T] {
+trait Distribution[T <: Measurement] {
 
   /** A friendly name for this distribution. */
   val distributionName: String
 
-  /** The function to apply to elements of type T to obtain the relevant data
-    * for this distribution. For example, an ICMP measurement would most likely
-    * have its latency value extracted.
-    */
-  val mapFunction: MapFunction[T, Double]
-
   /** The probability density function, returning the relative likelihood for a
-    * continuous random variable to take the value that arises after applying
-    * mapFunction to x.
+    * continuous random variable to take the value of x.defaultValue.
     *
     * [[https://en.wikipedia.org/wiki/Probability_density_function]]
     */

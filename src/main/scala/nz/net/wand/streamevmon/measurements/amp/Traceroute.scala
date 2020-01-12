@@ -24,6 +24,8 @@ final case class Traceroute(
   }
 
   override def isLossy: Boolean = false
+
+  var defaultValue: Option[Double] = Some(path_length)
 }
 
 object Traceroute extends MeasurementFactory {

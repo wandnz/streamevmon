@@ -22,14 +22,7 @@ While the serialisation process generally works quite well despite many classes
 having to fall back to the slower Kryo serialiser, it has a few weaknesses that
 must be kept in mind.
 
-* Serialising lambdas does not appear to be supported. Instead, a `MapFunction`
-  type is supplied which can be treated similarly.
-  * Implementations of this class must be fully fledged independent classes, and
-    not inner classes or anonymous classes.
-  * This class allows detectors to defer selection of which field of a measurement
-    they consider relevant. Its use can be avoided by selecting fields manually,
-    such as in `ModeDetector.mapFunction`. This pattern may be deprecated in the
-    future (see issue #13).
+* Serialising lambdas does not appear to be supported.
 * While the Flink documentation discusses the treatment of case classes as POJO
   types, which are serialised more efficiently. Testing has shown this to not
   always be the case, but it is unclear what causes the difference. The Kryo

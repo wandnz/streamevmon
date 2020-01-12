@@ -57,6 +57,8 @@ case class Flow(
 ) extends Measurement {
   override def isLossy: Boolean = false
 
+  var defaultValue: Option[Double] = Some(time_to_first_byte)
+
   val includesGeolocation: Boolean = source_ip_geohash.isDefined
 
   /** We'd put the source and destination Endpoint objects directly in the

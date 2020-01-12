@@ -58,6 +58,8 @@ final case class DNS(
   }
 
   override def isLossy: Boolean = lossrate > 0.0
+
+  var defaultValue: Option[Double] = rtt.map(_.toDouble)
 }
 
 object DNS extends MeasurementFactory {

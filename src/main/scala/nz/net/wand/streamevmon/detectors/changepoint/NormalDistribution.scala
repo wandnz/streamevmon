@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.detectors.MapFunction
+import nz.net.wand.streamevmon.measurements.Measurement
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.scalactic.{Equality, TolerantNumerics}
@@ -9,22 +9,17 @@ import org.scalactic.{Equality, TolerantNumerics}
 /** An implementation of a normal distribution whose parameters are based on
   * the points provided to it.
   *
-  * @param n           The number of measurements that have been used to create the
-  *                    distribution parameters. Note that using .withPoint allows the
-  *                    caller to supply a custom n, so this might not actually reflect
-  *                    the true number.
-  * @param mapFunction The function to apply to elements of type T to obtain the
-  *                    relevant data for this distribution.  For example, an
-  *                    ICMP measurement would most likely have its latency value
-  *                    extracted.
+  * @param n The number of measurements that have been used to create the
+  *          distribution parameters. Note that using .withPoint allows the
+  *          caller to supply a custom n, so this might not actually reflect
+  *          the true number.
   *
   * @see [[https://en.wikipedia.org/wiki/Normal_distribution]]
   */
-case class NormalDistribution[T: TypeInformation](
-  mean       : Double,
-  mapFunction: MapFunction[T, Double],
-  variance   : Double = NormalDistribution.defaultVariance,
-  n          : Int = 0
+case class NormalDistribution[T <: Measurement : TypeInformation](
+  mean: Double,
+  variance: Double = NormalDistribution.defaultVariance,
+  n: Int = 0
 )
   extends Distribution[T] with Logging {
 
@@ -37,7 +32,7 @@ case class NormalDistribution[T: TypeInformation](
   override val distributionName: String = "Normal Distribution"
 
   override def pdf(x: T): Double = {
-    val y = mapFunction(x)
+    val y = x.defaultValue.get
 
     // If the variance is 0, we should instead use some other small
     // value to prevent the PDF function from becoming a delta function,
@@ -63,12 +58,12 @@ case class NormalDistribution[T: TypeInformation](
     else {
       newN
     }
-    val newValue = mapFunction(newT)
+    val newValue = newT.defaultValue.get
     val newMean = ((mean * fakeNForMean) + newValue) / (fakeNForMean + 1)
     val diff = (newValue - newMean) * (newValue - mean)
     val newVariance = (variance * newN + diff) / (newN + 1)
 
-    NormalDistribution(newMean, mapFunction, newVariance, newN)
+    NormalDistribution(newMean, newVariance, newN)
   }
 }
 
@@ -80,12 +75,4 @@ object NormalDistribution {
     TolerantNumerics.tolerantDoubleEquality(1E-15)
 
   private[changepoint] val defaultVariance: Double = 1E8
-
-  def apply[T: TypeInformation](dist: NormalDistribution[T]): NormalDistribution[T] = {
-    NormalDistribution(dist.mean, dist.mapFunction, dist.variance, dist.n)
-  }
-
-  def apply[T: TypeInformation](item: T, mapFunction: MapFunction[T, Double]): NormalDistribution[T] = {
-    NormalDistribution(mapFunction(item), mapFunction, defaultVariance, n = 1)
-  }
 }

@@ -30,6 +30,8 @@ final case class HTTP(
   }
 
   override def isLossy: Boolean = false
+
+  var defaultValue: Option[Double] = Some(bytes)
 }
 
 object HTTP extends MeasurementFactory {
