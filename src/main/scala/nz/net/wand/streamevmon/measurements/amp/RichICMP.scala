@@ -12,18 +12,18 @@ import java.time.{Instant, ZoneId}
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-icmp]]
   */
 case class RichICMP(
-    stream: Int,
-    source: String,
-    destination: String,
-    family: String,
-    packet_size_selection: String,
-    loss: Int,
-    lossrate: Double,
-    median: Option[Int],
-    packet_size: Int,
-    results: Int,
-    rtts: Seq[Option[Int]],
-    time: Instant
+  stream               : Int,
+  source               : String,
+  destination          : String,
+  family               : String,
+  packet_size_selection: String,
+  loss                 : Option[Int],
+  lossrate             : Option[Double],
+  median               : Option[Int],
+  packet_size          : Int,
+  results              : Option[Int],
+  rtts                 : Seq[Option[Int]],
+  time                 : Instant
 ) extends RichMeasurement {
   override def toString: String = {
     s"${ICMP.table_name}," +
@@ -41,7 +41,7 @@ case class RichICMP(
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 
-  override def isLossy: Boolean = loss > 0
+  override def isLossy: Boolean = loss.getOrElse(100) > 0
 
   var defaultValue: Option[Double] = median.map(_.toDouble)
 }

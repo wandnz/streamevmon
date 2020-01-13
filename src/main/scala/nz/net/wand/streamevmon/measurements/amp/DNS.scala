@@ -12,25 +12,25 @@ import java.util.concurrent.TimeUnit
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-dns]]
   */
 final case class DNS(
-    stream: Int,
-    flag_aa: Option[Boolean],
-    flag_ad: Option[Boolean],
-    flag_cd: Option[Boolean],
-    flag_qr: Option[Boolean],
-    flag_ra: Option[Boolean],
-    flag_rd: Option[Boolean],
-    flag_tc: Option[Boolean],
-    lossrate: Double,
-    opcode: Option[Int],
-    query_len: Int,
-    rcode: Option[Int],
-    requests: Int,
-    response_size: Option[Int],
-    rtt: Option[Int],
-    total_additional: Option[Int],
-    total_answer: Option[Int],
-    total_authority: Option[Int],
-    ttl: Option[Int],
+  stream          : Int,
+  flag_aa         : Option[Boolean],
+  flag_ad         : Option[Boolean],
+  flag_cd         : Option[Boolean],
+  flag_qr         : Option[Boolean],
+  flag_ra         : Option[Boolean],
+  flag_rd         : Option[Boolean],
+  flag_tc         : Option[Boolean],
+  lossrate        : Option[Double],
+  opcode          : Option[Int],
+  query_len       : Int,
+  rcode           : Option[Int],
+  requests        : Int,
+  response_size   : Option[Int],
+  rtt             : Option[Int],
+  total_additional: Option[Int],
+  total_answer    : Option[Int],
+  total_authority : Option[Int],
+  ttl             : Option[Int],
     time: Instant
 ) extends Measurement {
   override def toString: String = {
@@ -57,7 +57,7 @@ final case class DNS(
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 
-  override def isLossy: Boolean = lossrate > 0.0
+  override def isLossy: Boolean = lossrate.getOrElse(1.0) > 0.0
 
   var defaultValue: Option[Double] = rtt.map(_.toDouble)
 }
@@ -84,7 +84,7 @@ object DNS extends MeasurementFactory {
           getNamedField(data, "flag_ra").map(_.toBoolean),
           getNamedField(data, "flag_rd").map(_.toBoolean),
           getNamedField(data, "flag_tc").map(_.toBoolean),
-          getNamedField(data, "lossrate").get.toDouble,
+          getNamedField(data, "lossrate").map(_.toDouble),
           getNamedField(data, "opcode").map(_.dropRight(1).toInt),
           getNamedField(data, "query_len").get.dropRight(1).toInt,
           getNamedField(data, "rcode").map(_.dropRight(1).toInt),

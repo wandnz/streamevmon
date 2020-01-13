@@ -12,14 +12,14 @@ import java.util.concurrent.TimeUnit
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-icmp]]
   */
 final case class ICMP(
-    stream: Int,
-    loss: Int,
-    lossrate: Double,
-    median: Option[Int],
-    packet_size: Int,
-    results: Int,
-    rtts: Seq[Option[Int]],
-    time: Instant
+  stream: Int,
+  loss: Option[Int],
+  lossrate: Option[Double],
+  median: Option[Int],
+  packet_size: Int,
+  results: Option[Int],
+  rtts: Seq[Option[Int]],
+  time  : Instant
 ) extends Measurement {
   override def toString: String = {
     s"${ICMP.table_name}," +
@@ -33,7 +33,7 @@ final case class ICMP(
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 
-  override def isLossy: Boolean = loss > 0
+  override def isLossy: Boolean = loss.getOrElse(100) > 0
 
   var defaultValue: Option[Double] = median.map(_.toDouble)
 }
@@ -45,14 +45,14 @@ object ICMP extends MeasurementFactory {
   override def columnNames: Seq[String] = getColumnNames[ICMP]
 
   def apply(
-    stream: Int,
-    loss: Int,
-    lossrate: Double,
-    median: Option[Int],
+    stream     : Int,
+    loss       : Option[Int],
+    lossrate   : Option[Double],
+    median     : Option[Int],
     packet_size: Int,
-    results: Int,
-    rtts: String,
-    time: Instant
+    results    : Option[Int],
+    rtts       : String,
+    time       : Instant
   ): ICMP =
     new ICMP(
       stream,
@@ -74,11 +74,11 @@ object ICMP extends MeasurementFactory {
       Some(
         ICMP(
           getNamedField(data, "stream").get.toInt,
-          getNamedField(data, "loss").get.dropRight(1).toInt,
-          getNamedField(data, "lossrate").get.toDouble,
+          getNamedField(data, "loss").map(_.dropRight(1).toInt),
+          getNamedField(data, "lossrate").map(_.toDouble),
           getNamedField(data, "median").map(_.dropRight(1).toInt),
           getNamedField(data, "packet_size").get.dropRight(1).toInt,
-          getNamedField(data, "results").get.dropRight(1).toInt,
+          getNamedField(data, "results").map(_.dropRight(1).toInt),
           getRtts(getNamedField(data, "rtts").get),
           Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(data.last.toLong))
         ))

@@ -89,11 +89,11 @@ trait CheckpointingTestBase extends TestBase {
       harness.processElement(
         ICMP(
           e.stream,
-          1,
-          1,
+          Some(1),
+          Some(1.0),
           None,
           e.packet_size,
-          1,
+          Some(1),
           Seq(None),
           Instant.ofEpochMilli(lastGeneratedTime)
         ),

@@ -13,19 +13,19 @@ import java.time.{Instant, ZoneId}
   */
 case class RichTCPPing(
   stream: Int,
-  source: String,
-  destination: String,
-  port         : Int,
-  family: String,
+  source       : String,
+  destination  : String,
+  port: Int,
+  family       : String,
   packet_size_selection: String,
-  icmperrors: Option[Int],
-  loss: Int,
-  lossrate: Double,
-  median       : Option[Int],
-  packet_size  : Int,
-  results      : Int,
-  rtts         : Seq[Option[Int]],
-  time         : Instant
+  icmperrors           : Option[Int],
+  loss                 : Option[Int],
+  lossrate             : Option[Double],
+  median: Option[Int],
+  packet_size: Int,
+  results: Option[Int],
+  rtts                 : Seq[Option[Int]],
+  time                 : Instant
 ) extends RichMeasurement {
   override def toString: String = {
     s"${TCPPing.table_name}," +
@@ -45,7 +45,7 @@ case class RichTCPPing(
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 
-  override def isLossy: Boolean = loss > 0
+  override def isLossy: Boolean = loss.getOrElse(100) > 0
 
   var defaultValue: Option[Double] = median.map(_.toDouble)
 }

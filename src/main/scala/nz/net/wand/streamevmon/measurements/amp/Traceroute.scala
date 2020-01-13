@@ -12,9 +12,9 @@ import java.util.concurrent.TimeUnit
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-trace]]
   */
 final case class Traceroute(
-    stream: Int,
-    path_length: Double,
-    time: Instant
+  stream     : Int,
+  path_length: Option[Double],
+  time       : Instant
 ) extends Measurement {
   override def toString: String = {
     s"${Traceroute.table_name}," +
@@ -25,7 +25,7 @@ final case class Traceroute(
 
   override def isLossy: Boolean = false
 
-  var defaultValue: Option[Double] = Some(path_length)
+  var defaultValue: Option[Double] = path_length
 }
 
 object Traceroute extends MeasurementFactory {
@@ -43,7 +43,7 @@ object Traceroute extends MeasurementFactory {
       Some(
         Traceroute(
           getNamedField(data, "stream").get.toInt,
-          getNamedField(data, "path_length").get.toDouble,
+          getNamedField(data, "path_length").map(_.toDouble),
           Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(data.last.toLong))
         ))
     }

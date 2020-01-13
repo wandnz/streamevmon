@@ -79,28 +79,28 @@ object UnifiedRunner {
 
     env.enableCheckpointing(Duration.ofSeconds(10).toMillis, CheckpointingMode.EXACTLY_ONCE)
 
-    val ampMeasurementSource = env
+    lazy val ampMeasurementSource = env
       .addSource(new AmpMeasurementSourceFunction)
       .name("AMP Measurement Subscription")
       .uid("amp-measurement-source")
 
-    val bigdataMeasurementSource = env
-      .addSource(new BigDataSourceFunction)
-      .name("Libtrace-Bigdata Measurement Subscription")
-      .uid("bigdata-measurement-source")
-
     val keySelector = new MeasurementKeySelector[Measurement]
 
-    val icmpStream = ampMeasurementSource
+    lazy val icmpStream = ampMeasurementSource
       .filterType[ICMP]
       .notLossy[ICMP]
       .keyBy(keySelector)
 
-    val dnsStream = ampMeasurementSource
+    lazy val dnsStream = ampMeasurementSource
       .filterType[DNS]
       .keyBy(keySelector)
 
-    val flowStatisticStream = bigdataMeasurementSource
+    lazy val bigdataMeasurementSource = env
+      .addSource(new BigDataSourceFunction)
+      .name("Libtrace-Bigdata Measurement Subscription")
+      .uid("bigdata-measurement-source")
+
+    lazy val flowStatisticStream = bigdataMeasurementSource
       .filterType[Flow]
       .keyBy(keySelector)
 

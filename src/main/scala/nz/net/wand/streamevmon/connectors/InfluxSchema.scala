@@ -40,11 +40,11 @@ object InfluxSchema {
         Right(
           ICMP(
             js.get(cols.indexOf("stream")).asString.toInt,
-            js.get(cols.indexOf("loss")).asInt,
-            js.get(cols.indexOf("lossrate")).asDouble,
+            nullToOption(js.get(cols.indexOf("loss"))).map(_.asInt),
+            nullToOption(js.get(cols.indexOf("lossrate"))).map(_.asDouble),
             nullToOption(js.get(cols.indexOf("median"))).map(_.asInt),
             js.get(cols.indexOf("packet_size")).asInt,
-            js.get(cols.indexOf("results")).asInt,
+            nullToOption(js.get(cols.indexOf("results"))).map(_.asInt),
             s"'${js.get(cols.indexOf("rtts")).asString}'",
             Instant.parse(js.get(cols.indexOf("time")).asString)
           ))
@@ -71,7 +71,7 @@ object InfluxSchema {
             nullToOption(js.get(cols.indexOf("flag_ra"))).map(_.asBoolean),
             nullToOption(js.get(cols.indexOf("flag_rd"))).map(_.asBoolean),
             nullToOption(js.get(cols.indexOf("flag_tc"))).map(_.asBoolean),
-            js.get(cols.indexOf("lossrate")).asDouble,
+            nullToOption(js.get(cols.indexOf("lossrate"))).map(_.asDouble),
             nullToOption(js.get(cols.indexOf("opcode"))).map(_.asInt),
             js.get(cols.indexOf("query_len")).asInt,
             nullToOption(js.get(cols.indexOf("rcode"))).map(_.asInt),
@@ -123,18 +123,11 @@ object InfluxSchema {
           TCPPing(
             js.get(cols.indexOf("stream")).asString.toInt,
             nullToOption(js.get(cols.indexOf("icmperrors"))).map(_.asInt),
-            js.get(cols.indexOf("loss")).asInt,
-            js.get(cols.indexOf("lossrate")).asDouble, {
-              val median = js.get(cols.indexOf("median")).asInt
-              if (median == -1) {
-                None
-              }
-              else {
-                Some(median)
-              }
-            },
+            nullToOption(js.get(cols.indexOf("loss"))).map(_.asInt),
+            nullToOption(js.get(cols.indexOf("lossrate"))).map(_.asDouble),
+            nullToOption(js.get(cols.indexOf("median"))).map(_.asInt),
             js.get(cols.indexOf("packet_size")).asInt,
-            js.get(cols.indexOf("results")).asInt,
+            nullToOption(js.get(cols.indexOf("results"))).map(_.asInt),
             s"'${js.get(cols.indexOf("rtts")).asString}'",
             Instant.parse(js.get(cols.indexOf("time")).asString)
           ))
@@ -154,7 +147,7 @@ object InfluxSchema {
         Right(
           Traceroute(
             js.get(cols.indexOf("stream")).asString.toInt,
-            js.get(cols.indexOf("path_length")).asInt,
+            nullToOption(js.get(cols.indexOf("path_length"))).map(_.asInt),
             Instant.parse(js.get(cols.indexOf("time")).asString)
           ))
       }

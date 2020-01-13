@@ -12,13 +12,13 @@ import java.time.{Instant, ZoneId}
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-trace]]
   */
 case class RichTraceroute(
-    stream: Int,
-    source: String,
-    destination: String,
-    family: String,
-    packet_size_selection: String,
-    path_length: Double,
-    time: Instant
+  stream               : Int,
+  source               : String,
+  destination          : String,
+  family               : String,
+  packet_size_selection: String,
+  path_length          : Option[Double],
+  time                 : Instant
 ) extends RichMeasurement {
 
   override def toString: String = {
@@ -34,7 +34,7 @@ case class RichTraceroute(
 
   override def isLossy: Boolean = false
 
-  var defaultValue: Option[Double] = Some(path_length)
+  var defaultValue: Option[Double] = path_length
 }
 
 object RichTraceroute extends RichMeasurementFactory {

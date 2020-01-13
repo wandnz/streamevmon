@@ -14,13 +14,13 @@ import java.util.concurrent.TimeUnit
 final case class TCPPing(
   stream: Int,
   icmperrors: Option[Int],
-  loss: Int,
-  lossrate: Double,
+  loss      : Option[Int],
+  lossrate  : Option[Double],
   median: Option[Int],
   packet_size: Int,
-  results: Int,
-  rtts: Seq[Option[Int]],
-  time: Instant
+  results: Option[Int],
+  rtts      : Seq[Option[Int]],
+  time      : Instant
 ) extends Measurement {
   override def toString: String = {
     s"${TCPPing.table_name}," +
@@ -35,7 +35,7 @@ final case class TCPPing(
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 
-  override def isLossy: Boolean = loss > 0
+  override def isLossy: Boolean = loss.getOrElse(100) > 0
 
   var defaultValue: Option[Double] = median.map(_.toDouble)
 }
@@ -46,15 +46,15 @@ object TCPPing extends MeasurementFactory {
   override def columnNames: Seq[String] = getColumnNames[TCPPing]
 
   def apply(
-    stream: Int,
-    icmperrors: Option[Int],
-    loss: Int,
-    lossrate: Double,
-    median: Option[Int],
+    stream     : Int,
+    icmperrors : Option[Int],
+    loss       : Option[Int],
+    lossrate   : Option[Double],
+    median     : Option[Int],
     packet_size: Int,
-    results : Int,
-    rtts    : String,
-    time    : Instant
+    results    : Option[Int],
+    rtts       : String,
+    time       : Instant
   ): TCPPing =
     new TCPPing(
       stream,
@@ -78,11 +78,11 @@ object TCPPing extends MeasurementFactory {
         TCPPing(
           getNamedField(data, "stream").get.toInt,
           getNamedField(data, "icmperrors").map(_.dropRight(1).toInt),
-          getNamedField(data, "loss").get.dropRight(1).toInt,
-          getNamedField(data, "lossrate").get.toDouble,
+          getNamedField(data, "loss").map(_.dropRight(1).toInt),
+          getNamedField(data, "lossrate").map(_.toDouble),
           getNamedField(data, "median").map(_.dropRight(1).toInt),
           getNamedField(data, "packet_size").get.dropRight(1).toInt,
-          getNamedField(data, "results").get.dropRight(1).toInt,
+          getNamedField(data, "results").map(_.dropRight(1).toInt),
           getRtts(getNamedField(data, "rtts").get),
           Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(data.last.toLong))
         ))

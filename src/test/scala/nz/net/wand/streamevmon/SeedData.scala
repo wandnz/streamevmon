@@ -30,22 +30,22 @@ object SeedData {
 
     val lossyExpected = ICMP(
       stream = 3,
-      loss = 1,
-      lossrate = 1.0,
+      loss = Some(1),
+      lossrate = Some(1.0),
       median = None,
       packet_size = 520,
-      results = 1,
+      results = Some(1),
       rtts = Seq(None),
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1574696840000000000L))
     )
 
     val expected = ICMP(
       stream = 3,
-      loss = 0,
-      lossrate = 0.0,
+      loss = Some(0),
+      lossrate = Some(0.0),
       median = Some(225),
       packet_size = 520,
-      results = 1,
+      results = Some(1),
       rtts = Seq(Some(225)),
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1563761840000000000L))
     )
@@ -64,11 +64,11 @@ object SeedData {
       destination = "wand.net.nz",
       family = "ipv4",
       packet_size_selection = "random",
-      loss = 0,
-      lossrate = 0.0,
+      loss = Some(0),
+      lossrate = Some(0.0),
       median = Some(225),
       packet_size = 520,
-      results = 1,
+      results = Some(1),
       rtts = Seq(Some(225)),
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1563761840000000000L))
     )
@@ -149,7 +149,7 @@ object SeedData {
       flag_ra = None,
       flag_rd = None,
       flag_tc = None,
-      lossrate = 1.0,
+      lossrate = Some(1.0),
       opcode = None,
       query_len = 40,
       rcode = None,
@@ -172,7 +172,7 @@ object SeedData {
       flag_ra = Some(true),
       flag_rd = Some(false),
       flag_tc = Some(false),
-      lossrate = 0.0,
+      lossrate = Some(0.0),
       opcode = Some(0),
       query_len = 40,
       rcode = Some(0),
@@ -221,7 +221,7 @@ object SeedData {
       flag_ra = Some(true),
       flag_rd = Some(false),
       flag_tc = Some(false),
-      lossrate = 0.0,
+      lossrate = Some(0.0),
       opcode = Some(0),
       query_len = 40,
       rcode = Some(0),
@@ -250,7 +250,7 @@ object SeedData {
 
     val expected = Traceroute(
       stream = 5,
-      path_length = 12.0,
+      path_length = Some(12.0),
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1563761842000000000L))
     )
 
@@ -268,7 +268,7 @@ object SeedData {
       destination = "google.com",
       family = "ipv4",
       packet_size_selection = "60",
-      path_length = 12.0,
+      path_length = Some(12.0),
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1563761842000000000L))
     )
   }
@@ -281,11 +281,11 @@ object SeedData {
     val expected = TCPPing(
       stream = 9,
       icmperrors = Some(0),
-      loss = 0,
-      lossrate = 0.0,
+      loss = Some(0),
+      lossrate = Some(0.0),
       median = Some(189),
       packet_size = 64,
-      results = 1,
+      results = Some(1),
       rtts = Seq(Some(189)),
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713040000000000L))
     )
@@ -307,11 +307,11 @@ object SeedData {
       family = "ipv4",
       packet_size_selection = "64",
       icmperrors = Some(0),
-      loss = 0,
-      lossrate = 0.0,
+      loss = Some(0),
+      lossrate = Some(0.0),
       median = Some(189),
       packet_size = 64,
-      results = 1,
+      results = Some(1),
       rtts = Seq(Some(189)),
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713040000000000L))
     )

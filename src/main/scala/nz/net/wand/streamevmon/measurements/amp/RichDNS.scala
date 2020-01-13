@@ -12,37 +12,37 @@ import java.time.{Instant, ZoneId}
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-dns]]
   */
 case class RichDNS(
-    stream: Int,
-    source: String,
-    destination: String,
-    instance: String,
-    address: String,
-    query: String,
-    query_type: String,
-    query_class: String,
-    udp_payload_size: Int,
-    recurse: Boolean,
-    dnssec: Boolean,
-    nsid: Boolean,
-    flag_aa: Option[Boolean],
-    flag_ad: Option[Boolean],
-    flag_cd: Option[Boolean],
-    flag_qr: Option[Boolean],
-    flag_ra: Option[Boolean],
-    flag_rd: Option[Boolean],
-    flag_tc: Option[Boolean],
-    lossrate: Double,
-    opcode: Option[Int],
-    query_len: Int,
-    rcode: Option[Int],
-    requests: Int,
-    response_size: Option[Int],
-    rtt: Option[Int],
-    total_additional: Option[Int],
-    total_answer: Option[Int],
-    total_authority: Option[Int],
-    ttl: Option[Int],
-    time: Instant
+  stream          : Int,
+  source          : String,
+  destination     : String,
+  instance        : String,
+  address         : String,
+  query           : String,
+  query_type      : String,
+  query_class     : String,
+  udp_payload_size: Int,
+  recurse         : Boolean,
+  dnssec          : Boolean,
+  nsid            : Boolean,
+  flag_aa         : Option[Boolean],
+  flag_ad         : Option[Boolean],
+  flag_cd         : Option[Boolean],
+  flag_qr         : Option[Boolean],
+  flag_ra         : Option[Boolean],
+  flag_rd         : Option[Boolean],
+  flag_tc         : Option[Boolean],
+  lossrate        : Option[Double],
+  opcode          : Option[Int],
+  query_len       : Int,
+  rcode           : Option[Int],
+  requests        : Int,
+  response_size   : Option[Int],
+  rtt             : Option[Int],
+  total_additional: Option[Int],
+  total_answer    : Option[Int],
+  total_authority : Option[Int],
+  ttl             : Option[Int],
+  time            : Instant
 ) extends RichMeasurement {
 
   override def toString: String = {
@@ -80,7 +80,7 @@ case class RichDNS(
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 
-  override def isLossy: Boolean = lossrate > 0.0
+  override def isLossy: Boolean = lossrate.getOrElse(1.0) > 0.0
 
   var defaultValue: Option[Double] = rtt.map(_.toDouble)
 }
