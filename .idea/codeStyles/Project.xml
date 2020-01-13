@@ -24,6 +24,7 @@
       <option name="FORMATTER" value="1" />
       <option name="USE_SCALADOC2_FORMATTING" value="true" />
       <option name="ALIGN_TYPES_IN_MULTILINE_DECLARATIONS" value="true" />
+      <option name="TYPE_ANNOTATION_EXCLUDE_IN_TEST_SOURCES" value="true" />
       <option name="SD_BLANK_LINE_AFTER_PARAMETERS_COMMENTS" value="true" />
       <option name="SD_BLANK_LINE_AFTER_RETURN_COMMENTS" value="true" />
       <option name="SD_BLANK_LINE_BEFORE_PARAMETERS" value="true" />
