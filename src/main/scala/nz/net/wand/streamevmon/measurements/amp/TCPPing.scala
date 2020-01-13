@@ -12,15 +12,15 @@ import java.util.concurrent.TimeUnit
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-tcpping]]
   */
 final case class TCPPing(
-    stream: Int,
-    icmperrors: Int,
-    loss: Int,
-    lossrate: Double,
-    median: Option[Int],
-    packet_size: Int,
-    results: Int,
-    rtts: Seq[Option[Int]],
-    time: Instant
+  stream: Int,
+  icmperrors: Option[Int],
+  loss: Int,
+  lossrate: Double,
+  median: Option[Int],
+  packet_size: Int,
+  results: Int,
+  rtts: Seq[Option[Int]],
+  time: Instant
 ) extends Measurement {
   override def toString: String = {
     s"${TCPPing.table_name}," +
@@ -47,14 +47,14 @@ object TCPPing extends MeasurementFactory {
 
   def apply(
     stream: Int,
-    icmperrors: Int,
-    loss  : Int,
+    icmperrors: Option[Int],
+    loss: Int,
     lossrate: Double,
     median: Option[Int],
     packet_size: Int,
-    results: Int,
-    rtts: String,
-    time: Instant
+    results : Int,
+    rtts    : String,
+    time    : Instant
   ): TCPPing =
     new TCPPing(
       stream,
@@ -77,7 +77,7 @@ object TCPPing extends MeasurementFactory {
       Some(
         TCPPing(
           getNamedField(data, "stream").get.toInt,
-          getNamedField(data, "icmperrors").get.dropRight(1).toInt,
+          getNamedField(data, "icmperrors").map(_.dropRight(1).toInt),
           getNamedField(data, "loss").get.dropRight(1).toInt,
           getNamedField(data, "lossrate").get.toDouble,
           getNamedField(data, "median").map(_.dropRight(1).toInt),

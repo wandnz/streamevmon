@@ -12,20 +12,20 @@ import java.time.{Instant, ZoneId}
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-tcpping]]
   */
 case class RichTCPPing(
-    stream: Int,
-    source: String,
-    destination: String,
-    port: Int,
-    family: String,
-    packet_size_selection: String,
-    icmperrors: Int,
-    loss: Int,
-    lossrate: Double,
-    median: Option[Int],
-    packet_size: Int,
-    results: Int,
-    rtts: Seq[Option[Int]],
-    time: Instant
+  stream: Int,
+  source: String,
+  destination: String,
+  port         : Int,
+  family: String,
+  packet_size_selection: String,
+  icmperrors: Option[Int],
+  loss: Int,
+  lossrate: Double,
+  median       : Option[Int],
+  packet_size  : Int,
+  results      : Int,
+  rtts         : Seq[Option[Int]],
+  time         : Instant
 ) extends RichMeasurement {
   override def toString: String = {
     s"${TCPPing.table_name}," +

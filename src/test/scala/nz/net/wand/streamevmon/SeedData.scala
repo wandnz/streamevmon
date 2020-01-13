@@ -280,7 +280,7 @@ object SeedData {
 
     val expected = TCPPing(
       stream = 9,
-      icmperrors = 0,
+      icmperrors = Some(0),
       loss = 0,
       lossrate = 0.0,
       median = Some(189),
@@ -306,7 +306,7 @@ object SeedData {
       port = 443,
       family = "ipv4",
       packet_size_selection = "64",
-      icmperrors = 0,
+      icmperrors = Some(0),
       loss = 0,
       lossrate = 0.0,
       median = Some(189),

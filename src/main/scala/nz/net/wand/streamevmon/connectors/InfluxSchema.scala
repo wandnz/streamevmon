@@ -122,7 +122,7 @@ object InfluxSchema {
         Right(
           TCPPing(
             js.get(cols.indexOf("stream")).asString.toInt,
-            js.get(cols.indexOf("icmperrors")).asInt,
+            nullToOption(js.get(cols.indexOf("icmperrors"))).map(_.asInt),
             js.get(cols.indexOf("loss")).asInt,
             js.get(cols.indexOf("lossrate")).asDouble, {
               val median = js.get(cols.indexOf("median")).asInt
