@@ -186,6 +186,7 @@ abstract class InfluxSourceFunction[T <: Measurement](
                     ctx.collectWithTimestamp(value, value.time.toEpochMilli)
                   case None => logger.error(s"Entry failed to parse: $line")
                 }
+                ctx.markAsTemporarilyIdle()
               })
 
           case None =>
