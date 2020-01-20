@@ -1,10 +1,9 @@
 package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.flink.LatencyTSAmpFileInputFormat
-import nz.net.wand.streamevmon.measurements.LatencyTSAmpICMP
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
-import nz.net.wand.streamevmon.detectors.MapFunction
+import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
 
 import java.time.Duration
 
@@ -17,7 +16,7 @@ object DistDiffRunner {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    System.setProperty("influx.dataSource.subscriptionName", "ChangepointDetector")
+    System.setProperty("influx.dataSource.subscriptionName", "DistDiffDetector")
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
@@ -25,8 +24,11 @@ object DistDiffRunner {
 
     env.enableCheckpointing(Duration.ofSeconds(10).toMillis, CheckpointingMode.EXACTLY_ONCE)
 
+    env.setParallelism(1)
+    env.setMaxParallelism(1)
+
     val source = env
-      .readFile(new LatencyTSAmpFileInputFormat, "data/latency-ts-i/ampicmp/series")
+      .readFile(new LatencyTSAmpFileInputFormat, "data/latency-ts-i/ampicmp/series/waikato-xero-ipv4.series")
       .setParallelism(1)
       .name("Latency TS AMP ICMP")
       .uid("distdiff-source")
@@ -34,17 +36,13 @@ object DistDiffRunner {
       .name("Has data?")
       .keyBy(_.stream)
 
-    class LTSIcmpToAverage extends MapFunction[LatencyTSAmpICMP, Long] with Serializable {
-      override def apply(t: LatencyTSAmpICMP): Long = t.average
-      override def apply(): MapFunction[LatencyTSAmpICMP, Long] = new LTSIcmpToAverage
-    }
-
-    val detector = new DistDiffDetector[LatencyTSAmpICMP](new LTSIcmpToAverage)
+    val detector = new DistDiffDetector[LatencyTSAmpICMP]
 
     val process = source
       .process(detector)
       .name(detector.detectorName)
       .uid("distdiff-detector")
+      .setParallelism(1)
 
     process.print("distdiff-printer")
 
