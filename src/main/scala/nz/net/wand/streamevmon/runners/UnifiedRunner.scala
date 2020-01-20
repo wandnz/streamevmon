@@ -2,6 +2,7 @@ package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, NormalDistribution}
+import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.events.Event
@@ -109,6 +110,11 @@ object UnifiedRunner {
         new NormalDistribution(mean = 0)
       )
       icmpStream.addDetector(changepoint, changepoint.detectorName, "changepoint-detector")
+    }
+
+    if (isEnabled(env, "distdiff")) {
+      val distDiffDetector = new DistDiffDetector[Measurement]
+      icmpStream.addDetector(distDiffDetector, distDiffDetector.detectorName, "dist-diff-detector")
     }
 
     if (isEnabled(env, "mode")) {

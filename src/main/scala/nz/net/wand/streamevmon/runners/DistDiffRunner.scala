@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.runners
 
-import nz.net.wand.streamevmon.flink.LatencyTSAmpFileInputFormat
+import nz.net.wand.streamevmon.flink.{LatencyTSAmpFileInputFormat, MeasurementKeySelector}
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
 import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
@@ -8,7 +8,7 @@ import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
 import java.time.Duration
 
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
-import org.apache.flink.streaming.api.scala.{StreamExecutionEnvironment, _}
+import org.apache.flink.streaming.api.scala._
 
 object DistDiffRunner {
 
@@ -34,7 +34,7 @@ object DistDiffRunner {
       .uid("distdiff-source")
       .filter(_.lossrate == 0.0)
       .name("Has data?")
-      .keyBy(_.stream)
+      .keyBy(new MeasurementKeySelector[LatencyTSAmpICMP])
 
     val detector = new DistDiffDetector[LatencyTSAmpICMP]
 
@@ -47,28 +47,5 @@ object DistDiffRunner {
     process.print("distdiff-printer")
 
     env.execute("Latency TS AMP ICMP -> Dist Diff Detector")
-  }
-}
-
-object DistDiffTest {
-
-  def main(args: Array[String]): Unit = {
-    import org.apache.commons.math3.stat.inference.ChiSquareTest
-
-    val c = new ChiSquareTest()
-
-    val e: Array[Double] = Array(10, 10, 15, 20, 30, 15)
-    val o: Array[Long] = Array(30, 14, 34, 105, 57, 62)
-
-    // Raw chi square statistic, needs additional comparisons to get something useful
-    println(c.chiSquare(e, o))
-    // The probability that we obtain observed values based on the expected distribution
-    println(c.chiSquareTest(e, o))
-    // True if we can reject the null hypothesis - if the observed values do not match the expected distribution
-    println(c.chiSquareTest(e, o, 0.05))
-
-    println(c.chiSquareDataSetsComparison(e.map(_.toLong), o))
-    println(c.chiSquareTestDataSetsComparison(e.map(_.toLong), o))
-    println(c.chiSquareTestDataSetsComparison(e.map(_.toLong), o, 0.05))
   }
 }
