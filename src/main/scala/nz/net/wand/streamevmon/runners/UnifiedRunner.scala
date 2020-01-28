@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, NormalDistribution}
-import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
+import nz.net.wand.streamevmon.detectors.distdiff.{DistDiffDetector, WindowedDistDiffDetector}
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.events.Event
@@ -18,6 +18,8 @@ import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.streaming.api.scala._
+import org.apache.flink.streaming.api.scala.function.ProcessWindowFunction
+import org.apache.flink.streaming.api.windowing.windows.{GlobalWindow, Window}
 
 import scala.collection.mutable
 import scala.language.implicitConversions
@@ -46,9 +48,24 @@ object UnifiedRunner {
 
   implicit class KeyedStreamExtensions[K](source: KeyedStream[Measurement, K]) {
     implicit def addDetector[T <: KeyedProcessFunction[K, Measurement, Event]](
-        detector: T,
-        name: String,
-        uid: String
+      detector: T,
+      name    : String,
+      uid     : String
+    ): Unit = {
+      val result =
+        source
+          .process(detector)
+          .name(name)
+          .uid(uid)
+      detectors.append(result)
+    }
+  }
+
+  implicit class WindowedStreamExtensions[K, W <: Window](source: WindowedStream[Measurement, K, W]) {
+    implicit def addDetector[T <: ProcessWindowFunction[Measurement, Event, K, W]](
+      detector: T,
+      name    : String,
+      uid     : String
     ): Unit = {
       val result =
         source
@@ -74,7 +91,8 @@ object UnifiedRunner {
     System.setProperty("influx.dataSource.amp.subscriptionName", "AmpUnifiedRunner")
     System.setProperty("influx.dataSource.bigdata.subscriptionName", "BigDataUnifiedRunner")
 
-    env.getConfig.setGlobalJobParameters(Configuration.get(args))
+    val config = Configuration.get(args)
+    env.getConfig.setGlobalJobParameters(config)
 
     env.disableOperatorChaining
 
@@ -113,8 +131,16 @@ object UnifiedRunner {
     }
 
     if (isEnabled(env, "distdiff")) {
-      val distDiffDetector = new DistDiffDetector[Measurement]
-      icmpStream.addDetector(distDiffDetector, distDiffDetector.detectorName, "dist-diff-detector")
+      if (config.getBoolean("detector.distdiff.useFlinkWindow")) {
+        val distDiffDetector = new WindowedDistDiffDetector[Measurement, GlobalWindow]
+        icmpStream
+          .countWindow(config.getInt("detector.distdiff.recentsCount") * 2, 1)
+          .addDetector(distDiffDetector, distDiffDetector.detectorName, "windowed-dist-diff-detector")
+      }
+      else {
+        val distDiffDetector = new DistDiffDetector[Measurement]
+        icmpStream.addDetector(distDiffDetector, distDiffDetector.detectorName, "dist-diff-detector")
+      }
     }
 
     if (isEnabled(env, "mode")) {

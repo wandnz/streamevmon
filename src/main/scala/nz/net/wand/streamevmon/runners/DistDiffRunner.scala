@@ -2,13 +2,12 @@ package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.flink.{LatencyTSAmpFileInputFormat, MeasurementKeySelector}
 import nz.net.wand.streamevmon.Configuration
-import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
+import nz.net.wand.streamevmon.detectors.distdiff._
 import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
 
-import java.time.Duration
-
-import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
+import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
+import org.apache.flink.streaming.api.windowing.windows.GlobalWindow
 
 object DistDiffRunner {
 
@@ -18,11 +17,10 @@ object DistDiffRunner {
 
     System.setProperty("influx.dataSource.subscriptionName", "DistDiffDetector")
 
-    env.getConfig.setGlobalJobParameters(Configuration.get(args))
+    val config = Configuration.get(args)
+    env.getConfig.setGlobalJobParameters(config)
 
     env.disableOperatorChaining
-
-    env.enableCheckpointing(Duration.ofSeconds(10).toMillis, CheckpointingMode.EXACTLY_ONCE)
 
     env.setParallelism(1)
     env.setMaxParallelism(1)
@@ -32,18 +30,28 @@ object DistDiffRunner {
       .setParallelism(1)
       .name("Latency TS AMP ICMP")
       .uid("distdiff-source")
-      .filter(_.lossrate == 0.0)
+      .filter(_.defaultValue.nonEmpty)
       .name("Has data?")
       .keyBy(new MeasurementKeySelector[LatencyTSAmpICMP])
 
-    val detector = new DistDiffDetector[LatencyTSAmpICMP]
+    lazy val window = source.countWindow(config.getInt("detector.distdiff.recentsCount") * 2, 1)
 
-    val process = source
-      .process(detector)
-      .name(detector.detectorName)
-      .uid("distdiff-detector")
-      .setParallelism(1)
-
+    val process = if (config.getBoolean("detector.distdiff.useFlinkWindow")) {
+      val detector = new WindowedDistDiffDetector[LatencyTSAmpICMP, GlobalWindow]
+      window
+        .process(detector)
+        .name(detector.detectorName)
+    }
+    else {
+      {
+        val detector = new DistDiffDetector[LatencyTSAmpICMP]
+        source
+          .process(detector)
+          .name(detector.detectorName)
+        }
+        .uid("distdiff-detector")
+        .setParallelism(1)
+    }
     process.print("distdiff-printer")
 
     env.execute("Latency TS AMP ICMP -> Dist Diff Detector")

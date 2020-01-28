@@ -7,6 +7,12 @@ package nz.net.wand.streamevmon.detectors
   * Written by Daniel Oosterwijk, and is a close parallel to the detector
   * included in netevmon, which was written by Shane Alcock and Brendon Jones.
   *
+  * This package includes two versions of the detector: One takes a keyed stream,
+  * and the other takes a windowed keyed stream. They are configured identically.
+  * When using the UnifiedRunner or the DistDiffRunner, the configuration option
+  * `detector.distdiff.useFlinkWindow` can be used to choose the windowed variant
+  * (true) or the sequential variant (false).
+  *
   * ==Configuration==
   *
   * This package is configured by the `detector.distdiff` config key group.
