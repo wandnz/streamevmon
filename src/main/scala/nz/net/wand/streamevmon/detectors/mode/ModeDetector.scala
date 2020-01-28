@@ -239,7 +239,7 @@ class ModeDetector[MeasT <: Measurement]
     // If this is the first measurement or it's been too long since the last one,
     // we'll reset everything.
     if (lastObserved.value == null ||
-        (!inactivityPurgeTime.isZero &&
+      (!inactivityPurgeTime.isZero &&
         Duration
           .between(lastObserved.value, value.time)
           .compareTo(inactivityPurgeTime) > 0)) {
