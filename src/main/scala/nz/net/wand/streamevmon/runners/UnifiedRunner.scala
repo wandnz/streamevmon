@@ -19,7 +19,8 @@ import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.scala.function.ProcessWindowFunction
-import org.apache.flink.streaming.api.windowing.windows.{GlobalWindow, Window}
+import org.apache.flink.streaming.api.windowing.time.Time
+import org.apache.flink.streaming.api.windowing.windows.{GlobalWindow, TimeWindow, Window}
 
 import scala.collection.mutable
 import scala.language.implicitConversions
@@ -74,6 +75,21 @@ object UnifiedRunner {
           .uid(uid)
       detectors.append(result)
     }
+
+    implicit def wrapAndAddDetector[T <: KeyedProcessFunction[String, Measurement, Event]](
+      detector: T,
+      name    : String,
+      uid     : String
+    ): Unit = {
+      val wrapped = new WindowedFunctionWrapper[Measurement, TimeWindow](detector)
+        .asInstanceOf[ProcessWindowFunction[Measurement, Event, K, W]]
+      val result =
+        source
+          .process(wrapped)
+          .name(s"$name (Window Wrapped)")
+          .uid(s"window-wrapped-$uid")
+      detectors.append(result)
+    }
   }
 
   def isEnabled(env: StreamExecutionEnvironment, detectorName: String): Boolean = {
@@ -96,23 +112,30 @@ object UnifiedRunner {
 
     env.disableOperatorChaining
 
-    env.enableCheckpointing(Duration.ofSeconds(10).toMillis, CheckpointingMode.EXACTLY_ONCE)
+    env.enableCheckpointing(
+      Duration.ofSeconds(config.getInt("flink.checkpointInterval")).toMillis,
+      CheckpointingMode.EXACTLY_ONCE
+    )
+
+    val keySelector = new MeasurementKeySelector[Measurement]
 
     lazy val ampMeasurementSource = env
       .addSource(new AmpMeasurementSourceFunction)
       .name("AMP Measurement Subscription")
       .uid("amp-measurement-source")
 
-    val keySelector = new MeasurementKeySelector[Measurement]
-
     lazy val icmpStream = ampMeasurementSource
       .filterType[ICMP]
       .notLossy[ICMP]
       .keyBy(keySelector)
+    lazy val icmpStreamTimeWindow = icmpStream
+      .timeWindow(Time.seconds(config.getInt("detector.default.windowDuration")))
 
     lazy val dnsStream = ampMeasurementSource
       .filterType[DNS]
       .keyBy(keySelector)
+    lazy val dnsStreamTimeWindow = dnsStream
+      .timeWindow(Time.seconds(config.getInt("detector.default.windowDuration")))
 
     lazy val bigdataMeasurementSource = env
       .addSource(new BigDataSourceFunction)
@@ -122,12 +145,19 @@ object UnifiedRunner {
     lazy val flowStatisticStream = bigdataMeasurementSource
       .filterType[Flow]
       .keyBy(keySelector)
+    lazy val flowStatisticStreamTimeWindow = flowStatisticStream
+      .timeWindow(Time.seconds(config.getInt("detector.default.windowDuration")))
 
     if (isEnabled(env, "changepoint")) {
       val changepoint = new ChangepointDetector[Measurement, NormalDistribution[Measurement]](
         new NormalDistribution(mean = 0)
       )
-      icmpStream.addDetector(changepoint, changepoint.detectorName, "changepoint-detector")
+      if (config.getBoolean("detector.default.useFlinkTimeWindow")) {
+        icmpStreamTimeWindow.wrapAndAddDetector(changepoint, changepoint.detectorName, changepoint.detectorUid)
+      }
+      else {
+        icmpStream.addDetector(changepoint, changepoint.detectorName, "changepoint-detector")
+      }
     }
 
     if (isEnabled(env, "distdiff")) {
@@ -135,22 +165,32 @@ object UnifiedRunner {
         val distDiffDetector = new WindowedDistDiffDetector[Measurement, GlobalWindow]
         icmpStream
           .countWindow(config.getInt("detector.distdiff.recentsCount") * 2, 1)
-          .addDetector(distDiffDetector, distDiffDetector.detectorName, "windowed-dist-diff-detector")
+          .addDetector(distDiffDetector, distDiffDetector.detectorName, distDiffDetector.detectorUid)
       }
       else {
         val distDiffDetector = new DistDiffDetector[Measurement]
-        icmpStream.addDetector(distDiffDetector, distDiffDetector.detectorName, "dist-diff-detector")
+        icmpStream.addDetector(distDiffDetector, distDiffDetector.detectorName, distDiffDetector.detectorUid)
       }
     }
 
     if (isEnabled(env, "mode")) {
       val modeDetector = new ModeDetector[Measurement]
-      icmpStream.addDetector(modeDetector, modeDetector.detectorName, "mode-detector")
+      if (config.getBoolean("detector.default.useFlinkTimeWindow")) {
+        icmpStreamTimeWindow.wrapAndAddDetector(modeDetector, modeDetector.detectorName, modeDetector.detectorUid)
+      }
+      else {
+        icmpStream.addDetector(modeDetector, modeDetector.detectorName, modeDetector.detectorUid)
+      }
     }
 
     if (isEnabled(env, "loss")) {
       val lossDetector = new LossDetector[Measurement]
-      dnsStream.addDetector(lossDetector, lossDetector.detectorName, "loss-detector")
+      if (config.getBoolean("detector.default.useFlinkTimeWindow")) {
+        dnsStreamTimeWindow.wrapAndAddDetector(lossDetector, lossDetector.detectorName, lossDetector.detectorUid)
+      }
+      else {
+        dnsStream.addDetector(lossDetector, lossDetector.detectorName, lossDetector.detectorUid)
+      }
     }
 
     val allEvents = detectors.length match {

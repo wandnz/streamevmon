@@ -36,7 +36,8 @@ class LossDetector[MeasT <: Measurement : ClassTag]
   /** The number of consecutive lossy measurements before an event is emitted. */
   private var consecutiveCount: Int = _
 
-  final val detectorName = s"Loss Detector"
+  final val detectorName = "Loss Detector"
+  final val detectorUid = "loss-detector"
 
   private var recentsStorage: ValueState[mutable.Queue[MeasT]] = _
 

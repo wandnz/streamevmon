@@ -34,6 +34,7 @@ class ChangepointDetector[MeasT <: Measurement : TypeInformation, DistT <: Distr
           with Logging {
 
   final val detectorName = s"Changepoint Detector (${initialDistribution.distributionName})"
+  final val detectorUid = s"changepoint-detector"
   final val eventDescription = s"Changepoint Event"
 
   private var processor: ValueState[ChangepointProcessor[MeasT, DistT]] = _

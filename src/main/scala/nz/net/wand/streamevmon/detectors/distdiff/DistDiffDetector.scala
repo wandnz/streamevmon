@@ -28,6 +28,7 @@ class DistDiffDetector[MeasT <: Measurement : TypeInformation : ClassTag]
           with DistDiffLogic {
 
   val detectorName = "Distribution Difference Detector"
+  final val detectorUid = "distdiff-detector"
 
   private var lastObserved: ValueState[MeasT] = _
 

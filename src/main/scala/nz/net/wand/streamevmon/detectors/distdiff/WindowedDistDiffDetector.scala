@@ -32,6 +32,7 @@ class WindowedDistDiffDetector[MeasT <: Measurement : ClassTag, W <: Window]
           with DistDiffLogic {
 
   val detectorName = "Distribution Difference Detector (Windowed)"
+  final val detectorUid = "windowed-distdiff-detector"
 
   /** Called during initialisation. Sets up persistent state variables and
     * configuration.

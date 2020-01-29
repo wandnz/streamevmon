@@ -28,6 +28,7 @@ class ModeDetector[MeasT <: Measurement]
           with CheckpointedFunction {
 
   final val detectorName = "Mode Detector"
+  final val detectorUid = "mode-detector"
 
   /** The maximum number of measurements to retain. */
   private var maxHistory: Int = _
