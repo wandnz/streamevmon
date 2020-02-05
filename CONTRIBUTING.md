@@ -55,6 +55,34 @@ other measurement types, and whether you want lossy measurements to be filtered
 out before they get to you. Don't forget to test it from within a standalone
 Flink environment with a parallelism greater than 1.
 
+### Windowed Operators
+
+`KeyedProcessFunction`, which most detectors implement, will receive from Flink
+a stream of measurements at approximately the rate they are ingested by the
+Flink pipeline. The "keyed" part means that each stream of measurements (such
+as ICMP results from a particular AMP host to a single destination) will be
+processed by a separate instance of the detector. However, if Flink receives
+measurements out of order, they will be passed to the detector out of order.
+For some detectors, this won't matter too much. For others, a few mitigation
+strategies are possible:
+
+* When instantiating your detector, you can provide it as an argument to the
+  constructor of `WindowedFunctionWrapper`. This function will reorder any
+  measurements received within the TimeWindow provided to it, and pass the
+  measurements in the correct order to the detector it contains. In effect, it
+  ensures correct ordering within certain time windows, at the cost of some
+  latency.
+  * Ensure that the TimeWindow is not sliding, as that will result in
+    measurement duplication.
+  * Handover from one window to another is not foolproof, so if measurements
+    are received out of order while one window is closing and another is opening,
+    they may still arrive at the detector out of order.
+* Some functions, such as the DistDiffDetector, can be implemented as windowed
+  functions from the beginning. Usually, this is best for detectors that don't
+  keep much rolling state derived from the stream of measurements received, but
+  exceptions should exist. See the `WindowedDistDiffDetector` for an example,
+  and compare it with the `DistDiffDetector`.
+
 ## Measurements
 
 Adding a new type of measurement includes a number of steps, depending on how
@@ -167,6 +195,6 @@ InfluxDB, but come from a new table or program.
 * A new runner should be created in the `runners` package. This is useful both
   for testing and if you want to just use your new SourceFunction without the
   extra complexity that the UnifiedRunner introduces.
-* You should also add your SourceFunction as a new source in the UnifiedRunner.
+* You should also add your SourceFunction as a new source in the `UnifiedRunner`.
   Make sure that the configured `subscriptionName` for your configuration
   datatype is set to something unique, as well as the source's name and uid.
