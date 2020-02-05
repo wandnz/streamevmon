@@ -14,7 +14,6 @@ import org.apache.flink.streaming.api.scala._
 import org.apache.flink.util.Collector
 
 import scala.collection.mutable
-import scala.reflect._
 
 /** This detector measures the difference between the distributions of
   * two sets of measurements: those observed recently, and those observed
@@ -23,7 +22,7 @@ import scala.reflect._
   *
   * @tparam MeasT The type of measurement to analyse.
   */
-class DistDiffDetector[MeasT <: Measurement : TypeInformation : ClassTag]
+class DistDiffDetector[MeasT <: Measurement : TypeInformation]
   extends KeyedProcessFunction[String, MeasT, Event]
           with DistDiffLogic {
 
@@ -108,7 +107,7 @@ class DistDiffDetector[MeasT <: Measurement : TypeInformation : ClassTag]
         severity,
         value.time,
         Duration.between(times.value.head, value.time),
-        s"Distribution of ${classTag[MeasT].runtimeClass.getSimpleName} has changed. " +
+        s"Distribution of ${value.getClass.getSimpleName} has changed. " +
           s"Mean has ${
             if (oldMean < recMean) {
               "increased"

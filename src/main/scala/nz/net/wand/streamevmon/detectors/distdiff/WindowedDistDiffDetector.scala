@@ -13,8 +13,6 @@ import org.apache.flink.streaming.api.scala.function.ProcessWindowFunction
 import org.apache.flink.streaming.api.windowing.windows.Window
 import org.apache.flink.util.Collector
 
-import scala.reflect._
-
 /** This detector measures the difference between the distributions of
   * two sets of measurements: those observed recently, and those observed
   * slightly less recently. If a significant change is noticed, an event
@@ -27,7 +25,7 @@ import scala.reflect._
   *
   * @tparam MeasT The type of measurement to analyse.
   */
-class WindowedDistDiffDetector[MeasT <: Measurement : ClassTag, W <: Window]
+class WindowedDistDiffDetector[MeasT <: Measurement, W <: Window]
   extends ProcessWindowFunction[MeasT, Event, String, W]
           with DistDiffLogic {
 
@@ -72,7 +70,7 @@ class WindowedDistDiffDetector[MeasT <: Measurement : ClassTag, W <: Window]
         severity,
         value.time,
         Duration.between(elements.head.time, elements(recentsCount).time),
-        s"Distribution of ${classTag[MeasT].runtimeClass.getSimpleName} has changed. " +
+        s"Distribution of ${value.getClass.getSimpleName} has changed. " +
           s"Mean has ${
             if (oldMean < recMean) {
               "increased"
