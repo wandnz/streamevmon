@@ -11,14 +11,14 @@ organization := "nz.net.wand"
 
 ThisBuild / scalaVersion := "2.12.10"
 
-val flinkVersion = "1.9.1"
+val flinkVersion = "1.9.2"
 val flinkDependencies = Seq(
   "org.apache.flink" %% "flink-scala" % flinkVersion % Provided,
   "org.apache.flink" %% "flink-streaming-scala" % flinkVersion % Provided,
   "org.apache.flink" %% "flink-table-api-scala" % flinkVersion % Provided
 )
 
-val chroniclerVersion = "0.6.3"
+val chroniclerVersion = "0.6.4"
 val influxDependencies = Seq(
   "com.github.fsanaulla" %% "chronicler-ahc-io" % chroniclerVersion,
   "com.github.fsanaulla" %% "chronicler-ahc-management" % chroniclerVersion,
@@ -45,10 +45,10 @@ val testDependencies = Seq(
   "org.apache.flink" %% "flink-test-utils" % flinkVersion % Test,
   "org.apache.flink" %% "flink-runtime" % flinkVersion % Test classifier "tests",
   "org.apache.flink" %% "flink-streaming-java" % flinkVersion % Test classifier "tests",
-  "org.scalatest" %% "scalatest" % "3.0.8" % Test,
-  "com.dimafeng" %% "testcontainers-scala" % "0.34.2" % Test,
-  "org.testcontainers" % "postgresql" % "1.12.4" % Test,
-  "org.testcontainers" % "influxdb" % "1.12.4" % Test
+  "org.scalatest" %% "scalatest" % "3.1.0" % Test,
+  "com.dimafeng" %% "testcontainers-scala" % "0.35.0" % Test,
+  "org.testcontainers" % "postgresql" % "1.12.5" % Test,
+  "org.testcontainers" % "influxdb" % "1.12.5" % Test
 )
 
 lazy val root = (project in file(".")).
@@ -66,7 +66,7 @@ lazy val root = (project in file(".")).
 Compile / run := Defaults.runTask(Compile / run / fullClasspath,
                                    Compile / run / mainClass,
                                    Compile / run / runner
-                                  ).evaluated
+).evaluated
 
 // stays inside the sbt console when we press "ctrl-c" while a Flink programme executes with "run" or "runMain"
 Compile / run / fork := true
@@ -76,6 +76,8 @@ mainClass in assembly := Some("nz.net.wand.streamevmon.runners.UnifiedRunner")
 assemblyExcludedJars in assembly := {
   (fullClasspath in assembly).value.filter(_.data.getName.contains("scalatest"))
 }
+
+scalacOptions ++= Seq("-deprecation", "-feature")
 
 // Make tests in sbt shell more reliable
 fork := true

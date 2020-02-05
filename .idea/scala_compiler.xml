@@ -4,6 +4,10 @@
     <option name="deprecationWarnings" value="true" />
     <option name="explainTypeErrors" value="true" />
     <option name="incrementalityType" value="SBT" />
-    <profile name="sbt 1" modules="Streamevmon,mainRunner" />
+    <profile name="sbt 1" modules="mainRunner" />
+    <profile name="sbt 2" modules="Streamevmon">
+      <option name="deprecationWarnings" value="true" />
+      <option name="featureWarnings" value="true" />
+    </profile>
   </component>
 </project>
