@@ -67,20 +67,56 @@ case class RichDNS(
       s"flag_rd=${flag_rd.getOrElse("")}," +
       s"flag_tc=${flag_tc.getOrElse("")}," +
       s"lossrate=$lossrate," +
-      s"opcode=${opcode.map(x => s"${x}i").getOrElse("")}," +
-      s"query_len=${query_len}i," +
-      s"rcode=${rcode.map(x => s"${x}i").getOrElse("")}," +
-      s"requests=${requests}i," +
-      s"response_size=${response_size.map(x => s"${x}i").getOrElse("")}," +
-      s"rtt=${rtt.map(x => s"${x}i").getOrElse("")}," +
-      s"total_additional=${total_additional.map(x => s"${x}i").getOrElse("")}," +
-      s"total_answer=${total_answer.map(x => s"${x}i").getOrElse("")}," +
-      s"total_authority=${total_authority.map(x => s"${x}i").getOrElse("")}," +
-      s"ttl=${ttl.map(x => s"${x}i").getOrElse("")} " +
+      s"opcode=${opcode.getOrElse("")}," +
+      s"query_len=$query_len," +
+      s"rcode=${rcode.getOrElse("")}," +
+      s"requests=$requests," +
+      s"response_size=${response_size.getOrElse("")}," +
+      s"rtt=${rtt.getOrElse("")}," +
+      s"total_additional=${total_additional.getOrElse("")}," +
+      s"total_answer=${total_answer.getOrElse("")}," +
+      s"total_authority=${total_authority.getOrElse("")}," +
+      s"ttl=${ttl.getOrElse("")} " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 
   override def isLossy: Boolean = lossrate.getOrElse(1.0) > 0.0
+
+  // Case classes don't generate unapply methods for more than 22 fields, since
+  // the biggest Tuple is 22 items.
+  override def toCsvFormat: Seq[String] = Seq(
+    stream: Int,
+    source: String,
+    destination: String,
+    instance: String,
+    address: String,
+    query: String,
+    query_type: String,
+    query_class: String,
+    udp_payload_size: Int,
+    recurse: Boolean,
+    dnssec: Boolean,
+    nsid: Boolean,
+    flag_aa: Option[Boolean],
+    flag_ad: Option[Boolean],
+    flag_cd: Option[Boolean],
+    flag_qr: Option[Boolean],
+    flag_ra: Option[Boolean],
+    flag_rd: Option[Boolean],
+    flag_tc: Option[Boolean],
+    lossrate: Option[Double],
+    opcode: Option[Int],
+    query_len: Int,
+    rcode: Option[Int],
+    requests: Int,
+    response_size: Option[Int],
+    rtt: Option[Int],
+    total_additional: Option[Int],
+    total_answer: Option[Int],
+    total_authority: Option[Int],
+    ttl: Option[Int],
+    time: Instant
+  ).map(toCsvTupleEntry)
 
   var defaultValue: Option[Double] = rtt.map(_.toDouble)
 }

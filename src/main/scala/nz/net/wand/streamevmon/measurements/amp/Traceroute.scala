@@ -25,6 +25,8 @@ final case class Traceroute(
 
   override def isLossy: Boolean = false
 
+  override def toCsvFormat: Seq[String] = Traceroute.unapply(this).get.productIterator.toSeq.map(toCsvTupleEntry)
+
   var defaultValue: Option[Double] = path_length
 }
 

@@ -57,6 +57,40 @@ case class Flow(
 ) extends Measurement {
   override def isLossy: Boolean = false
 
+  // Case classes don't generate unapply methods for more than 22 fields, since
+  // the biggest Tuple is 22 items.
+  override def toCsvFormat: Seq[String] = Seq(
+    capture_application,
+    capture_host,
+    stream,
+    flow_type,
+    category,
+    protocol,
+    time,
+    start_time,
+    end_time,
+    duration,
+    in_bytes,
+    out_bytes,
+    time_to_first_byte,
+    source_ip,
+    source_port,
+    source_ip_city,
+    source_ip_country,
+    source_ip_geohash,
+    source_ip_geohash_value,
+    source_ip_latitude,
+    source_ip_longitude,
+    destination_ip,
+    destination_port,
+    destination_ip_city,
+    destination_ip_country,
+    destination_ip_geohash,
+    destination_ip_geohash_value,
+    destination_ip_latitude,
+    destination_ip_longitude
+  ).map(toCsvTupleEntry)
+
   var defaultValue: Option[Double] = Some(time_to_first_byte)
 
   val includesGeolocation: Boolean = source_ip_geohash.isDefined

@@ -46,7 +46,7 @@ val testDependencies = Seq(
   "org.apache.flink" %% "flink-runtime" % flinkVersion % Test classifier "tests",
   "org.apache.flink" %% "flink-streaming-java" % flinkVersion % Test classifier "tests",
   "org.scalatest" %% "scalatest" % "3.1.0" % Test,
-  "com.dimafeng" %% "testcontainers-scala" % "0.35.0" % Test,
+  "com.dimafeng" %% "testcontainers-scala" % "0.35.2" % Test,
   "org.testcontainers" % "postgresql" % "1.12.5" % Test,
   "org.testcontainers" % "influxdb" % "1.12.5" % Test
 )

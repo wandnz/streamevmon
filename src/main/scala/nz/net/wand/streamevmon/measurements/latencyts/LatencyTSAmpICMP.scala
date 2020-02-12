@@ -28,6 +28,8 @@ case class LatencyTSAmpICMP(
 
   override def isLossy: Boolean = lossrate > 0.0
 
+  override def toCsvFormat: Seq[String] = LatencyTSAmpICMP.unapply(this).get.productIterator.toSeq.map(toCsvTupleEntry)
+
   var defaultValue: Option[Double] = Some(average)
 }
 

@@ -44,20 +44,22 @@ final case class DNS(
       s"flag_rd=${flag_rd.getOrElse("")}," +
       s"flag_tc=${flag_tc.getOrElse("")}," +
       s"lossrate=$lossrate," +
-      s"opcode=${opcode.map(x => s"${x}i").getOrElse("")}," +
-      s"query_len=${query_len}i," +
-      s"rcode=${rcode.map(x => s"${x}i").getOrElse("")}," +
-      s"requests=${requests}i," +
-      s"response_size=${response_size.map(x => s"${x}i").getOrElse("")}," +
-      s"rtt=${rtt.map(x => s"${x}i").getOrElse("")}," +
-      s"total_additional=${total_additional.map(x => s"${x}i").getOrElse("")}," +
-      s"total_answer=${total_answer.map(x => s"${x}i").getOrElse("")}," +
-      s"total_authority=${total_authority.map(x => s"${x}i").getOrElse("")}," +
-      s"ttl=${ttl.map(x => s"${x}i").getOrElse("")} " +
+      s"opcode=${opcode.getOrElse("")}," +
+      s"query_len=$query_len," +
+      s"rcode=${rcode.getOrElse("")}," +
+      s"requests=$requests," +
+      s"response_size=${response_size.getOrElse("")}," +
+      s"rtt=${rtt.getOrElse("")}," +
+      s"total_additional=${total_additional.getOrElse("")}," +
+      s"total_answer=${total_answer.getOrElse("")}," +
+      s"total_authority=${total_authority.getOrElse("")}," +
+      s"ttl=${ttl.getOrElse("")} " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 
   override def isLossy: Boolean = lossrate.getOrElse(1.0) > 0.0
+
+  override def toCsvFormat: Seq[String] = DNS.unapply(this).get.productIterator.toSeq.map(toCsvTupleEntry)
 
   var defaultValue: Option[Double] = rtt.map(_.toDouble)
 }

@@ -11,7 +11,7 @@ import scala.language.implicitConversions
 
 class DistributionTest extends TestBase {
 
-  import NormalDistribution._
+  import nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution._
 
   "NormalDistribution" should {
     "generate the correct values" in {
@@ -22,6 +22,8 @@ class DistributionTest extends TestBase {
         override def isLossy: Boolean = false
 
         override var defaultValue: Option[Double] = Some(d)
+
+        override def toCsvFormat: Seq[String] = Seq()
       }
 
       val initial = new NormalDistribution[JustADouble](

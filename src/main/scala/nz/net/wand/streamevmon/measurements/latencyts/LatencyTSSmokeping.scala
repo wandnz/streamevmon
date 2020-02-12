@@ -48,6 +48,8 @@ case class LatencyTSSmokeping(
 
   override def isLossy: Boolean = loss > 0
 
+  override def toCsvFormat: Seq[String] = LatencyTSSmokeping.unapply(this).get.productIterator.toSeq.map(toCsvTupleEntry)
+
   var defaultValue: Option[Double] = median
 }
 

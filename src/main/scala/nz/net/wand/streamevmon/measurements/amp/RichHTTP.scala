@@ -40,14 +40,16 @@ case class RichHTTP(
       s"persist=$persist," +
       s"pipelining=$pipelining," +
       s"caching=$caching," +
-      s"bytes=${bytes}i," +
-      s"duration=${duration}i," +
-      s"object_count=${object_count}i," +
-      s"server_count=${server_count}i " +
+      s"bytes=$bytes," +
+      s"duration=$duration," +
+      s"object_count=$object_count," +
+      s"server_count=$server_count " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 
   override def isLossy: Boolean = false
+
+  override def toCsvFormat: Seq[String] = RichHTTP.unapply(this).get.productIterator.toSeq.map(toCsvTupleEntry)
 
   var defaultValue: Option[Double] = Some(bytes)
 }

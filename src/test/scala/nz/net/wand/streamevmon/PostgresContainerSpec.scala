@@ -9,7 +9,7 @@ import org.apache.flink.api.java.utils.ParameterTool
 import org.squeryl.{Session, SessionFactory}
 import org.squeryl.adapters.PostgreSqlAdapter
 
-class PostgresContainerSpec extends TestBase with ForAllTestContainer {
+trait PostgresContainerSpec extends TestBase with ForAllTestContainer {
 
   override val container: PostgreSQLContainer = PostgreSQLContainer("postgres:10")
     .configure(db => {

@@ -34,6 +34,8 @@ case class RichTraceroute(
 
   override def isLossy: Boolean = false
 
+  override def toCsvFormat: Seq[String] = RichTraceroute.unapply(this).get.productIterator.toSeq.map(toCsvTupleEntry)
+
   var defaultValue: Option[Double] = path_length
 }
 

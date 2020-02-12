@@ -32,16 +32,18 @@ case class RichICMP(
       s"destination=$destination," +
       s"family=$family," +
       s"packet_size_selection=$packet_size_selection " +
-      s"loss=${loss}i," +
+      s"loss=$loss," +
       s"lossrate=$lossrate," +
-      s"median=${median.map(x => s"${x}i").getOrElse("")}," +
-      s"packet_size=${packet_size}i," +
-      s"results=${results}i," +
+      s"median=${median.getOrElse("")}," +
+      s"packet_size=$packet_size," +
+      s"results=$results," +
       s"rtts=${rtts.map(x => x.getOrElse("None")).mkString("\"[", ",", "]\"")} " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 
   override def isLossy: Boolean = loss.getOrElse(100) > 0
+
+  override def toCsvFormat: Seq[String] = RichICMP.unapply(this).get.productIterator.toSeq.map(toCsvTupleEntry)
 
   var defaultValue: Option[Double] = median.map(_.toDouble)
 }
