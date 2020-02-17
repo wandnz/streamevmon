@@ -65,8 +65,10 @@ class RnsapDetector[MeasT <: Measurement, W <: Window](
     grapher.createGraph(
       detectors = detectors,
       selfData = selfDataAsRaw,
-      nonselfData = Seq(Seq(), Seq()),
-      dimensionRanges = dimensionRanges
+      nonselfData = nonselfDataAsRaw,
+      dimensionRanges = dimensionRanges,
+      generator = detectorGenerator,
+      generationMethod = detectorGenerationMethod
     )
   }
 }

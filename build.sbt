@@ -51,8 +51,11 @@ val testDependencies = Seq(
   "org.testcontainers" % "influxdb" % "1.12.5" % Test
 )
 
+val batikVersion = "1.12"
 val chartingDependencies = Seq(
-  "org.jfree" % "jfreechart" % "1.5.0"
+  "org.jfree" % "jfreechart" % "1.5.0",
+  "org.apache.xmlgraphics" % "batik-svggen" % batikVersion,
+  "org.apache.xmlgraphics" % "batik-dom" % batikVersion
 )
 
 lazy val root = (project in file(".")).

@@ -10,7 +10,7 @@ case class DetectorGenerator(
   generationMethod: DetectorGenerationMethod = DetectorGenerationMethod()
 ) {
 
-  def getClosestSelf(centre: Seq[Double]): (Iterable[Double], Double) = {
+  private[negativeselection] def getClosestSelf(centre: Seq[Double]): (Iterable[Double], Double) = {
     // Take the item with the minimum distance, calculated by a sum of squares
     // of the distance per dimension.
     selfData.map { point =>
@@ -19,18 +19,22 @@ case class DetectorGenerator(
         val difference = pointDim - centreDim
         (point, difference * difference)
       }
-        // For each dimension, sum the squared differences
+        // For each item, sum the squared differences
         .reduce((a, b) => (a._1, a._2 + b._2))
     }
-      // Find the real distance by sqrting the sum of squared differences
-      .map(d => (d._1, math.sqrt(d._2)))
       // Get the closest one from all points
       .minBy(_._2)
   }
 
   private def generateNaive(): Detector = {
     val centre = dimensionRanges
-      .map(range => ThreadLocalRandom.current().nextDouble(range._1, range._2))
+      .map { range =>
+        val rangeSize = math.abs(range._2 - range._1)
+        val outsideBufferSize = rangeSize * generationMethod.borderProportion
+        val min = range._1 - outsideBufferSize
+        val max = range._2 + outsideBufferSize
+        ThreadLocalRandom.current().nextDouble(min, max)
+      }
     val closestSelfPoint = getClosestSelf(centre)
 
     Detector(
