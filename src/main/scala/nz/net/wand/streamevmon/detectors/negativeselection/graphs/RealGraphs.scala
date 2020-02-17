@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.detectors.negativeselection.graphs
 
-import nz.net.wand.streamevmon.detectors.negativeselection.Detector
+import nz.net.wand.streamevmon.detectors.negativeselection.{Detector, DetectorGenerator}
 
 import java.awt.Color
 import java.io.File
@@ -30,7 +30,7 @@ class RealGraphs(
         Array(
           detectors.map(_.centre.head).toArray,
           detectors.map(_.centre.drop(1).head).toArray,
-          detectors.map(_.radius).toArray
+          detectors.map(_.radius * 2).toArray
         )
       )
     }
@@ -79,6 +79,38 @@ class RealGraphs(
     chart.getXYPlot.setRenderer(2, new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES))
     chart.getXYPlot.getRenderer(2).setSeriesShape(0, ShapeUtils.createRegularCross(5, 1))
     chart.getXYPlot.getRenderer(2).setSeriesPaint(0, Color.RED)
+
+    // We'll make our own generator so we can use its getClosestSelf method
+    // to draw lines from the centres of our detectors to their nearest self
+    // measurements.
+    val detectorGenerator = DetectorGenerator(
+      dimensionRanges.size,
+      selfData,
+      nonselfData,
+      dimensionRanges.toSeq
+    )
+
+    println()
+
+    val detectorToNearestSelfDataset = new DefaultXYDataset()
+    Range(0, detectors.size).zip(detectors).foreach { indexAndDetector =>
+      val nearestSelf = detectorGenerator.getClosestSelf(indexAndDetector._2.centre)
+
+      detectorToNearestSelfDataset.addSeries(
+        s"detector to nearest self ${indexAndDetector._1}",
+        Array(
+          Array(indexAndDetector._2.centre.head, nearestSelf._1.head),
+          Array(indexAndDetector._2.centre.drop(1).head, nearestSelf._1.drop(1).head)
+        )
+      )
+    }
+
+    // We skip writing the legend for these lines.
+    val legendItems = chart.getXYPlot.getLegendItems
+
+    chart.getXYPlot.setDataset(3, detectorToNearestSelfDataset)
+    chart.getXYPlot.setRenderer(3, new StandardXYItemRenderer(StandardXYItemRenderer.LINES))
+    chart.getXYPlot.setFixedLegendItems(legendItems)
 
     ChartUtils.saveChartAsPNG(
       new File(filename),

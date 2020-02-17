@@ -40,7 +40,7 @@ case class Haberman(
 
   override var defaultValue: Option[Double] = Some(positiveNodes)
 
-  override val defaultValues: Option[Seq[Double]] = Some(Seq(age, year, positiveNodes, survivalStatus.id))
+  override val defaultValues: Option[Seq[Double]] = Some(Seq(age, year, positiveNodes))
 }
 
 object SurvivalStatus extends Enumeration {
