@@ -45,4 +45,10 @@ abstract class Measurement extends Serializable {
     *         types without needing to know what each item is.
     */
   var defaultValue: Option[Double]
+
+  /** @return A collection of useful values for multi-dimensional data.
+    *         Unless this is overriden, it is just the single dimension of
+    *         `defaultValue`.
+    */
+  def defaultValues: Option[Seq[Double]] = defaultValue.map(Seq(_))
 }

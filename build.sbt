@@ -51,15 +51,20 @@ val testDependencies = Seq(
   "org.testcontainers" % "influxdb" % "1.12.5" % Test
 )
 
+val chartingDependencies = Seq(
+  "org.jfree" % "jfreechart" % "1.5.0"
+)
+
 lazy val root = (project in file(".")).
   settings(
     libraryDependencies ++=
       flinkDependencies ++
-      influxDependencies ++
-      postgresDependencies ++
-      cacheDependencies ++
-      logDependencies ++
-      testDependencies
+        influxDependencies ++
+        postgresDependencies ++
+        cacheDependencies ++
+        logDependencies ++
+        testDependencies ++
+        chartingDependencies
   )
 
 // make run command include the provided dependencies
