@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.detectors.negativeselection.graphs
 
 import nz.net.wand.streamevmon.detectors.negativeselection.{Detector, DetectorGenerationMethod, DetectorGenerator}
 
-import java.awt.{Color, Dimension, Rectangle}
+import java.awt._
 import java.io.{File, FileOutputStream, OutputStreamWriter}
 
 import org.apache.batik.dom.GenericDOMImplementation
@@ -14,9 +14,147 @@ import org.jfree.chart.renderer.xy.{StandardXYItemRenderer, XYBubbleRenderer}
 import org.jfree.chart.util.ShapeUtils
 import org.jfree.data.xy.{DefaultXYDataset, DefaultXYZDataset}
 
+import scala.collection.mutable
+import scala.language.implicitConversions
+import scala.reflect.ClassTag
+
 class RealGraphs(
   filename: String = "./out/graphs/rnsap"
 ) extends RnsapGraphs {
+
+  // Iterables should just be arrays whenever they need to be.
+  implicit def iterableToArray[T: ClassTag](i: Iterable[T]): Array[T] = i.toArray
+
+  implicit def doubleIterableToArray[T: ClassTag](i: Iterable[Iterable[T]]): Array[Array[T]] =
+    i.map(_.toArray).toArray
+
+  implicit def arrayOfBuffersToArrays[T: ClassTag](i: Array[mutable.Buffer[T]]): Array[Array[T]] =
+    i.map(_.toArray)
+
+  private def getNextDatasetIndex(chart: JFreeChart): Int = {
+    val count = chart.getXYPlot.getDatasetCount
+    if (count == 1 && chart.getXYPlot.getDataset(0) == null) {
+      0
+    }
+    else {
+      count
+    }
+  }
+
+  private def addCircles(
+    chart: JFreeChart,
+    name : String,
+    color: Paint,
+    data : Array[Array[Double]]
+  ): Unit = {
+    val idx = getNextDatasetIndex(chart)
+
+    if (data.nonEmpty) {
+      val dataset = new DefaultXYZDataset()
+      dataset.addSeries(name, data)
+
+      chart.getXYPlot.setDataset(idx, dataset)
+      chart.getXYPlot.setRenderer(idx, new XYBubbleRenderer(XYBubbleRenderer.SCALE_ON_BOTH_AXES))
+      chart.getXYPlot.getRenderer(idx).setSeriesPaint(0, color)
+    }
+  }
+
+  private def addDetectors(
+    chart: JFreeChart,
+    name : String,
+    color: Paint,
+    detectors: Iterable[Detector]
+  ): Unit = {
+    val data = Array(
+      detectors.map(_.centre.head).toArray,
+      detectors.map(_.centre.drop(1).head).toArray,
+      detectors.map(d => math.sqrt(d.squareRadius) * 2).toArray
+    )
+
+    addCircles(chart, name, color, data)
+  }
+
+  private def addDetectorToNearestSelfLines(
+    chart: JFreeChart,
+    detectors: Iterable[Detector],
+    selfData: Iterable[Iterable[Double]],
+    generator: DetectorGenerator
+  ): Unit = {
+    val dataset = new DefaultXYDataset()
+
+    detectors.foreach { detector =>
+      val nearestSelfPoint = generator.getClosestSelf(detector.centre)
+
+      dataset.addSeries(
+        s"detector to nearest self ${detector.centre}",
+        Array(
+          Array(detector.centre.head, nearestSelfPoint._1.head),
+          Array(detector.centre.drop(1).head, nearestSelfPoint._1.drop(1).head)
+        )
+      )
+    }
+    val idx = getNextDatasetIndex(chart)
+    chart.getXYPlot.setDataset(idx, dataset)
+    chart.getXYPlot.setRenderer(idx, new StandardXYItemRenderer(StandardXYItemRenderer.LINES))
+    // We can't set the colours for these lines for some reason.
+  }
+
+  private def addDetectorExclusionZones(
+    chart: JFreeChart,
+    innerCircleColor: Paint,
+    bigCircleColor: Paint,
+    detectors: Iterable[Detector],
+    selfData: Iterable[Iterable[Double]],
+    generator: DetectorGenerator,
+    method: DetectorGenerationMethod
+  ): Unit = {
+
+    val smallCircles: Array[mutable.Buffer[Double]] = Array(mutable.Buffer(), mutable.Buffer(), mutable.Buffer())
+    val bigCircles: Array[mutable.Buffer[Double]] = Array(mutable.Buffer(), mutable.Buffer(), mutable.Buffer())
+
+    detectors.foreach { detector =>
+      smallCircles.head.append(detector.centre.head)
+      smallCircles.drop(1).head.append(detector.centre.drop(1).head)
+      smallCircles.drop(2).head.append(math.sqrt(detector.squareRadius) * 2 * method.detectorRedundancyProportion)
+
+      val nearestSelfPoint = generator.getClosestSelf(detector.centre)
+      bigCircles.head.append(nearestSelfPoint._1.head)
+      bigCircles.drop(1).head.append(nearestSelfPoint._1.drop(1).head)
+      bigCircles.drop(2).head.append(math.sqrt(detector.squareRadius) * 2)
+    }
+
+    val idx = getNextDatasetIndex(chart)
+    val dataset = new DefaultXYZDataset()
+    dataset.addSeries("Redundancy inner-zone circles", smallCircles)
+    dataset.addSeries("Redundancy outer-zone circles", bigCircles)
+    chart.getXYPlot.setDataset(idx, dataset)
+    chart.getXYPlot.setRenderer(idx, new XYBubbleRenderer(XYBubbleRenderer.SCALE_ON_BOTH_AXES))
+    chart.getXYPlot.getRenderer(idx).setSeriesPaint(0, innerCircleColor)
+    chart.getXYPlot.getRenderer(idx).setSeriesPaint(1, bigCircleColor)
+  }
+
+  private def addPoints(
+    chart: JFreeChart,
+    name : String,
+    color: Paint,
+    shape: Option[Shape],
+    data : Array[Array[Double]]
+  ): Unit = {
+    val idx = getNextDatasetIndex(chart)
+
+    val dataset = new DefaultXYDataset()
+    if (data.head.nonEmpty) {
+      dataset.addSeries(
+        name,
+        Seq(data.map(_.head), data.map(_.drop(1).head)).toArray
+      )
+    }
+    chart.getXYPlot.setDataset(idx, dataset)
+    chart.getXYPlot.setRenderer(idx, new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES))
+    shape.foreach(s => chart.getXYPlot.getRenderer(idx).setSeriesShape(0, s))
+    chart.getXYPlot.getRenderer(idx).setSeriesPaint(0, color)
+  }
+
   override def createGraph(
     detectors: Iterable[Detector],
     generator: DetectorGenerator,
@@ -27,34 +165,7 @@ class RealGraphs(
     generationMethod: DetectorGenerationMethod
   ): Unit = {
 
-    val detectorsDataset = new DefaultXYZDataset()
-    if (detectors.nonEmpty) {
-      detectorsDataset.addSeries(
-        "Detectors",
-        Array(
-          detectors.map(_.centre.head).toArray,
-          detectors.map(_.centre.drop(1).head).toArray,
-          detectors.map(d => math.sqrt(d.squareRadius) * 2).toArray
-        )
-      )
-    }
-
-    val selfDataset = new DefaultXYDataset()
-    if (selfData.head.nonEmpty) {
-      selfDataset.addSeries(
-        "Self",
-        Seq(selfData.map(_.head).toArray, selfData.map(_.drop(1).head).toArray).toArray
-      )
-    }
-
-    val nonSelfDataset = new DefaultXYDataset()
-    if (nonselfData.head.nonEmpty) {
-      nonSelfDataset.addSeries(
-        "Non-Self",
-        Seq(nonselfData.map(_.head).toArray, nonselfData.map(_.drop(1).head).toArray).toArray
-      )
-    }
-
+    // First, let's set up the chart along with its X and Y bounds including the buffer.
     val chart = new JFreeChart(
       "RNSAP",
       new XYPlot(
@@ -65,8 +176,11 @@ class RealGraphs(
       )
     )
 
-    val rangeXBuffer = (dimensionRanges.head._2 - dimensionRanges.head._1) * generationMethod.borderProportion
-    val rangeYBuffer = (dimensionRanges.drop(1).head._2 - dimensionRanges.drop(1).head._1) * generationMethod.borderProportion
+    val rangeXBuffer = (dimensionRanges.head._2 - dimensionRanges.head._1) *
+      generationMethod.borderProportion
+    val rangeYBuffer = (dimensionRanges.drop(1).head._2 - dimensionRanges.drop(1).head._1) *
+      generationMethod.borderProportion
+
     chart.getXYPlot.getDomainAxis.setRange(
       dimensionRanges.head._1 - rangeXBuffer,
       dimensionRanges.head._2 + rangeXBuffer
@@ -76,45 +190,58 @@ class RealGraphs(
       dimensionRanges.drop(1).head._2 + rangeYBuffer
     )
 
-    // Detector bubbles
-    chart.getXYPlot.setDataset(0, detectorsDataset)
-    chart.getXYPlot.setRenderer(0, new XYBubbleRenderer(XYBubbleRenderer.SCALE_ON_BOTH_AXES))
-    chart.getXYPlot.getRenderer(0).setSeriesPaint(0, new Color(0f, 0f, 1f, 0.05f))
+    // Now let's add the data, in top-to-bottom rendering order.
 
-    // Self data squares
-    chart.getXYPlot.setDataset(1, selfDataset)
-    chart.getXYPlot.setRenderer(1, new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES))
-    chart.getXYPlot.getRenderer(1).setSeriesPaint(0, Color.GREEN)
+    // The self-data shows as green squares.
+    addPoints(chart,
+      "Self",
+      Color.GREEN,
+      None,
+      selfData
+    )
 
-    // Non-self data crosses
-    chart.getXYPlot.setDataset(2, nonSelfDataset)
-    chart.getXYPlot.setRenderer(2, new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES))
-    chart.getXYPlot.getRenderer(2).setSeriesShape(0, ShapeUtils.createRegularCross(5, 1))
-    chart.getXYPlot.getRenderer(2).setSeriesPaint(0, Color.RED)
+    // The non-self-data shows as red crosses.
+    addPoints(
+      chart,
+      "Non-Self",
+      Color.RED,
+      Some(ShapeUtils.createRegularCross(4, 1)),
+      nonselfData
+    )
 
-    // Let's find the nearest self-point for each detector so we can draw lines.
-    val detectorToNearestSelfDataset = new DefaultXYDataset()
-    Range(0, detectors.size).zip(detectors).foreach { indexAndDetector =>
-      val nearestSelf = generator.getClosestSelf(indexAndDetector._2.centre)
+    // Circles representing detectors in transparent blue.
+    addDetectors(
+      chart,
+      "Detectors",
+      new Color(0f, 0f, 1f, 0.05f),
+      detectors
+    )
 
-      detectorToNearestSelfDataset.addSeries(
-        s"detector to nearest self ${indexAndDetector._1}",
-        Array(
-          Array(indexAndDetector._2.centre.head, nearestSelf._1.head),
-          Array(indexAndDetector._2.centre.drop(1).head, nearestSelf._1.drop(1).head)
-        )
-      )
-    }
+    // From here on, we write no legend entries.
+    chart.getXYPlot.setFixedLegendItems(chart.getXYPlot.getLegendItems)
 
-    // We skip writing the legend for these lines.
-    val legendItems = chart.getXYPlot.getLegendItems
+    // Add some centre-to-nearest-self lines.
+    addDetectorToNearestSelfLines(
+      chart,
+      detectors,
+      selfData,
+      generator
+    )
 
-    chart.getXYPlot.setDataset(3, detectorToNearestSelfDataset)
-    chart.getXYPlot.setRenderer(3, new StandardXYItemRenderer(StandardXYItemRenderer.LINES))
-    chart.getXYPlot.setFixedLegendItems(legendItems)
+    // Add some big circles that overlap with detectors to show their
+    // exclusion zones.
+    addDetectorExclusionZones(
+      chart,
+      new Color(1f, 0f, 0f, 0.05f),
+      new Color(0f, 1f, 0f, 0.05f),
+      detectors,
+      selfData,
+      generator,
+      generationMethod
+    )
 
-    chart.getXYPlot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD)
-
+    // Finally, save it out in two formats.
+    // PNG
     ChartUtils.saveChartAsPNG(
       new File(s"$filename.png"),
       chart,
@@ -122,6 +249,9 @@ class RealGraphs(
       1000
     )
 
+    chart.getXYPlot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE)
+
+    // SVG
     val document = GenericDOMImplementation.getDOMImplementation.createDocument(null, "svg", null)
     val svg = new SVGGraphics2D(document)
     svg.setSVGCanvasSize(new Dimension(1000, 1000))

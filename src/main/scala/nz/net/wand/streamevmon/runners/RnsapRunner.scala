@@ -35,7 +35,9 @@ object RnsapRunner {
         DetectorGenerationMethod(
           redundancy = false,
           spatialPreference = false,
-          featurePreference = false
+          featurePreference = false,
+          borderProportion = 0.5,
+          detectorRedundancyProportion = 0.5
         ),
         new RealGraphs
       ))

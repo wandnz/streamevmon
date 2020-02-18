@@ -50,7 +50,7 @@ case class DetectorGenerator(
 
   def generateUntilDone(): Iterable[Detector] = {
     // First, we generate some naive detectors.
-    Range(0, 100).map(_ => generateNaive())
+    Range(0, 10).map(_ => generateNaive())
 
     // Next, we generate some detectors with spatial preference if enabled.
 

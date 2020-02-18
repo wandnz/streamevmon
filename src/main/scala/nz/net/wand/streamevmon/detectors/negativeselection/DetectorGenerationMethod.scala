@@ -4,5 +4,6 @@ case class DetectorGenerationMethod(
   redundancy: Boolean = true,
   spatialPreference: Boolean = true,
   featurePreference: Boolean = true,
-  borderProportion: Double = 0.1
+  borderProportion : Double = 0.1,
+  detectorRedundancyProportion: Double = 0.1
 )
