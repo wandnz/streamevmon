@@ -33,7 +33,7 @@ object RnsapRunner {
       .timeWindow(Time.days(1))
       .process(new RnsapDetector[Haberman, TimeWindow](
         DetectorGenerationMethod(
-          redundancy = false,
+          redundancy = true,
           spatialPreference = false,
           featurePreference = false,
           borderProportion = 0.5,

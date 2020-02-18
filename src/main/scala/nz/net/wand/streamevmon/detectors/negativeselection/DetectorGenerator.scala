@@ -2,10 +2,12 @@ package nz.net.wand.streamevmon.detectors.negativeselection
 
 import java.util.concurrent.ThreadLocalRandom
 
+import scala.collection.mutable
+
 case class DetectorGenerator(
-  dimensions: Int,
+  dimensions      : Int,
   selfData        : Iterable[Iterable[Double]],
-  nonselfData: Iterable[Iterable[Double]],
+  nonselfData     : Iterable[Iterable[Double]],
   dimensionRanges : Seq[(Double, Double)],
   generationMethod: DetectorGenerationMethod = DetectorGenerationMethod()
 ) {
@@ -26,8 +28,8 @@ case class DetectorGenerator(
       .minBy(_._2)
   }
 
-  private def generateNaive(): Detector = {
-    val centre = dimensionRanges
+  private def generateNaiveCentre(): Seq[Double] = {
+    dimensionRanges
       .map { range =>
         val rangeSize = math.abs(range._2 - range._1)
         val outsideBufferSize = rangeSize * generationMethod.borderProportion
@@ -35,12 +37,30 @@ case class DetectorGenerator(
         val max = range._2 + outsideBufferSize
         ThreadLocalRandom.current().nextDouble(min, max)
       }
+  }
+
+  private def generateNaive(): Detector = {
+    val centre = generateNaiveCentre()
     val closestSelfPoint = getClosestSelf(centre)
 
     Detector(
       dimensions,
       centre,
-      closestSelfPoint._2
+      closestSelfPoint._2,
+      math.pow(math.sqrt(closestSelfPoint._2) * generationMethod.detectorRedundancyProportion, 2),
+      closestSelfPoint._1.toSeq
+    )
+  }
+
+  private def detectorFromCentre(centre: Seq[Double]): Detector = {
+    val closestSelfPoint = getClosestSelf(centre)
+
+    Detector(
+      dimensions,
+      centre,
+      closestSelfPoint._2,
+      math.pow(math.sqrt(closestSelfPoint._2) * generationMethod.detectorRedundancyProportion, 2),
+      closestSelfPoint._1.toSeq
     )
   }
 
@@ -49,8 +69,30 @@ case class DetectorGenerator(
   private def generateWithFeaturePreference(): Detector = ???
 
   def generateUntilDone(): Iterable[Detector] = {
-    // First, we generate some naive detectors.
-    Range(0, 10).map(_ => generateNaive())
+    // If we're not using redundancy, just generate a few detectors since the
+    // inferior coverage termination method is unimplemented.
+    val initialDetectors = if (!generationMethod.redundancy) {
+      Range(0, 1).map(_ => generateNaive())
+    }
+    // If we are using redundancy, each new detector should not be made
+    // redundant by any existing detector.
+    else {
+      val nonRedundantDetectors: mutable.Buffer[Detector] = mutable.Buffer()
+
+      for (_ <- Range(0, 5)) {
+        val newCentre = generateNaiveCentre()
+        if (!nonRedundantDetectors.exists(d => d.makesRedundant(newCentre))) {
+          nonRedundantDetectors.append(detectorFromCentre(newCentre))
+        }
+        else {
+          println("Found redundant detector", newCentre)
+        }
+      }
+
+      nonRedundantDetectors
+    }
+
+    initialDetectors
 
     // Next, we generate some detectors with spatial preference if enabled.
 

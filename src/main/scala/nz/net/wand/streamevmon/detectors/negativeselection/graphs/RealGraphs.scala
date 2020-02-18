@@ -77,19 +77,16 @@ class RealGraphs(
   private def addDetectorToNearestSelfLines(
     chart: JFreeChart,
     detectors: Iterable[Detector],
-    selfData: Iterable[Iterable[Double]],
-    generator: DetectorGenerator
+    selfData : Iterable[Iterable[Double]]
   ): Unit = {
     val dataset = new DefaultXYDataset()
 
     detectors.foreach { detector =>
-      val nearestSelfPoint = generator.getClosestSelf(detector.centre)
-
       dataset.addSeries(
         s"detector to nearest self ${detector.centre}",
         Array(
-          Array(detector.centre.head, nearestSelfPoint._1.head),
-          Array(detector.centre.drop(1).head, nearestSelfPoint._1.drop(1).head)
+          Array(detector.centre.head, detector.nearestSelfpoint.head),
+          Array(detector.centre.drop(1).head, detector.nearestSelfpoint.drop(1).head)
         )
       )
     }
@@ -101,11 +98,12 @@ class RealGraphs(
 
   private def addDetectorExclusionZones(
     chart: JFreeChart,
+    drawInnerCircle: Boolean,
+    drawOuterCircle: Boolean,
     innerCircleColor: Paint,
     bigCircleColor: Paint,
     detectors: Iterable[Detector],
     selfData: Iterable[Iterable[Double]],
-    generator: DetectorGenerator,
     method: DetectorGenerationMethod
   ): Unit = {
 
@@ -117,16 +115,19 @@ class RealGraphs(
       smallCircles.drop(1).head.append(detector.centre.drop(1).head)
       smallCircles.drop(2).head.append(math.sqrt(detector.squareRadius) * 2 * method.detectorRedundancyProportion)
 
-      val nearestSelfPoint = generator.getClosestSelf(detector.centre)
-      bigCircles.head.append(nearestSelfPoint._1.head)
-      bigCircles.drop(1).head.append(nearestSelfPoint._1.drop(1).head)
+      bigCircles.head.append(detector.nearestSelfpoint.head)
+      bigCircles.drop(1).head.append(detector.nearestSelfpoint.drop(1).head)
       bigCircles.drop(2).head.append(math.sqrt(detector.squareRadius) * 2)
     }
 
     val idx = getNextDatasetIndex(chart)
     val dataset = new DefaultXYZDataset()
-    dataset.addSeries("Redundancy inner-zone circles", smallCircles)
-    dataset.addSeries("Redundancy outer-zone circles", bigCircles)
+    if (drawInnerCircle) {
+      dataset.addSeries("Redundancy inner-zone circles", smallCircles)
+    }
+    if (drawOuterCircle) {
+      dataset.addSeries("Redundancy outer-zone circles", bigCircles)
+    }
     chart.getXYPlot.setDataset(idx, dataset)
     chart.getXYPlot.setRenderer(idx, new XYBubbleRenderer(XYBubbleRenderer.SCALE_ON_BOTH_AXES))
     chart.getXYPlot.getRenderer(idx).setSeriesPaint(0, innerCircleColor)
@@ -224,19 +225,19 @@ class RealGraphs(
     addDetectorToNearestSelfLines(
       chart,
       detectors,
-      selfData,
-      generator
+      selfData
     )
 
     // Add some big circles that overlap with detectors to show their
     // exclusion zones.
     addDetectorExclusionZones(
       chart,
+      drawInnerCircle = true,
+      drawOuterCircle = true,
       new Color(1f, 0f, 0f, 0.05f),
-      new Color(0f, 1f, 0f, 0.05f),
+      new Color(0f, 1f, 0f, 0.01f),
       detectors,
       selfData,
-      generator,
       generationMethod
     )
 
