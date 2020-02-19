@@ -3,11 +3,11 @@ package nz.net.wand.streamevmon.detectors.negativeselection
 // This is really just a hypersphere.
 // The length of `centre` must equal `dimensions`.
 case class Detector(
-  dimensions            : Int,
-  centre                : Seq[Double],
-  squareRadius          : Double,
+  dimensions: Int,
+  centre: Iterable[Double],
+  squareRadius: Double,
   redundancySquareRadius: Double,
-  nearestSelfpoint      : Seq[Double]
+  nearestSelfpoint      : Iterable[Double]
 ) {
 
   /** If the distance between the point and the centre is less than the radius,
@@ -16,7 +16,7 @@ case class Detector(
     */
   def contains(
     point: Iterable[Double],
-    activeCentre: Seq[Double] = centre,
+    activeCentre: Iterable[Double] = centre,
     activeSquareRadius: Double = squareRadius
   ): Boolean = {
     val distance: Double = (point, activeCentre).zipped.map { (p, c) =>
@@ -27,7 +27,7 @@ case class Detector(
     distance < activeSquareRadius
   }
 
-  def makesRedundant(newCentre: Seq[Double]): Boolean = {
+  def makesRedundant(newCentre: Iterable[Double]): Boolean = {
     contains(newCentre, activeSquareRadius = redundancySquareRadius) &&
       contains(newCentre, activeCentre = nearestSelfpoint)
   }

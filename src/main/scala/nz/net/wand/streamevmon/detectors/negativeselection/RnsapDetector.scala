@@ -9,9 +9,11 @@ import org.apache.flink.streaming.api.scala.function.ProcessWindowFunction
 import org.apache.flink.streaming.api.windowing.windows.Window
 import org.apache.flink.util.Collector
 
+import scala.reflect.ClassTag
+
 class RnsapDetector[MeasT <: Measurement, W <: Window](
   detectorGenerationMethod: DetectorGenerationMethod,
-  grapher: RnsapGraphs = new DummyGraphs
+  grapher                 : RnsapGraphs = new DummyGraphs
 )
   extends ProcessWindowFunction[MeasT, Event, String, W] {
 
@@ -31,10 +33,19 @@ class RnsapDetector[MeasT <: Measurement, W <: Window](
     out                   : Collector[Event]
   ): Unit = {
 
-    val elementsAsRaw = elements.map(_.defaultValues.get.take(2))
+    def normaliseRawMeasurement[T: ClassTag](d: Iterable[T]): Iterable[T] =
+      d.take(2)
+
+    def normaliseRawData[T: ClassTag](d: Iterable[Iterable[T]]): Iterable[Iterable[T]] =
+      d.map(normaliseRawMeasurement)
+
+    def normaliseMeasDataToRaw(d: Iterable[MeasT]): Iterable[Iterable[Double]] =
+      normaliseRawData(d.map(_.defaultValues.get))
+
+    val elementsAsRaw = normaliseMeasDataToRaw(elements)
     val (selfData, nonselfData) = elements.partition(isAbnormalMeasurement)
-    val selfDataAsRaw = selfData.map(_.defaultValues.get.take(2))
-    val nonselfDataAsRaw = nonselfData.map(_.defaultValues.get.take(2))
+    val selfDataAsRaw = normaliseMeasDataToRaw(selfData)
+    val nonselfDataAsRaw = normaliseMeasDataToRaw(nonselfData)
 
     // First, determine the number of dimensions of the dataset.
     val dimensions = elementsAsRaw.head.size

@@ -5,14 +5,14 @@ import java.util.concurrent.ThreadLocalRandom
 import scala.collection.mutable
 
 case class DetectorGenerator(
-  dimensions      : Int,
+  dimensions: Int,
   selfData        : Iterable[Iterable[Double]],
   nonselfData     : Iterable[Iterable[Double]],
-  dimensionRanges : Seq[(Double, Double)],
+  dimensionRanges : Iterable[(Double, Double)],
   generationMethod: DetectorGenerationMethod = DetectorGenerationMethod()
 ) {
 
-  private[negativeselection] def getClosestSelf(centre: Seq[Double]): (Iterable[Double], Double) = {
+  private[negativeselection] def getClosestSelf(centre: Iterable[Double]): (Iterable[Double], Double) = {
     // Take the item with the minimum distance, calculated by a sum of squares
     // of the distance per dimension.
     selfData.map { point =>
@@ -28,7 +28,7 @@ case class DetectorGenerator(
       .minBy(_._2)
   }
 
-  private def generateNaiveCentre(): Seq[Double] = {
+  private def generateNaiveCentre(): Iterable[Double] = {
     dimensionRanges
       .map { range =>
         val rangeSize = math.abs(range._2 - range._1)
@@ -48,11 +48,11 @@ case class DetectorGenerator(
       centre,
       closestSelfPoint._2,
       math.pow(math.sqrt(closestSelfPoint._2) * generationMethod.detectorRedundancyProportion, 2),
-      closestSelfPoint._1.toSeq
+      closestSelfPoint._1
     )
   }
 
-  private def detectorFromCentre(centre: Seq[Double]): Detector = {
+  private def detectorFromCentre(centre: Iterable[Double]): Detector = {
     val closestSelfPoint = getClosestSelf(centre)
 
     Detector(
@@ -60,7 +60,7 @@ case class DetectorGenerator(
       centre,
       closestSelfPoint._2,
       math.pow(math.sqrt(closestSelfPoint._2) * generationMethod.detectorRedundancyProportion, 2),
-      closestSelfPoint._1.toSeq
+      closestSelfPoint._1
     )
   }
 
@@ -77,15 +77,22 @@ case class DetectorGenerator(
     // If we are using redundancy, each new detector should not be made
     // redundant by any existing detector.
     else {
-      val nonRedundantDetectors: mutable.Buffer[Detector] = mutable.Buffer()
+      val nonRedundantDetectors: mutable.Buffer[Detector] = mutable.Buffer(
+        generateNaive()
+      )
 
-      for (_ <- Range(0, 5)) {
+      var redundantCount = 0
+
+      while (redundantCount.toDouble / nonRedundantDetectors.size <
+        generationMethod.detectorRedundancyTerminationThreshold) {
+
         val newCentre = generateNaiveCentre()
         if (!nonRedundantDetectors.exists(d => d.makesRedundant(newCentre))) {
           nonRedundantDetectors.append(detectorFromCentre(newCentre))
         }
         else {
-          println("Found redundant detector", newCentre)
+          redundantCount += 1
+          println(s"Found redundant detector ($redundantCount/${nonRedundantDetectors.size})", newCentre)
         }
       }
 

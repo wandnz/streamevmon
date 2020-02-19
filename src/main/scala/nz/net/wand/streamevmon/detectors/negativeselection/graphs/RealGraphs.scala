@@ -41,24 +41,6 @@ class RealGraphs(
     }
   }
 
-  private def addCircles(
-    chart: JFreeChart,
-    name : String,
-    color: Paint,
-    data : Array[Array[Double]]
-  ): Unit = {
-    val idx = getNextDatasetIndex(chart)
-
-    if (data.nonEmpty) {
-      val dataset = new DefaultXYZDataset()
-      dataset.addSeries(name, data)
-
-      chart.getXYPlot.setDataset(idx, dataset)
-      chart.getXYPlot.setRenderer(idx, new XYBubbleRenderer(XYBubbleRenderer.SCALE_ON_BOTH_AXES))
-      chart.getXYPlot.getRenderer(idx).setSeriesPaint(0, color)
-    }
-  }
-
   private def addDetectors(
     chart: JFreeChart,
     name : String,
@@ -71,7 +53,13 @@ class RealGraphs(
       detectors.map(d => math.sqrt(d.squareRadius) * 2).toArray
     )
 
-    addCircles(chart, name, color, data)
+    val dataset = new DefaultXYZDataset()
+    dataset.addSeries(name, data)
+
+    val idx = getNextDatasetIndex(chart)
+    chart.getXYPlot.setDataset(idx, dataset)
+    chart.getXYPlot.setRenderer(idx, new XYBubbleRenderer(XYBubbleRenderer.SCALE_ON_BOTH_AXES))
+    chart.getXYPlot.getRenderer(idx).setSeriesPaint(0, color)
   }
 
   private def addDetectorToNearestSelfLines(
@@ -147,7 +135,7 @@ class RealGraphs(
     if (data.head.nonEmpty) {
       dataset.addSeries(
         name,
-        Seq(data.map(_.head), data.map(_.drop(1).head)).toArray
+        Array(data.map(_.head), data.map(_.drop(1).head))
       )
     }
     chart.getXYPlot.setDataset(idx, dataset)
@@ -233,7 +221,7 @@ class RealGraphs(
     addDetectorExclusionZones(
       chart,
       drawInnerCircle = true,
-      drawOuterCircle = true,
+      drawOuterCircle = false,
       new Color(1f, 0f, 0f, 0.05f),
       new Color(0f, 1f, 0f, 0.01f),
       detectors,
