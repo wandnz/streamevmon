@@ -3,6 +3,7 @@ package nz.net.wand.streamevmon.runners
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.negativeselection.{DetectorGenerationMethod, RnsapDetector}
 import nz.net.wand.streamevmon.detectors.negativeselection.graphs.RealGraphs
+import nz.net.wand.streamevmon.detectors.negativeselection.DetectorGenerationMethod._
 import nz.net.wand.streamevmon.flink.{HabermanFileInputFormat, MeasurementKeySelector}
 import nz.net.wand.streamevmon.measurements.haberman.Haberman
 
@@ -33,11 +34,12 @@ object RnsapRunner {
       .timeWindow(Time.days(1))
       .process(new RnsapDetector[Haberman, TimeWindow](
         DetectorGenerationMethod(
+          detectorRadiusMethod = NearestSelfSampleRadius(),
           redundancy = true,
           spatialPreference = false,
           featurePreference = false,
-          borderProportion = 0.1,
-          detectorRedundancyProportion = 0.5,
+          borderProportion = 0.0,
+          detectorRedundancyProportion = 0.8,
           detectorRedundancyTerminationThreshold = 0.9
         ),
         new RealGraphs

@@ -1,7 +1,16 @@
 package nz.net.wand.streamevmon.detectors.negativeselection
 
+import nz.net.wand.streamevmon.detectors.negativeselection.DetectorGenerationMethod.{DetectorRadiusMethod, NearestSelfSampleRadius}
+
 /** Configures detector generation. Used by [[DetectorGenerator]].
   *
+  * @param detectorRadiusMethod                   How to determine the radius of a new detector.
+  *                                               FixedRadius accepts an argument, while NearestSelfSampleRadius
+  *                                               gives the radius just large enough to stop short of touching
+  *                                               the nearest self-sample, then scales it down by the proportion
+  *                                               in the argument. This argument must be between 0 and 1.
+  * @param generationAttempts                     If generation detection fails because of the radius
+  *                                               method, we should retry up to this number of times.
   * @param redundancy                             Whether to use redundancy testing. If false, a fixed
   *                                               number of detectors are generated since coverage-based
   *                                               termination is not implemented.
@@ -28,6 +37,8 @@ package nz.net.wand.streamevmon.detectors.negativeselection
   *                                               detectors will be generated.
   */
 case class DetectorGenerationMethod(
+  detectorRadiusMethod: DetectorRadiusMethod = NearestSelfSampleRadius(),
+  generationAttempts                    : Int = 100,
   redundancy                            : Boolean = true,
   spatialPreference                     : Boolean = true,
   featurePreference                     : Boolean = true,
@@ -50,4 +61,20 @@ case class DetectorGenerationMethod(
       )
     }
   }
+}
+
+object DetectorGenerationMethod {
+
+  sealed trait DetectorRadiusMethod
+
+  case class FixedRadius(radius: Double) extends DetectorRadiusMethod
+
+  case class NearestSelfSampleRadius(radiusMultiplier: Double = 0.999) extends DetectorRadiusMethod {
+    if (radiusMultiplier > 1 || radiusMultiplier < 0) {
+      throw new IllegalArgumentException(
+        "Detector radius multiplier for nearest self-sample approach must be between 0 and 1."
+      )
+    }
+  }
+
 }

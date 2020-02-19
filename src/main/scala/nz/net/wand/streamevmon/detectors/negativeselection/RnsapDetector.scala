@@ -9,8 +9,6 @@ import org.apache.flink.streaming.api.scala.function.ProcessWindowFunction
 import org.apache.flink.streaming.api.windowing.windows.Window
 import org.apache.flink.util.Collector
 
-import scala.reflect.ClassTag
-
 class RnsapDetector[MeasT <: Measurement, W <: Window](
   detectorGenerationMethod: DetectorGenerationMethod,
   grapher                 : RnsapGraphs = new DummyGraphs
@@ -33,40 +31,54 @@ class RnsapDetector[MeasT <: Measurement, W <: Window](
     out                   : Collector[Event]
   ): Unit = {
 
-    def normaliseRawMeasurement[T: ClassTag](d: Iterable[T]): Iterable[T] =
-      d.take(2)
+    val maxDimensions = 2
 
-    def normaliseRawData[T: ClassTag](d: Iterable[Iterable[T]]): Iterable[Iterable[T]] =
-      d.map(normaliseRawMeasurement)
+    def normaliseRawData(d: Iterable[Double], scaleFactors: Iterable[(Double, Double)]): Iterable[Double] = {
+      d.take(maxDimensions).zip(scaleFactors).map(ds => (ds._1 - ds._2._1) / ds._2._2)
+    }
 
-    def normaliseMeasDataToRaw(d: Iterable[MeasT]): Iterable[Iterable[Double]] =
-      normaliseRawData(d.map(_.defaultValues.get))
+    def normaliseRawDatas(d                                                                                   : Iterable[Iterable[Double]], scaleFactors: Iterable[(Double, Double)]): Iterable[Iterable[Double]] =
+      d.map(e => normaliseRawData(e, scaleFactors))
 
-    val elementsAsRaw = normaliseMeasDataToRaw(elements)
-    val (selfData, nonselfData) = elements.partition(isAbnormalMeasurement)
-    val selfDataAsRaw = normaliseMeasDataToRaw(selfData)
-    val nonselfDataAsRaw = normaliseMeasDataToRaw(nonselfData)
+    def measDataToRaw(d: Iterable[MeasT]): Iterable[Iterable[Double]] = {
+      d.map(_.defaultValues.get.take(maxDimensions))
+    }
 
-    // First, determine the number of dimensions of the dataset.
-    val dimensions = elementsAsRaw.head.size
+    def normaliseMeasDataToRaw(d                               : Iterable[MeasT], scaleFactors: Iterable[(Double, Double)]): Iterable[Iterable[Double]] =
+      normaliseRawDatas(measDataToRaw(d), scaleFactors)
 
-    // Next, find the minimum and maximum value for each dimension.
+    val elementsAsRaw = measDataToRaw(elements)
+
+    // Determine the number of dimensions in the dataset
+    val dimensions = elementsAsRaw.size
+
+    // Find the minimum and maximum values for each dimension
     val mins = elementsAsRaw
       .reduce((a, b) => a.zip(b).map(c => math.min(c._1, c._2)))
     val maxs = elementsAsRaw
       .reduce((a, b) => a.zip(b).map(c => math.max(c._1, c._2)))
 
-    // Finally, pair the minimums and maximums to determine the range of each
-    // dimension.
+    // Pair the minimums and maximums to determine the range of each dimension.
     val dimensionRanges = mins.zip(maxs)
+
+    val dimensionScaleFactors = dimensionRanges.map(r => (r._1, r._2 - r._1))
+
+    // Scale every dimension to [0,1]
+    val elementsScaled = normaliseRawDatas(elementsAsRaw, dimensionScaleFactors)
+
+    val (selfData, nonselfData) = elements.partition(isAbnormalMeasurement)
+    val selfDataScaled = normaliseMeasDataToRaw(selfData, dimensionScaleFactors)
+    val nonselfDataScaled = normaliseMeasDataToRaw(nonselfData, dimensionScaleFactors)
+
+    val dimensionRangesScaled = dimensionRanges.map(_ => (0.0, 1.0))
 
     // Now that we know our number of dimensions, we can make a new
     // detector generator depending on the method we've been told to use.
     val detectorGenerator = DetectorGenerator(
       dimensions,
-      selfDataAsRaw,
-      nonselfDataAsRaw,
-      dimensionRanges,
+      selfDataScaled,
+      nonselfDataScaled,
+      dimensionRangesScaled,
       detectorGenerationMethod
     )
 
@@ -75,9 +87,9 @@ class RnsapDetector[MeasT <: Measurement, W <: Window](
 
     grapher.createGraph(
       detectors = detectors,
-      selfData = selfDataAsRaw,
-      nonselfData = nonselfDataAsRaw,
-      dimensionRanges = dimensionRanges,
+      selfData = selfDataScaled,
+      nonselfData = nonselfDataScaled,
+      dimensionRanges = dimensionRangesScaled,
       generator = detectorGenerator,
       generationMethod = detectorGenerationMethod
     )

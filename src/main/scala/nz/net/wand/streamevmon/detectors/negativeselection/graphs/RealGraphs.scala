@@ -60,6 +60,7 @@ class RealGraphs(
     chart.getXYPlot.setDataset(idx, dataset)
     chart.getXYPlot.setRenderer(idx, new XYBubbleRenderer(XYBubbleRenderer.SCALE_ON_BOTH_AXES))
     chart.getXYPlot.getRenderer(idx).setSeriesPaint(0, color)
+    chart.getXYPlot.getRenderer(idx).setSeriesOutlinePaint(0, new Color(0.5f, 0.5f, 0.5f, 0.5f))
   }
 
   private def addDetectorToNearestSelfLines(
@@ -194,7 +195,7 @@ class RealGraphs(
       chart,
       "Non-Self",
       Color.RED,
-      Some(ShapeUtils.createRegularCross(4, 1)),
+      Some(ShapeUtils.createDiagonalCross(4, 1)),
       nonselfData
     )
 
