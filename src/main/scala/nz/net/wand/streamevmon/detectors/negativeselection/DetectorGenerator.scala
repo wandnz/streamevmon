@@ -16,6 +16,10 @@ case class DetectorGenerator(
 ) extends Logging {
 
   private[negativeselection] def getClosestSelf(centre: Iterable[Double]): (Iterable[Double], Double) = {
+    if (selfData.isEmpty) {
+      throw new IllegalArgumentException("No self data provided!")
+    }
+
     // Take the item with the minimum distance, calculated by a sum of squares
     // of the distance per dimension.
     val result = selfData.map { point =>
@@ -110,7 +114,7 @@ case class DetectorGenerator(
         // If it was deemed redundant, complain and get closer to our
         // termination condition.
         redundantCount += 1
-        logger.info(s"Found redundant detector ($redundantCount/${nonRedundantDetectors.size}): $newCentre")
+        logger.trace(s"Found redundant detector ($redundantCount/${nonRedundantDetectors.size}): $newCentre")
       }
       else {
         // If it isn't redundant, great! But depending on the radius generation

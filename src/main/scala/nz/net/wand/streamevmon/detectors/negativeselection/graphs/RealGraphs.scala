@@ -133,7 +133,7 @@ class RealGraphs(
     val idx = getNextDatasetIndex(chart)
 
     val dataset = new DefaultXYDataset()
-    if (data.head.nonEmpty) {
+    if (data.nonEmpty && data.head.nonEmpty) {
       dataset.addSeries(
         name,
         Array(data.map(_.head), data.map(_.drop(1).head))

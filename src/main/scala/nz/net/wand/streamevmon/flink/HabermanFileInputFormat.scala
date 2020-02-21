@@ -14,14 +14,17 @@ class HabermanFileInputFormat(stream: Int) extends GenericCsvInputFormat[Haberma
     }
   }
 
+  private var lineCounter = -1
+
   override def readRecord(
-    reuse                      : Haberman,
-    bytes                      : Array[Byte],
+    reuse: Haberman,
+    bytes: Array[Byte],
     offset: Int,
-    numBytes                   : Int
+    numBytes: Int
   ): Haberman = {
     val line = new String(bytes.slice(offset, offset + numBytes))
     val parts = line.split(",")
+    lineCounter += 1
     Haberman(
       stream,
       parts(0).toInt,
@@ -32,7 +35,7 @@ class HabermanFileInputFormat(stream: Int) extends GenericCsvInputFormat[Haberma
         case "2" => SurvivalStatus.MoreThan5Years
         case _ => throw new IllegalArgumentException(s"Invalid entry: $line")
       },
-      Instant.ofEpochMilli(1000000000000L)
+      Instant.ofEpochMilli(1000000000000L + lineCounter)
     )
   }
 }

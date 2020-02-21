@@ -4,6 +4,7 @@ import nz.net.wand.streamevmon.detectors.negativeselection.graphs.{DummyGraphs, 
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.measurements.haberman.{Haberman, SurvivalStatus}
+import nz.net.wand.streamevmon.Logging
 
 import org.apache.flink.streaming.api.scala.function.ProcessWindowFunction
 import org.apache.flink.streaming.api.windowing.windows.Window
@@ -13,7 +14,8 @@ class RnsapDetector[MeasT <: Measurement, W <: Window](
   detectorGenerationMethod: DetectorGenerationMethod,
   grapher                 : RnsapGraphs = new DummyGraphs
 )
-  extends ProcessWindowFunction[MeasT, Event, String, W] {
+  extends ProcessWindowFunction[MeasT, Event, String, W]
+          with Logging {
 
   def isAbnormalMeasurement(value: MeasT): Boolean = {
     value match {
@@ -31,13 +33,15 @@ class RnsapDetector[MeasT <: Measurement, W <: Window](
     out                   : Collector[Event]
   ): Unit = {
 
+    logger.info(s"Executing ${context.window.getClass.getSimpleName} with ${elements.size} elements!")
+
     val maxDimensions = 2
 
     def normaliseRawData(d: Iterable[Double], scaleFactors: Iterable[(Double, Double)]): Iterable[Double] = {
       d.take(maxDimensions).zip(scaleFactors).map(ds => (ds._1 - ds._2._1) / ds._2._2)
     }
 
-    def normaliseRawDatas(d                                                                                   : Iterable[Iterable[Double]], scaleFactors: Iterable[(Double, Double)]): Iterable[Iterable[Double]] =
+    def normaliseRawDatas(d: Iterable[Iterable[Double]], scaleFactors: Iterable[(Double, Double)]): Iterable[Iterable[Double]] =
       d.map(e => normaliseRawData(e, scaleFactors))
 
     def measDataToRaw(d: Iterable[MeasT]): Iterable[Iterable[Double]] = {
@@ -69,6 +73,8 @@ class RnsapDetector[MeasT <: Measurement, W <: Window](
     val (selfData, nonselfData) = elements.partition(isAbnormalMeasurement)
     val selfDataScaled = normaliseMeasDataToRaw(selfData, dimensionScaleFactors)
     val nonselfDataScaled = normaliseMeasDataToRaw(nonselfData, dimensionScaleFactors)
+
+    logger.debug(s"${selfData.size} normal elements, ${nonselfData.size} abnormal elements")
 
     val dimensionRangesScaled = dimensionRanges.map(_ => (0.0, 1.0))
 
