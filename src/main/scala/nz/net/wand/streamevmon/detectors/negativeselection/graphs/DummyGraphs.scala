@@ -6,10 +6,11 @@ class DummyGraphs extends RnsapGraphs {
   override def createGraph(
     detectors: Iterable[Detector],
     generator: DetectorGenerator,
-    selfData : Iterable[Iterable[Double]],
+    selfData: Iterable[Iterable[Double]],
     nonselfData: Iterable[Iterable[Double]],
     dimensionRanges: Iterable[(Double, Double)],
-    dimensionNames: Iterable[String],
-    generationMethod: DetectorGenerationMethod
+    dimensionNames : Iterable[String],
+    generationMethod: DetectorGenerationMethod,
+    filenameSuffix  : String
   ): Unit = {}
 }

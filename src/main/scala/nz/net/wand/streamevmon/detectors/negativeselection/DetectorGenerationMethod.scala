@@ -38,12 +38,13 @@ import nz.net.wand.streamevmon.detectors.negativeselection.DetectorGenerationMet
   */
 case class DetectorGenerationMethod(
   detectorRadiusMethod: DetectorRadiusMethod = NearestSelfSampleRadius(),
-  generationAttempts                    : Int = 100,
-  redundancy                            : Boolean = true,
-  spatialPreference                     : Boolean = true,
-  featurePreference                     : Boolean = true,
-  borderProportion                      : Double = 0.1,
-  detectorRedundancyProportion          : Double = 0.1,
+  generationAttempts: Int = 100,
+  redundancy: Boolean = true,
+  backfiltering: Boolean = true,
+  spatialPreference: Boolean = true,
+  featurePreference: Boolean = true,
+  borderProportion: Double = 0.1,
+  detectorRedundancyProportion: Double = 0.1,
   detectorRedundancyTerminationThreshold: Double = 0.9
 ) {
   // We'll do some configuration sanity checking here, so that any exceptions
@@ -55,9 +56,9 @@ case class DetectorGenerationMethod(
       )
     }
 
-    if (detectorRedundancyTerminationThreshold > 1 || detectorRedundancyTerminationThreshold < 0) {
+    if (detectorRedundancyTerminationThreshold < 0) {
       throw new IllegalArgumentException(
-        "Detector redundancy termination threshold must be between 0 and 1."
+        "Detector redundancy termination threshold must be greater than 0."
       )
     }
   }

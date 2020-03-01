@@ -151,8 +151,9 @@ class RealGraphs(
     selfData: Iterable[Iterable[Double]],
     nonselfData: Iterable[Iterable[Double]],
     dimensionRanges: Iterable[(Double, Double)],
-    dimensionNames: Iterable[String],
-    generationMethod: DetectorGenerationMethod
+    dimensionNames : Iterable[String],
+    generationMethod: DetectorGenerationMethod,
+    filenameSuffix  : String
   ): Unit = {
 
     // First, let's set up the chart along with its X and Y bounds including the buffer.
@@ -233,7 +234,7 @@ class RealGraphs(
     // Finally, save it out in two formats.
     // PNG
     ChartUtils.saveChartAsPNG(
-      new File(s"$filename.png"),
+      new File(s"$filename-$filenameSuffix.png"),
       chart,
       1000,
       1000
@@ -246,7 +247,7 @@ class RealGraphs(
     val svg = new SVGGraphics2D(document)
     svg.setSVGCanvasSize(new Dimension(1000, 1000))
     chart.draw(svg, new Rectangle(1000, 1000))
-    val outputStream = new OutputStreamWriter(new FileOutputStream(new File(s"$filename.svg")))
+    val outputStream = new OutputStreamWriter(new FileOutputStream(new File(s"$filename-$filenameSuffix.svg")))
     svg.stream(outputStream, true)
     outputStream.flush()
     outputStream.close()

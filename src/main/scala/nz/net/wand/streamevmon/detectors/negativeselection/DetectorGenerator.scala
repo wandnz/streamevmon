@@ -105,7 +105,8 @@ case class DetectorGenerator(
     // We will keep going until we hit our termination threshold - too many
     // redundant detectors, more than a certain proportion of mature detectors.
     var redundantCount = 0
-    while (redundantCount.toDouble / nonRedundantDetectors.size < generationMethod.detectorRedundancyTerminationThreshold) {
+    while (redundantCount.toDouble / nonRedundantDetectors.size < generationMethod.detectorRedundancyTerminationThreshold &&
+      nonRedundantDetectors.size <= 10000) {
 
       // Pick a new centre point at random, and see if it's redundant or not.
       val newCentre = generateNaiveCentre()
@@ -124,13 +125,14 @@ case class DetectorGenerator(
         if (newDetector.isEmpty) {
           logger.warn(
             s"Created non-redundant detector too close to a self sample. " +
-              s"Your fixed radius might be too large if you see this message a lot.",
-            newCentre
+              s"Your fixed radius might be too large if you see this message a lot. " +
+              s"$newCentre"
           )
         }
         // If it was created successfully, great! Add it to the mature list.
         else {
           nonRedundantDetectors.append(newDetector.get)
+          logger.trace(s"Non-redundant detector ${nonRedundantDetectors.size} (${redundantCount.toDouble / nonRedundantDetectors.size})")
         }
       }
     }

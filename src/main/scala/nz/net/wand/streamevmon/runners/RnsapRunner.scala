@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.runners
 
-import nz.net.wand.streamevmon.Configuration
+import nz.net.wand.streamevmon.{Configuration, Logging}
 import nz.net.wand.streamevmon.detectors.negativeselection.{DetectorGenerationMethod, RnsapDetector, TrainingDataSplitWindowAssigner}
 import nz.net.wand.streamevmon.detectors.negativeselection.graphs.RealGraphs
 import nz.net.wand.streamevmon.detectors.negativeselection.DetectorGenerationMethod._
@@ -13,12 +13,13 @@ import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 
 import scala.io.Source
 
-object RnsapRunner {
-  def main(args: Array[String]): Unit = {
+object RnsapRunner extends Logging {
+
+  def doTheThing(method: DetectorGenerationMethod): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    val config = Configuration.get(args)
+    val config = Configuration.get(Array())
     env.getConfig.setGlobalJobParameters(config)
 
     env.setParallelism(1)
@@ -49,6 +50,18 @@ object RnsapRunner {
         randomSeed = Some(42L)
       ))
       .process(new RnsapDetector[Haberman, TimeWindow](
+        method,
+        maxDimensions = Int.MaxValue,
+        new RealGraphs
+      ))
+
+    env.execute()
+  }
+
+  def main(args: Array[String]): Unit = {
+
+    Range(0, 5).foreach { _ =>
+      doTheThing(
         DetectorGenerationMethod(
           detectorRadiusMethod = NearestSelfSampleRadius(),
           redundancy = true,
@@ -56,11 +69,42 @@ object RnsapRunner {
           featurePreference = false,
           borderProportion = 0.0,
           detectorRedundancyProportion = 0.8,
-          detectorRedundancyTerminationThreshold = 0.9
-        ),
-        new RealGraphs
-      ))
+          detectorRedundancyTerminationThreshold = 10.0
+        )
+      )
+    }
 
-    env.execute()
+    /*
+
+    val radiusMethods =
+      //Range.BigDecimal(0.7, 1.0, 0.1).map(r => NearestSelfSampleRadius(r.doubleValue())) ++
+      //Seq(NearestSelfSampleRadius())
+      //Range.BigDecimal(0.015, 0.0151, 0.001).map(r => FixedRadius(r.doubleValue()))
+      Seq(FixedRadius(0.1), FixedRadius(0.01))
+
+    val redundancyProportions = Range.BigDecimal(0.75, 1.01, 0.01).map(_.doubleValue())
+    val redundancyThresholds = Range.BigDecimal(0.1, 1.01, 0.1).map(_.doubleValue())
+
+    radiusMethods.foreach { method =>
+      redundancyProportions.foreach { proportion =>
+        redundancyThresholds.foreach { threshold =>
+          logger.error(s"Method: $method Proportion: $proportion Threshold: $threshold")
+
+          doTheThing(
+            DetectorGenerationMethod(
+              detectorRadiusMethod = method,
+              redundancy = true,
+              spatialPreference = false,
+              featurePreference = false,
+              borderProportion = 0.0,
+              detectorRedundancyProportion = proportion,
+              detectorRedundancyTerminationThreshold = threshold
+            )
+          )
+        }
+      }
+    }
+
+     */
   }
 }
