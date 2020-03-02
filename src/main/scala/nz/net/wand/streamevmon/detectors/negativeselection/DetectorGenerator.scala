@@ -98,13 +98,14 @@ case class DetectorGenerator(
     // Let's keep track of detectors which aren't redundant, since they
     // become mature once this algorithm completes.
     // We'll start off with one at random.
-    val nonRedundantDetectors: mutable.Buffer[Detector] = mutable.Buffer(
+    var nonRedundantDetectors: mutable.Buffer[Detector] = mutable.Buffer(
       generateNaiveDetector()
     )
 
     // We will keep going until we hit our termination threshold - too many
     // redundant detectors, more than a certain proportion of mature detectors.
     var redundantCount = 0
+    var backfilteredCount = 0
     while (redundantCount.toDouble / nonRedundantDetectors.size < generationMethod.detectorRedundancyTerminationThreshold &&
       nonRedundantDetectors.size <= 10000) {
 
@@ -131,12 +132,30 @@ case class DetectorGenerator(
         }
         // If it was created successfully, great! Add it to the mature list.
         else {
+          // Backfiltering is the method of removing old mature detectors that
+          // are made redundant by a new detector. It's like applying redundancy
+          // in reverse.
+          if (generationMethod.backfiltering) {
+            val detectorCountBeforeBackfiltering = nonRedundantDetectors.size
+
+            nonRedundantDetectors = nonRedundantDetectors.filterNot {
+              d => newDetector.get.makesRedundant(d.centre)
+            }
+
+            val backfilteredCountThisRound = detectorCountBeforeBackfiltering - nonRedundantDetectors.size
+            backfilteredCount += backfilteredCountThisRound
+            logger.trace(s"Backfiltering removed $backfilteredCountThisRound detectors!")
+          }
+
           nonRedundantDetectors.append(newDetector.get)
           logger.trace(s"Non-redundant detector ${nonRedundantDetectors.size} (${redundantCount.toDouble / nonRedundantDetectors.size})")
         }
       }
     }
 
+    if (generationMethod.backfiltering) {
+      logger.info(s"$backfilteredCount detectors were backfiltered in total")
+    }
     // Finally, return the mature detectors.
     nonRedundantDetectors
   }

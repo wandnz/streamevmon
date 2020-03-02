@@ -60,11 +60,12 @@ object RnsapRunner extends Logging {
 
   def main(args: Array[String]): Unit = {
 
-    Range(0, 5).foreach { _ =>
+    Range(0, 1).foreach { _ =>
       doTheThing(
         DetectorGenerationMethod(
           detectorRadiusMethod = NearestSelfSampleRadius(),
           redundancy = true,
+          backfiltering = true,
           spatialPreference = false,
           featurePreference = false,
           borderProportion = 0.0,
@@ -94,6 +95,7 @@ object RnsapRunner extends Logging {
             DetectorGenerationMethod(
               detectorRadiusMethod = method,
               redundancy = true,
+              backfiltering = true,
               spatialPreference = false,
               featurePreference = false,
               borderProportion = 0.0,
