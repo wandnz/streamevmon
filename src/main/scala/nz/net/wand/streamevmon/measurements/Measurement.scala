@@ -28,13 +28,13 @@ abstract class Measurement extends Serializable {
     *         gives. There is no need to be able to construct a Measurement
     *         object from the result of this method.
     */
-  def toCsvFormat: Seq[String]
+  def toCsvFormat: Iterable[String]
 
   /** @return The object, simplified in the way that toCsvFormat desires. */
   protected def toCsvTupleEntry(e: Any): String =
     e match {
       case o: Option[Any] => o.map(toCsvTupleEntry).getOrElse("").toString
-      case s: Seq[Any] => s.map(toCsvTupleEntry).mkString("\"", ";", "\"")
+      case s: Iterable[Any] => s.map(toCsvTupleEntry).mkString("\"", ";", "\"")
       case i: Instant => i.toEpochMilli.toString
       case _ => e.toString
     }
@@ -50,5 +50,5 @@ abstract class Measurement extends Serializable {
     *         Unless this is overriden, it is just the single dimension of
     *         `defaultValue`.
     */
-  def defaultValues: Option[Seq[Double]] = defaultValue.map(Seq(_))
+  def defaultValues: Option[Iterable[Double]] = defaultValue.map(Seq(_))
 }

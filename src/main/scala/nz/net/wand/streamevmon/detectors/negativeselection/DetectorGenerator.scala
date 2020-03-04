@@ -144,11 +144,19 @@ case class DetectorGenerator(
 
             val backfilteredCountThisRound = detectorCountBeforeBackfiltering - nonRedundantDetectors.size
             backfilteredCount += backfilteredCountThisRound
-            logger.trace(s"Backfiltering removed $backfilteredCountThisRound detectors!")
+            if (backfilteredCountThisRound > 0) {
+              logger.trace(s"Backfiltering removed $backfilteredCountThisRound detectors!")
+            }
           }
 
           nonRedundantDetectors.append(newDetector.get)
-          logger.trace(s"Non-redundant detector ${nonRedundantDetectors.size} (${redundantCount.toDouble / nonRedundantDetectors.size})")
+          if (nonRedundantDetectors.size % 100 == 0) {
+            logger.trace(
+              s"Non-redundant detector ${nonRedundantDetectors.size} " +
+                s"(${redundantCount.toDouble / nonRedundantDetectors.size}/" +
+                s"${generationMethod.detectorRedundancyTerminationThreshold})"
+            )
+          }
         }
       }
     }

@@ -4,13 +4,23 @@ import nz.net.wand.streamevmon.detectors.negativeselection.{Detector, DetectorGe
 
 trait RnsapGraphs extends Serializable {
   def createGraph(
-    detectors: Iterable[Detector],
-    generator: DetectorGenerator,
-    selfData: Iterable[Iterable[Double]] = Seq(Seq(), Seq()),
-    nonselfData: Iterable[Iterable[Double]] = Seq(Seq(), Seq()),
-    dimensionRanges: Iterable[(Double, Double)] = Seq((0, 1), (0, 1)),
-    dimensionNames : Iterable[String] = Seq("X", "Y"),
+    detectors       : Iterable[Detector],
+    generator       : DetectorGenerator,
+    selfData        : Iterable[Iterable[Double]] = Seq(Seq(), Seq()),
+    nonselfData     : Iterable[Iterable[Double]] = Seq(Seq(), Seq()),
+    dimensionRanges : Iterable[(Double, Double)] = Seq((0, 1), (0, 1)),
+    dimensionNames  : Iterable[String] = Seq("X", "Y"),
     generationMethod: DetectorGenerationMethod = DetectorGenerationMethod(),
     filenameSuffix  : String
+  ): Unit
+
+  def initCsv(): Unit
+
+  def writeCsv(
+    generationMethod: DetectorGenerationMethod = DetectorGenerationMethod(),
+    detectionRate   : Double,
+    detectorCount   : Double,
+    traintime       : Double,
+    testtime        : Double
   ): Unit
 }

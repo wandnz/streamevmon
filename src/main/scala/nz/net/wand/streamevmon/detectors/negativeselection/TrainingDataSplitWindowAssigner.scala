@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.detectors.negativeselection
 
 import nz.net.wand.streamevmon.detectors.negativeselection.TrainingDataSplitWindowAssigner.{TestingWindow, TrainingWindow}
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.{Measurement, SimpleIterableMeasurement}
 import nz.net.wand.streamevmon.measurements.haberman.{Haberman, SurvivalStatus}
 
 import java.util.{Collection => JCollection}
@@ -86,6 +86,7 @@ class TrainingDataSplitWindowAssigner[MeasT <: Measurement](
   private def isAbnormalMeasurement(value: MeasT): Boolean = {
     value match {
       case h: Haberman => h.survivalStatus != SurvivalStatus.LessThan5Years
+      case i: SimpleIterableMeasurement => i.isAbnormal
       case _ => throw new NotImplementedError(
         "This measurement type cannot yet be classified as self or non-self."
       )

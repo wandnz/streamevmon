@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.detectors.negativeselection.graphs
 import nz.net.wand.streamevmon.detectors.negativeselection.{Detector, DetectorGenerationMethod, DetectorGenerator}
 
 import java.awt._
-import java.io.{File, FileOutputStream, OutputStreamWriter}
+import java.io._
 
 import org.apache.batik.dom.GenericDOMImplementation
 import org.apache.batik.svggen.SVGGraphics2D
@@ -19,7 +19,9 @@ import scala.language.implicitConversions
 import scala.reflect.ClassTag
 
 class RealGraphs(
-  filename: String = "./out/graphs/rnsap"
+  graphFilename    : String = "./out/graphs/rnsap",
+  csvFilename      : String = "./out/csv/rnsap",
+  csvFilenameSuffix: Option[String] = None
 ) extends RnsapGraphs {
 
   // Iterables should just be arrays whenever they need to be.
@@ -234,7 +236,7 @@ class RealGraphs(
     // Finally, save it out in two formats.
     // PNG
     ChartUtils.saveChartAsPNG(
-      new File(s"$filename-$filenameSuffix.png"),
+      new File(s"$graphFilename-$filenameSuffix.png"),
       chart,
       1000,
       1000
@@ -247,9 +249,62 @@ class RealGraphs(
     val svg = new SVGGraphics2D(document)
     svg.setSVGCanvasSize(new Dimension(1000, 1000))
     chart.draw(svg, new Rectangle(1000, 1000))
-    val outputStream = new OutputStreamWriter(new FileOutputStream(new File(s"$filename-$filenameSuffix.svg")))
+    val outputStream = new OutputStreamWriter(new FileOutputStream(new File(s"$graphFilename-$filenameSuffix.svg")))
     svg.stream(outputStream, true)
     outputStream.flush()
     outputStream.close()
+  }
+
+  def getCsvFilename: String = {
+    if (csvFilenameSuffix.nonEmpty) {
+      s"$csvFilename-${csvFilenameSuffix.get}.csv"
+    }
+    else {
+      s"$csvFilename.csv"
+    }
+  }
+
+  override def initCsv(): Unit = {
+    val overwriter = new BufferedWriter(
+      new FileWriter(
+        new File(getCsvFilename),
+        // Overwrite mode on so we can write the header entry
+        false
+      )
+    )
+
+    overwriter.write("self_radius,min_radius,outer_radius,redundancy_count_thresh,redundancy_proportion,backfilter,DR,#d,t_train,t_test")
+    overwriter.newLine()
+    overwriter.close()
+  }
+
+  override def writeCsv(
+    generationMethod: DetectorGenerationMethod,
+    detectionRate   : Double,
+    detectorCount   : Double,
+    traintime       : Double,
+    testtime        : Double
+  ): Unit = {
+    val appender = new BufferedWriter(
+      new FileWriter(
+        new File(getCsvFilename),
+        // Overwrite mode off so we can append several entries in one session
+        true
+      )
+    )
+
+    appender.write(
+      s"0,0," +
+        s"${generationMethod.borderProportion}," +
+        s"${generationMethod.detectorRedundancyTerminationThreshold}," +
+        s"${generationMethod.detectorRedundancyProportion}," +
+        s"${generationMethod.backfiltering}," +
+        s"$detectionRate," +
+        s"$detectorCount," +
+        s"${traintime / 1000}," +
+        s"${testtime / 1000}"
+    )
+    appender.newLine()
+    appender.close()
   }
 }

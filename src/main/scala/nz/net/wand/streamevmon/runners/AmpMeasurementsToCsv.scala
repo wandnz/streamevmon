@@ -39,9 +39,9 @@ object AmpMeasurementsToCsv {
       .name("AMP measurement source")
       .uid("amp-source")
 
-    val sink: StreamingFileSink[Seq[String]] =
+    val sink: StreamingFileSink[Iterable[String]] =
       StreamingFileSink.forRowFormat(new Path("out/ampOutput"),
-        (element: Seq[String], stream: OutputStream) => {
+        (element: Iterable[String], stream: OutputStream) => {
           if (element.nonEmpty) {
             stream.write(element.head.getBytes)
             element.drop(1).foreach { e =>
@@ -52,8 +52,8 @@ object AmpMeasurementsToCsv {
           }
         })
         .withBucketAssignerAndPolicy(
-          new BucketAssigner[Seq[String], String] {
-            override def getBucketId(element: Seq[String], context: BucketAssigner.Context): String = element.head
+          new BucketAssigner[Iterable[String], String] {
+            override def getBucketId(element: Iterable[String], context: BucketAssigner.Context): String = element.head
 
             override def getSerializer: SimpleVersionedSerializer[String] = SimpleVersionedStringSerializer.INSTANCE
           },

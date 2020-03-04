@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.detectors.negativeselection
 
 import nz.net.wand.streamevmon.detectors.negativeselection.graphs.{DummyGraphs, RnsapGraphs}
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.{Measurement, SimpleIterableMeasurement}
 import nz.net.wand.streamevmon.measurements.haberman.{Haberman, SurvivalStatus}
 import nz.net.wand.streamevmon.Logging
 
@@ -25,6 +25,7 @@ class RnsapDetector[MeasT <: Measurement, W <: Window](
   def isAbnormalMeasurement(value: MeasT): Boolean = {
     value match {
       case h: Haberman => h.survivalStatus == SurvivalStatus.MoreThan5Years
+      case i: SimpleIterableMeasurement => i.isAbnormal
       case _ => throw new NotImplementedError(
         "This measurement type cannot yet be classified as self or non-self."
       )
@@ -33,6 +34,9 @@ class RnsapDetector[MeasT <: Measurement, W <: Window](
 
   private val hasTrainedState: ValueStateDescriptor[Boolean] =
     new ValueStateDescriptor[Boolean]("Has trained?", TypeInformation.of(classOf[Boolean]))
+
+  private val trainTimeState: ValueStateDescriptor[Double] =
+    new ValueStateDescriptor[Double]("Training time", TypeInformation.of(classOf[Double]))
 
   private val detectorsState: ValueStateDescriptor[Iterable[Detector]] =
     new ValueStateDescriptor[Iterable[Detector]](
@@ -113,7 +117,10 @@ class RnsapDetector[MeasT <: Measurement, W <: Window](
 
     val endTime = System.nanoTime
 
-    logger.error(f"Training took ${TimeUnit.NANOSECONDS.toMillis(endTime - startTime).toDouble / 1000}%1.3fs")
+    val trainTime = TimeUnit.NANOSECONDS.toMillis(endTime - startTime).toDouble
+    getRuntimeContext.getState(trainTimeState).update(trainTime)
+
+    logger.error(f"Training took ${trainTime / 1000}%1.3fs")
 
     grapher.createGraph(
       detectors = detectors,
@@ -159,10 +166,12 @@ class RnsapDetector[MeasT <: Measurement, W <: Window](
       (good.map(_._1), notGood.map(_._1))
     }
 
+    val testTime = TimeUnit.NANOSECONDS.toMillis(endTime - startTime).toDouble
+
     logger.warn(s"Detector abnormality results: ${isAbnormal.groupBy(a => a).mapValues(l => l.size)}")
     logger.warn(s"Real abnormality results:     ${elements.map(isAbnormalMeasurement).groupBy(a => a).mapValues(l => l.size)}")
     logger.error(f"Correct proportion:           ${correctProportion * 100}%1.2f%%")
-    logger.error(f"Testing took ${TimeUnit.NANOSECONDS.toMillis(endTime - startTime).toDouble / 1000}%1.3fs")
+    logger.error(f"Testing took ${testTime / 1000}%1.3fs")
 
     grapher.createGraph(
       detectors = Seq(),
@@ -172,16 +181,28 @@ class RnsapDetector[MeasT <: Measurement, W <: Window](
       generationMethod = detectorGenerationMethod,
       filenameSuffix = "test"
     )
+
+    grapher.writeCsv(
+      detectorGenerationMethod,
+      correctProportion,
+      detectors.size,
+      getRuntimeContext.getState(trainTimeState).value(),
+      testTime
+    )
   }
 
   override def process(
     key: String,
     context: Context,
     elements: Iterable[MeasT],
-    out                   : Collector[Event]
+    out: Collector[Event]
   ): Unit = {
 
-    logger.info(s"Executing ${context.window.getClass.getSimpleName} with ${elements.size} elements!")
+    logger.info(
+      s"Executing ${context.window.getClass.getSimpleName} " +
+        s"with ${elements.size} elements " +
+        s"in ${elements.head.defaultValues.get.size} dimensions!"
+    )
 
     val hasTrained = getRuntimeContext.getState(hasTrainedState)
 

@@ -1,5 +1,7 @@
 package nz.net.wand.streamevmon.detectors.negativeselection
 
+import nz.net.wand.streamevmon.Logging
+
 import org.apache.flink.api.common.functions.ReduceFunction
 import org.apache.flink.api.common.state.ReducingStateDescriptor
 import org.apache.flink.api.common.typeutils.base.LongSerializer
@@ -25,7 +27,7 @@ class DualWindowCountTrigger[T, W <: TimeWindow, W1 <: W : ClassTag, W2 <: W : C
   trigger1: Long,
   trigger2: Long,
   onlyTriggerSecondWindowAfterFirst: Boolean = true
-) extends Trigger[T, W] {
+) extends Trigger[T, W] with Logging {
 
   private class Sum extends ReduceFunction[Long] {
     override def reduce(value1: Long, value2: Long): Long = value1 + value2
