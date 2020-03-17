@@ -16,7 +16,7 @@ case class SimpleIterableMeasurement(
 
   override def defaultValues: Option[Iterable[Double]] =
     if (!isLossy) {
-      Some(data)
+      Some(data.dropRight(1))
     }
     else {
       None

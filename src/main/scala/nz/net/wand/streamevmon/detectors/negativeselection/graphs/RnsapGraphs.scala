@@ -19,6 +19,7 @@ trait RnsapGraphs extends Serializable {
   def writeCsv(
     generationMethod: DetectorGenerationMethod = DetectorGenerationMethod(),
     detectionRate   : Double,
+    kappa           : Double,
     detectorCount   : Double,
     traintime       : Double,
     testtime        : Double

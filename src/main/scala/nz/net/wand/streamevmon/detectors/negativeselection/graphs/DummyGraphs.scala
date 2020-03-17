@@ -19,6 +19,7 @@ class DummyGraphs extends RnsapGraphs {
   override def writeCsv(
     generationMethod: DetectorGenerationMethod,
     detectionRate   : Double,
+    kappa           : Double,
     detectorCount   : Double,
     traintime       : Double,
     testtime        : Double

@@ -151,7 +151,7 @@ case class DetectorGenerator(
 
           nonRedundantDetectors.append(newDetector.get)
           if (nonRedundantDetectors.size % 100 == 0) {
-            logger.trace(
+            logger.debug(
               s"Non-redundant detector ${nonRedundantDetectors.size} " +
                 s"(${redundantCount.toDouble / nonRedundantDetectors.size}/" +
                 s"${generationMethod.detectorRedundancyTerminationThreshold})"

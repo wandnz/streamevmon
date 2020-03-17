@@ -51,7 +51,24 @@ class RnsapDetector[MeasT <: Measurement, W <: Window](
     )
 
   def normaliseRawData(d: Iterable[Double], scaleFactors: Iterable[(Double, Double)]): Iterable[Double] = {
-    d.take(maxDimensions).zip(scaleFactors).map(ds => (ds._1 - ds._2._1) / ds._2._2)
+    // If the range of a column is 0, we want to leave it alone rather than
+    // dividing by 0.
+    val scaleFactorsFixed = scaleFactors.map { s =>
+      if (s._1 == s._2) {
+        if (s._2 == 0) {
+          (s._1, 1.0)
+        }
+        else {
+          (s._1, s._1)
+        }
+      }
+      else {
+        s
+      }
+    }
+    val retVal = d.take(maxDimensions).zip(scaleFactorsFixed).map(ds => (ds._1 - ds._2._1) / ds._2._2)
+
+    retVal
   }
 
   def normaliseRawDatas(d: Iterable[Iterable[Double]], scaleFactors: Iterable[(Double, Double)]): Iterable[Iterable[Double]] =
@@ -74,7 +91,7 @@ class RnsapDetector[MeasT <: Measurement, W <: Window](
     val elementsAsRaw = measDataToRaw(elements)
 
     // Determine the number of dimensions in the dataset
-    val dimensions = elementsAsRaw.size
+    val dimensions = elementsAsRaw.head.size
 
     // Find the minimum and maximum values for each dimension
     val mins = elementsAsRaw
@@ -166,11 +183,14 @@ class RnsapDetector[MeasT <: Measurement, W <: Window](
       (good.map(_._1), notGood.map(_._1))
     }
 
+    val kappa = computeKappa(shouldBeAbnormal, isAbnormal)
+
     val testTime = TimeUnit.NANOSECONDS.toMillis(endTime - startTime).toDouble
 
     logger.warn(s"Detector abnormality results: ${isAbnormal.groupBy(a => a).mapValues(l => l.size)}")
     logger.warn(s"Real abnormality results:     ${elements.map(isAbnormalMeasurement).groupBy(a => a).mapValues(l => l.size)}")
     logger.error(f"Correct proportion:           ${correctProportion * 100}%1.2f%%")
+    logger.error(f"Kappa:                        $kappa")
     logger.error(f"Testing took ${testTime / 1000}%1.3fs")
 
     grapher.createGraph(
@@ -185,10 +205,36 @@ class RnsapDetector[MeasT <: Measurement, W <: Window](
     grapher.writeCsv(
       detectorGenerationMethod,
       correctProportion,
+      kappa,
       detectors.size,
       getRuntimeContext.getState(trainTimeState).value(),
       testTime
     )
+  }
+
+  private def computeKappa(expected: Iterable[Boolean], observed: Iterable[Boolean]): Double = {
+    if (expected.size != observed.size) {
+      throw new IllegalArgumentException(s"Arguments must be the same length, not ${expected.size} and ${observed.size}")
+    }
+
+    val matrix = (expected, observed).zipped.map((e, o) => (e, e == o))
+
+    val a = matrix.count(_ == (true, true))
+    val b = matrix.count(_ == (false, false))
+    val c = matrix.count(_ == (true, false))
+    val d = matrix.count(_ == (false, true))
+
+    val abcdSum = a + b + c + d
+
+    val proportionateAgreement = (a + d).toDouble / abcdSum
+
+    val probabilityBothTrue = ((a + b).toDouble / abcdSum) * ((a + c).toDouble / abcdSum)
+    val probabilityBothFalse = ((c + d).toDouble / abcdSum) * ((b + d).toDouble / abcdSum)
+
+    val probabilityAgreement = probabilityBothFalse + probabilityBothTrue
+
+    val kappa = (proportionateAgreement - probabilityAgreement) / (1 - probabilityAgreement)
+    kappa
   }
 
   override def process(
@@ -201,7 +247,14 @@ class RnsapDetector[MeasT <: Measurement, W <: Window](
     logger.info(
       s"Executing ${context.window.getClass.getSimpleName} " +
         s"with ${elements.size} elements " +
-        s"in ${elements.head.defaultValues.get.size} dimensions!"
+        s"in ${elements.head.defaultValues.get.size} dimensions${
+          if (elements.head.defaultValues.get.size > maxDimensions) {
+            s" (truncated to $maxDimensions)"
+          }
+          else {
+            ""
+          }
+        }!"
     )
 
     val hasTrained = getRuntimeContext.getState(hasTrainedState)

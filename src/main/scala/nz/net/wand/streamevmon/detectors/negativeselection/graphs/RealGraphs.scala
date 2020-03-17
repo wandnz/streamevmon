@@ -19,8 +19,8 @@ import scala.language.implicitConversions
 import scala.reflect.ClassTag
 
 class RealGraphs(
-  graphFilename    : String = "./out/graphs/rnsap",
-  csvFilename      : String = "./out/csv/rnsap",
+  graphFilename: Option[String] = Some("./out/graphs/rnsap"),
+  csvFilename      : Option[String] = Some("./out/csv/rnsap"),
   csvFilenameSuffix: Option[String] = None
 ) extends RnsapGraphs {
 
@@ -158,6 +158,10 @@ class RealGraphs(
     filenameSuffix  : String
   ): Unit = {
 
+    if (graphFilename.isEmpty) {
+      return
+    }
+
     // First, let's set up the chart along with its X and Y bounds including the buffer.
     val chart = new JFreeChart(
       "RNSAP",
@@ -236,7 +240,7 @@ class RealGraphs(
     // Finally, save it out in two formats.
     // PNG
     ChartUtils.saveChartAsPNG(
-      new File(s"$graphFilename-$filenameSuffix.png"),
+      new File(s"${graphFilename.get}-$filenameSuffix.png"),
       chart,
       1000,
       1000
@@ -249,7 +253,7 @@ class RealGraphs(
     val svg = new SVGGraphics2D(document)
     svg.setSVGCanvasSize(new Dimension(1000, 1000))
     chart.draw(svg, new Rectangle(1000, 1000))
-    val outputStream = new OutputStreamWriter(new FileOutputStream(new File(s"$graphFilename-$filenameSuffix.svg")))
+    val outputStream = new OutputStreamWriter(new FileOutputStream(new File(s"${graphFilename.get}-$filenameSuffix.svg")))
     svg.stream(outputStream, true)
     outputStream.flush()
     outputStream.close()
@@ -257,54 +261,60 @@ class RealGraphs(
 
   def getCsvFilename: String = {
     if (csvFilenameSuffix.nonEmpty) {
-      s"$csvFilename-${csvFilenameSuffix.get}.csv"
+      s"${csvFilename.get}-${csvFilenameSuffix.get}.csv"
     }
     else {
-      s"$csvFilename.csv"
+      s"${csvFilename.get}.csv"
     }
   }
 
   override def initCsv(): Unit = {
-    val overwriter = new BufferedWriter(
-      new FileWriter(
-        new File(getCsvFilename),
-        // Overwrite mode on so we can write the header entry
-        false
+    if (csvFilename.nonEmpty) {
+      val overwriter = new BufferedWriter(
+        new FileWriter(
+          new File(getCsvFilename),
+          // Overwrite mode on so we can write the header entry
+          false
+        )
       )
-    )
 
-    overwriter.write("self_radius,min_radius,outer_radius,redundancy_count_thresh,redundancy_proportion,backfilter,DR,#d,t_train,t_test")
-    overwriter.newLine()
-    overwriter.close()
+      overwriter.write("self_radius,min_radius,outer_radius,redundancy_count_thresh,redundancy_proportion,backfilter,kappa,DR,#d,t_train,t_test")
+      overwriter.newLine()
+      overwriter.close()
+    }
   }
 
   override def writeCsv(
     generationMethod: DetectorGenerationMethod,
     detectionRate   : Double,
+    kappa           : Double,
     detectorCount   : Double,
     traintime       : Double,
     testtime        : Double
   ): Unit = {
-    val appender = new BufferedWriter(
-      new FileWriter(
-        new File(getCsvFilename),
-        // Overwrite mode off so we can append several entries in one session
-        true
+    if (csvFilename.nonEmpty) {
+      val appender = new BufferedWriter(
+        new FileWriter(
+          new File(getCsvFilename),
+          // Overwrite mode off so we can append several entries in one session
+          true
+        )
       )
-    )
 
-    appender.write(
-      s"0,0," +
-        s"${generationMethod.borderProportion}," +
-        s"${generationMethod.detectorRedundancyTerminationThreshold}," +
-        s"${generationMethod.detectorRedundancyProportion}," +
-        s"${generationMethod.backfiltering}," +
-        s"$detectionRate," +
-        s"$detectorCount," +
-        s"${traintime / 1000}," +
-        s"${testtime / 1000}"
-    )
-    appender.newLine()
-    appender.close()
+      appender.write(
+        s"0,0," +
+          s"${generationMethod.borderProportion}," +
+          s"${generationMethod.detectorRedundancyTerminationThreshold}," +
+          s"${generationMethod.detectorRedundancyProportion}," +
+          s"${generationMethod.backfiltering}," +
+          s"$kappa," +
+          s"$detectionRate," +
+          s"$detectorCount," +
+          s"${traintime / 1000}," +
+          s"${testtime / 1000}"
+      )
+      appender.newLine()
+      appender.close()
+    }
   }
 }

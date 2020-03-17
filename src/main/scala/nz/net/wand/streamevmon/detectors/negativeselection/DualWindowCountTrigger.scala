@@ -48,9 +48,11 @@ class DualWindowCountTrigger[T, W <: TimeWindow, W1 <: W : ClassTag, W2 <: W : C
     window match {
       case _: W1 if count.get() >= trigger1 =>
         count.clear()
+        logger.info(s"Triggering ${window.getClass.getSimpleName}")
         TriggerResult.FIRE_AND_PURGE
       case _: W2 if count.get() >= trigger2 =>
         count.clear()
+        logger.info(s"Triggering ${window.getClass.getSimpleName}")
         TriggerResult.FIRE_AND_PURGE
       case _ =>
         TriggerResult.CONTINUE
