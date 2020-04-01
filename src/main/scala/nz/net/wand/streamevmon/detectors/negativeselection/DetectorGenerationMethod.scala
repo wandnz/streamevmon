@@ -41,6 +41,7 @@ case class DetectorGenerationMethod(
   generationAttempts: Int = 100,
   redundancy: Boolean = true,
   backfiltering: Boolean = true,
+  postBackfiltering: Boolean = false,
   spatialPreference: Boolean = true,
   featurePreference: Boolean = true,
   borderProportion: Double = 0.1,

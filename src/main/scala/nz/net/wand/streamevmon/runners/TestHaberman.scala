@@ -6,10 +6,45 @@ object TestHaberman {
   }
 }
 
-object TestUNSW8 {
+object TestUNSW8_1 {
   def main(args: Array[String]): Unit = {
-    //RnsapRunner.testUnsw5()
-    RnsapRunner.testUnsw8()
+    RnsapRunner.testUnsw8PBF(Seq(1.0, 30.0))
+  }
+}
+
+object TestUNSW8_2 {
+  def main(args: Array[String]): Unit = {
+    RnsapRunner.testUnsw8PBF(Seq(2.0, 20.0))
+  }
+}
+
+object TestUNSW8_3 {
+  def main(args: Array[String]): Unit = {
+    RnsapRunner.testUnsw8PBF(Seq(10.0))
+  }
+}
+
+object TestUNSW8_4 {
+  def main(args: Array[String]): Unit = {
+    RnsapRunner.testUnsw8PBF(Seq(5.0, 15.0))
+  }
+}
+
+object TestUNSW5_1 {
+  def main(args: Array[String]): Unit = {
+    RnsapRunner.testUnsw5PBF(Seq(1.0, 30.0))
+  }
+}
+
+object TestUNSW5_2 {
+  def main(args: Array[String]): Unit = {
+    RnsapRunner.testUnsw5PBF(Seq(2.0, 20.0))
+  }
+}
+
+object TestUNSW5_3 {
+  def main(args: Array[String]): Unit = {
+    RnsapRunner.testUnsw5PBF(Seq(5.0, 15.0))
   }
 }
 
