@@ -6,6 +6,7 @@ import nz.net.wand.streamevmon.events.Event
 import java.time.{Instant, Duration => JavaDuration}
 
 import com.github.fsanaulla.chronicler.ahc.io.InfluxIO
+import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -23,7 +24,7 @@ class InfluxSinkTest extends InfluxContainerSpec {
 
       sink.close()
 
-      val db = InfluxIO(container.address, container.port, Some(container.credentials))
+      val db = InfluxIO(containerAddress, containerPort, Some(InfluxCredentials(container.username, container.password)))
         .database(container.database)
 
       Await.result(

@@ -3,6 +3,7 @@ package nz.net.wand.streamevmon.connectors
 import nz.net.wand.streamevmon.{InfluxContainerSpec, SeedData}
 
 import com.github.fsanaulla.chronicler.ahc.io.InfluxIO
+import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
 import org.scalatest.BeforeAndAfter
 
 import scala.concurrent.duration.Duration
@@ -16,7 +17,7 @@ class LossyInfluxHistoryTest extends InfluxContainerSpec with BeforeAndAfter {
       before {
         Await
           .result(
-            InfluxIO(container.address, container.port, Some(container.credentials))
+            InfluxIO(containerAddress, containerPort, Some(InfluxCredentials(container.username, container.password)))
               .database(container.database)
               .bulkWriteNative(
                 Seq(

@@ -11,7 +11,9 @@ import org.squeryl.adapters.PostgreSqlAdapter
 
 trait PostgresContainerSpec extends TestBase with ForAllTestContainer {
 
-  override val container: PostgreSQLContainer = PostgreSQLContainer("postgres:10")
+  // We know that NNTSC uses postgres 10, so we might as well stick with
+  // that version. Alpine for size benefits.
+  override val container: PostgreSQLContainer = PostgreSQLContainer("postgres:10-alpine")
     .configure(db => {
       val params = ParameterTool.fromPropertiesFile(
         getClass.getClassLoader.getResourceAsStream("default.properties"))
@@ -20,21 +22,13 @@ trait PostgresContainerSpec extends TestBase with ForAllTestContainer {
       db.withPassword(params.get("postgres.dataSource.password"))
       db.withDatabaseName(params.get("postgres.dataSource.databaseName"))
 
-      db.withInitScript("nntsc.sql")
+      // Postgres requires either this or an admin password to be set.
+      // We choose trust authentication because we simply don't care about
+      // security for ephemeral containers which can just be re-run in the
+      // unlikely situation that we get attacked.
+      db.addEnv("POSTGRES_HOST_AUTH_METHOD", "trust")
 
-      db.start()
-      db.execInContainer(
-        "bash",
-        "-c",
-        "sed " + "-i " +
-          "s/host all all all md5/host all all all trust/g " +
-          "/var/lib/postgresql/data/pg_hba.conf " +
-          "&& " +
-          "su postgres -c '/usr/lib/postgresql/10/bin/pg_ctl reload' " +
-          "&& " +
-          "echo 'Reloaded config' > /has-reloaded"
-      )
-      db.stop()
+      db.withInitScript("nntsc.sql")
     })
 
   override def afterStart(): Unit = {

@@ -9,7 +9,7 @@ import java.net.{ServerSocket, SocketTimeoutException}
 import com.github.fsanaulla.chronicler.ahc.io.InfluxIO
 import com.github.fsanaulla.chronicler.ahc.management.{AhcManagementClient, InfluxMng}
 import com.github.fsanaulla.chronicler.core.enums.Destinations
-import com.github.fsanaulla.chronicler.core.model.{Subscription, SubscriptionInfo}
+import com.github.fsanaulla.chronicler.core.model.{InfluxCredentials, Subscription, SubscriptionInfo}
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -77,7 +77,7 @@ class InfluxConnectionTest extends InfluxContainerSpec {
 
     "successfully ping" in {
       val influx =
-        InfluxMng(container.address, container.port, Some(container.credentials))
+        InfluxMng(containerAddress, containerPort, Some(InfluxCredentials(container.username, container.password)))
 
       Await.result(influx.ping.map {
         case Right(_) => succeed
@@ -87,7 +87,7 @@ class InfluxConnectionTest extends InfluxContainerSpec {
 
     "authenticate, by adding and removing a subscription" in {
       val influx =
-        InfluxMng(container.address, container.port, Some(container.credentials))
+        InfluxMng(containerAddress, containerPort, Some(InfluxCredentials(container.username, container.password)))
 
       val subscriptionName = "basicAuthAddRemove"
       val destinations = Array("http://localhost:3456")
@@ -95,7 +95,7 @@ class InfluxConnectionTest extends InfluxContainerSpec {
       val expected = SubscriptionInfo(container.database,
                                       Array(
                                         Subscription(
-                                          container.retentionPolicy,
+                                          "autogen",
                                           subscriptionName,
                                           Destinations.ALL,
                                           destinations
@@ -105,7 +105,7 @@ class InfluxConnectionTest extends InfluxContainerSpec {
         influx.createSubscription(
           subscriptionName,
           container.database,
-          container.retentionPolicy,
+          "autogen",
           Destinations.ALL,
           destinations
         ),
@@ -118,7 +118,7 @@ class InfluxConnectionTest extends InfluxContainerSpec {
         influx.dropSubscription(
           subscriptionName,
           container.database,
-          container.retentionPolicy
+          "autogen"
         ),
         Duration.Inf
       )
@@ -132,7 +132,7 @@ class InfluxConnectionTest extends InfluxContainerSpec {
       SubscriptionInfo(container.database,
                        Array(
                          Subscription(
-                           container.retentionPolicy,
+                           "autogen",
                            influx.subscriptionName,
                            Destinations.ALL,
                            influx.destinations
@@ -185,7 +185,7 @@ class InfluxConnectionTest extends InfluxContainerSpec {
     akka.actor.ActorSystem(getClass.getSimpleName, classLoader = Some(ourClassLoader))
 
   def sendData(andThen: () => Any = () => Unit): Unit = {
-    val db = InfluxIO(container.address, container.port, Some(container.credentials))
+    val db = InfluxIO(containerAddress, containerPort, Some(InfluxCredentials(container.username, container.password)))
       .database(container.database)
 
     actorSystem.scheduler

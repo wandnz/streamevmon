@@ -3,6 +3,7 @@ package nz.net.wand.streamevmon.connectors
 import nz.net.wand.streamevmon.{InfluxContainerSpec, SeedData}
 
 import com.github.fsanaulla.chronicler.ahc.io.InfluxIO
+import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -12,7 +13,7 @@ class InfluxHistoryConnectionTest extends InfluxContainerSpec {
   "InfluxDB container" should {
     "successfully ping" in {
       val influx =
-        InfluxIO(container.address, container.port, Some(container.credentials))
+        InfluxIO(containerAddress, containerPort, Some(InfluxCredentials(container.username, container.password)))
 
       Await.result(influx.ping.map {
         case Right(_) => succeed
@@ -24,7 +25,7 @@ class InfluxHistoryConnectionTest extends InfluxContainerSpec {
   "InfluxHistoryConnection" should {
     before {
       Await.result(
-        InfluxIO(container.address, container.port, Some(container.credentials))
+        InfluxIO(containerAddress, containerPort, Some(InfluxCredentials(container.username, container.password)))
           .database(container.database)
           .bulkWriteNative(
             Seq(
