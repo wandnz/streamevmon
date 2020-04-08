@@ -11,7 +11,7 @@ organization := "nz.net.wand"
 
 ThisBuild / scalaVersion := "2.12.11"
 
-val flinkVersion = "1.9.2"
+val flinkVersion = "1.10.0"
 val flinkDependencies = Seq(
   "org.apache.flink" %% "flink-scala" % flinkVersion % Provided,
   "org.apache.flink" %% "flink-streaming-scala" % flinkVersion % Provided,

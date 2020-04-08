@@ -51,18 +51,19 @@ object AmpMeasurementsToCsv {
             stream.write('\n')
           }
         })
-        .withBucketAssignerAndPolicy(
+        .withBucketAssigner(
           new BucketAssigner[Seq[String], String] {
             override def getBucketId(element: Seq[String], context: BucketAssigner.Context): String = element.head
 
             override def getSerializer: SimpleVersionedSerializer[String] = SimpleVersionedStringSerializer.INSTANCE
-          },
-          DefaultRollingPolicy.create()
+          }
+        )
+        .withRollingPolicy(
+          DefaultRollingPolicy.builder()
             .withRolloverInterval(Duration.ofDays(14).toMillis)
             .withInactivityInterval(Duration.ofDays(14).toMillis)
             .build()
-        )
-        .build()
+        ).asInstanceOf[StreamingFileSink[Seq[String]]]
 
     measurements
       .map(_.toCsvFormat)
