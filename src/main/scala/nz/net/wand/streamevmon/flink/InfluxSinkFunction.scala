@@ -12,6 +12,7 @@ import org.apache.flink.{configuration => flinkconf}
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.streaming.api.checkpoint.ListCheckpointed
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction
+import org.apache.flink.streaming.api.functions.sink.SinkFunction.Context
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
@@ -151,7 +152,7 @@ class InfluxSinkFunction
     *
     * @param value The data to send to InfluxDB.
     */
-  override def invoke(value: Event): Unit = {
+  override def invoke(value: Event, context: Context[_]): Unit = {
     bufferedEvents.append(value)
     val meas = influx.measurement[Event](database, value.eventType)
 

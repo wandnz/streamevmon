@@ -19,8 +19,8 @@ class InfluxSinkTest extends InfluxContainerSpec {
       sink.overrideConfig(getInfluxConfig("no-subscription"))
       sink.open(null)
 
-      sink.invoke(SeedData.event.withTags)
-      sink.invoke(SeedData.event.withoutTags)
+      sink.invoke(SeedData.event.withTags, new MockSinkContext(SeedData.event.withTags.time))
+      sink.invoke(SeedData.event.withoutTags, new MockSinkContext(SeedData.event.withoutTags.time))
 
       sink.close()
 
