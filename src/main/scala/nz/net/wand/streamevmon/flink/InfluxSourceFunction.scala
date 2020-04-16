@@ -55,13 +55,13 @@ abstract class InfluxSourceFunction[T <: Measurement](
           with ListCheckpointed[Instant] {
 
   @volatile
-  @transient private[this] var isRunning = false
+  @transient protected[this] var isRunning = false
 
-  private[this] var listener: Option[ServerSocket] = Option.empty
+  protected[this] var listener: Option[ServerSocket] = Option.empty
 
-  @transient private[this] var influxConnection: Option[InfluxConnection] = None
+  @transient protected[this] var influxConnection: Option[InfluxConnection] = None
 
-  @transient private[this] var influxHistory: Option[InfluxHistoryConnection] = None
+  @transient protected[this] var influxHistory: Option[InfluxHistoryConnection] = None
 
   var lastMeasurementTime: Instant = Instant.now().minus(fetchHistory)
 
@@ -86,7 +86,7 @@ abstract class InfluxSourceFunction[T <: Measurement](
     Some(measurement.asInstanceOf[T])
   }
 
-  private[this] var overrideParams: Option[ParameterTool] = None
+  protected[this] var overrideParams: Option[ParameterTool] = None
 
   def overrideConfig(config: ParameterTool): Unit = {
     overrideParams = Some(config)
@@ -162,7 +162,7 @@ abstract class InfluxSourceFunction[T <: Measurement](
     *
     * @param ctx The SourceContext associated with the current execution.
     */
-  private[this] def listen(ctx: SourceFunction.SourceContext[T]): Unit = {
+  protected[this] def listen(ctx: SourceFunction.SourceContext[T]): Unit = {
     logger.info("Listening for subscribed events...")
 
     isRunning = true
@@ -213,7 +213,7 @@ abstract class InfluxSourceFunction[T <: Measurement](
     isRunning = false
   }
 
-  private[this] def startListener(): Boolean = {
+  protected[this] def startListener(): Boolean = {
     influxConnection match {
       case Some(c) =>
         listener = c.getSubscriptionListener
@@ -225,7 +225,7 @@ abstract class InfluxSourceFunction[T <: Measurement](
     }
   }
 
-  private[this] def stopListener(): Unit =
+  protected[this] def stopListener(): Unit =
     listener.foreach(l => influxConnection.foreach(_.stopSubscriptionListener(l)))
 
   override def snapshotState(checkpointId: Long, timestamp: Long): JavaList[Instant] = {
