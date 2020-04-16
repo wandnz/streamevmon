@@ -13,6 +13,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.streaming.api.checkpoint.ListCheckpointed
 import org.apache.flink.streaming.api.functions.source.{RichSourceFunction, SourceFunction}
+import org.apache.flink.streaming.api.watermark.Watermark
 
 import scala.collection.JavaConverters._
 
@@ -64,6 +65,8 @@ abstract class InfluxSourceFunction[T <: Measurement](
 
   var lastMeasurementTime: Instant = Instant.now().minus(fetchHistory)
 
+  var maxLateness: Long = _
+
   /** Transforms a single line received from InfluxDB in Line Protocol format
     * into an object of type T.
     *
@@ -98,6 +101,7 @@ abstract class InfluxSourceFunction[T <: Measurement](
     if (overrideParams.isDefined) {
       influxConnection = Some(InfluxConnection(overrideParams.get, configPrefix, datatype))
       influxHistory = Some(InfluxHistoryConnection(overrideParams.get, configPrefix, datatype))
+      maxLateness = overrideParams.get.getLong("flink.maxLateness")
     }
     else {
       val params: ParameterTool =
@@ -130,12 +134,13 @@ abstract class InfluxSourceFunction[T <: Measurement](
       val historicalData = influxHistory.get.getAllAmpData(lastMeasurementTime, now)
       historicalData.foreach { m =>
         processHistoricalMeasurement(m) match {
-          case Some(value) => ctx.collect(value)
+          case Some(value) => ctx.collectWithTimestamp(value, value.time.toEpochMilli)
           case None => logger.error(s"Historical entry failed to parse: $m")
         }
       }
       if (historicalData.nonEmpty) {
         lastMeasurementTime = historicalData.maxBy(_.time).time
+        ctx.emitWatermark(new Watermark(lastMeasurementTime.minusSeconds(maxLateness).toEpochMilli))
       }
 
       listen(ctx)
@@ -184,6 +189,7 @@ abstract class InfluxSourceFunction[T <: Measurement](
                   case Some(value) =>
                     lastMeasurementTime = value.time
                     ctx.collectWithTimestamp(value, value.time.toEpochMilli)
+                    ctx.emitWatermark(new Watermark(value.time.minusSeconds(maxLateness).toEpochMilli))
                   case None => logger.error(s"Entry failed to parse: $line")
                 }
                 ctx.markAsTemporarilyIdle()
