@@ -11,7 +11,7 @@ organization := "nz.net.wand"
 
 ThisBuild / scalaVersion := "2.12.11"
 
-val flinkVersion = "1.10.0"
+val flinkVersion = "1.10.1"
 val flinkDependencies = Seq(
   "org.apache.flink" %% "flink-scala" % flinkVersion % Provided,
   "org.apache.flink" %% "flink-streaming-scala" % flinkVersion % Provided,
@@ -27,7 +27,7 @@ val influxDependencies = Seq(
 
 val postgresDependencies = Seq(
   "org.postgresql" % "postgresql" % "42.2.12",
-  "org.squeryl" %% "squeryl" % "0.9.14"
+  "org.squeryl" %% "squeryl" % "0.9.15"
 )
 
 val scalaCacheVersion = "0.28.0"
@@ -41,13 +41,13 @@ val logDependencies = Seq(
   "org.slf4j" % "slf4j-simple" % "1.7.30" % Provided
 )
 
-val testcontainersScalaVersion = "0.36.1"
+val testcontainersScalaVersion = "0.37.0"
 val testDependencies = Seq(
   "org.apache.flink" %% "flink-test-utils" % flinkVersion % Test,
   "org.apache.flink" %% "flink-runtime" % flinkVersion % Test classifier "tests",
   "org.apache.flink" %% "flink-streaming-java" % flinkVersion % Test classifier "tests",
-  "org.scalatest" %% "scalatest" % "3.1.1" % Test,
-  "com.dimafeng" %% "testcontainers-scala" % "0.36.1" % Test,
+  "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+  "com.dimafeng" %% "testcontainers-scala" % testcontainersScalaVersion % Test,
   "com.dimafeng" %% "testcontainers-scala-scalatest" % testcontainersScalaVersion % Test,
   "com.dimafeng" %% "testcontainers-scala-postgresql" % testcontainersScalaVersion % Test,
   "com.dimafeng" %% "testcontainers-scala-influxdb" % testcontainersScalaVersion % Test
