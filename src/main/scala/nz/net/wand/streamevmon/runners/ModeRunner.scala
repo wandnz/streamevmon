@@ -44,7 +44,7 @@ object ModeRunner {
     val process = source
       .process(detector)
       .name(detector.detectorName)
-      .uid("mode-detector")
+      .uid(detector.detectorUid)
 
     /*
     process

@@ -5,6 +5,7 @@ import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, Norma
 import nz.net.wand.streamevmon.detectors.distdiff.{DistDiffDetector, WindowedDistDiffDetector}
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
+import nz.net.wand.streamevmon.detectors.spike.SpikeDetector
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink._
 import nz.net.wand.streamevmon.measurements.Measurement
@@ -173,6 +174,16 @@ object UnifiedRunner {
       }
     }
 
+    if (isEnabled(env, "loss")) {
+      val lossDetector = new LossDetector[Measurement]
+      if (config.getBoolean("detector.default.useFlinkTimeWindow")) {
+        dnsStreamTimeWindow.wrapAndAddDetector(lossDetector, lossDetector.detectorName, lossDetector.detectorUid)
+      }
+      else {
+        dnsStream.addDetector(lossDetector, lossDetector.detectorName, lossDetector.detectorUid)
+      }
+    }
+
     if (isEnabled(env, "mode")) {
       val modeDetector = new ModeDetector[Measurement]
       if (config.getBoolean("detector.default.useFlinkTimeWindow")) {
@@ -183,13 +194,13 @@ object UnifiedRunner {
       }
     }
 
-    if (isEnabled(env, "loss")) {
-      val lossDetector = new LossDetector[Measurement]
+    if (isEnabled(env, "spike")) {
+      val spikeDetector = new SpikeDetector[Measurement]
       if (config.getBoolean("detector.default.useFlinkTimeWindow")) {
-        dnsStreamTimeWindow.wrapAndAddDetector(lossDetector, lossDetector.detectorName, lossDetector.detectorUid)
+        icmpStreamTimeWindow.wrapAndAddDetector(spikeDetector, spikeDetector.detectorName, spikeDetector.detectorUid)
       }
       else {
-        dnsStream.addDetector(lossDetector, lossDetector.detectorName, lossDetector.detectorUid)
+        icmpStream.addDetector(spikeDetector, spikeDetector.detectorName, spikeDetector.detectorUid)
       }
     }
 
