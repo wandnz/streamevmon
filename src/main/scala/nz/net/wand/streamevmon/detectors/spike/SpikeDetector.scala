@@ -108,7 +108,6 @@ class SpikeDetector[MeasT <: Measurement]
 
     if (!Duration.between(lastObserved.value, value.time).isNegative) {
       lastObserved.update(value.time)
-      lastObservedValue.update(value.defaultValue)
     }
 
     if (value.isLossy) {
@@ -159,6 +158,7 @@ class SpikeDetector[MeasT <: Measurement]
           )
         )
     }
+    lastObservedValue.update(value.defaultValue)
   }
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {}

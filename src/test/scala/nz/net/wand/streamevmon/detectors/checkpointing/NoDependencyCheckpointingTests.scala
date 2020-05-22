@@ -4,6 +4,7 @@ import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, Norma
 import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
+import nz.net.wand.streamevmon.detectors.spike.SpikeDetector
 import nz.net.wand.streamevmon.measurements.Measurement
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
@@ -74,6 +75,20 @@ class NoDependencyCheckpointingTests extends CheckpointingTestBase {
         harness = snapshotAndRestart(harness)
 
         sendAnomalousMeasurement(harness, times = 120)
+        harness.getOutput shouldNot have size 0
+      }
+
+      "type is SpikeDetector" in {
+        implicit val detector: SpikeDetector[Measurement] = new SpikeDetector[Measurement]
+        var harness = newHarness
+        harness.open()
+
+        sendNormalMeasurement(harness, times = 100)
+        harness.getOutput should have size 0
+
+        harness = snapshotAndRestart(harness)
+
+        sendAnomalousMeasurement(harness, times = 100)
         harness.getOutput shouldNot have size 0
       }
     }
