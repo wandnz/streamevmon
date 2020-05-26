@@ -83,7 +83,17 @@ fabric.properties
 .idea/sonarlint
 
 ### Scala ###
+# Build artifacts
 *.class
 *.log
+**/target
 
 # End of https://www.gitignore.io/api/scala,intellij
+
+# This isn't a VS Code project, so any persistent settings that might show up
+# here don't matter.
+.vscode
+
+# Our datasets are quite large, and some consist of thousands of files.
+# They should be distributed some other way.
+data/*
