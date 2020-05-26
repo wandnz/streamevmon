@@ -48,7 +48,7 @@ object SpikeRunner {
 
     process.print(s"Spike Signal")
 
-    val csvOut = new ScalaCsvOutputFormat[(Double, Double, Double, Double, Double, Int)](new Path("./out.csv"))
+    val csvOut = new ScalaCsvOutputFormat[(Double, Double, Double, Double, Double, Int)](new Path(".out/spike.csv"))
 
     process
       .getSideOutput(OutputTag[SpikeDetail]("detailed-output"))
@@ -58,7 +58,7 @@ object SpikeRunner {
       }
       .writeUsingOutputFormat(csvOut)
 
-    new File(new java.io.File("./out.csv")).deleteRecursively()
+    new File(new java.io.File(".out/spike.csv")).deleteRecursively()
 
     env.execute("Latency TS -> Spike Detector")
   }

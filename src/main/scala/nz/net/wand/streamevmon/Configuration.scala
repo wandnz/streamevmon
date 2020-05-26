@@ -49,4 +49,8 @@ object Configuration {
       .mergeWith(ParameterTool.fromSystemProperties())
       .mergeWith(ParameterTool.fromArgs(args))
   }
+
+  def get(): ParameterTool = {
+    get(Array())
+  }
 }
