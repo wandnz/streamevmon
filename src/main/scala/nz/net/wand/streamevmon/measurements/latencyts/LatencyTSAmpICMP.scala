@@ -40,6 +40,8 @@ object LatencyTSAmpICMP {
     val fields = line.split(',')
     val meta = fields(0).split('-')
 
+    // TODO: Make sure the isLossy field is set up correctly here.
+
     LatencyTSAmpICMP(
       streamId,
       meta(0),

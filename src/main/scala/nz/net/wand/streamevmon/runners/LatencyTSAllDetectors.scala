@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.Configuration
+import nz.net.wand.streamevmon.detectors.baseline.BaselineDetector
 import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, NormalDistribution}
 import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
@@ -50,7 +51,8 @@ object LatencyTSAllDetectors {
       ),
       new DistDiffDetector[LatencyTSAmpICMP],
       new ModeDetector[LatencyTSAmpICMP],
-      new SpikeDetector[LatencyTSAmpICMP]
+      new SpikeDetector[LatencyTSAmpICMP],
+      new BaselineDetector[LatencyTSAmpICMP],
     )
     val outputFormat = new ScalaCsvOutputFormat[(String, Int, Long, String)](
       new Path(s"./out/allDetectors/${FilenameUtils.removeExtension(file.getName)}.events.csv")

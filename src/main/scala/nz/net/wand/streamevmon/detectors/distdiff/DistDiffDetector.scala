@@ -146,7 +146,7 @@ class DistDiffDetector[MeasT <: Measurement : TypeInformation]
     * @param value The measurement to initialise with. Can be lossy.
     */
   private def reset(value: MeasT): Unit = {
-    if (value.defaultValue.isEmpty) {
+    if (value.isLossy) {
       lastObserved.update(null.asInstanceOf[MeasT])
     }
     else {

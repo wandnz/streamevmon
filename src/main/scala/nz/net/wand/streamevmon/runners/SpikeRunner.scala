@@ -10,7 +10,7 @@ import java.time.Duration
 import org.apache.flink.api.scala.operators.ScalaCsvOutputFormat
 import org.apache.flink.core.fs.Path
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
-import org.apache.flink.streaming.api.scala.{StreamExecutionEnvironment, _}
+import org.apache.flink.streaming.api.scala._
 
 import scala.reflect.io.File
 
@@ -22,8 +22,6 @@ object SpikeRunner {
 
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
-
-    System.setProperty("influx.dataSource.default.subscriptionName", "ModeDetector")
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
@@ -48,7 +46,7 @@ object SpikeRunner {
 
     process.print(s"Spike Signal")
 
-    val csvOut = new ScalaCsvOutputFormat[(Double, Double, Double, Double, Double, Int)](new Path(".out/spike.csv"))
+    val csvOut = new ScalaCsvOutputFormat[(Double, Double, Double, Double, Double, Int)](new Path("./out/spike.csv"))
 
     process
       .getSideOutput(OutputTag[SpikeDetail]("detailed-output"))
@@ -58,7 +56,7 @@ object SpikeRunner {
       }
       .writeUsingOutputFormat(csvOut)
 
-    new File(new java.io.File(".out/spike.csv")).deleteRecursively()
+    new File(new java.io.File("./out/spike.csv")).deleteRecursively()
 
     env.execute("Latency TS -> Spike Detector")
   }
