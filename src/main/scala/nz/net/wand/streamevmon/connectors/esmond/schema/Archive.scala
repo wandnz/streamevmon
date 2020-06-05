@@ -1,10 +1,16 @@
 package nz.net.wand.streamevmon.connectors.esmond.schema
 
+import nz.net.wand.streamevmon.connectors.esmond.EsmondAPI
+
 import java.io.Serializable
 
 import com.fasterxml.jackson.annotation._
 import com.fasterxml.jackson.annotation.JsonInclude.Include
 
+/** Stores a bunch of metadata about a measurement group.
+  *
+  * @see [[EsmondAPI.archive]]
+  */
 @JsonIgnoreProperties(Array("metadata-previous-page", "metadata-next-page"))
 @JsonInclude(Include.NON_NULL)
 @JsonPropertyOrder(alphabetic = true)

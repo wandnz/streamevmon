@@ -1,21 +1,54 @@
 package nz.net.wand.streamevmon.connectors.esmond.schema
 
+import nz.net.wand.streamevmon.connectors.esmond.EsmondAPI
+
 import java.io.Serializable
 
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonPropertyOrder}
 
+/** An entry in a metadata archive's event-type field might contain some of these.
+  *
+  * @see [[EsmondAPI.archive]]
+  */
 @JsonPropertyOrder(alphabetic = true)
 class Summary extends Serializable {
 
+  // Unfortunately, this field is usually different to the part of the URI that
+  // it corresponds to. We'll have to expose a field which bypasses the
+  // discrepancies, instead of the raw field.
+  // It would be tidier and safer to use an enum for this, since there are only
+  // three possibilities at the time of writing. However, it could be expanded
+  // later and it's more work for not much benefit.
   @JsonProperty("summary-type")
-  var summaryType: String = _
+  protected var summaryTypeRaw: String = _
+
+  private val summaryTypeOverrides = Map(
+    "aggregation" -> "aggregations",
+    "average" -> "averages"
+  )
+  lazy val summaryType: String = {
+    if (summaryTypeOverrides.contains(summaryTypeRaw)) {
+      summaryTypeOverrides(summaryTypeRaw)
+    }
+    else {
+      summaryTypeRaw
+    }
+  }
 
   @JsonProperty("summary-window")
-  var summaryWindow: String = _
+  var summaryWindow: Int = _
 
   @JsonProperty("time-updated")
   var timeUpdated: Int = _
 
   @JsonProperty("uri")
   var uri: String = _
+
+  // These fields could probably be obtained more elegantly, but it does work
+  // for getting the fields which are otherwise missing.
+  lazy val metadataKey: String = uri.split('/')(4)
+
+  lazy val eventType: String = uri.split('/')(5)
+
+  override def toString: String = uri
 }
