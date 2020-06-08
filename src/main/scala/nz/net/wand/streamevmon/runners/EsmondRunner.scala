@@ -11,7 +11,7 @@ object EsmondRunner extends Logging {
 
   def main(args: Array[String]): Unit = {
     // Let's get the full list of supported time series within the relevant timeRange.
-    val archiveFull = connection.getArchiveList(timeRange)
+    val archiveFull = connection.getArchiveList(timeRange = Some(timeRange))
 
     // If it crashed out, then we can't continue.
     if (archiveFull.isFailure) {

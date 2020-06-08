@@ -3,6 +3,8 @@ package nz.net.wand.streamevmon.connectors.esmond
 import nz.net.wand.streamevmon.connectors.esmond.schema._
 import nz.net.wand.streamevmon.Logging
 
+import java.lang.{Long => JLong}
+
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import retrofit2._
@@ -65,9 +67,29 @@ case class EsmondConnectionForeground(
 
   /** @see [[EsmondAPI.archiveList]] */
   def getArchiveList(
-    timeRange: Int
+    timeRange       : Option[Long] = None,
+    time            : Option[Long] = None,
+    timeStart       : Option[Long] = None,
+    timeEnd         : Option[Long] = None,
+    source          : Option[String] = None,
+    destination     : Option[String] = None,
+    measurementAgent: Option[String] = None,
+    toolName        : Option[String] = None,
+    dnsMatchRule    : Option[String] = None,
+    eventType       : Option[String] = None
   ): Try[List[Archive]] = {
-    wrapInTrySynchronously(esmondAPI.archiveList(timeRange))
+    wrapInTrySynchronously(esmondAPI.archiveList(
+      timeRange.map(new JLong(_)).orNull,
+      time.map(new JLong(_)).orNull,
+      timeStart.map(new JLong(_)).orNull,
+      timeEnd.map(new JLong(_)).orNull,
+      source.orNull,
+      destination.orNull,
+      measurementAgent.orNull,
+      toolName.orNull,
+      dnsMatchRule.orNull,
+      eventType.orNull,
+    ))
   }
 
   /** @see [[EsmondAPI.archive]] */
