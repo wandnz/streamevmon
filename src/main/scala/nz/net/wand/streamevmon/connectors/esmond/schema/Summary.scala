@@ -20,7 +20,7 @@ class Summary extends Serializable {
   // three possibilities at the time of writing. However, it could be expanded
   // later and it's more work for not much benefit.
   @JsonProperty("summary-type")
-  protected var summaryTypeRaw: String = _
+  protected val summaryTypeRaw: String = ""
 
   private val summaryTypeOverrides = Map(
     "aggregation" -> "aggregations",
@@ -36,13 +36,13 @@ class Summary extends Serializable {
   }
 
   @JsonProperty("summary-window")
-  var summaryWindow: Int = _
+  val summaryWindow: Long = Long.MinValue
 
   @JsonProperty("time-updated")
-  var timeUpdated: Int = _
+  val timeUpdated: Long = Long.MinValue
 
   @JsonProperty("uri")
-  var uri: String = _
+  val uri: String = ""
 
   // These fields could probably be obtained more elegantly, but it does work
   // for getting the fields which are otherwise missing.
@@ -51,4 +51,21 @@ class Summary extends Serializable {
   lazy val eventType: String = uri.split('/')(5)
 
   override def toString: String = uri
+
+  def canEqual(other: Any): Boolean = other.isInstanceOf[Summary]
+
+  override def equals(other: Any): Boolean = other match {
+    case that: Summary =>
+      (that canEqual this) &&
+        summaryType == that.summaryType &&
+        summaryWindow == that.summaryWindow &&
+        timeUpdated == that.timeUpdated &&
+        uri == that.uri
+    case _ => false
+  }
+
+  override def hashCode(): Int = {
+    val state = Seq(summaryType, summaryWindow, timeUpdated, uri)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
 }

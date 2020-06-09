@@ -11,140 +11,183 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include
   *
   * @see [[EsmondAPI.archive]]
   */
-@JsonIgnoreProperties(Array("metadata-previous-page", "metadata-next-page"))
+// These properties are to do with pagination from an archive listing, and are
+// not relevant to the actual archive object.
+@JsonIgnoreProperties(Array("metadata-count-total", "metadata-previous-page", "metadata-next-page"))
 @JsonInclude(Include.NON_NULL)
 @JsonPropertyOrder(alphabetic = true)
 class Archive extends Serializable {
 
   // URL
   @JsonProperty("url")
-  var url: String = _
+  val url: String = null
 
   // URL
   // While URL is the full http:// URL, URI is that without the server identifier attached.
   @JsonProperty("uri")
-  var uri: String = _
+  val uri: String = null
 
   // UID hex string
   @JsonProperty("metadata-key")
-  var metadataKey: String = _
+  val metadataKey: String = null
 
   // "point-to-point"
   @JsonProperty("subject-type")
-  var subjectType: String = _
+  val subjectType: String = null
 
   @JsonProperty("event-types")
-  var eventTypes: List[EventType] = List[EventType]()
+  val eventTypes: List[EventType] = List[EventType]()
 
   // IP
   @JsonProperty("source")
-  var source: Option[String] = None
+  val source: Option[String] = None
 
   // IP
   @JsonProperty("destination")
-  var destination: Option[String] = None
+  val destination: Option[String] = None
 
   // IP
   @JsonProperty("measurement-agent")
-  var measurementAgent: Option[String] = None
+  val measurementAgent: Option[String] = None
 
   // String
   @JsonProperty("tool-name")
-  var toolName: Option[String] = None
+  val toolName: Option[String] = None
 
   // URL
   @JsonProperty("input-source")
-  var inputSource: Option[String] = None
+  val inputSource: Option[String] = None
 
   // URL
   @JsonProperty("input-destination")
-  var inputDestination: Option[String] = None
+  val inputDestination: Option[String] = None
 
   // String
   @JsonProperty("ip-transport-protocol")
-  var ipTransportProtocol: Option[String] = None
+  val ipTransportProtocol: Option[String] = None
 
   // Double in string
   @JsonProperty("sample-bucket-width")
-  var sampleBucketWidth: Double = _
+  val sampleBucketWidth: Option[Double] = None
 
   // Sometimes it's an int, sometimes it's "PT5S"
   @JsonProperty("bw-ignore-first-seconds")
-  var bwIgnoreFirstSeconds: Option[String] = None
-
-  // Int
-  @JsonProperty("metadata-count-total")
-  var metadataCountTotal: Int = _
+  val bwIgnoreFirstSeconds: Option[String] = None
 
   // Double in string
   @JsonProperty("time-probe-interval")
-  var timeProbeInterval: Double = _
+  val timeProbeInterval: Option[Double] = None
 
   // Int in string
   @JsonProperty("time-duration")
-  var timeDuration: Double = _
+  val timeDuration: Option[Double] = None
 
   // Int in string
   @JsonProperty("time-interval")
-  var timeInterval: Int = _
+  val timeInterval: Option[Int] = None
 
   // Double in string
   @JsonProperty("time-test-timeout")
-  var timeTestTimeout: Double = _
+  val timeTestTimeout: Option[Double] = None
 
   // Int in string
   @JsonProperty("sample-size")
-  var sampleSize: Int = _
+  val sampleSize: Option[Int] = None
 
   // String
   @JsonProperty("pscheduler-test-type")
-  var pschedulerTestType: Option[String] = None
+  val pschedulerTestType: Option[String] = None
 
   // String
   @JsonProperty("pscheduler-reference-display-set-source")
-  var pschedulerReferenceDisplaySetSource: Option[String] = None
+  val pschedulerReferenceDisplaySetSource: Option[String] = None
 
   // String
   @JsonProperty("pscheduler-reference-display-set-dest")
-  var pschedulerReferenceDisplaySetDest: Option[String] = None
+  val pschedulerReferenceDisplaySetDest: Option[String] = None
 
   // String
   @JsonProperty("pscheduler-reference-psconfig-created-by-uuid")
-  var pschedulerReferencePsconfigCreatedByUuid: Option[String] = None
+  val pschedulerReferencePsconfigCreatedByUuid: Option[String] = None
 
   // String
   @JsonProperty("pscheduler-reference-psconfig-created-by-user-agent")
-  var pschedulerReferencePsconfigCreatedByUserAgent: Option[String] = None
+  val pschedulerReferencePsconfigCreatedByUserAgent: Option[String] = None
 
   // String
   @JsonProperty("pscheduler-reference-created-by-uuid")
-  var pschedulerReferenceCreatedByUuid: Option[String] = None
+  val pschedulerReferenceCreatedByUuid: Option[String] = None
 
   // String
   @JsonProperty("pscheduler-reference-created-by-user-agent")
-  var pschedulerReferenceCreatedByUserAgent: Option[String] = None
+  val pschedulerReferenceCreatedByUserAgent: Option[String] = None
 
   // String
   @JsonProperty("pscheduler-reference-created-by-address")
-  var pschedulerReferenceCreatedByAddress: Option[String] = None
+  val pschedulerReferenceCreatedByAddress: Option[String] = None
 
   // String
   @JsonProperty("pscheduler-reference-description")
-  var pschedulerReferenceDescription: Option[String] = None
+  val pschedulerReferenceDescription: Option[String] = None
 
   // Boolean in string
   @JsonProperty("mode-flip")
-  var modeFlip: Option[Boolean] = None
+  val modeFlip: Option[Boolean] = None
 
   // Observed only "0" - this is probably a string for formatting
   @JsonProperty("ip-packet-padding")
-  var ipPacketPadding: Option[String] = None
+  val ipPacketPadding: Option[String] = None
 
   // Observed only "1", probably Int in string
   @JsonProperty("bw-parallel-streams")
-  var BwParallelStreams: Int = _
+  val BwParallelStreams: Option[Int] = None
 
   // Int in string
   @JsonProperty("tcp-window-size")
-  var TcpWindowSize: Int = _
+  val TcpWindowSize: Option[Int] = None
+
+  def canEqual(other: Any): Boolean = other.isInstanceOf[Archive]
+
+  override def equals(other: Any): Boolean = other match {
+    case that: Archive =>
+      (that canEqual this) &&
+        url == that.url &&
+        uri == that.uri &&
+        metadataKey == that.metadataKey &&
+        subjectType == that.subjectType &&
+        eventTypes == that.eventTypes &&
+        source == that.source &&
+        destination == that.destination &&
+        measurementAgent == that.measurementAgent &&
+        toolName == that.toolName &&
+        inputSource == that.inputSource &&
+        inputDestination == that.inputDestination &&
+        ipTransportProtocol == that.ipTransportProtocol &&
+        sampleBucketWidth == that.sampleBucketWidth &&
+        bwIgnoreFirstSeconds == that.bwIgnoreFirstSeconds &&
+        timeProbeInterval == that.timeProbeInterval &&
+        timeDuration == that.timeDuration &&
+        timeInterval == that.timeInterval &&
+        timeTestTimeout == that.timeTestTimeout &&
+        sampleSize == that.sampleSize &&
+        pschedulerTestType == that.pschedulerTestType &&
+        pschedulerReferenceDisplaySetSource == that.pschedulerReferenceDisplaySetSource &&
+        pschedulerReferenceDisplaySetDest == that.pschedulerReferenceDisplaySetDest &&
+        pschedulerReferencePsconfigCreatedByUuid == that.pschedulerReferencePsconfigCreatedByUuid &&
+        pschedulerReferencePsconfigCreatedByUserAgent == that.pschedulerReferencePsconfigCreatedByUserAgent &&
+        pschedulerReferenceCreatedByUuid == that.pschedulerReferenceCreatedByUuid &&
+        pschedulerReferenceCreatedByUserAgent == that.pschedulerReferenceCreatedByUserAgent &&
+        pschedulerReferenceCreatedByAddress == that.pschedulerReferenceCreatedByAddress &&
+        pschedulerReferenceDescription == that.pschedulerReferenceDescription &&
+        modeFlip == that.modeFlip &&
+        ipPacketPadding == that.ipPacketPadding &&
+        BwParallelStreams == that.BwParallelStreams &&
+        TcpWindowSize == that.TcpWindowSize
+    case _ => false
+  }
+
+  override def hashCode(): Int = {
+    val state = Seq(url, uri, metadataKey, subjectType, eventTypes, source, destination, measurementAgent, toolName, inputSource, inputDestination, ipTransportProtocol, sampleBucketWidth, bwIgnoreFirstSeconds, timeProbeInterval, timeDuration, timeInterval, timeTestTimeout, sampleSize, pschedulerTestType, pschedulerReferenceDisplaySetSource, pschedulerReferenceDisplaySetDest, pschedulerReferencePsconfigCreatedByUuid, pschedulerReferencePsconfigCreatedByUserAgent, pschedulerReferenceCreatedByUuid, pschedulerReferenceCreatedByUserAgent, pschedulerReferenceCreatedByAddress, pschedulerReferenceDescription, modeFlip, ipPacketPadding, BwParallelStreams, TcpWindowSize)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
 }

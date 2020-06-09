@@ -10,10 +10,10 @@ import com.fasterxml.jackson.annotation.{JsonProperty, JsonPropertyOrder}
 @JsonPropertyOrder(alphabetic = true)
 class TimeSeriesEntry extends Serializable {
   @JsonProperty("ts")
-  var timestamp: Int = _
+  val timestamp: Long = Long.MinValue
 
   @JsonProperty("val")
-  var value: Double = _
+  val value: Double = Double.NaN
 
   override def toString: String = {
     s"$timestamp: $value"

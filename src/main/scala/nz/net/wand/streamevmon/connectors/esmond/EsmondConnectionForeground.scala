@@ -21,13 +21,15 @@ import scala.util.{Failure, Success, Try}
 case class EsmondConnectionForeground(
   source : String
 ) extends Logging {
-  protected val baseUrl = s"http://$source:8085/esmond/perfsonar/"
+  protected val baseUrl = s"$source/esmond/perfsonar/"
 
   private val retrofit: Retrofit = new Builder()
     .addConverterFactory(JacksonConverterFactory.create(
       new ObjectMapper().registerModule(DefaultScalaModule)
     ))
     .baseUrl(baseUrl)
+    // Yikes, hosts using https all have self-signed certificates. Scary.
+    .client(UnsafeOkHttpClient.get())
     .build()
 
   protected val esmondAPI: EsmondAPI = retrofit.create(classOf[EsmondAPI])
@@ -95,42 +97,69 @@ case class EsmondConnectionForeground(
   /** @see [[EsmondAPI.archive]] */
   def getArchive(
     metadataKey: String,
-    timeRange: Int
   ): Try[Archive] = {
-    wrapInTrySynchronously(esmondAPI.archive(metadataKey, timeRange))
+    wrapInTrySynchronously(esmondAPI.archive(metadataKey))
   }
 
-  /** @see [[EsmondAPI.timeSeriesBase]] */
-  def getTimeSeries(
+  /** @see [[EsmondAPI.timeSeriesBase]]*/
+  def getTimeSeriesEntries(
     metadataKey: String,
     eventType: String,
-    timeRange: Int
+    timeRange: Option[Long] = None,
+    time: Option[Long] = None,
+    timeStart: Option[Long] = None,
+    timeEnd: Option[Long] = None,
   ): Try[List[TimeSeriesEntry]] = {
-    wrapInTrySynchronously(esmondAPI.timeSeriesBase(metadataKey, eventType, timeRange))
+    wrapInTrySynchronously(esmondAPI.timeSeriesBase(
+      metadataKey,
+      eventType,
+      timeRange.map(new JLong(_)).orNull,
+      time.map(new JLong(_)).orNull,
+      timeStart.map(new JLong(_)).orNull,
+      timeEnd.map(new JLong(_)).orNull,
+    ))
   }
 
-  /** @see [[EsmondAPI.timeSeriesSummary]] */
-  def getTimeSeriesSummary(
-    metadataKey: String,
+  /** @see [[EsmondAPI.timeSeriesSummary]]*/
+  def getTimeSeriesSummaryEntriesFromMetadata(
+    metadataKey  : String,
     eventType: String,
-    summaryType: String,
-    summaryWindow: Int,
-    timeRange: Int
+    summaryType  : String,
+    summaryWindow: Long,
+    timeRange    : Option[Long] = None,
+    time         : Option[Long] = None,
+    timeStart    : Option[Long] = None,
+    timeEnd      : Option[Long] = None,
   ): Try[List[TimeSeriesEntry]] = {
-    wrapInTrySynchronously(esmondAPI.timeSeriesSummary(metadataKey, eventType, summaryType, summaryWindow, timeRange))
+    wrapInTrySynchronously(esmondAPI.timeSeriesSummary(
+      metadataKey,
+      eventType,
+      summaryType,
+      summaryWindow,
+      timeRange.map(new JLong(_)).orNull,
+      time.map(new JLong(_)).orNull,
+      timeStart.map(new JLong(_)).orNull,
+      timeEnd.map(new JLong(_)).orNull,
+    ))
   }
 
-  /** @see [[EsmondAPI.timeSeriesSummary]] */
-  def getTimeSeriesSummary(
+  /** @see [[EsmondAPI.timeSeriesSummary]]*/
+  def getTimeSeriesSummaryEntries(
     summary: Summary,
-    timeRange: Int = 86400
+    timeRange: Option[Long] = None,
+    time     : Option[Long] = None,
+    timeStart: Option[Long] = None,
+    timeEnd  : Option[Long] = None,
   ): Try[List[TimeSeriesEntry]] = {
     wrapInTrySynchronously(esmondAPI.timeSeriesSummary(
       summary.metadataKey,
       summary.eventType,
       summary.summaryType,
       summary.summaryWindow,
-      timeRange
+      timeRange.map(new JLong(_)).orNull,
+      time.map(new JLong(_)).orNull,
+      timeStart.map(new JLong(_)).orNull,
+      timeEnd.map(new JLong(_)).orNull,
     ))
   }
 }

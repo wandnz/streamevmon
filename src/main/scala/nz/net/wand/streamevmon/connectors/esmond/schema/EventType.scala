@@ -14,14 +14,31 @@ import com.fasterxml.jackson.annotation.{JsonProperty, JsonPropertyOrder}
 class EventType extends Serializable {
 
   @JsonProperty("base-uri")
-  var baseUri: String = _
+  val baseUri: String = ""
 
   @JsonProperty("event-type")
-  var eventType: String = _
+  val eventType: String = ""
 
   @JsonProperty("summaries")
-  var summaries: List[Summary] = List[Summary]()
+  val summaries: List[Summary] = List[Summary]()
 
   @JsonProperty("time-updated")
-  var timeUpdated: Int = _
+  val timeUpdated: Long = Long.MinValue
+
+  def canEqual(other: Any): Boolean = other.isInstanceOf[EventType]
+
+  override def equals(other: Any): Boolean = other match {
+    case that: EventType =>
+      (that canEqual this) &&
+        baseUri == that.baseUri &&
+        eventType == that.eventType &&
+        summaries == that.summaries &&
+        timeUpdated == that.timeUpdated
+    case _ => false
+  }
+
+  override def hashCode(): Int = {
+    val state = Seq(baseUri, eventType, summaries, timeUpdated)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
 }
