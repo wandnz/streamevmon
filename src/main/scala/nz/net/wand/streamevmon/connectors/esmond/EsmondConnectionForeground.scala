@@ -79,7 +79,7 @@ case class EsmondConnectionForeground(
     toolName        : Option[String] = None,
     dnsMatchRule    : Option[String] = None,
     eventType       : Option[String] = None
-  ): Try[List[Archive]] = {
+  ): Try[Iterable[Archive]] = {
     wrapInTrySynchronously(esmondAPI.archiveList(
       timeRange.map(new JLong(_)).orNull,
       time.map(new JLong(_)).orNull,
@@ -101,15 +101,15 @@ case class EsmondConnectionForeground(
     wrapInTrySynchronously(esmondAPI.archive(metadataKey))
   }
 
-  /** @see [[EsmondAPI.timeSeriesBase]]*/
+  /** @see [[EsmondAPI.timeSeriesBase]] */
   def getTimeSeriesEntries(
     metadataKey: String,
-    eventType: String,
-    timeRange: Option[Long] = None,
-    time: Option[Long] = None,
-    timeStart: Option[Long] = None,
-    timeEnd: Option[Long] = None,
-  ): Try[List[TimeSeriesEntry]] = {
+    eventType  : String,
+    timeRange  : Option[Long] = None,
+    time       : Option[Long] = None,
+    timeStart  : Option[Long] = None,
+    timeEnd    : Option[Long] = None,
+  ): Try[Iterable[TimeSeriesEntry]] = {
     wrapInTrySynchronously(esmondAPI.timeSeriesBase(
       metadataKey,
       eventType,
@@ -120,17 +120,17 @@ case class EsmondConnectionForeground(
     ))
   }
 
-  /** @see [[EsmondAPI.timeSeriesSummary]]*/
+  /** @see [[EsmondAPI.timeSeriesSummary]] */
   def getTimeSeriesSummaryEntriesFromMetadata(
     metadataKey  : String,
-    eventType: String,
+    eventType    : String,
     summaryType  : String,
     summaryWindow: Long,
     timeRange    : Option[Long] = None,
     time         : Option[Long] = None,
     timeStart    : Option[Long] = None,
     timeEnd      : Option[Long] = None,
-  ): Try[List[TimeSeriesEntry]] = {
+  ): Try[Iterable[TimeSeriesEntry]] = {
     wrapInTrySynchronously(esmondAPI.timeSeriesSummary(
       metadataKey,
       eventType,
@@ -143,14 +143,14 @@ case class EsmondConnectionForeground(
     ))
   }
 
-  /** @see [[EsmondAPI.timeSeriesSummary]]*/
+  /** @see [[EsmondAPI.timeSeriesSummary]] */
   def getTimeSeriesSummaryEntries(
-    summary: Summary,
+    summary  : Summary,
     timeRange: Option[Long] = None,
     time     : Option[Long] = None,
     timeStart: Option[Long] = None,
     timeEnd  : Option[Long] = None,
-  ): Try[List[TimeSeriesEntry]] = {
+  ): Try[Iterable[TimeSeriesEntry]] = {
     wrapInTrySynchronously(esmondAPI.timeSeriesSummary(
       summary.metadataKey,
       summary.eventType,

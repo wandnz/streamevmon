@@ -33,7 +33,7 @@ abstract class Measurement extends Serializable {
   /** @return The object, simplified in the way that toCsvFormat desires. */
   protected def toCsvTupleEntry(e: Any): String =
     e match {
-      case o: Option[Any] => o.map(toCsvTupleEntry).getOrElse("").toString
+      case o: Option[Any] => o.map(toCsvTupleEntry).getOrElse("")
       case s: Seq[Any] => s.map(toCsvTupleEntry).mkString("\"", ";", "\"")
       case i: Instant => i.toEpochMilli.toString
       case _ => e.toString

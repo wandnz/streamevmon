@@ -35,21 +35,21 @@ trait EsmondAPI {
     */
   @GET("archive")
   def archiveList(
-    @Query("time-range") timeRange: JLong = null,
-    @Query("time") time: JLong = null,
-    @Query("time-start") timeStart: JLong = null,
-    @Query("time-end") timeEnd: JLong = null,
-    @Query("source") source: String = null,
-    @Query("destination") destination: String = null,
+    @Query("time-range") timeRange              : JLong = null,
+    @Query("time") time                         : JLong = null,
+    @Query("time-start") timeStart              : JLong = null,
+    @Query("time-end") timeEnd                  : JLong = null,
+    @Query("source") source                     : String = null,
+    @Query("destination") destination           : String = null,
     @Query("measurement-agent") measurementAgent: String = null,
-    @Query("tool-name") toolName: String = null,
-    @Query("dns-match-rule") dnsMatchRule: String = null,
-    @Query("event-type") eventType: String = null,
-    @Query("summary-type") summaryType   : String = null,
-    @Query("summary-window") summaryWindow: String = null,
-    @Query("limit") limit                 : JLong = null,
-    @Query("offset") offset               : JLong = null
-  ): Call[List[Archive]]
+    @Query("tool-name") toolName                : String = null,
+    @Query("dns-match-rule") dnsMatchRule       : String = null,
+    @Query("event-type") eventType              : String = null,
+    @Query("summary-type") summaryType          : String = null,
+    @Query("summary-window") summaryWindow      : String = null,
+    @Query("limit") limit                       : JLong = null,
+    @Query("offset") offset                     : JLong = null
+  ): Call[Iterable[Archive]]
 
   /** Obtains the metadata for a single measurement bundle. This contains some
     * data about the source and destination, the way the test tool is set up,
@@ -80,12 +80,12 @@ trait EsmondAPI {
   @GET("archive/{metadataKey}/{eventType}/base")
   def timeSeriesBase(
     @Path("metadataKey") metadataKey: String,
-    @Path("eventType") eventType: String,
-    @Query("time-range") timeRange: JLong = null,
-    @Query("time") time: JLong = null,
-    @Query("time-start") timeStart              : JLong = null,
-    @Query("time-end") timeEnd: JLong = null,
-  ): Call[List[TimeSeriesEntry]]
+    @Path("eventType") eventType    : String,
+    @Query("time-range") timeRange  : JLong = null,
+    @Query("time") time             : JLong = null,
+    @Query("time-start") timeStart  : JLong = null,
+    @Query("time-end") timeEnd      : JLong = null,
+  ): Call[Iterable[TimeSeriesEntry]]
 
   /** Obtains a time series summary. This might be aggregated in one of a number
     * of ways, specified by the `summaryType` field. The API appears to give
@@ -107,13 +107,13 @@ trait EsmondAPI {
     */
   @GET("archive/{metadataKey}/{eventType}/{summaryType}/{summaryWindow}")
   def timeSeriesSummary(
-    @Path("metadataKey") metadataKey: String,
-    @Path("eventType") eventType: String,
-    @Path("summaryType") summaryType: String,
+    @Path("metadataKey") metadataKey    : String,
+    @Path("eventType") eventType        : String,
+    @Path("summaryType") summaryType    : String,
     @Path("summaryWindow") summaryWindow: JLong,
-    @Query("time-range") timeRange: JLong = null,
-    @Query("time") time: JLong = null,
-    @Query("time-start") timeStart: JLong = null,
-    @Query("time-end") timeEnd      : JLong = null,
-  ): Call[List[TimeSeriesEntry]]
+    @Query("time-range") timeRange      : JLong = null,
+    @Query("time") time                 : JLong = null,
+    @Query("time-start") timeStart      : JLong = null,
+    @Query("time-end") timeEnd          : JLong = null,
+  ): Call[Iterable[TimeSeriesEntry]]
 }

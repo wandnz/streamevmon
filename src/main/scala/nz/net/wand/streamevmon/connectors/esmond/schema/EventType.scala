@@ -25,6 +25,8 @@ class EventType extends Serializable {
   @JsonProperty("time-updated")
   val timeUpdated: Long = Long.MinValue
 
+  lazy val metadataKey: String = baseUri.split('/')(4)
+
   def canEqual(other: Any): Boolean = other.isInstanceOf[EventType]
 
   override def equals(other: Any): Boolean = other match {

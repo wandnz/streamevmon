@@ -24,6 +24,9 @@ object EsmondRunner extends Logging {
       return
     }
 
+    logger.info(s"Got ${archiveFull.get.size} entries in archive")
+    logger.info(s"Full unbound list is ${connection.getArchiveList().get.size} entries")
+
     // We'll select the first entry in the archive that contains the kind of event type we want.
     // This is just a demonstration, after all.
     val selectedArchive = archiveFull.get.find(_.eventTypes.exists(_.eventType == eventType))
@@ -48,7 +51,7 @@ object EsmondRunner extends Logging {
       logger.error(s"Failed to get time series: ${baseTimeSeries.failed.get}")
       return
     }
-    logger.info(s"Got ${baseTimeSeries.get.length} entries for base time series of type $eventType with key ${selectedArchive.get.metadataKey} in last $timeRange seconds")
+    logger.info(s"Got ${baseTimeSeries.get.size} entries for base time series of type $eventType with key ${selectedArchive.get.metadataKey} in last $timeRange seconds")
     logger.info(s"Head: ${baseTimeSeries.get.head.toString}")
 
     // We'll also grab one of the summary fields. Don't really care which one,
@@ -64,7 +67,7 @@ object EsmondRunner extends Logging {
       logger.error(s"Failed to get summary time series: ${summaryTimeSeries.failed.get}")
       return
     }
-    logger.info(s"Got ${summaryTimeSeries.get.length} entries for summarised time series of type $eventType with key ${selectedArchive.get.metadataKey} in last $timeRange seconds")
+    logger.info(s"Got ${summaryTimeSeries.get.size} entries for summarised time series of type $eventType with key ${selectedArchive.get.metadataKey} in last $timeRange seconds")
     logger.info(s"Head: ${summaryTimeSeries.get.head.toString}")
   }
 
@@ -74,6 +77,8 @@ object EsmondRunner extends Logging {
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     env.getConfig.setGlobalJobParameters(Configuration.get(Array()))
+
+    env.setParallelism(1)
 
     env
       .addSource(new PollingEsmondSourceFunction())
