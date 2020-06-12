@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.flink
 
 import nz.net.wand.streamevmon.connectors.esmond.schema.{Summary, TimeSeriesEntry}
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.connectors.esmond.{Endpoint, EsmondConnectionForeground, EsmondStreamDiscovery}
+import nz.net.wand.streamevmon.connectors.esmond._
 import nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement
 
 import java.time.{Duration, Instant}
@@ -19,8 +19,18 @@ import org.apache.flink.streaming.api.functions.source.{RichSourceFunction, Sour
 import scala.collection.JavaConverters._
 import scala.util.{Failure, Try}
 
-class PollingEsmondSourceFunction(
-  configPrefix: String = "esmond.dataSource"
+class PollingEsmondSourceFunction[
+  EsmondConnectionT <: AbstractEsmondConnection,
+  EsmondDiscoveryT <: AbstractEsmondStreamDiscovery
+](
+  configPrefix     : String = "esmond.dataSource",
+  // Man, this is a pain. You can't instantiate a type parameter, so instead
+  // you've got to include builders as arguments. These defaults are sensible,
+  // but I wanted to do this anyway so I could mock connections during testing.
+  connectionBuilder: String => AbstractEsmondConnection =
+  (s: String) => new EsmondConnectionForeground(s),
+  discoveryBuilder : (String, ParameterTool, AbstractEsmondConnection) => AbstractEsmondStreamDiscovery =
+  (s: String, p: ParameterTool, c: AbstractEsmondConnection) => new EsmondStreamDiscovery(s, p, c)
 )
   extends RichSourceFunction[RichEsmondMeasurement]
           with CheckpointedFunction
@@ -29,7 +39,7 @@ class PollingEsmondSourceFunction(
 
   @transient protected var isRunning = false
 
-  @transient protected var esmond: Option[EsmondConnectionForeground] = None
+  @transient protected var esmond: Option[AbstractEsmondConnection] = None
 
   protected var overrideParams: Option[ParameterTool] = None
 
@@ -59,7 +69,7 @@ class PollingEsmondSourceFunction(
     val params: ParameterTool = overrideParams.getOrElse(
       getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
     )
-    esmond = Some(EsmondConnectionForeground(params.get(s"$configPrefix.serverName")))
+    esmond = Some(connectionBuilder(params.get(s"$configPrefix.serverName")))
 
     fetchHistory = Duration.ofSeconds(params.getInt(s"$configPrefix.fetchHistory"))
     timeOffset = Duration.ofSeconds(params.getInt(s"$configPrefix.timeOffset"))
@@ -167,7 +177,7 @@ class PollingEsmondSourceFunction(
   override def run(ctx: SourceFunction.SourceContext[RichEsmondMeasurement]): Unit = {
     // Figure out which streams we're going to use
     if (selectedStreams.isEmpty) {
-      val discovery = new EsmondStreamDiscovery(
+      val discovery = discoveryBuilder(
         configPrefix,
         overrideParams.getOrElse(
           getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]

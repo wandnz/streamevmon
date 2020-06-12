@@ -9,11 +9,11 @@ import org.apache.flink.api.java.utils.ParameterTool
 
 import scala.util.{Failure, Success}
 
-class EsmondStreamDiscovery(
+class EsmondStreamDiscovery[ConnT <: AbstractEsmondConnection](
   configPrefix: String = "esmond.dataSource",
   params      : ParameterTool,
-  esmond      : EsmondConnectionForeground,
-) extends Logging {
+  esmond      : ConnT
+) extends AbstractEsmondStreamDiscovery with Logging {
 
   lazy protected val timeRange: Duration = Duration.ofSeconds(params.getInt(s"$configPrefix.discoverTimeRange"))
   lazy protected val timeOffset: Duration = Duration.ofSeconds(params.getInt(s"$configPrefix.timeOffset"))

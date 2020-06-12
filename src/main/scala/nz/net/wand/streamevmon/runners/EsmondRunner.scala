@@ -11,7 +11,7 @@ object EsmondRunner extends Logging {
   val timeRange: Long = 86400
   val eventType = "packet-count-sent"
 
-  private val connection = EsmondConnectionForeground("http://denv-owamp.es.net:8085")
+  private val connection = new EsmondConnectionForeground("http://denv-owamp.es.net:8085")
 
   /** This function tries out all the API calls and does some basic sanity checking. */
   def useAllTheCalls(): Unit = {
