@@ -1,66 +1,72 @@
 package nz.net.wand.streamevmon.flink
 
-import nz.net.wand.streamevmon.connectors.esmond.schema.{EventType, Summary, TimeSeriesEntry}
+import nz.net.wand.streamevmon.connectors.esmond.schema.{Summary, TimeSeriesEntry}
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.connectors.esmond.{EsmondConnectionForeground, EsmondStreamDiscovery}
+import nz.net.wand.streamevmon.connectors.esmond.{Endpoint, EsmondConnectionForeground, EsmondStreamDiscovery}
 import nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement
 
 import java.time.{Duration, Instant}
 
 import org.apache.commons.lang3.time.DurationFormatUtils
+import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
+import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.api.java.utils.ParameterTool
+import org.apache.flink.configuration.Configuration
+import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
+import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.source.{RichSourceFunction, SourceFunction}
 
+import scala.collection.JavaConverters._
 import scala.util.{Failure, Try}
 
-// TODO
-// - We definitely want a way to filter out eventTypes we don't care about when
-//   we discover. This could be done either via simple post-request filtering
-//   here, or by allowing the user of this class to provide filtering query
-//   strings for the discovery /archive/ call.
-// - Configuration should be done properly. The constructor arguments are a
-//   good starting point, but we'll probably need more than just that.
-//   Particularly pay attention to what the stream discovery requires.
-// - It might be worth a quick check to make sure the stream IDs for all the
-//   outputs are actually unique.
-// - I'm not sure if sequentially querying every endpoint with no delay is a
-//   good way to approach initial startup. It might make more sense for this
-//   to be more parallel, or to have more delay. It would also make sense to
-//   skip that process when no fetchHistory is set, because that'll obviously
-//   return nothing and it'll be more efficient to jump right into the regular
-//   update loop.
-
 class PollingEsmondSourceFunction(
-  configPrefix             : String = "esmond.dataSource",
-  fetchHistory             : Duration = Duration.ofMinutes(10),
-  timeOffset               : Duration = Duration.ZERO,
-  targetRefreshInterval    : Duration = Duration.ofMinutes(10),
-  minimumTimeBetweenQueries: Duration = Duration.ofSeconds(1),
+  configPrefix: String = "esmond.dataSource"
 )
   extends RichSourceFunction[RichEsmondMeasurement]
+          with CheckpointedFunction
           with GloballyStoppableFunction
           with Logging {
-  @transient protected[this] var isRunning = false
 
-  @transient protected[this] var esmond: Option[EsmondConnectionForeground] = None
+  @transient protected var isRunning = false
 
-  protected[this] var overrideParams: Option[ParameterTool] = None
+  @transient protected var esmond: Option[EsmondConnectionForeground] = None
 
-  protected val firstMeasurementTime: Instant = Instant.now().minus(fetchHistory).minus(timeOffset)
+  protected var overrideParams: Option[ParameterTool] = None
 
-  case class Endpoint(
-    details: Either[EventType, Summary],
-    lastMeasurementTime: Instant
-  )
+  protected var firstMeasurementTime: Instant = _
 
-  protected[this] var selectedStreams: Option[Iterable[Endpoint]] = None
+  @transient protected var fetchHistory: Duration = _
+
+  @transient protected var timeOffset: Duration = _
+
+  @transient protected var targetRefreshInterval: Duration = _
+
+  @transient protected var minimumTimeBetweenQueries: Duration = _
+
+  protected var selectedStreams: Iterable[Endpoint] = Seq()
+  @transient protected var selectedStreamsStorage: ListState[Endpoint] = _
 
   def overrideConfig(config: ParameterTool): Unit = {
     overrideParams = Some(config)
   }
 
-  protected def doSomethingWithMeasurement(timeSeriesEntry: TimeSeriesEntry): Unit = {
-    logger.debug(timeSeriesEntry.toString)
+  override def open(parameters: Configuration): Unit = {
+    if (getRuntimeContext.getNumberOfParallelSubtasks > 1) {
+      throw new IllegalStateException("Parallelism for this SourceFunction must be 1.")
+    }
+
+    // Set up config
+    val params: ParameterTool = overrideParams.getOrElse(
+      getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
+    )
+    esmond = Some(EsmondConnectionForeground(params.get(s"$configPrefix.serverName")))
+
+    fetchHistory = Duration.ofSeconds(params.getInt(s"$configPrefix.fetchHistory"))
+    timeOffset = Duration.ofSeconds(params.getInt(s"$configPrefix.timeOffset"))
+    targetRefreshInterval = Duration.ofSeconds(params.getInt(s"$configPrefix.targetRefreshInterval"))
+    minimumTimeBetweenQueries = Duration.ofSeconds(params.getInt(s"$configPrefix.minimumTimeBetweenQueries"))
+
+    firstMeasurementTime = Instant.now().minus(fetchHistory).minus(timeOffset)
   }
 
   protected def getSummaryEntries(
@@ -159,34 +165,25 @@ class PollingEsmondSourceFunction(
   }
 
   override def run(ctx: SourceFunction.SourceContext[RichEsmondMeasurement]): Unit = {
-    // Set up config
-    val params: ParameterTool = overrideParams.getOrElse(
-      getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
-    )
-    esmond = Some(EsmondConnectionForeground(params.get(s"$configPrefix.serverName")))
-
-    if (getRuntimeContext.getNumberOfParallelSubtasks > 1) {
-      throw new IllegalStateException("Parallelism for this SourceFunction must be 1.")
-    }
-
     // Figure out which streams we're going to use
-    selectedStreams match {
-      case Some(_) => // Do nothing, we already have a list of streams
-      case None =>
-        val discovery = new EsmondStreamDiscovery(
-          configPrefix,
-          esmond = esmond.get
-        )
-        selectedStreams = Some(
-          discovery.discoverStreams().map(Endpoint(_, firstMeasurementTime))
-        )
+    if (selectedStreams.isEmpty) {
+      val discovery = new EsmondStreamDiscovery(
+        configPrefix,
+        overrideParams.getOrElse(
+          getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
+        ),
+        esmond.get
+      )
+      selectedStreams = discovery.discoverStreams().map(Endpoint(_, firstMeasurementTime))
     }
 
-    if (selectedStreams.get.isEmpty) {
+    if (selectedStreams.isEmpty) {
       logger.error("Couldn't find any measurement streams!")
       return
     }
-    selectedStreams = selectedStreams.map(streams => streams.take(2) ++ streams.filter(_.details.isRight).take(2))
+
+    // This takes just two of each kind of stream for debugging purposes.
+    selectedStreams = selectedStreams.take(2) ++ selectedStreams.filter(_.details.isRight).take(2)
 
     // Get historical data
     val now = Instant.now().minus(timeOffset)
@@ -195,7 +192,7 @@ class PollingEsmondSourceFunction(
     logger.info(s"Fetching data since ${firstMeasurementTime.plus(timeOffset)} ($historyString ago)")
 
     // Every stream should get queried, and the most recent measurement time updated.
-    selectedStreams = selectedStreams.map(getAndUpdateEndpoints(ctx, _, Duration.ZERO))
+    selectedStreams = getAndUpdateEndpoints(ctx, selectedStreams, Duration.ZERO)
 
     listen(ctx)
   }
@@ -206,9 +203,9 @@ class PollingEsmondSourceFunction(
     // for how long there should be between each query we send.
     // If it's smaller than minimumTimeBetweenQueries, we go with that instead.
     val loopInterval = {
-      val targetLoopInterval = targetRefreshInterval.dividedBy(selectedStreams.get.size)
+      val targetLoopInterval = targetRefreshInterval.dividedBy(selectedStreams.size)
       if (targetLoopInterval.compareTo(minimumTimeBetweenQueries) < 0) {
-        val durString = DurationFormatUtils.formatDuration(minimumTimeBetweenQueries.multipliedBy(selectedStreams.get.size).toMillis, "H:mm:ss")
+        val durString = DurationFormatUtils.formatDuration(minimumTimeBetweenQueries.multipliedBy(selectedStreams.size).toMillis, "H:mm:ss")
         logger.warn(s"Too many endpoints to query. Time between queries will be longer than targetRefreshInterval (Approx $durString).")
         logger.warn("Reduce minimumTimeBetweenQueries, or number of queries to get more frequent updates. No data will be missed in either case.")
         minimumTimeBetweenQueries
@@ -218,17 +215,33 @@ class PollingEsmondSourceFunction(
       }
     }
     val durationString = DurationFormatUtils.formatDuration(loopInterval.toMillis, "H:mm:ss")
-    logger.info(s"Polling for events on ${selectedStreams.get.size} streams: One query every $durationString...")
+    logger.info(s"Polling for events on ${selectedStreams.size} streams: One query every $durationString...")
 
     isRunning = true
 
     while (isRunning && !shouldShutdown) {
-      selectedStreams = selectedStreams.map(getAndUpdateEndpoints(ctx, _, loopInterval))
+      selectedStreams = getAndUpdateEndpoints(ctx, selectedStreams, loopInterval)
     }
   }
 
   override def cancel(): Unit = {
     logger.info("Stopping esmond polling...")
     isRunning = false
+  }
+
+  override def snapshotState(context: FunctionSnapshotContext): Unit = {
+    selectedStreamsStorage.clear()
+    selectedStreamsStorage.addAll(selectedStreams.toList.asJava)
+  }
+
+  override def initializeState(context: FunctionInitializationContext): Unit = {
+    val descriptor = new ListStateDescriptor[Endpoint](
+      "Selected Streams",
+      TypeInformation.of(classOf[Endpoint])
+    )
+    selectedStreamsStorage = context.getOperatorStateStore.getListState(descriptor)
+    if (context.isRestored) {
+      selectedStreams = selectedStreamsStorage.get().asScala
+    }
   }
 }

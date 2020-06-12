@@ -3,26 +3,31 @@ package nz.net.wand.streamevmon.connectors.esmond
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.connectors.esmond.schema.{EventType, Summary}
 
-import java.time.Duration
+import java.time.{Duration, Instant}
+
+import org.apache.flink.api.java.utils.ParameterTool
 
 import scala.util.{Failure, Success}
 
-// TODO: Improve config. Especially need to ensure it respects timeOffset and fetchHistory.
-
 class EsmondStreamDiscovery(
-  configPrefix    : String = "esmond.dataSource",
-  timeRange       : Duration = Duration.ofDays(1),
-  esmond          : EsmondConnectionForeground,
-  source          : Option[String] = None,
-  destination     : Option[String] = None,
-  measurementAgent: Option[String] = None,
-  toolName        : Option[String] = None,
-  dnsMatchRule    : Option[String] = None,
-  eventType       : Option[String] = None
+  configPrefix: String = "esmond.dataSource",
+  params      : ParameterTool,
+  esmond      : EsmondConnectionForeground,
 ) extends Logging {
 
+  lazy protected val timeRange: Duration = Duration.ofSeconds(params.getInt(s"$configPrefix.discoverTimeRange"))
+  lazy protected val timeOffset: Duration = Duration.ofSeconds(params.getInt(s"$configPrefix.timeOffset"))
+  lazy protected val source: Option[String] = Option(params.get(s"$configPrefix.source"))
+  lazy protected val destination: Option[String] = Option(params.get(s"$configPrefix.destination"))
+  lazy protected val measurementAgent: Option[String] = Option(params.get(s"$configPrefix.measurementAgent"))
+  lazy protected val toolName: Option[String] = Option(params.get(s"$configPrefix.toolName"))
+  lazy protected val dnsMatchRule: Option[String] = Option(params.get(s"$configPrefix.dnsMatchRule"))
+  lazy protected val eventType: Option[String] = Option(params.get(s"$configPrefix.eventType"))
+
   def discoverStreams(): Iterable[Either[EventType, Summary]] = {
+    val now = Instant.now().minus(timeOffset)
     val fullArchiveResult = esmond.getArchiveList(
+      timeStart = Some(now.getEpochSecond - timeRange.getSeconds),
       timeRange = Some(timeRange.getSeconds),
       source = source,
       destination = destination,
