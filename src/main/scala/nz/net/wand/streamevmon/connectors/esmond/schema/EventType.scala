@@ -23,7 +23,7 @@ class EventType extends Serializable {
   val summaries: List[Summary] = List[Summary]()
 
   @JsonProperty("time-updated")
-  val timeUpdated: Long = Long.MinValue
+  val timeUpdated: Option[Int] = None
 
   lazy val metadataKey: String = baseUri.split('/')(4)
 
