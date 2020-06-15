@@ -19,6 +19,50 @@ class EsmondConnectionForeground(
 ) extends AbstractEsmondConnection(source)
           with Logging {
 
+  private implicit class ExtensionMethod(responseType: ResponseType.Value) {
+    type ApiCall = (String, String, String, String, JLong, JLong, JLong, JLong) => Call[Iterable[AbstractTimeSeriesEntry]]
+
+    def toApiCall: ApiCall = {
+      responseType match {
+        case ResponseType.Failure => (esmondAPI.failureTimeSeries _).asInstanceOf[ApiCall]
+        case ResponseType.Histogram => (esmondAPI.histogramTimeSeries _).asInstanceOf[ApiCall]
+        case ResponseType.Href => (esmondAPI.hrefTimeSeries _).asInstanceOf[ApiCall]
+        case ResponseType.PacketTrace => (esmondAPI.packetTraceTimeSeries _).asInstanceOf[ApiCall]
+        case ResponseType.Simple => (esmondAPI.simpleTimeSeries _).asInstanceOf[ApiCall]
+        case ResponseType.Subintervals => (esmondAPI.subintervalTimeSeries _).asInstanceOf[ApiCall]
+      }
+    }
+  }
+
+  private object ResponseType extends Enumeration {
+    type ResponseType = Value
+    val Failure: Value = Value
+    val Histogram: Value = Value
+    val Href: Value = Value
+    val PacketTrace: Value = Value
+    val Simple: Value = Value
+    val Subintervals: Value = Value
+
+    def fromString(eventType: String): ResponseType = eventType.toLowerCase match {
+      case "failures" => Failure
+      case "histogram-ttl" | "histogram-owdelay" => Histogram
+      case "pscheduler-run-href" => Href
+      case "packet-trace" => PacketTrace
+      case "time-error-estimates" |
+           "packet-duplicates" |
+           "packet-loss-rate" |
+           "packet-count-sent" |
+           "packet-count-lost" |
+           "throughput" |
+           "packet-retransmits" |
+           "packet-reorders"
+      => Simple
+      case "throughput-subintervals" | "packet-retransmits-subintervals" => Subintervals
+      case "path-mtu" => logger.error("Found path-mtu data!"); Simple
+      case other: String => throw new IllegalArgumentException(s"Unknown response type $other")
+    }
+  }
+
   /** Uses [[wrapInTry]] in the foreground. This method will block until a
     * response is obtained.
     */
@@ -61,65 +105,74 @@ class EsmondConnectionForeground(
     wrapInTrySynchronously(esmondAPI.archive(metadataKey))
   }
 
-  /** @see [[EsmondAPI.timeSeriesBase]] */
+  /** @see [[EsmondAPI.simpleTimeSeries]] */
   def getTimeSeriesEntries(
     metadataKey: String,
-    eventType  : String,
-    timeRange  : Option[Long] = None,
-    time       : Option[Long] = None,
-    timeStart  : Option[Long] = None,
+    eventType: String,
+    timeRange: Option[Long] = None,
+    time: Option[Long] = None,
+    timeStart: Option[Long] = None,
     timeEnd    : Option[Long] = None,
-  ): Try[Iterable[TimeSeriesEntry]] = {
-    wrapInTrySynchronously(esmondAPI.timeSeriesBase(
+  ): Try[Iterable[AbstractTimeSeriesEntry]] = {
+    val args = (
       metadataKey,
       eventType,
+      "base",
+      "",
       timeRange.map(new JLong(_)).orNull,
       time.map(new JLong(_)).orNull,
       timeStart.map(new JLong(_)).orNull,
       timeEnd.map(new JLong(_)).orNull,
-    ))
+    )
+
+    wrapInTrySynchronously(ResponseType.fromString(eventType).toApiCall.tupled(args))
+      .asInstanceOf[Try[Iterable[AbstractTimeSeriesEntry]]]
   }
 
-  /** @see [[EsmondAPI.timeSeriesSummary]] */
   def getTimeSeriesSummaryEntriesFromMetadata(
-    metadataKey  : String,
-    eventType    : String,
-    summaryType  : String,
+    metadataKey: String,
+    eventType: String,
+    summaryType: String,
     summaryWindow: Long,
-    timeRange    : Option[Long] = None,
-    time         : Option[Long] = None,
-    timeStart    : Option[Long] = None,
+    timeRange: Option[Long] = None,
+    time: Option[Long] = None,
+    timeStart: Option[Long] = None,
     timeEnd      : Option[Long] = None,
-  ): Try[Iterable[TimeSeriesEntry]] = {
-    wrapInTrySynchronously(esmondAPI.timeSeriesSummary(
+  ): Try[Iterable[AbstractTimeSeriesEntry]] = {
+    val args = (
       metadataKey,
       eventType,
       summaryType,
-      summaryWindow,
+      summaryWindow.toString,
       timeRange.map(new JLong(_)).orNull,
       time.map(new JLong(_)).orNull,
       timeStart.map(new JLong(_)).orNull,
       timeEnd.map(new JLong(_)).orNull,
-    ))
+    )
+
+    wrapInTrySynchronously(ResponseType.fromString(eventType).toApiCall.tupled(args))
+      .asInstanceOf[Try[Iterable[AbstractTimeSeriesEntry]]]
   }
 
-  /** @see [[EsmondAPI.timeSeriesSummary]] */
   def getTimeSeriesSummaryEntries(
-    summary  : Summary,
+    summary: Summary,
     timeRange: Option[Long] = None,
-    time     : Option[Long] = None,
+    time: Option[Long] = None,
     timeStart: Option[Long] = None,
     timeEnd  : Option[Long] = None,
-  ): Try[Iterable[TimeSeriesEntry]] = {
-    wrapInTrySynchronously(esmondAPI.timeSeriesSummary(
+  ): Try[Iterable[AbstractTimeSeriesEntry]] = {
+    val args = (
       summary.metadataKey,
       summary.eventType,
       summary.summaryType,
-      summary.summaryWindow,
+      summary.summaryWindow.toString,
       timeRange.map(new JLong(_)).orNull,
       time.map(new JLong(_)).orNull,
       timeStart.map(new JLong(_)).orNull,
       timeEnd.map(new JLong(_)).orNull,
-    ))
+    )
+
+    wrapInTrySynchronously(ResponseType.fromString(summary.eventType).toApiCall.tupled(args))
+      .asInstanceOf[Try[Iterable[AbstractTimeSeriesEntry]]]
   }
 }

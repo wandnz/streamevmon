@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.{Configuration, Logging}
 import nz.net.wand.streamevmon.connectors.esmond.EsmondConnectionForeground
-import nz.net.wand.streamevmon.connectors.esmond.schema.Archive
+import nz.net.wand.streamevmon.connectors.esmond.schema.{Archive, HistogramTimeSeriesEntry}
 import nz.net.wand.streamevmon.flink.PollingEsmondSourceFunction
 
 import java.io._
@@ -130,7 +130,28 @@ object EsmondRunner extends Logging {
         connection.getTimeSeriesEntries(et.metadataKey, et.eventType, timeRange = Some(Duration.ofDays(1).getSeconds))
       })))
 
-    val i = 1
+    // Investigation of getting values out of a map with double keys.
+    val histogramEntry = exampleOfE.toList
+      .find { e =>
+        e._4 match {
+          case Some(b) => b match {
+            case Some(c) => c match {
+              case Failure(_) => false
+              case Success(d) => d.nonEmpty && d.head.isInstanceOf[HistogramTimeSeriesEntry]
+            }
+            case None => false
+          }
+          case None => false
+        }
+      } match {
+      case Some(value) => value._4.get.get.get.head.asInstanceOf[HistogramTimeSeriesEntry]
+      case None => null
+    }
+
+    val head = histogramEntry.value.keys.head
+    val result = histogramEntry.value.get(head)
+
+    val breakpoint = 1
   }
 
   /** This function makes a PollingEsmondSourceFunction, and does some testing on it. */

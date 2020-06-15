@@ -14,6 +14,8 @@ import retrofit2.Call
   */
 trait EsmondAPI {
 
+  // TODO: Redo documentation.
+
   /** Obtains a full list of all the metadata contained in the archive
     * being requested. It is recommended that you specify a reasonable time
     * range or limit in order to prevent the returned data from being large.
@@ -28,7 +30,7 @@ trait EsmondAPI {
     * @param toolName         A string indicating the name of the tool that produced the measurement. Examples include bwctl/iperf, bwctl/iperf or powstream.
     * @param dnsMatchRule     Specify how DNS lookups are performed. `v4v6` is default, and uses both. `only-v4`, `only-v6`, `prefer-v4`, and `prefer-v6` are other options.
     * @param eventType        This will return any measurement metadata object that has an item in its event-types list where the event-type field equals the provided value.
-    * @param summaryType      Either `average`, `aggregation`, or `statistics`. See [[timeSeriesSummary]].
+    * @param summaryType      Either `average`, `aggregation`, or `statistics`.
     * @param summaryWindow    The time range (in seconds) that is summarised.
     * @param limit            The maximum number of results to return. If not set then 1000 results are returned.
     * @param offset           The number of tests to skip. Useful for pagination.
@@ -77,43 +79,75 @@ trait EsmondAPI {
     *                    If timeStart and timeEnd are not provided, the range
     *                    ends at the current time.
     */
-  @GET("archive/{metadataKey}/{eventType}/base")
-  def timeSeriesBase(
+  @GET("archive/{metadataKey}/{eventType}/{summaryType}/{summaryWindow}")
+  def simpleTimeSeries(
     @Path("metadataKey") metadataKey: String,
-    @Path("eventType") eventType    : String,
+    @Path("eventType") eventType: String,
+    @Path("summaryType") summaryType: String = "base",
+    @Path("summaryWindow") summaryWindow: String = "",
     @Query("time-range") timeRange  : JLong = null,
     @Query("time") time             : JLong = null,
     @Query("time-start") timeStart  : JLong = null,
     @Query("time-end") timeEnd      : JLong = null,
-  ): Call[Iterable[TimeSeriesEntry]]
+  ): Call[Iterable[SimpleTimeSeriesEntry]]
 
-  /** Obtains a time series summary. This might be aggregated in one of a number
-    * of ways, specified by the `summaryType` field. The API appears to give
-    * these results ordered by time, but that behaviour is not guaranteed by
-    * this layer.
-    *
-    * @param metadataKey   The unique key for the metadata requested.
-    * @param eventType     The event type within the metadata bundle referred to by
-    *                      metadataKey.
-    * @param summaryType   The type of summary, which is one of "averages",
-    *                      "aggregations", or "statistics". Note that all of these
-    *                      types are pluralised, which is not how they appear in
-    *                      the metadata. If you use [[nz.net.wand.streamevmon.connectors.esmond.schema.Summary.summaryType Summary.summaryType]], thise
-    *                      is handled for you.
-    * @param summaryWindow The time range, in seconds, which is summarised.
-    * @param timeRange     The range, in seconds, that data should fall within.
-    *                      If timeStart and timeEnd are not provided, the range
-    *                      ends at the current time.
-    */
   @GET("archive/{metadataKey}/{eventType}/{summaryType}/{summaryWindow}")
-  def timeSeriesSummary(
-    @Path("metadataKey") metadataKey    : String,
-    @Path("eventType") eventType        : String,
-    @Path("summaryType") summaryType    : String,
-    @Path("summaryWindow") summaryWindow: JLong,
-    @Query("time-range") timeRange      : JLong = null,
-    @Query("time") time                 : JLong = null,
-    @Query("time-start") timeStart      : JLong = null,
-    @Query("time-end") timeEnd          : JLong = null,
-  ): Call[Iterable[TimeSeriesEntry]]
+  def histogramTimeSeries(
+    @Path("metadataKey") metadataKey: String,
+    @Path("eventType") eventType    : String,
+    @Path("summaryType") summaryType: String = "base",
+    @Path("summaryWindow") summaryWindow: String = "",
+    @Query("time-range") timeRange: JLong = null,
+    @Query("time") time: JLong = null,
+    @Query("time-start") timeStart: JLong = null,
+    @Query("time-end") timeEnd: JLong = null,
+  ): Call[Iterable[HistogramTimeSeriesEntry]]
+
+  @GET("archive/{metadataKey}/{eventType}/{summaryType}/{summaryWindow}")
+  def hrefTimeSeries(
+    @Path("metadataKey") metadataKey: String,
+    @Path("eventType") eventType    : String,
+    @Path("summaryType") summaryType: String = "base",
+    @Path("summaryWindow") summaryWindow: String = "",
+    @Query("time-range") timeRange: JLong = null,
+    @Query("time") time: JLong = null,
+    @Query("time-start") timeStart: JLong = null,
+    @Query("time-end") timeEnd: JLong = null,
+  ): Call[Iterable[HrefTimeSeriesEntry]]
+
+  @GET("archive/{metadataKey}/{eventType}/{summaryType}/{summaryWindow}")
+  def subintervalTimeSeries(
+    @Path("metadataKey") metadataKey: String,
+    @Path("eventType") eventType    : String,
+    @Path("summaryType") summaryType: String = "base",
+    @Path("summaryWindow") summaryWindow: String = "",
+    @Query("time-range") timeRange: JLong = null,
+    @Query("time") time: JLong = null,
+    @Query("time-start") timeStart: JLong = null,
+    @Query("time-end") timeEnd: JLong = null,
+  ): Call[Iterable[SubintervalTimeSeriesEntry]]
+
+  @GET("archive/{metadataKey}/{eventType}/{summaryType}/{summaryWindow}")
+  def failureTimeSeries(
+    @Path("metadataKey") metadataKey: String,
+    @Path("eventType") eventType: String,
+    @Path("summaryType") summaryType: String = "base",
+    @Path("summaryWindow") summaryWindow: String = "",
+    @Query("time-range") timeRange: JLong = null,
+    @Query("time") time: JLong = null,
+    @Query("time-start") timeStart: JLong = null,
+    @Query("time-end") timeEnd      : JLong = null,
+  ): Call[Iterable[TimeSeriesFailure]]
+
+  @GET("archive/{metadataKey}/{eventType}/{summaryType}/{summaryWindow}")
+  def packetTraceTimeSeries(
+    @Path("metadataKey") metadataKey: String,
+    @Path("eventType") eventType    : String,
+    @Path("summaryType") summaryType: String = "base",
+    @Path("summaryWindow") summaryWindow: String = "",
+    @Query("time-range") timeRange: JLong = null,
+    @Query("time") time: JLong = null,
+    @Query("time-start") timeStart: JLong = null,
+    @Query("time-end") timeEnd: JLong = null,
+  ): Call[Iterable[PacketTraceTimeSeriesEntry]]
 }

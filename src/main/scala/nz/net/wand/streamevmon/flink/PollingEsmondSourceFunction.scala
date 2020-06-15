@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.flink
 
-import nz.net.wand.streamevmon.connectors.esmond.schema.{Summary, TimeSeriesEntry}
+import nz.net.wand.streamevmon.connectors.esmond.schema.{AbstractTimeSeriesEntry, Summary}
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.connectors.esmond._
 import nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement
@@ -80,10 +80,10 @@ class PollingEsmondSourceFunction[
   }
 
   protected def getSummaryEntries(
-    summary  : Summary,
+    summary: Summary,
     timeStart: Option[Instant],
     timeEnd  : Option[Instant]
-  ): Try[Iterable[TimeSeriesEntry]] = {
+  ): Try[Iterable[AbstractTimeSeriesEntry]] = {
     esmond match {
       case Some(es) =>
         es.getTimeSeriesSummaryEntries(
@@ -100,7 +100,7 @@ class PollingEsmondSourceFunction[
     eventType  : String,
     timeStart  : Option[Instant],
     timeEnd    : Option[Instant]
-  ): Try[Iterable[TimeSeriesEntry]] = {
+  ): Try[Iterable[AbstractTimeSeriesEntry]] = {
     esmond match {
       case Some(es) =>
         es.getTimeSeriesEntries(

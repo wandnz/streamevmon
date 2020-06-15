@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.measurements.esmond
 
-import nz.net.wand.streamevmon.connectors.esmond.schema.{EventType, Summary, TimeSeriesEntry}
+import nz.net.wand.streamevmon.connectors.esmond.schema.{EventType, SimpleTimeSeriesEntry, Summary}
 import nz.net.wand.streamevmon.measurements.Measurement
 
 import java.time.Instant
@@ -25,7 +25,7 @@ object EsmondMeasurement {
 
   def apply(
     stream: Int,
-    entry: TimeSeriesEntry
+    entry: SimpleTimeSeriesEntry
   ): EsmondMeasurement = new EsmondMeasurement(
     stream,
     entry.value,
@@ -34,11 +34,11 @@ object EsmondMeasurement {
 
   def apply(
     eventType: EventType,
-    entry    : TimeSeriesEntry
+    entry: SimpleTimeSeriesEntry
   ): EsmondMeasurement = apply(calculateStreamId(eventType), entry)
 
   def apply(
     summary: Summary,
-    entry    : TimeSeriesEntry
+    entry: SimpleTimeSeriesEntry
   ): EsmondMeasurement = apply(calculateStreamId(summary), entry)
 }

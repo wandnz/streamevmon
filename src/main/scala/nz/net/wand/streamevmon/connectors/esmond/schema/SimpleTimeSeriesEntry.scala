@@ -4,14 +4,10 @@ import nz.net.wand.streamevmon.connectors.esmond.EsmondAPI
 
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonPropertyOrder}
 
-/** @see [[EsmondAPI.timeSeriesBase]]
-  * @see [[EsmondAPI.timeSeriesSummary]]
+/** @see [[EsmondAPI.simpleTimeSeries]]
   */
 @JsonPropertyOrder(alphabetic = true)
-class TimeSeriesEntry extends Serializable {
-  @JsonProperty("ts")
-  val timestamp: Long = Long.MinValue
-
+class SimpleTimeSeriesEntry extends AbstractTimeSeriesEntry {
   @JsonProperty("val")
   val value: Double = Double.NaN
 

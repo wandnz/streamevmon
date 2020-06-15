@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.connectors.esmond
 
-import nz.net.wand.streamevmon.connectors.esmond.schema.{Archive, Summary, TimeSeriesEntry}
+import nz.net.wand.streamevmon.connectors.esmond.schema.{AbstractTimeSeriesEntry, Archive, Summary}
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
@@ -70,34 +70,32 @@ abstract class AbstractEsmondConnection(
     metadataKey: String,
   ): Try[Archive]
 
-  /** @see [[EsmondAPI.timeSeriesBase]]*/
+  /** @see [[EsmondAPI.simpleTimeSeries]]*/
   def getTimeSeriesEntries(
     metadataKey: String,
-    eventType  : String,
-    timeRange  : Option[Long] = None,
-    time       : Option[Long] = None,
-    timeStart  : Option[Long] = None,
+    eventType: String,
+    timeRange: Option[Long] = None,
+    time: Option[Long] = None,
+    timeStart: Option[Long] = None,
     timeEnd    : Option[Long] = None,
-  ): Try[Iterable[TimeSeriesEntry]]
+  ): Try[Iterable[AbstractTimeSeriesEntry]]
 
-  /** @see [[EsmondAPI.timeSeriesSummary]]*/
   def getTimeSeriesSummaryEntriesFromMetadata(
-    metadataKey  : String,
-    eventType    : String,
-    summaryType  : String,
+    metadataKey: String,
+    eventType: String,
+    summaryType: String,
     summaryWindow: Long,
-    timeRange    : Option[Long] = None,
-    time         : Option[Long] = None,
-    timeStart    : Option[Long] = None,
-    timeEnd      : Option[Long] = None,
-  ): Try[Iterable[TimeSeriesEntry]]
+    timeRange: Option[Long] = None,
+    time: Option[Long] = None,
+    timeStart: Option[Long] = None,
+    timeEnd  : Option[Long] = None,
+  ): Try[Iterable[AbstractTimeSeriesEntry]]
 
-  /** @see [[EsmondAPI.timeSeriesSummary]]*/
   def getTimeSeriesSummaryEntries(
-    summary  : Summary,
+    summary: Summary,
     timeRange: Option[Long] = None,
     time     : Option[Long] = None,
     timeStart: Option[Long] = None,
     timeEnd  : Option[Long] = None,
-  ): Try[Iterable[TimeSeriesEntry]]
+  ): Try[Iterable[AbstractTimeSeriesEntry]]
 }
