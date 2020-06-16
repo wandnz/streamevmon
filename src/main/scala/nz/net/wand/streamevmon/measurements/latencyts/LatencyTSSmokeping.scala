@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.measurements.latencyts
 
-import nz.net.wand.streamevmon.measurements.RichMeasurement
+import nz.net.wand.streamevmon.measurements.{CsvOutputable, HasDefault, RichMeasurement}
 
 import java.time.Instant
 
@@ -16,14 +16,14 @@ import scala.math.round
   * @see [[https://wand.net.nz/wits/latency/1/]]
   */
 case class LatencyTSSmokeping(
-    stream: Int,
-    destination: String,
-    family: String,
-    time: Instant,
-    median: Option[Double],
-    loss: Int,
-    results: Seq[Double]
-) extends RichMeasurement {
+  stream  : Int,
+  destination: String,
+  family: String,
+  time: Instant,
+  median: Option[Double],
+  loss: Int,
+  results: Seq[Double]
+) extends RichMeasurement with CsvOutputable with HasDefault {
   override def toString: String = {
     s"$destination," +
       s"${time.getEpochSecond.toInt}," + {
@@ -48,7 +48,7 @@ case class LatencyTSSmokeping(
 
   override def isLossy: Boolean = loss > 0
 
-  override def toCsvFormat: Seq[String] = LatencyTSSmokeping.unapply(this).get.productIterator.toSeq.map(toCsvTupleEntry)
+  override def toCsvFormat: Seq[String] = LatencyTSSmokeping.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 
   var defaultValue: Option[Double] = median
 }

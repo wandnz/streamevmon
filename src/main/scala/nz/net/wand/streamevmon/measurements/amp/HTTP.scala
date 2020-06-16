@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.measurements.amp
 
-import nz.net.wand.streamevmon.measurements.{Measurement, MeasurementFactory}
+import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasurementFactory}
 
 import java.time.{Instant, ZoneId}
 import java.util.concurrent.TimeUnit
@@ -12,13 +12,13 @@ import java.util.concurrent.TimeUnit
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-http]]
   */
 final case class HTTP(
-    stream: Int,
-    bytes: Int,
-    duration: Int,
-    object_count: Int,
-    server_count: Int,
-    time: Instant
-) extends Measurement {
+  stream      : Int,
+  bytes       : Int,
+  duration    : Int,
+  object_count: Int,
+  server_count: Int,
+  time        : Instant
+) extends InfluxMeasurement {
   override def toString: String = {
     s"${HTTP.table_name}," +
       s"stream=$stream " +
@@ -31,12 +31,12 @@ final case class HTTP(
 
   override def isLossy: Boolean = false
 
-  override def toCsvFormat: Seq[String] = HTTP.unapply(this).get.productIterator.toSeq.map(toCsvTupleEntry)
+  override def toCsvFormat: Seq[String] = HTTP.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 
   var defaultValue: Option[Double] = Some(bytes)
 }
 
-object HTTP extends MeasurementFactory {
+object HTTP extends InfluxMeasurementFactory {
 
   final override val table_name: String = "data_amp_http"
 

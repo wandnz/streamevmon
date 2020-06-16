@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.detectors.checkpointing
 import nz.net.wand.streamevmon.detectors.distdiff.{DistDiffDetector, WindowedDistDiffDetector}
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.{MockSink, WindowedFunctionWrapper}
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.amp.ICMP
 
 import java.time.{Duration, Instant}
 
@@ -30,8 +30,8 @@ class WindowedFunctionCheckpointingTest extends NoHarnessCheckpointingTestBase {
         val src = addFailingSource(env)
 
         src.timeWindow(Time.seconds(1))
-          .process(new WindowedFunctionWrapper[Measurement, TimeWindow](
-            new DistDiffDetector[Measurement]
+          .process(new WindowedFunctionWrapper[ICMP, TimeWindow](
+            new DistDiffDetector[ICMP]
           ))
           .addSink(new MockSink())
 
@@ -56,7 +56,7 @@ class WindowedFunctionCheckpointingTest extends NoHarnessCheckpointingTestBase {
         val src = addFailingSource(env)
 
         src.countWindow(40, 1)
-          .process(new WindowedDistDiffDetector[Measurement, GlobalWindow])
+          .process(new WindowedDistDiffDetector[ICMP, GlobalWindow])
           .addSink(new MockSink())
 
         env.execute("WindowedDistDiffDetectorTest")

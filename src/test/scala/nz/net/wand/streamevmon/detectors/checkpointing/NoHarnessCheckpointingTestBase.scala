@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.detectors.checkpointing
 
 import nz.net.wand.streamevmon.{Configuration, TestBase}
 import nz.net.wand.streamevmon.flink.{FailingSource, MeasurementKeySelector}
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.amp.ICMP
 
 import java.time.Duration
 
@@ -12,7 +12,7 @@ import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.windowing.time.Time
 
 trait NoHarnessCheckpointingTestBase extends TestBase {
-  val keySelector: MeasurementKeySelector[Measurement] = new MeasurementKeySelector[Measurement]
+  val keySelector: MeasurementKeySelector[ICMP] = new MeasurementKeySelector[ICMP]
 
   def getEnv: StreamExecutionEnvironment = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
@@ -35,7 +35,7 @@ trait NoHarnessCheckpointingTestBase extends TestBase {
     env
   }
 
-  def addFailingSource(env: StreamExecutionEnvironment): KeyedStream[Measurement, String] = {
+  def addFailingSource(env: StreamExecutionEnvironment): KeyedStream[ICMP, String] = {
     env.addSource(new FailingSource)
       .name("Failing Source")
       .uid("failing-source")

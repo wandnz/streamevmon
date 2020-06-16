@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.measurements.amp
 
-import nz.net.wand.streamevmon.measurements.{Measurement, MeasurementFactory}
+import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasurementFactory}
 
 import java.time.{Instant, ZoneId}
 import java.util.concurrent.TimeUnit
@@ -12,16 +12,16 @@ import java.util.concurrent.TimeUnit
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-tcpping]]
   */
 final case class TCPPing(
-  stream: Int,
-  icmperrors: Option[Int],
-  loss      : Option[Int],
-  lossrate  : Option[Double],
-  median: Option[Int],
+  stream     : Int,
+  icmperrors : Option[Int],
+  loss       : Option[Int],
+  lossrate   : Option[Double],
+  median     : Option[Int],
   packet_size: Int,
-  results: Option[Int],
-  rtts      : Seq[Option[Int]],
-  time      : Instant
-) extends Measurement {
+  results    : Option[Int],
+  rtts       : Seq[Option[Int]],
+  time       : Instant
+) extends InfluxMeasurement {
   override def toString: String = {
     s"${TCPPing.table_name}," +
       s"stream=$stream " +
@@ -37,12 +37,12 @@ final case class TCPPing(
 
   override def isLossy: Boolean = loss.getOrElse(100) > 0
 
-  override def toCsvFormat: Seq[String] = TCPPing.unapply(this).get.productIterator.toSeq.map(toCsvTupleEntry)
+  override def toCsvFormat: Seq[String] = TCPPing.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 
   var defaultValue: Option[Double] = median.map(_.toDouble)
 }
 
-object TCPPing extends MeasurementFactory {
+object TCPPing extends InfluxMeasurementFactory {
   final override val table_name: String = "data_amp_tcpping"
 
   override def columnNames: Seq[String] = getColumnNames[TCPPing]

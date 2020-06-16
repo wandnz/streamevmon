@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.measurements.amp
 
-import nz.net.wand.streamevmon.measurements.{Measurement, MeasurementFactory}
+import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasurementFactory}
 
 import java.time.{Instant, ZoneId}
 import java.util.concurrent.TimeUnit
@@ -12,27 +12,27 @@ import java.util.concurrent.TimeUnit
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-dns]]
   */
 final case class DNS(
-  stream          : Int,
-  flag_aa         : Option[Boolean],
-  flag_ad         : Option[Boolean],
-  flag_cd         : Option[Boolean],
-  flag_qr         : Option[Boolean],
-  flag_ra         : Option[Boolean],
-  flag_rd         : Option[Boolean],
-  flag_tc         : Option[Boolean],
-  lossrate        : Option[Double],
-  opcode          : Option[Int],
-  query_len       : Int,
-  rcode           : Option[Int],
-  requests        : Int,
-  response_size   : Option[Int],
-  rtt             : Option[Int],
+  stream: Int,
+  flag_aa: Option[Boolean],
+  flag_ad: Option[Boolean],
+  flag_cd: Option[Boolean],
+  flag_qr: Option[Boolean],
+  flag_ra: Option[Boolean],
+  flag_rd: Option[Boolean],
+  flag_tc: Option[Boolean],
+  lossrate: Option[Double],
+  opcode: Option[Int],
+  query_len: Int,
+  rcode: Option[Int],
+  requests: Int,
+  response_size: Option[Int],
+  rtt: Option[Int],
   total_additional: Option[Int],
-  total_answer    : Option[Int],
-  total_authority : Option[Int],
-  ttl             : Option[Int],
-    time: Instant
-) extends Measurement {
+  total_answer: Option[Int],
+  total_authority: Option[Int],
+  ttl: Option[Int],
+  time            : Instant
+) extends InfluxMeasurement {
   override def toString: String = {
     s"${DNS.table_name}," +
       s"stream=$stream " +
@@ -59,12 +59,12 @@ final case class DNS(
 
   override def isLossy: Boolean = lossrate.getOrElse(1.0) > 0.0
 
-  override def toCsvFormat: Seq[String] = DNS.unapply(this).get.productIterator.toSeq.map(toCsvTupleEntry)
+  override def toCsvFormat: Seq[String] = DNS.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 
   var defaultValue: Option[Double] = rtt.map(_.toDouble)
 }
 
-object DNS extends MeasurementFactory {
+object DNS extends InfluxMeasurementFactory {
 
   final override val table_name: String = "data_amp_dns"
 

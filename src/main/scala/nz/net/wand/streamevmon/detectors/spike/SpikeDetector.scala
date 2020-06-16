@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.detectors.spike
 
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 
 import java.time.{Duration, Instant}
 
@@ -20,7 +20,7 @@ import org.apache.flink.util.Collector
   *
   * @tparam MeasT The type of measurement to analyse.
   */
-class SpikeDetector[MeasT <: Measurement]
+class SpikeDetector[MeasT <: Measurement with HasDefault]
   extends KeyedProcessFunction[String, MeasT, Event]
           with CheckpointedFunction {
 

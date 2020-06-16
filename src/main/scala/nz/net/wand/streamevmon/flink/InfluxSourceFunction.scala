@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.flink
 
 import nz.net.wand.streamevmon.connectors.{InfluxConnection, InfluxHistoryConnection}
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 
 import java.io.{BufferedReader, InputStreamReader}
 import java.net.{ServerSocket, SocketTimeoutException}
@@ -44,7 +44,7 @@ import scala.collection.JavaConverters._
   * @see [[AmpMeasurementSourceFunction]]
   * @see [[AmpRichMeasurementSourceFunction]]
   */
-abstract class InfluxSourceFunction[T <: Measurement](
+abstract class InfluxSourceFunction[T <: InfluxMeasurement](
   configPrefix: String = "influx.dataSource",
   datatype    : String = "amp",
   fetchHistory: Duration = Duration.ZERO
@@ -82,7 +82,7 @@ abstract class InfluxSourceFunction[T <: Measurement](
     * @return The measurement as the more specific type T, or None if conversion
     *         failed.
     */
-  protected[this] def processHistoricalMeasurement(measurement: Measurement): Option[T] = {
+  protected[this] def processHistoricalMeasurement(measurement: InfluxMeasurement): Option[T] = {
     Some(measurement.asInstanceOf[T])
   }
 

@@ -19,7 +19,7 @@ case class RichTraceroute(
   packet_size_selection: String,
   path_length          : Option[Double],
   time                 : Instant
-) extends RichMeasurement {
+) extends RichInfluxMeasurement {
 
   override def toString: String = {
     s"${Traceroute.table_name}," +
@@ -34,12 +34,12 @@ case class RichTraceroute(
 
   override def isLossy: Boolean = false
 
-  override def toCsvFormat: Seq[String] = RichTraceroute.unapply(this).get.productIterator.toSeq.map(toCsvTupleEntry)
+  override def toCsvFormat: Seq[String] = RichTraceroute.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 
   var defaultValue: Option[Double] = path_length
 }
 
-object RichTraceroute extends RichMeasurementFactory {
+object RichTraceroute extends RichInfluxMeasurementFactory {
 
   override def create(base: Measurement, meta: MeasurementMeta): Option[RichTraceroute] = {
     base match {

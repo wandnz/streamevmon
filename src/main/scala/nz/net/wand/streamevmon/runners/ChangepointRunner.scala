@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.flink.{AmpMeasurementSourceFunction, InfluxSinkFunction, MeasurementKeySelector}
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.changepoint._
 import nz.net.wand.streamevmon.measurements.amp.ICMP
@@ -41,12 +41,12 @@ object ChangepointRunner {
       .filter(!_.isLossy)
       .name("Has data?")
       .uid("changepoint-filter-has-data")
-      .keyBy(new MeasurementKeySelector[Measurement])
+      .keyBy(new MeasurementKeySelector[InfluxMeasurement])
 
-    implicit val ti: TypeInformation[NormalDistribution[Measurement]] = TypeInformation.of(classOf[NormalDistribution[Measurement]])
+    implicit val ti: TypeInformation[NormalDistribution[InfluxMeasurement]] = TypeInformation.of(classOf[NormalDistribution[InfluxMeasurement]])
 
     val detector = new ChangepointDetector
-                         [Measurement, NormalDistribution[Measurement]](
+                         [InfluxMeasurement, NormalDistribution[InfluxMeasurement]](
       new NormalDistribution(mean = 0)
     )
 

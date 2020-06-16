@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.flink.AmpMeasurementSourceFunction
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.{HasDefault, InfluxMeasurement, Measurement}
 
 import java.time.Instant
 
@@ -18,7 +18,7 @@ import scala.compat.Platform.EOL
 
 object AmpMetricRunner {
 
-  case class Metrics(elements: Iterable[Measurement]) {
+  case class Metrics[T <: Measurement with HasDefault](elements: Iterable[T]) {
     private lazy val elementsAsDoubles = elements.filter(_.defaultValue.isDefined).map(_.defaultValue.get)
     private lazy val elementsAsDoublesSorted = elementsAsDoubles.toSeq.sorted
 
@@ -53,11 +53,11 @@ object AmpMetricRunner {
       .keyBy(_ => 0)
       .windowAll(TumblingEventTimeWindows.of(Time.seconds(90)))
       .process {
-        new ProcessAllWindowFunction[Measurement, Metrics, TimeWindow] {
+        new ProcessAllWindowFunction[InfluxMeasurement, Metrics[InfluxMeasurement], TimeWindow] {
           override def process(
-            context : Context,
-            elements: Iterable[Measurement],
-            out     : Collector[Metrics]
+            context: Context,
+            elements: Iterable[InfluxMeasurement],
+            out     : Collector[Metrics[InfluxMeasurement]]
           ): Unit = {
             out.collect(Metrics(elements))
           }

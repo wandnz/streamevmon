@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.measurements.amp
 
-import nz.net.wand.streamevmon.measurements.{Measurement, MeasurementFactory}
+import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasurementFactory}
 
 import java.time.{Instant, ZoneId}
 import java.util.concurrent.TimeUnit
@@ -15,7 +15,7 @@ final case class Traceroute(
   stream     : Int,
   path_length: Option[Double],
   time       : Instant
-) extends Measurement {
+) extends InfluxMeasurement {
   override def toString: String = {
     s"${Traceroute.table_name}," +
       s"stream=$stream " +
@@ -25,12 +25,12 @@ final case class Traceroute(
 
   override def isLossy: Boolean = false
 
-  override def toCsvFormat: Seq[String] = Traceroute.unapply(this).get.productIterator.toSeq.map(toCsvTupleEntry)
+  override def toCsvFormat: Seq[String] = Traceroute.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 
   var defaultValue: Option[Double] = path_length
 }
 
-object Traceroute extends MeasurementFactory {
+object Traceroute extends InfluxMeasurementFactory {
 
   final override val table_name: String = "data_amp_traceroute_pathlen"
 

@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
 import nz.net.wand.streamevmon.TestBase
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 
 import java.time.Instant
 
@@ -15,15 +15,13 @@ class DistributionTest extends TestBase {
 
   "NormalDistribution" should {
     "generate the correct values" in {
-      case class JustADouble(d: Double) extends Measurement {
+      case class JustADouble(d: Double) extends Measurement with HasDefault {
         override val stream: Int = -1
         override val time: Instant = Instant.EPOCH
 
         override def isLossy: Boolean = false
 
         override var defaultValue: Option[Double] = Some(d)
-
-        override def toCsvFormat: Seq[String] = Seq()
       }
 
       val initial = new NormalDistribution[JustADouble](

@@ -13,10 +13,10 @@ import scala.util.control.Breaks._
 /** Mixed into companion objects of concrete [[Measurement]] classes.
   * Provides helper functions for common requirements to generate objects.
   *
-  * @see [[RichMeasurementFactory]]
+  * @see [[RichInfluxMeasurementFactory]]
   * @see This trait's companion object for measurement creation functions.
   */
-trait MeasurementFactory {
+trait InfluxMeasurementFactory {
 
   /** The name of the InfluxDB table corresponding to a measurement type.
     */
@@ -28,7 +28,7 @@ trait MeasurementFactory {
     *
     * @tparam T The type to determine the overrides for.
     */
-  private[this] def getColumnNameOverrides[T <: Measurement : TypeTag]: Seq[(String, String)] =
+  private[this] def getColumnNameOverrides[T <: InfluxMeasurement : TypeTag]: Seq[(String, String)] =
     symbolOf[T].toType.members.map { m =>
       if (m.annotations.exists(a => a.tree.tpe <:< typeOf[Column])) {
         (
@@ -50,7 +50,7 @@ trait MeasurementFactory {
   /** Returns a collection containing the database column names associated with
     * a type, in the same order as the case class declares them.
     */
-  protected def getColumnNames[T <: Measurement : TypeTag]: Seq[String] = {
+  protected def getColumnNames[T <: InfluxMeasurement : TypeTag]: Seq[String] = {
     val overrides = getColumnNameOverrides[T]
 
     "time" +: typeOf[T].members.sorted.collect {
@@ -136,7 +136,7 @@ trait MeasurementFactory {
     *
     * @see [[https://docs.influxdata.com/influxdb/v1.7/write_protocols/line_protocol_reference/]]
     */
-  private[measurements] def create(subscriptionLine: String): Option[Measurement]
+  private[measurements] def create(subscriptionLine: String): Option[InfluxMeasurement]
 
   /** Converts the "rtts" field, used in a number of AMP measurements, into an
     * appropriate datatype.
@@ -160,9 +160,9 @@ trait MeasurementFactory {
 
 /** Mixed into companion objects of concrete [[RichMeasurement]] classes.
   *
-  * @see [[MeasurementFactory]]
+  * @see [[InfluxMeasurementFactory]]
   */
-trait RichMeasurementFactory {
+trait RichInfluxMeasurementFactory {
 
   /** Creates a RichMeasurement by mixing a Measurement with its associated
     * metadata.
@@ -172,16 +172,17 @@ trait RichMeasurementFactory {
     *
     * @return The result if successful, or None.
     */
-  private[measurements] def create(base: Measurement,
+  private[measurements] def create(
+    base                               : Measurement,
                                    meta: MeasurementMeta): Option[RichMeasurement]
 }
 
 /** Creates [[Measurement]] and [[RichMeasurement]] objects.
   *
-  * @see [[MeasurementFactory]]
-  * @see [[RichMeasurementFactory]]
+  * @see [[InfluxMeasurementFactory]]
+  * @see [[RichInfluxMeasurementFactory]]
   */
-object MeasurementFactory {
+object InfluxMeasurementFactory {
 
   /** Creates a Measurement from a string in InfluxDB Line Protocol format.
     *
@@ -189,12 +190,12 @@ object MeasurementFactory {
     *
     * @return The measurement if successful, or None.
     */
-  def createMeasurement(line: String): Option[Measurement] = {
+  def createMeasurement(line: String): Option[InfluxMeasurement] = {
     line match {
-      case x if x.startsWith(ICMP.table_name)       => ICMP.create(x)
-      case x if x.startsWith(DNS.table_name)        => DNS.create(x)
+      case x if x.startsWith(ICMP.table_name) => ICMP.create(x)
+      case x if x.startsWith(DNS.table_name) => DNS.create(x)
       case x if x.startsWith(Traceroute.table_name) => Traceroute.create(x)
-      case x if x.startsWith(TCPPing.table_name)    => TCPPing.create(x)
+      case x if x.startsWith(TCPPing.table_name) => TCPPing.create(x)
       case x if x.startsWith(HTTP.table_name) => HTTP.create(x)
       case x if x.startsWith(Flow.table_name) => Flow.create(x)
       case _ => None
@@ -212,7 +213,7 @@ object MeasurementFactory {
   def enrichMeasurement(
     pgConnection: PostgresConnection,
     base        : Measurement
-  ): Option[RichMeasurement] = {
+  ): Option[RichInfluxMeasurement] = {
     pgConnection.getMeta(base) match {
       case Some(x) =>
         x match {
@@ -238,8 +239,8 @@ object MeasurementFactory {
     */
   def createRichMeasurement(
     pgConnection: PostgresConnection,
-    line: String
-  ): Option[RichMeasurement] = {
+    line        : String
+  ): Option[RichInfluxMeasurement] = {
     createMeasurement(line).flatMap(enrichMeasurement(pgConnection, _))
   }
 }

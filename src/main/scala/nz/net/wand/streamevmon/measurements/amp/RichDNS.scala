@@ -43,7 +43,7 @@ case class RichDNS(
   total_authority : Option[Int],
   ttl             : Option[Int],
   time            : Instant
-) extends RichMeasurement {
+) extends RichInfluxMeasurement {
 
   override def toString: String = {
     s"${DNS.table_name} " +
@@ -116,12 +116,12 @@ case class RichDNS(
     total_authority: Option[Int],
     ttl: Option[Int],
     time: Instant
-  ).map(toCsvTupleEntry)
+  ).map(toCsvEntry)
 
   var defaultValue: Option[Double] = rtt.map(_.toDouble)
 }
 
-object RichDNS extends RichMeasurementFactory {
+object RichDNS extends RichInfluxMeasurementFactory {
 
   override def create(base: Measurement, meta: MeasurementMeta): Option[RichDNS] = {
     base match {

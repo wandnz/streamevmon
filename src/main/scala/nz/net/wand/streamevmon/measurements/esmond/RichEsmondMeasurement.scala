@@ -14,13 +14,7 @@ case class RichEsmondMeasurement(
   summaryWindow: Option[Long],
   time         : Instant
 ) extends RichMeasurement {
-
   override def isLossy: Boolean = false
-
-  override def toCsvFormat: Seq[String] =
-    Seq(stream, value, metadataKey, eventType, summaryType, summaryWindow, time).map(toCsvTupleEntry)
-
-  override var defaultValue: Option[Double] = Some(value)
 }
 
 object RichEsmondMeasurement {

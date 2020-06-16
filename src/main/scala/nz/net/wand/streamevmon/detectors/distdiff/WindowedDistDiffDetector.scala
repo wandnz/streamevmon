@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.detectors.distdiff
 
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 
 import java.time.Duration
 
@@ -25,7 +25,7 @@ import org.apache.flink.util.Collector
   *
   * @tparam MeasT The type of measurement to analyse.
   */
-class WindowedDistDiffDetector[MeasT <: Measurement, W <: Window]
+class WindowedDistDiffDetector[MeasT <: Measurement with HasDefault, W <: Window]
   extends ProcessWindowFunction[MeasT, Event, String, W]
           with DistDiffLogic {
 

@@ -32,9 +32,9 @@ object LossRunner {
       .setParallelism(1)
       .name("Measurement Subscription")
       .uid("loss-measurement-sourcefunction")
-      .keyBy(new MeasurementKeySelector[Measurement])
+      .keyBy(new MeasurementKeySelector[InfluxMeasurement])
 
-    val detector = new LossDetector[Measurement]
+    val detector = new LossDetector[InfluxMeasurement]
 
     val process = source
       .process(detector)

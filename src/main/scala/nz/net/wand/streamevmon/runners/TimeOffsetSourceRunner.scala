@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.flink.{AmpMeasurementSourceFunction, PollingInfluxSourceFunction}
-import nz.net.wand.streamevmon.measurements.{Measurement, MeasurementFactory}
+import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasurementFactory}
 
 import java.text.SimpleDateFormat
 import java.time.Duration
@@ -36,11 +36,11 @@ object TimeOffsetSourceRunner {
 
     env
       .addSource {
-        val s = new PollingInfluxSourceFunction[Measurement](
+        val s = new PollingInfluxSourceFunction[InfluxMeasurement](
           fetchHistory = Duration.ofMinutes(1),
           timeOffset = Duration.ofMinutes(1)
         ) {
-          override protected[this] def processLine(line: String): Option[Measurement] = MeasurementFactory.createMeasurement(line)
+          override protected[this] def processLine(line: String): Option[InfluxMeasurement] = InfluxMeasurementFactory.createMeasurement(line)
         }
         s.overrideConfig(
           env.getConfig.getGlobalJobParameters.asInstanceOf[ParameterTool].mergeWith(

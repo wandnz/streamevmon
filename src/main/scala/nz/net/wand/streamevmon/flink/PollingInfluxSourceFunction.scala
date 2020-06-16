@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.flink
 
 import nz.net.wand.streamevmon.connectors.InfluxHistoryConnection
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 
 import java.time.{Duration, Instant}
 
@@ -9,8 +9,8 @@ import org.apache.commons.lang3.time.DurationFormatUtils
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 
-abstract class PollingInfluxSourceFunction[T <: Measurement](
-  configPrefix   : String = "influx.dataSource",
+abstract class PollingInfluxSourceFunction[T <: InfluxMeasurement](
+  configPrefix: String = "influx.dataSource",
   datatype       : String = "amp",
   fetchHistory   : Duration = Duration.ZERO,
   timeOffset     : Duration = Duration.ZERO,

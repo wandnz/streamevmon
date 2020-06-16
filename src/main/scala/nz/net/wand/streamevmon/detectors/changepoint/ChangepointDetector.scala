@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 import nz.net.wand.streamevmon.Logging
 
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
@@ -26,7 +26,7 @@ import org.apache.flink.util.Collector
   * @tparam MeasT The type of [[nz.net.wand.streamevmon.measurements.Measurement Measurement]] we're receiving.
   * @tparam DistT The type of [[Distribution]] to model recent measurements with.
   */
-class ChangepointDetector[MeasT <: Measurement : TypeInformation, DistT <: Distribution[MeasT] : TypeInformation](
+class ChangepointDetector[MeasT <: Measurement with HasDefault : TypeInformation, DistT <: Distribution[MeasT] : TypeInformation](
   initialDistribution: DistT,
   shouldDoGraphs     : Boolean = false,
   filename           : Option[String] = None

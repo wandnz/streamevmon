@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.runners
 import nz.net.wand.streamevmon.{Configuration, Logging}
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.flink.{MeasurementKeySelector, WindowedFunctionWrapper}
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 import nz.net.wand.streamevmon.measurements.amp.Traceroute
 
 import java.time.Instant
@@ -17,9 +17,9 @@ import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 
 object OutOfOrderRunner extends Logging {
 
-  class MyReallyFunOutOfOrderSourceFunction extends SourceFunction[Measurement] {
+  class MyReallyFunOutOfOrderSourceFunction extends SourceFunction[InfluxMeasurement] {
 
-    def collect(ctx                  : SourceFunction.SourceContext[Measurement], id: Int): Unit = {
+    def collect(ctx: SourceFunction.SourceContext[InfluxMeasurement], id: Int): Unit = {
       ctx.collectWithTimestamp(
         Traceroute(
           0,
@@ -30,7 +30,7 @@ object OutOfOrderRunner extends Logging {
       )
     }
 
-    override def run(ctx: SourceFunction.SourceContext[Measurement]): Unit = {
+    override def run(ctx: SourceFunction.SourceContext[InfluxMeasurement]): Unit = {
       for (x <- Range(0, 20)) {
         collect(ctx, x)
       }
@@ -57,8 +57,8 @@ object OutOfOrderRunner extends Logging {
     env.getConfig.setGlobalJobParameters(Configuration.get(Array()))
     env.setParallelism(1)
 
-    val detector = new ModeDetector[Measurement]
-    val wrappedDetector = new WindowedFunctionWrapper[Measurement, TimeWindow](
+    val detector = new ModeDetector[InfluxMeasurement]
+    val wrappedDetector = new WindowedFunctionWrapper[InfluxMeasurement, TimeWindow](
       detector
     )
 
@@ -68,7 +68,7 @@ object OutOfOrderRunner extends Logging {
       .name("Fun Source")
 
     val sk = s
-      .keyBy(new MeasurementKeySelector[Measurement])
+      .keyBy(new MeasurementKeySelector[InfluxMeasurement])
       .timeWindow(Time.seconds(18))
 
     val p = sk

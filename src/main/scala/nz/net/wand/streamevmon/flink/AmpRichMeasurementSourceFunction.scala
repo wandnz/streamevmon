@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.flink
 
 import nz.net.wand.streamevmon.connectors.PostgresConnection
-import nz.net.wand.streamevmon.measurements.{Measurement, MeasurementFactory, RichMeasurement}
+import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasurementFactory, RichInfluxMeasurement}
 
 import java.time.Duration
 
@@ -20,7 +20,7 @@ class AmpRichMeasurementSourceFunction(
   configPrefix: String = "influx.dataSource",
   fetchHistory: Duration = Duration.ZERO
 )
-  extends InfluxSourceFunction[RichMeasurement](
+  extends InfluxSourceFunction[RichInfluxMeasurement](
     configPrefix,
     "amp",
     fetchHistory
@@ -35,12 +35,12 @@ class AmpRichMeasurementSourceFunction(
   }
 
   override protected def processHistoricalMeasurement(
-      measurement: Measurement
-  ): Option[RichMeasurement] = {
-    MeasurementFactory.enrichMeasurement(pgConnection, measurement)
+    measurement: InfluxMeasurement
+  ): Option[RichInfluxMeasurement] = {
+    InfluxMeasurementFactory.enrichMeasurement(pgConnection, measurement)
   }
 
-  override protected def processLine(line: String): Option[RichMeasurement] = {
-    MeasurementFactory.createRichMeasurement(pgConnection, line)
+  override protected def processLine(line: String): Option[RichInfluxMeasurement] = {
+    InfluxMeasurementFactory.createRichMeasurement(pgConnection, line)
   }
 }

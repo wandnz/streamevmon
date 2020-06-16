@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.scalactic.{Equality, TolerantNumerics}
@@ -16,14 +16,14 @@ import org.scalactic.{Equality, TolerantNumerics}
   *
   * @see [[https://en.wikipedia.org/wiki/Normal_distribution]]
   */
-case class NormalDistribution[T <: Measurement : TypeInformation](
+case class NormalDistribution[T <: Measurement with HasDefault : TypeInformation](
   mean: Double,
   variance: Double = NormalDistribution.defaultVariance,
   n: Int = 0
 )
   extends Distribution[T] with Logging {
 
-  import NormalDistribution._
+  import nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution._
 
   override def toString: String = {
     s"${getClass.getSimpleName}(n=$n,mean=$mean,variance=$variance)"

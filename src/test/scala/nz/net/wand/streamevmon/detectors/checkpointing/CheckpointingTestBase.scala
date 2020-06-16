@@ -3,7 +3,6 @@ package nz.net.wand.streamevmon.detectors.checkpointing
 import nz.net.wand.streamevmon.{Configuration, SeedData, TestBase}
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.MeasurementKeySelector
-import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.measurements.amp.ICMP
 
 import java.time.Instant
@@ -14,19 +13,19 @@ import org.apache.flink.streaming.api.scala.createTypeInformation
 import org.apache.flink.streaming.util.KeyedOneInputStreamOperatorTestHarness
 
 trait CheckpointingTestBase extends TestBase {
-  protected type H = KeyedOneInputStreamOperatorTestHarness[String, Measurement, Event]
+  protected type H = KeyedOneInputStreamOperatorTestHarness[String, ICMP, Event]
 
-  protected def newHarness(implicit function: KeyedProcessFunction[String, Measurement, Event]): H = {
+  protected def newHarness(implicit function: KeyedProcessFunction[String, ICMP, Event]): H = {
     val h = new H(
-      new KeyedProcessOperator[String, Measurement, Event](function),
-      new MeasurementKeySelector[Measurement],
+      new KeyedProcessOperator[String, ICMP, Event](function),
+      new MeasurementKeySelector[ICMP],
       createTypeInformation[String]
     )
     h.getExecutionConfig.setGlobalJobParameters(Configuration.get(Array()))
     h
   }
 
-  protected def snapshotAndRestart(harness: H)(implicit function: KeyedProcessFunction[String, Measurement, Event]): H = {
+  protected def snapshotAndRestart(harness: H)(implicit function: KeyedProcessFunction[String, ICMP, Event]): H = {
     lastGeneratedTime += 1
     val snapshot = harness.snapshot(1, lastGeneratedTime)
     harness.close()

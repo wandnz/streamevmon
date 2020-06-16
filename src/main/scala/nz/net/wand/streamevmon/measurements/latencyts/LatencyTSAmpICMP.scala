@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.measurements.latencyts
 
-import nz.net.wand.streamevmon.measurements.RichMeasurement
+import nz.net.wand.streamevmon.measurements.{CsvOutputable, HasDefault, RichMeasurement}
 
 import java.time.Instant
 
@@ -14,21 +14,21 @@ import java.time.Instant
   * @see [[https://wand.net.nz/wits/latency/1/]]
   */
 case class LatencyTSAmpICMP(
-    stream: Int,
-    source: String,
-    destination: String,
-    family: String,
-    time: Instant,
-    average: Int,
-    lossrate: Double
-) extends RichMeasurement {
+  stream  : Int,
+  source  : String,
+  destination: String,
+  family: String,
+  time: Instant,
+  average: Int,
+  lossrate: Double
+) extends RichMeasurement with CsvOutputable with HasDefault {
   override def toString: String = {
     f"$source-$destination-$family,${time.getEpochSecond.toInt},$average,$lossrate%.3f"
   }
 
   override def isLossy: Boolean = lossrate > 0.0
 
-  override def toCsvFormat: Seq[String] = LatencyTSAmpICMP.unapply(this).get.productIterator.toSeq.map(toCsvTupleEntry)
+  override def toCsvFormat: Seq[String] = LatencyTSAmpICMP.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 
   var defaultValue: Option[Double] = Some(average)
 }

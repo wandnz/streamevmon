@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.measurements
+package nz.net.wand.streamevmon.measurements.amp
 
 /** Represents the metadata associated with a set of measurements.
   */

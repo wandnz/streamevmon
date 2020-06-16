@@ -10,12 +10,7 @@ case class EsmondMeasurement(
   value : Double,
   time  : Instant
 ) extends Measurement {
-
   override def isLossy: Boolean = false
-
-  override def toCsvFormat: Seq[String] = Seq(stream, value, time).map(toCsvTupleEntry)
-
-  override var defaultValue: Option[Double] = Some(value)
 }
 
 object EsmondMeasurement {

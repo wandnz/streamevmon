@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon
 
-import nz.net.wand.streamevmon.measurements._
+import nz.net.wand.streamevmon.measurements.amp.MeasurementMeta
 
 /** Contains classes representing network measurements, such as those gathered
   * by AMP or Smokeping.
@@ -18,7 +18,7 @@ import nz.net.wand.streamevmon.measurements._
   * [[Measurement Measurement]]
   * represent the basic measurement, complete with its stream ID. They contain
   * no metadata, but can be "enriched" using
-  * [[MeasurementFactory.enrichMeasurement MeasurementFactory.enrichMeasurement]].
+  * [[InfluxMeasurementFactory.enrichMeasurement InfluxMeasurementFactory.enrichMeasurement]].
   * This returns an instance of a class which inherits from RichMeasurement.
   *
   * - Classes which inherit from

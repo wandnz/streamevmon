@@ -12,22 +12,22 @@ import java.time.{Instant, ZoneId}
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-http]]
   */
 case class RichHTTP(
-    stream: Int,
-    source: String,
-    destination: String,
-    max_connections: Int,
-    max_connections_per_server: Int,
-    max_persistent_connections_per_server: Int,
-    pipelining_max_requests: Int,
-    persist: Boolean,
-    pipelining: Boolean,
-    caching: Boolean,
-    bytes: Int,
-    duration: Int,
-    object_count: Int,
-    server_count: Int,
-    time: Instant
-) extends RichMeasurement {
+  stream                               : Int,
+  source                               : String,
+  destination                          : String,
+  max_connections                      : Int,
+  max_connections_per_server           : Int,
+  max_persistent_connections_per_server: Int,
+  pipelining_max_requests              : Int,
+  persist                              : Boolean,
+  pipelining                           : Boolean,
+  caching                              : Boolean,
+  bytes                                : Int,
+  duration                             : Int,
+  object_count                         : Int,
+  server_count                         : Int,
+  time                                 : Instant
+) extends RichInfluxMeasurement {
   override def toString: String = {
     s"${HTTP.table_name}," +
       s"stream=$stream " +
@@ -49,12 +49,12 @@ case class RichHTTP(
 
   override def isLossy: Boolean = false
 
-  override def toCsvFormat: Seq[String] = RichHTTP.unapply(this).get.productIterator.toSeq.map(toCsvTupleEntry)
+  override def toCsvFormat: Seq[String] = RichHTTP.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 
   var defaultValue: Option[Double] = Some(bytes)
 }
 
-object RichHTTP extends RichMeasurementFactory {
+object RichHTTP extends RichInfluxMeasurementFactory {
   override def create(base: Measurement, meta: MeasurementMeta): Option[RichHTTP] = {
     base match {
       case b: HTTP =>

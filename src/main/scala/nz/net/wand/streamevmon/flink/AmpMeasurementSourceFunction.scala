@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.flink
 
-import nz.net.wand.streamevmon.measurements.{Measurement, MeasurementFactory}
+import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasurementFactory}
 
 import java.time.Duration
 
@@ -16,17 +16,17 @@ class AmpMeasurementSourceFunction(
   configPrefix: String = "influx.dataSource",
   fetchHistory: Duration = Duration.ZERO
 )
-  extends InfluxSourceFunction[Measurement](
+  extends InfluxSourceFunction[InfluxMeasurement](
     configPrefix,
     "amp",
     fetchHistory
   ) {
 
-  override protected def processHistoricalMeasurement(measurement: Measurement): Option[Measurement] = {
+  override protected def processHistoricalMeasurement(measurement: InfluxMeasurement): Option[InfluxMeasurement] = {
     Some(measurement)
   }
 
-  override protected def processLine(line: String): Option[Measurement] = {
-    MeasurementFactory.createMeasurement(line)
+  override protected def processLine(line: String): Option[InfluxMeasurement] = {
+    InfluxMeasurementFactory.createMeasurement(line)
   }
 }

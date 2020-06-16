@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.measurements.amp
 
-import nz.net.wand.streamevmon.measurements.{Measurement, MeasurementFactory}
+import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasurementFactory}
 
 import java.time.{Instant, ZoneId}
 import java.util.concurrent.TimeUnit
@@ -12,15 +12,15 @@ import java.util.concurrent.TimeUnit
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-icmp]]
   */
 final case class ICMP(
-  stream: Int,
-  loss: Option[Int],
-  lossrate: Option[Double],
-  median: Option[Int],
+  stream     : Int,
+  loss       : Option[Int],
+  lossrate   : Option[Double],
+  median     : Option[Int],
   packet_size: Int,
-  results: Option[Int],
-  rtts: Seq[Option[Int]],
-  time  : Instant
-) extends Measurement {
+  results    : Option[Int],
+  rtts       : Seq[Option[Int]],
+  time       : Instant
+) extends InfluxMeasurement {
   override def toString: String = {
     s"${ICMP.table_name}," +
       s"stream=$stream " +
@@ -35,12 +35,12 @@ final case class ICMP(
 
   override def isLossy: Boolean = loss.getOrElse(100) > 0
 
-  override def toCsvFormat: Seq[String] = ICMP.unapply(this).get.productIterator.toSeq.map(toCsvTupleEntry)
+  override def toCsvFormat: Seq[String] = ICMP.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 
   var defaultValue: Option[Double] = median.map(_.toDouble)
 }
 
-object ICMP extends MeasurementFactory {
+object ICMP extends InfluxMeasurementFactory {
 
   final override val table_name: String = "data_amp_icmp"
 

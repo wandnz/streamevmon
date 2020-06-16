@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.runners
 import nz.net.wand.streamevmon.{Configuration, Logging}
 import nz.net.wand.streamevmon.detectors.SimpleThresholdDetector
 import nz.net.wand.streamevmon.flink._
-import nz.net.wand.streamevmon.measurements.RichMeasurement
+import nz.net.wand.streamevmon.measurements.RichInfluxMeasurement
 
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor
@@ -30,7 +30,7 @@ object StreamConsumer extends Logging {
 
     val threshold = 0
     val sourceFunction = new AmpRichMeasurementSourceFunction
-    val processFunction = new SimpleThresholdDetector[RichMeasurement](threshold)
+    val processFunction = new SimpleThresholdDetector[RichInfluxMeasurement](threshold)
     val sinkFunction = new InfluxSinkFunction
     val windowSize = 1
 
@@ -40,8 +40,8 @@ object StreamConsumer extends Logging {
 
     val streamWithWatermarks = measurementStream
       .assignTimestampsAndWatermarks(
-        new BoundedOutOfOrdernessTimestampExtractor[RichMeasurement](Time.seconds(windowSize)) {
-          override def extractTimestamp(element: RichMeasurement): Long = element.time.toEpochMilli
+        new BoundedOutOfOrdernessTimestampExtractor[RichInfluxMeasurement](Time.seconds(windowSize)) {
+          override def extractTimestamp(element: RichInfluxMeasurement): Long = element.time.toEpochMilli
         })
 
     val measurementWindows = streamWithWatermarks.windowAll(TumblingEventTimeWindows.of(Time.milliseconds(windowSize)))

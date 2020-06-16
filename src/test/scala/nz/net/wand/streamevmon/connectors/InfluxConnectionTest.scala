@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.connectors
 
 import nz.net.wand.streamevmon.{InfluxContainerSpec, SeedData}
-import nz.net.wand.streamevmon.measurements.MeasurementFactory
+import nz.net.wand.streamevmon.measurements.InfluxMeasurementFactory
 
 import java.io.{BufferedReader, InputStreamReader}
 import java.net.{ServerSocket, SocketTimeoutException}
@@ -248,7 +248,7 @@ class InfluxConnectionTest extends InfluxContainerSpec {
                 .toList
 
               result.isEmpty shouldBe false
-              result.exists(line => MeasurementFactory.createMeasurement(line).isDefined) shouldBe true
+              result.exists(line => InfluxMeasurementFactory.createMeasurement(line).isDefined) shouldBe true
 
             } catch {
               case _: SocketTimeoutException =>

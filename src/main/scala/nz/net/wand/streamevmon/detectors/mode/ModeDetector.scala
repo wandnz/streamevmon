@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.detectors.mode
 
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector._
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 
 import java.math.{MathContext, RoundingMode}
 import java.time.{Duration, Instant}
@@ -23,7 +23,7 @@ import scala.collection.mutable
   *
   * @tparam MeasT The type of measurement to analyse.
   */
-class ModeDetector[MeasT <: Measurement]
+class ModeDetector[MeasT <: Measurement with HasDefault]
   extends KeyedProcessFunction[String, MeasT, Event]
           with CheckpointedFunction {
 

@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.detectors.distdiff
 
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 
 import java.time.{Duration, Instant}
 
@@ -22,7 +22,7 @@ import scala.collection.mutable
   *
   * @tparam MeasT The type of measurement to analyse.
   */
-class DistDiffDetector[MeasT <: Measurement : TypeInformation]
+class DistDiffDetector[MeasT <: Measurement with HasDefault : TypeInformation]
   extends KeyedProcessFunction[String, MeasT, Event]
           with DistDiffLogic {
 

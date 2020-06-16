@@ -26,17 +26,17 @@ class WindowedFunctionWrapper[M <: Measurement : ClassTag, W <: Window](
 
   override def close(): Unit = processFunction.close()
 
-  override def process(
-    key                   : String,
-    myContext             : this.Context,
-    elements              : Iterable[M],
-    out                   : Collector[Event]
-  ): Unit = {
-    for (e <- elements.map(identity).toSeq.sortBy(_.time)) {
-      val ctx: processFunction.Context = new processFunction.Context() {
-        override def timestamp(): java.lang.Long = e.time.toEpochMilli
+   override def process(
+     key: String,
+     myContext: this.Context,
+     elements: Iterable[M],
+     out                  : Collector[Event]
+   ): Unit = {
+     for (e <- elements.map(identity).toSeq.sortBy(_.time)) {
+       val ctx: processFunction.Context = new processFunction.Context() {
+         override def timestamp(): java.lang.Long = e.time.toEpochMilli
 
-        override def timerService(): TimerService = ???
+         override def timerService(): TimerService = ???
 
         override def output[X](outputTag: OutputTag[X], value: X): Unit = ???
 

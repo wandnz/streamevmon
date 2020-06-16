@@ -1,6 +1,5 @@
 package nz.net.wand.streamevmon.flink
 
-import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.measurements.amp.ICMP
 import nz.net.wand.streamevmon.SeedData
 
@@ -11,8 +10,8 @@ import org.apache.flink.streaming.api.checkpoint.ListCheckpointed
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 import org.apache.flink.streaming.api.windowing.time.Time
 
-class FailingSource extends SourceFunction[Measurement] with ListCheckpointed[(Long, Int, Boolean)] {
-  def sendMeasurement(ctx: SourceFunction.SourceContext[Measurement], value: Int, time: Long): Unit = {
+class FailingSource extends SourceFunction[ICMP] with ListCheckpointed[(Long, Int, Boolean)] {
+  def sendMeasurement(ctx: SourceFunction.SourceContext[ICMP], value: Int, time: Long): Unit = {
     val e = SeedData.icmp.expected
     ctx.collectWithTimestamp(
       ICMP(
@@ -43,7 +42,7 @@ class FailingSource extends SourceFunction[Measurement] with ListCheckpointed[(L
   @volatile var hasCheckpointed = false
   @volatile var hasRestored = false
 
-  override def run(ctx: SourceFunction.SourceContext[Measurement]): Unit = {
+  override def run(ctx: SourceFunction.SourceContext[ICMP]): Unit = {
 
     if (!hasCheckpointed || currentTime == initialTime) {
       println(s"Sending normal measurements")

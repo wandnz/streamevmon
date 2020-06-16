@@ -31,14 +31,14 @@ class MeasurementCreateTest extends TestBase {
     }
   }
 
-  "MeasurementFactory.createMeasurement" should {
+  "InfluxMeasurementFactory.createMeasurement" should {
     "convert several entries to their respective Measurement subclasses" in {
       Seq(
-        MeasurementFactory.createMeasurement(SeedData.icmp.subscriptionLine),
-        MeasurementFactory.createMeasurement(SeedData.dns.subscriptionLine),
-        MeasurementFactory.createMeasurement(SeedData.traceroute.subscriptionLine),
-        MeasurementFactory.createMeasurement(SeedData.tcpping.subscriptionLine),
-        MeasurementFactory.createMeasurement(SeedData.http.subscriptionLine)
+        InfluxMeasurementFactory.createMeasurement(SeedData.icmp.subscriptionLine),
+        InfluxMeasurementFactory.createMeasurement(SeedData.dns.subscriptionLine),
+        InfluxMeasurementFactory.createMeasurement(SeedData.traceroute.subscriptionLine),
+        InfluxMeasurementFactory.createMeasurement(SeedData.tcpping.subscriptionLine),
+        InfluxMeasurementFactory.createMeasurement(SeedData.http.subscriptionLine)
       ).foreach {
         case Some(x) =>
           x match {

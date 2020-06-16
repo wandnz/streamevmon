@@ -6,7 +6,7 @@ import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.detectors.spike.SpikeDetector
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.amp.ICMP
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.streaming.api.scala._
@@ -31,12 +31,12 @@ class NoDependencyCheckpointingTests extends CheckpointingTestBase {
       }
 
       "type is ChangepointDetector" in {
-        implicit val ti: TypeInformation[NormalDistribution[Measurement]] =
-          TypeInformation.of(classOf[NormalDistribution[Measurement]])
+        implicit val ti: TypeInformation[NormalDistribution[ICMP]] =
+          TypeInformation.of(classOf[NormalDistribution[ICMP]])
 
-        implicit val detector: ChangepointDetector[Measurement, NormalDistribution[Measurement]] =
-          new ChangepointDetector[Measurement, NormalDistribution[Measurement]](
-            new NormalDistribution[Measurement](mean = 0)
+        implicit val detector: ChangepointDetector[ICMP, NormalDistribution[ICMP]] =
+          new ChangepointDetector[ICMP, NormalDistribution[ICMP]](
+            new NormalDistribution[ICMP](mean = 0)
           )
 
         var harness = newHarness
@@ -52,7 +52,7 @@ class NoDependencyCheckpointingTests extends CheckpointingTestBase {
       }
 
       "type is DistDiffDetector" in {
-        implicit val detector: DistDiffDetector[Measurement] = new DistDiffDetector[Measurement]
+        implicit val detector: DistDiffDetector[ICMP] = new DistDiffDetector[ICMP]
 
         var harness = newHarness
         harness.open()
@@ -67,7 +67,7 @@ class NoDependencyCheckpointingTests extends CheckpointingTestBase {
       }
 
       "type is LossDetector" in {
-        implicit val detector: LossDetector[Measurement] = new LossDetector[Measurement]
+        implicit val detector: LossDetector[ICMP] = new LossDetector[ICMP]
         var harness = newHarness
         harness.open()
 
@@ -81,7 +81,7 @@ class NoDependencyCheckpointingTests extends CheckpointingTestBase {
       }
 
       "type is ModeDetector" in {
-        implicit val detector: ModeDetector[Measurement] = new ModeDetector[Measurement]
+        implicit val detector: ModeDetector[ICMP] = new ModeDetector[ICMP]
         var harness = newHarness
         harness.open()
 
@@ -95,7 +95,7 @@ class NoDependencyCheckpointingTests extends CheckpointingTestBase {
       }
 
       "type is SpikeDetector" in {
-        implicit val detector: SpikeDetector[Measurement] = new SpikeDetector[Measurement]
+        implicit val detector: SpikeDetector[ICMP] = new SpikeDetector[ICMP]
         var harness = newHarness
         harness.open()
 

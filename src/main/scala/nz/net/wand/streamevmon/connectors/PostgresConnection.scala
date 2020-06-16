@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.connectors
 
 import nz.net.wand.streamevmon.{Caching, Logging}
-import nz.net.wand.streamevmon.measurements.{Measurement, MeasurementMeta}
+import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.measurements.amp._
 
 import java.sql.DriverManager
@@ -66,7 +66,7 @@ object PostgresConnection extends Caching {
 }
 
 /** PostgreSQL interface which produces
-  * [[nz.net.wand.streamevmon.measurements.MeasurementMeta MeasurementMeta]]
+  * [[MeasurementMeta MeasurementMeta]]
   * objects.
   *
   * ==Configuration==
@@ -156,8 +156,8 @@ case class PostgresConnection(
           None
         }
         else {
-          import PostgresSchema._
-          import SquerylEntrypoint._
+          import nz.net.wand.streamevmon.connectors.PostgresSchema._
+          import nz.net.wand.streamevmon.connectors.SquerylEntrypoint._
 
           base match {
             case _: ICMP => transaction(icmpMeta.where(m => m.stream === base.stream).headOption)

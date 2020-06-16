@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.measurements.bigdata
 
-import nz.net.wand.streamevmon.measurements.{Measurement, MeasurementFactory}
+import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasurementFactory}
 import nz.net.wand.streamevmon.measurements.bigdata.Flow.Endpoint
 import nz.net.wand.streamevmon.measurements.bigdata.Flow.FlowType.FlowType
 
@@ -54,7 +54,7 @@ case class Flow(
   destination_ip_geohash_value                                                                      : Option[Int],
   destination_ip_latitude                                                                           : Option[Double],
   destination_ip_longitude                                                                          : Option[Double]
-) extends Measurement {
+) extends InfluxMeasurement {
   override def isLossy: Boolean = false
 
   // Case classes don't generate unapply methods for more than 22 fields, since
@@ -89,7 +89,7 @@ case class Flow(
     destination_ip_geohash_value,
     destination_ip_latitude,
     destination_ip_longitude
-  ).map(toCsvTupleEntry)
+  ).map(toCsvEntry)
 
   var defaultValue: Option[Double] = Some(time_to_first_byte)
 
@@ -125,7 +125,7 @@ case class Flow(
   )
 }
 
-object Flow extends MeasurementFactory {
+object Flow extends InfluxMeasurementFactory {
 
   /** Flow entries can be one of three types, depending on what part of a flow
     * they represent. A flow usually has a start, an end, and 0 or more intervals.

@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.connectors
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata._
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 
 import java.time.Instant
 
@@ -115,8 +115,8 @@ case class InfluxHistoryConnection(
     */
   def getAllAmpData(
     start: Instant = Instant.EPOCH,
-    end: Instant = Instant.now()
-  ): Seq[Measurement] = {
+    end  : Instant = Instant.now()
+  ): Seq[InfluxMeasurement] = {
     getIcmpData(start, end) ++
       getDnsData(start, end) ++
       getHttpData(start, end) ++
@@ -138,12 +138,12 @@ case class InfluxHistoryConnection(
     *
     * @return
     */
-  private def getData[T <: Measurement : ClassTag](
-      tableName: String,
-      columnNames: Seq[String],
-      reader: InfluxReader[T],
-      start: Instant,
-      end: Instant
+  private def getData[T <: InfluxMeasurement : ClassTag](
+    tableName  : String,
+    columnNames: Seq[String],
+    reader     : InfluxReader[T],
+    start      : Instant,
+    end        : Instant
   ): Seq[T] = {
     influx match {
       case Some(db) =>

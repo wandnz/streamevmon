@@ -12,21 +12,21 @@ import java.time.{Instant, ZoneId}
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-tcpping]]
   */
 case class RichTCPPing(
-  stream: Int,
-  source       : String,
-  destination  : String,
-  port: Int,
-  family       : String,
+  stream               : Int,
+  source               : String,
+  destination          : String,
+  port                 : Int,
+  family               : String,
   packet_size_selection: String,
   icmperrors           : Option[Int],
   loss                 : Option[Int],
   lossrate             : Option[Double],
-  median: Option[Int],
-  packet_size: Int,
-  results: Option[Int],
+  median               : Option[Int],
+  packet_size          : Int,
+  results              : Option[Int],
   rtts                 : Seq[Option[Int]],
   time                 : Instant
-) extends RichMeasurement {
+) extends RichInfluxMeasurement {
   override def toString: String = {
     s"${TCPPing.table_name}," +
       s"stream=$stream " +
@@ -47,12 +47,12 @@ case class RichTCPPing(
 
   override def isLossy: Boolean = loss.getOrElse(100) > 0
 
-  override def toCsvFormat: Seq[String] = RichTCPPing.unapply(this).get.productIterator.toSeq.map(toCsvTupleEntry)
+  override def toCsvFormat: Seq[String] = RichTCPPing.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 
   var defaultValue: Option[Double] = median.map(_.toDouble)
 }
 
-object RichTCPPing extends RichMeasurementFactory {
+object RichTCPPing extends RichInfluxMeasurementFactory {
   override def create(base: Measurement, meta: MeasurementMeta): Option[RichTCPPing] = {
     base match {
       case b: TCPPing =>
