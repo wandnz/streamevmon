@@ -129,15 +129,15 @@ trait EsmondAPI {
 
   @GET("archive/{metadataKey}/{eventType}/{summaryType}/{summaryWindow}")
   def failureTimeSeries(
-    @Path("metadataKey") metadataKey: String,
-    @Path("eventType") eventType: String,
-    @Path("summaryType") summaryType: String = "base",
+    @Path("metadataKey") metadataKey    : String,
+    @Path("eventType") eventType        : String,
+    @Path("summaryType") summaryType    : String = "base",
     @Path("summaryWindow") summaryWindow: String = "",
-    @Query("time-range") timeRange: JLong = null,
-    @Query("time") time: JLong = null,
-    @Query("time-start") timeStart: JLong = null,
-    @Query("time-end") timeEnd      : JLong = null,
-  ): Call[Iterable[TimeSeriesFailure]]
+    @Query("time-range") timeRange      : JLong = null,
+    @Query("time") time                 : JLong = null,
+    @Query("time-start") timeStart      : JLong = null,
+    @Query("time-end") timeEnd          : JLong = null,
+  ): Call[Iterable[FailureTimeSeriesEntry]]
 
   @GET("archive/{metadataKey}/{eventType}/{summaryType}/{summaryWindow}")
   def packetTraceTimeSeries(

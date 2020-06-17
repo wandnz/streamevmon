@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.connectors.esmond.schema
 import com.fasterxml.jackson.annotation.{JsonProperty, JsonPropertyOrder}
 
 @JsonPropertyOrder(alphabetic = true)
-class TimeSeriesFailure extends AbstractTimeSeriesEntry {
+class FailureTimeSeriesEntry extends AbstractTimeSeriesEntry {
   @JsonProperty("val")
   val value: Map[String, String] = Map()
 

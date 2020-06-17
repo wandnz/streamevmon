@@ -1,15 +1,9 @@
 package nz.net.wand.streamevmon.measurements.esmond
 
-import nz.net.wand.streamevmon.connectors.esmond.schema.{EventType, SimpleTimeSeriesEntry, Summary}
+import nz.net.wand.streamevmon.connectors.esmond.schema._
 import nz.net.wand.streamevmon.measurements.Measurement
 
-import java.time.Instant
-
-case class EsmondMeasurement(
-  stream: Int,
-  value : Double,
-  time  : Instant
-) extends Measurement {
+trait EsmondMeasurement extends Measurement {
   override def isLossy: Boolean = false
 }
 
@@ -20,20 +14,25 @@ object EsmondMeasurement {
 
   def apply(
     stream: Int,
-    entry: SimpleTimeSeriesEntry
-  ): EsmondMeasurement = new EsmondMeasurement(
-    stream,
-    entry.value,
-    Instant.ofEpochSecond(entry.timestamp)
-  )
+    entry : AbstractTimeSeriesEntry
+  ): EsmondMeasurement = {
+    entry match {
+      case e: HistogramTimeSeriesEntry => Histogram(stream, e)
+      case e: HrefTimeSeriesEntry => Href(stream, e)
+      case e: PacketTraceTimeSeriesEntry => PacketTrace(stream, e)
+      case e: SimpleTimeSeriesEntry => Simple(stream, e)
+      case e: SubintervalTimeSeriesEntry => Subinterval(stream, e)
+      case e: FailureTimeSeriesEntry => Failure(stream, e)
+    }
+  }
 
   def apply(
     eventType: EventType,
-    entry: SimpleTimeSeriesEntry
+    entry: AbstractTimeSeriesEntry
   ): EsmondMeasurement = apply(calculateStreamId(eventType), entry)
 
   def apply(
     summary: Summary,
-    entry: SimpleTimeSeriesEntry
+    entry: AbstractTimeSeriesEntry
   ): EsmondMeasurement = apply(calculateStreamId(summary), entry)
 }

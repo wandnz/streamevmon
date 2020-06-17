@@ -2,8 +2,9 @@ package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.{Configuration, Logging}
 import nz.net.wand.streamevmon.connectors.esmond.EsmondConnectionForeground
-import nz.net.wand.streamevmon.connectors.esmond.schema.{Archive, HistogramTimeSeriesEntry}
+import nz.net.wand.streamevmon.connectors.esmond.schema.Archive
 import nz.net.wand.streamevmon.flink.PollingEsmondSourceFunction
+import nz.net.wand.streamevmon.measurements.esmond.{EsmondMeasurement, RichEsmondMeasurement}
 
 import java.io._
 import java.time.{Duration, Instant}
@@ -130,26 +131,12 @@ object EsmondRunner extends Logging {
         connection.getTimeSeriesEntries(et.metadataKey, et.eventType, timeRange = Some(Duration.ofDays(1).getSeconds))
       })))
 
-    // Investigation of getting values out of a map with double keys.
-    val histogramEntry = exampleOfE.toList
-      .find { e =>
-        e._4 match {
-          case Some(b) => b match {
-            case Some(c) => c match {
-              case Failure(_) => false
-              case Success(d) => d.nonEmpty && d.head.isInstanceOf[HistogramTimeSeriesEntry]
-            }
-            case None => false
-          }
-          case None => false
-        }
-      } match {
-      case Some(value) => value._4.get.get.get.head.asInstanceOf[HistogramTimeSeriesEntry]
-      case None => null
-    }
-
-    val head = histogramEntry.value.keys.head
-    val result = histogramEntry.value.get(head)
+    val measurements = exampleOfE
+      .map { t =>
+        (t._1, t._2, t._3, t._4, t._4.map(_.map(_.map(_.map { e =>
+          (EsmondMeasurement(t._3.get.get, e), RichEsmondMeasurement(t._3.get.get, e))
+        }))))
+      }
 
     val breakpoint = 1
   }
