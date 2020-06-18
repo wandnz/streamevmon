@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.{JsonProperty, JsonPropertyOrder}
   */
 @JsonPropertyOrder(alphabetic = true)
 class Summary extends Serializable {
-
   // Unfortunately, this field is usually different to the part of the URI that
   // it corresponds to. We'll have to expose a field which bypasses the
   // discrepancies, instead of the raw field.

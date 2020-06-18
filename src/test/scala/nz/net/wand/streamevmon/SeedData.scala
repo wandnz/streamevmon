@@ -1,8 +1,11 @@
 package nz.net.wand.streamevmon
 
+import nz.net.wand.streamevmon.connectors.esmond.schema._
+import nz.net.wand.streamevmon.connectors.esmond.ResponseType
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow
+import nz.net.wand.streamevmon.measurements.esmond._
 import nz.net.wand.streamevmon.measurements.latencyts._
 
 import java.time.{Duration, Instant}
@@ -549,6 +552,281 @@ object SeedData {
         destination_ip_longitude = Some(-0.093000)
       )
     )
+  }
+
+  object esmond {
+    val ts = 1563761840L
+    val timestampAsInstant = Instant.ofEpochSecond(ts)
+    val mdkey = "45341102527f440e8cd040d55b8b771b"
+
+    val eTypes = Seq("failures",
+      "histogram-ttl",
+      "histogram-owdelay",
+      "pscheduler-run-href",
+      "packet-trace",
+      "time-error-estimates",
+      "packet-duplicates",
+      "packet-loss-rate",
+      "packet-count-sent",
+      "packet-count-lost",
+      "throughput",
+      "packet-retransmits",
+      "packet-reorders",
+      "throughput-subintervals",
+      "packet-retransmits-subintervals"
+    )
+
+    // Since schema classes are usually constructed using reflection,
+    // they don't have standard constructors.
+    val archive = new Archive {
+      override val url: String = s"http://denv-owamp.es.net:8085/esmond/perfsonar/archive/$mdkey/"
+      override val uri: String = s"/esmond/perfsonar/archive/$mdkey/"
+      override val metadataKey: String = mdkey
+      override val subjectType: String = "point-to-point"
+      override val eventTypes: List[EventType] = eTypes.map { eType =>
+        new EventType {
+          override val baseUri: String = s"/esmond/perfsonar/archive/$mdkey/$eType/base"
+          override val eventType: String = eType
+          override val summaries: List[Summary] = List(
+            new Summary {
+              override val summaryTypeRaw = "aggregation"
+              override val summaryWindow = 300
+              override val timeUpdated = ts
+              override val uri = s"/esmond/perfsonar/archive/$mdkey/$eType/aggregations/300"
+            }
+          )
+          override val timeUpdated: Option[Int] = Some(ts.toInt)
+        }
+      }.toList
+    }
+
+    case class EsmondObjectSet(
+      eventType: EventType,
+      summary: Summary,
+      tsEntry: AbstractTimeSeriesEntry,
+      baseMeasurement: EsmondMeasurement,
+      baseRichMeasurement: RichEsmondMeasurement,
+      summaryRichMeasurement: RichEsmondMeasurement
+    )
+
+    val expectedObjects = archive.eventTypes.map { eType =>
+      val baseStreamId = EsmondMeasurement.calculateStreamId(eType)
+      val summaryStreamId = EsmondMeasurement.calculateStreamId(eType.summaries.head)
+      ResponseType.fromString(eType.eventType) match {
+        case ResponseType.Failure => EsmondObjectSet(
+          eType, eType.summaries.head,
+          new FailureTimeSeriesEntry {
+            override val timestamp = ts
+            override val value: Map[String, String] = Map(
+              "error" -> "This is the error text for a test object"
+            )
+          },
+          new Failure(
+            baseStreamId,
+            Some("This is the error text for a test object"),
+            timestampAsInstant
+          ),
+          new RichFailure(
+            baseStreamId,
+            Some("This is the error text for a test object"),
+            mdkey,
+            eType.eventType,
+            None,
+            None,
+            timestampAsInstant
+          ),
+          new RichFailure(
+            summaryStreamId,
+            Some("This is the error text for a test object"),
+            mdkey,
+            eType.eventType,
+            Some(eType.summaries.head.summaryType),
+            Some(eType.summaries.head.summaryWindow),
+            timestampAsInstant
+          )
+        )
+        case ResponseType.Histogram => EsmondObjectSet(
+          eType, eType.summaries.head,
+          new HistogramTimeSeriesEntry {
+            override val timestamp = 1563761840L
+            override lazy val value: Map[Double, Int] = Map(7.01 -> 12, 7.02 -> 13)
+          },
+          new Histogram(
+            baseStreamId,
+            Map(7.01 -> 12, 7.02 -> 13),
+            timestampAsInstant
+          ),
+          new RichHistogram(
+            baseStreamId,
+            Map(7.01 -> 12, 7.02 -> 13),
+            mdkey,
+            eType.eventType,
+            None,
+            None,
+            timestampAsInstant
+          ),
+          new RichHistogram(
+            summaryStreamId,
+            Map(7.01 -> 12, 7.02 -> 13),
+            mdkey,
+            eType.eventType,
+            Some(eType.summaries.head.summaryType),
+            Some(eType.summaries.head.summaryWindow),
+            timestampAsInstant
+          )
+        )
+        case ResponseType.Href => EsmondObjectSet(
+          eType, eType.summaries.head,
+          new HrefTimeSeriesEntry {
+            override val timestamp = 1563761840L
+            override val value: Map[String, String] = Map(
+              "href" -> "http://example.com/result"
+            )
+          },
+          new Href(
+            baseStreamId,
+            Some("http://example.com/result"),
+            timestampAsInstant
+          ),
+          new RichHref(
+            baseStreamId,
+            Some("http://example.com/result"),
+            mdkey,
+            eType.eventType,
+            None,
+            None,
+            timestampAsInstant
+          ),
+          new RichHref(
+            summaryStreamId,
+            Some("http://example.com/result"),
+            mdkey,
+            eType.eventType,
+            Some(eType.summaries.head.summaryType),
+            Some(eType.summaries.head.summaryWindow),
+            timestampAsInstant
+          )
+        )
+        case ResponseType.PacketTrace =>
+          val values = Seq(
+            new PacketTraceEntry {
+              override val success: Int = 1
+              override val ip: String = "2606:2800:220:1:248:1893:25c8:1946"
+              override val hostname: String = "example.com"
+              override val rtt: Double = 42.0
+              override val as: ASEntry = new ASEntry {
+                override val owner: String = "EDGECAST, US"
+                override val number: Int = 15133
+              }
+              override val ttl: Int = 42
+              override val query: Int = 1
+            }
+          )
+          EsmondObjectSet(
+            eType, eType.summaries.head,
+            new PacketTraceTimeSeriesEntry {
+              override val timestamp = 1563761840L
+              override val value: Iterable[PacketTraceEntry] = values
+            },
+            new PacketTrace(
+              baseStreamId,
+              values,
+              timestampAsInstant
+            ),
+            new RichPacketTrace(
+              baseStreamId,
+              values,
+              mdkey,
+              eType.eventType,
+              None,
+              None,
+              timestampAsInstant
+            ),
+            new RichPacketTrace(
+              summaryStreamId,
+              values,
+              mdkey,
+              eType.eventType,
+              Some(eType.summaries.head.summaryType),
+              Some(eType.summaries.head.summaryWindow),
+              timestampAsInstant
+            )
+          )
+        case ResponseType.Simple => EsmondObjectSet(
+          eType, eType.summaries.head,
+          new SimpleTimeSeriesEntry {
+            override val timestamp = 1563761840L
+            override val value: Double = 42.0
+          },
+          new Simple(
+            baseStreamId,
+            42.0,
+            timestampAsInstant
+          ),
+          new RichSimple(
+            baseStreamId,
+            42.0,
+            mdkey,
+            eType.eventType,
+            None,
+            None,
+            timestampAsInstant
+          ),
+          new RichSimple(
+            summaryStreamId,
+            42.0,
+            mdkey,
+            eType.eventType,
+            Some(eType.summaries.head.summaryType),
+            Some(eType.summaries.head.summaryWindow),
+            timestampAsInstant
+          )
+        )
+        case ResponseType.Subintervals =>
+          val values = Seq(
+            new SubintervalValue {
+              override val duration: Double = 42.0
+              override val start: Double = 0.0
+              override val value: Double = 0.0
+            },
+            new SubintervalValue {
+              override val duration: Double = 21.0
+              override val start: Double = 42.0
+              override val value: Double = 0.0
+            }
+          )
+          EsmondObjectSet(
+            eType, eType.summaries.head,
+            new SubintervalTimeSeriesEntry {
+              override val timestamp = 1563761840L
+              override val value: Iterable[SubintervalValue] = values
+            },
+            new Subinterval(
+              baseStreamId,
+              values,
+              timestampAsInstant
+            ),
+            new RichSubinterval(
+              baseStreamId,
+              values,
+              mdkey,
+              eType.eventType,
+              None,
+              None,
+              timestampAsInstant
+            ),
+            new RichSubinterval(
+              summaryStreamId,
+              values,
+              mdkey,
+              eType.eventType,
+              Some(eType.summaries.head.summaryType),
+              Some(eType.summaries.head.summaryWindow),
+              timestampAsInstant
+            )
+          )
+      }
+    }
   }
 
 }

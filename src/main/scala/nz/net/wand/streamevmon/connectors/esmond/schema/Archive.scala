@@ -17,7 +17,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include
 @JsonInclude(Include.NON_NULL)
 @JsonPropertyOrder(alphabetic = true)
 class Archive extends Serializable {
-
   // URL
   @JsonProperty("url")
   val url: String = null

@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.flink
 
-import nz.net.wand.streamevmon.connectors.esmond.schema.{AbstractTimeSeriesEntry, Summary}
+import nz.net.wand.streamevmon.connectors.esmond.schema.{AbstractTimeSeriesEntry, EventType, Summary}
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.connectors.esmond._
 import nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement
@@ -36,6 +36,11 @@ class PollingEsmondSourceFunction[
           with CheckpointedFunction
           with GloballyStoppableFunction
           with Logging {
+
+  case class Endpoint(
+    details: Either[EventType, Summary],
+    lastMeasurementTime: Instant
+  )
 
   @transient protected var isRunning = false
 
