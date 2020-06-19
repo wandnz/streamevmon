@@ -53,7 +53,7 @@ object EsmondRunner extends Logging {
 
     // Now that we know which time series we want to look at, let's get the
     // base time series. This has the most values, and is the easiest to get.
-    val baseTimeSeries = connection.getTimeSeriesEntries(selectedArchive.get.metadataKey, eventType, timeRange = Some(timeRange))
+    val baseTimeSeries = connection.getTimeSeriesEntriesFromMetadata(selectedArchive.get.metadataKey, eventType, timeRange = Some(timeRange))
     if (baseTimeSeries.isFailure) {
       logger.error(s"Failed to get time series: ${baseTimeSeries.failed.get}")
       return
@@ -128,7 +128,7 @@ object EsmondRunner extends Logging {
       .map(t => (t._1, t._2, t._2.map(_.eventTypes.find(e => e.eventType == t._1 && Instant.ofEpochSecond(e.timeUpdated.getOrElse(0).toLong).isAfter(Instant.now().minus(timeToCheck))))))
       .map(t => (t._1, t._2, t._3, t._3.map(_.map { et =>
         Thread.sleep(5)
-        connection.getTimeSeriesEntries(et.metadataKey, et.eventType, timeRange = Some(Duration.ofDays(1).getSeconds))
+        connection.getTimeSeriesEntriesFromMetadata(et.metadataKey, et.eventType, timeRange = Some(Duration.ofDays(1).getSeconds))
       })))
 
     val measurements = exampleOfE

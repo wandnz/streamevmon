@@ -2,6 +2,11 @@ package nz.net.wand.streamevmon.connectors.esmond
 
 import nz.net.wand.streamevmon.Logging
 
+/** Translates the event type string from an API response to an enum value
+  * corresponding to a schema.TimeSeriesEntry type. Mainly used by
+  * [[EsmondConnectionForeground]], which includes a function to map these
+  * types to constructors.
+  */
 private[streamevmon] object ResponseType extends Enumeration with Logging {
   type ResponseType = Value
   val Failure: Value = Value

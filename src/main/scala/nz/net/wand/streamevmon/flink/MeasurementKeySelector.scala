@@ -8,7 +8,9 @@ import nz.net.wand.streamevmon.measurements.latencyts._
 
 import org.apache.flink.api.java.functions.KeySelector
 
-class MeasurementKeySelector[T <: Measurement] extends KeySelector[T, String] {
+import scala.reflect.ClassTag
+
+class MeasurementKeySelector[T <: Measurement : ClassTag] extends KeySelector[T, String] {
   override def getKey(value: T): String =
     value match {
       case m@(_: DNS | _: RichDNS) => s"DNS-${m.stream}"
@@ -19,6 +21,7 @@ class MeasurementKeySelector[T <: Measurement] extends KeySelector[T, String] {
       case m@(_: LatencyTSAmpICMP) => s"LatencyTSAmpICMP-${m.stream}"
       case m@(_: LatencyTSSmokeping) => s"LatencyTSSmokeping-${m.stream}"
       case m@(_: Flow) => s"Flow-${m.stream}"
-      case m@(_: EsmondMeasurement | _: RichEsmondMeasurement) => s"esmond-${m.stream}"
+      case m@(_: EsmondMeasurement) => s"esmond-${m.stream}"
+      case m => throw new IllegalArgumentException(s"Unknown measurement type ${m.getClass.getSimpleName}")
     }
 }

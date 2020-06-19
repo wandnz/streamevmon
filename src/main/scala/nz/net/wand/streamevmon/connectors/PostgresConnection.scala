@@ -66,7 +66,7 @@ object PostgresConnection extends Caching {
 }
 
 /** PostgreSQL interface which produces
-  * [[MeasurementMeta MeasurementMeta]]
+  * [[nz.net.wand.streamevmon.measurements.amp.MeasurementMeta MeasurementMeta]]
   * objects.
   *
   * ==Configuration==

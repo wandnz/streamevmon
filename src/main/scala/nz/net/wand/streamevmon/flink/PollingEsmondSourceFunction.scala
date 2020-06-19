@@ -19,14 +19,28 @@ import org.apache.flink.streaming.api.functions.source.{RichSourceFunction, Sour
 import scala.collection.JavaConverters._
 import scala.util.{Failure, Try}
 
+/** Outputs data from an Esmond API host.
+  *
+  * Discovers the streams to query by passing the configuration to an instance
+  * of [[nz.net.wand.streamevmon.connectors.esmond.AbstractEsmondStreamDiscovery AbstractEsmondStreamDiscovery]]
+  * constructed using `discoveryBuilder`.
+  *
+  * Configuration for both can be overridden by using `overrideConfig`.
+  *
+  * @param configPrefix      A custom config prefix to use. You will need one instance
+  *                          of this SourceFunction for each endpoint being queried,
+  *                          and each will need a unique configPrefix.
+  * @param connectionBuilder A function which builds the Esmond connection
+  *                          implementation.
+  */
 class PollingEsmondSourceFunction[
   EsmondConnectionT <: AbstractEsmondConnection,
   EsmondDiscoveryT <: AbstractEsmondStreamDiscovery
 ](
   configPrefix     : String = "esmond.dataSource",
   // Man, this is a pain. You can't instantiate a type parameter, so instead
-  // you've got to include builders as arguments. These defaults are sensible,
-  // but I wanted to do this anyway so I could mock connections during testing.
+  // you've got to include builders as arguments. These defaults are sensible.
+  // Mainly useful for testing.
   connectionBuilder: String => AbstractEsmondConnection =
   (s: String) => new EsmondConnectionForeground(s),
   discoveryBuilder : (String, ParameterTool, AbstractEsmondConnection) => AbstractEsmondStreamDiscovery =
@@ -37,8 +51,12 @@ class PollingEsmondSourceFunction[
           with GloballyStoppableFunction
           with Logging {
 
-  case class Endpoint(
-    details: Either[EventType, Summary],
+  /** Keeps track of an endpoint that's being queried, as well as the time of
+    * the last measurement we received. This lets us only query for measurements
+    * we haven't seen before.
+    */
+  protected case class Endpoint(
+    details            : Either[EventType, Summary],
     lastMeasurementTime: Instant
   )
 
@@ -84,6 +102,7 @@ class PollingEsmondSourceFunction[
     firstMeasurementTime = Instant.now().minus(fetchHistory).minus(timeOffset)
   }
 
+  // Wrapper functions to scream and yell if the esmond connection doesn't exist
   protected def getSummaryEntries(
     summary: Summary,
     timeStart: Option[Instant],
@@ -101,15 +120,13 @@ class PollingEsmondSourceFunction[
   }
 
   protected def getEntries(
-    metadataKey: String,
-    eventType  : String,
-    timeStart  : Option[Instant],
-    timeEnd    : Option[Instant]
+    eventType: EventType,
+    timeStart: Option[Instant],
+    timeEnd  : Option[Instant]
   ): Try[Iterable[AbstractTimeSeriesEntry]] = {
     esmond match {
       case Some(es) =>
         es.getTimeSeriesEntries(
-          metadataKey,
           eventType,
           timeStart = timeStart.map(_.getEpochSecond),
           timeEnd = timeEnd.map(_.getEpochSecond)
@@ -118,14 +135,27 @@ class PollingEsmondSourceFunction[
     }
   }
 
+  /** This function does all the heavy lifting of querying the endpoints and
+    * waiting the appropriate amount of time between queries.
+    *
+    * @param endpoints    The list of endpoints which should be queried, as well
+    *                     as the last observed time from that endpoint.
+    * @param loopInterval The amount of time to wait between queries.
+    *
+    * @return `endpoints`, updated with the last observed times from any
+    *         endpoints which returned data.
+    */
   protected def getAndUpdateEndpoints(
-    ctx: SourceFunction.SourceContext[RichEsmondMeasurement],
-    endpoints: Iterable[Endpoint],
+    ctx         : SourceFunction.SourceContext[RichEsmondMeasurement],
+    endpoints   : Iterable[Endpoint],
     loopInterval: Duration
   ): Iterable[Endpoint] = {
+    // The first query happens instantly. This lets us have 0-delay queries,
+    // but does mean that if this function is called in a loop with no delay,
+    // the last and first queries will happen with no delay.
     var lastQueryTime: Instant = Instant.now().minus(loopInterval)
 
-    // depending on if they're summaries or not...
+    // For every endpoint
     endpoints.map { endpoint =>
       // If we need to wait around to not bog down the API too much, then do so.
       val now = Instant.now()
@@ -136,12 +166,12 @@ class PollingEsmondSourceFunction[
       }
       lastQueryTime = Instant.now()
 
+      // Pick the function to use depending on if it's a summary or not.
       endpoint.details match {
         case Left(eType) =>
           // Get the entries since however long ago we're querying
           val entries = getEntries(
-            eType.metadataKey,
-            eType.eventType,
+            eType,
             timeStart = Some(endpoint.lastMeasurementTime),
             timeEnd = Some(lastQueryTime.minus(timeOffset))
           )
@@ -198,7 +228,7 @@ class PollingEsmondSourceFunction[
     }
 
     // This takes just two of each kind of stream for debugging purposes.
-    selectedStreams = selectedStreams.take(2) ++ selectedStreams.filter(_.details.isRight).take(2)
+    //selectedStreams = selectedStreams.take(2) ++ selectedStreams.filter(_.details.isRight).take(2)
 
     // Get historical data
     val now = Instant.now().minus(timeOffset)
@@ -206,12 +236,14 @@ class PollingEsmondSourceFunction[
     val historyString = DurationFormatUtils.formatDuration(timeSinceLastMeasurement.toMillis, "H:mm:ss")
     logger.info(s"Fetching data since ${firstMeasurementTime.plus(timeOffset)} ($historyString ago)")
 
-    // Every stream should get queried, and the most recent measurement time updated.
+    // Every stream gets, and the most recent measurement time updated.
     selectedStreams = getAndUpdateEndpoints(ctx, selectedStreams, Duration.ZERO)
 
+    // Then just keep on polling until we're told to quit.
     listen(ctx)
   }
 
+  /** Continually polls all the endpoints for new data. */
   protected[this] def listen(ctx: SourceFunction.SourceContext[RichEsmondMeasurement]): Unit = {
     // targetRefreshInterval tells us how long we aim to have between each refresh
     // of a single endpoint. targetLoopInterval is based on that, and is our goal

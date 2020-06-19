@@ -10,12 +10,12 @@ import org.apache.flink.configuration.Configuration
 
 /** Receives [[nz.net.wand.streamevmon.measurements.RichMeasurement RichMeasurement]]
   * values from InfluxDB in a streaming fashion.This source retrieves AMP
-  * * measurements.
-  * *
-  * * @see [[nz.net.wand.streamevmon.connectors.InfluxConnection InfluxConnection]]
-  * *     and [[nz.net.wand.streamevmon.connectors.InfluxHistoryConnection InfluxHistoryConnection]]
-  * *     for configuration details.
-  * */
+  * measurements.
+  *
+  * @see [[nz.net.wand.streamevmon.connectors.InfluxConnection InfluxConnection]]
+  *      and [[nz.net.wand.streamevmon.connectors.InfluxHistoryConnection InfluxHistoryConnection]]
+  *      for configuration details.
+  */
 class AmpRichMeasurementSourceFunction(
   configPrefix: String = "influx.dataSource",
   fetchHistory: Duration = Duration.ZERO

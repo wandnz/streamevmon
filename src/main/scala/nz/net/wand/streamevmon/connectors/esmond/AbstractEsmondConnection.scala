@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.connectors.esmond
 
-import nz.net.wand.streamevmon.connectors.esmond.schema.{AbstractTimeSeriesEntry, Archive, Summary}
+import nz.net.wand.streamevmon.connectors.esmond.schema._
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
@@ -10,6 +10,11 @@ import retrofit2.Retrofit.Builder
 
 import scala.util.{Failure, Success, Try}
 
+/** A generic interface for [[EsmondAPI]].
+  *
+  * @param source The URL of the API host being used as a source. Include the
+  *               TLD, protocol, and port, but not the API path.
+  */
 abstract class AbstractEsmondConnection(
   source: String
 ) {
@@ -57,42 +62,91 @@ abstract class AbstractEsmondConnection(
     time            : Option[Long] = None,
     timeStart       : Option[Long] = None,
     timeEnd         : Option[Long] = None,
+    limit           : Option[Long] = None,
+    offset          : Option[Long] = None,
     source          : Option[String] = None,
     destination     : Option[String] = None,
     measurementAgent: Option[String] = None,
     toolName        : Option[String] = None,
     dnsMatchRule    : Option[String] = None,
-    eventType       : Option[String] = None
+    eventType       : Option[String] = None,
+    summaryType     : Option[String] = None,
+    summaryWindow   : Option[Long] = None,
   ): Try[Iterable[Archive]]
 
-  /** @see [[EsmondAPI.archive]]*/
+  /** @see [[EsmondAPI.archive]] */
   def getArchive(
     metadataKey: String,
   ): Try[Archive]
 
-  /** @see [[EsmondAPI.simpleTimeSeries]]*/
-  def getTimeSeriesEntries(
+  /** Gets a base (non-summarised) time series response.
+    *
+    * @see [[EsmondAPI.failureTimeSeries]]
+    * @see [[EsmondAPI.histogramTimeSeries]]
+    * @see [[EsmondAPI.hrefTimeSeries]]
+    * @see [[EsmondAPI.packetTraceTimeSeries]]
+    * @see [[EsmondAPI.simpleTimeSeries]]
+    * @see [[EsmondAPI.subintervalTimeSeries]]
+    */
+  def getTimeSeriesEntriesFromMetadata(
     metadataKey: String,
-    eventType: String,
-    timeRange: Option[Long] = None,
-    time: Option[Long] = None,
-    timeStart: Option[Long] = None,
+    eventType  : String,
+    timeRange  : Option[Long] = None,
+    time       : Option[Long] = None,
+    timeStart  : Option[Long] = None,
     timeEnd    : Option[Long] = None,
   ): Try[Iterable[AbstractTimeSeriesEntry]]
 
-  def getTimeSeriesSummaryEntriesFromMetadata(
-    metadataKey: String,
-    eventType: String,
-    summaryType: String,
-    summaryWindow: Long,
+  /** Gets a base (non-summarised) time series response from an
+    * [[nz.net.wand.streamevmon.connectors.esmond.schema.EventType EventType]] object.
+    *
+    * @see [[EsmondAPI.failureTimeSeries]]
+    * @see [[EsmondAPI.histogramTimeSeries]]
+    * @see [[EsmondAPI.hrefTimeSeries]]
+    * @see [[EsmondAPI.packetTraceTimeSeries]]
+    * @see [[EsmondAPI.simpleTimeSeries]]
+    * @see [[EsmondAPI.subintervalTimeSeries]]
+    */
+  def getTimeSeriesEntries(
+    eventType: EventType,
     timeRange: Option[Long] = None,
-    time: Option[Long] = None,
+    time     : Option[Long] = None,
     timeStart: Option[Long] = None,
     timeEnd  : Option[Long] = None,
   ): Try[Iterable[AbstractTimeSeriesEntry]]
 
+  /** Gets a summarised time series response.
+    *
+    * @see [[EsmondAPI.failureTimeSeries]]
+    * @see [[EsmondAPI.histogramTimeSeries]]
+    * @see [[EsmondAPI.hrefTimeSeries]]
+    * @see [[EsmondAPI.packetTraceTimeSeries]]
+    * @see [[EsmondAPI.simpleTimeSeries]]
+    * @see [[EsmondAPI.subintervalTimeSeries]]
+    */
+  def getTimeSeriesSummaryEntriesFromMetadata(
+    metadataKey  : String,
+    eventType    : String,
+    summaryType  : String,
+    summaryWindow: Long,
+    timeRange    : Option[Long] = None,
+    time         : Option[Long] = None,
+    timeStart    : Option[Long] = None,
+    timeEnd      : Option[Long] = None,
+  ): Try[Iterable[AbstractTimeSeriesEntry]]
+
+  /** Gets a summarised time series response from a
+    * [[nz.net.wand.streamevmon.connectors.esmond.schema.Summary Summary]] object.
+    *
+    * @see [[EsmondAPI.failureTimeSeries]]
+    * @see [[EsmondAPI.histogramTimeSeries]]
+    * @see [[EsmondAPI.hrefTimeSeries]]
+    * @see [[EsmondAPI.packetTraceTimeSeries]]
+    * @see [[EsmondAPI.simpleTimeSeries]]
+    * @see [[EsmondAPI.subintervalTimeSeries]]
+    */
   def getTimeSeriesSummaryEntries(
-    summary: Summary,
+    summary  : Summary,
     timeRange: Option[Long] = None,
     time     : Option[Long] = None,
     timeStart: Option[Long] = None,

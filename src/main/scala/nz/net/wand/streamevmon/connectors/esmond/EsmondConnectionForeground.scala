@@ -9,16 +9,20 @@ import retrofit2._
 
 import scala.util.Try
 
-/** Acts as an interface for [[EsmondAPI]].
+/** Acts as an interface for [[EsmondAPI]]. Does all API calls in the current
+  * thread.
   *
   * @param source The URL of the API host being used as a source. Include the
-  *               TLD, but exclude the protocol and port.
+  *               TLD, protocol, and port.
   */
 class EsmondConnectionForeground(
   source: String
 ) extends AbstractEsmondConnection(source)
           with Logging {
 
+  /** When combined with [[ResponseType]], this lets us map eventType strings
+    * into the API call returning the correct type.
+    */
   private implicit class ExtensionMethod(responseType: ResponseType.Value) {
     type ApiCall = (String, String, String, String, JLong, JLong, JLong, JLong) => Call[Iterable[AbstractTimeSeriesEntry]]
 
@@ -42,48 +46,53 @@ class EsmondConnectionForeground(
     wrapInTry(func.execute)
   }
 
-  /** @see [[EsmondAPI.archiveList]]*/
   def getArchiveList(
-    timeRange       : Option[Long] = None,
-    time            : Option[Long] = None,
-    timeStart       : Option[Long] = None,
-    timeEnd         : Option[Long] = None,
-    source          : Option[String] = None,
-    destination     : Option[String] = None,
+    timeRange: Option[Long] = None,
+    time: Option[Long] = None,
+    timeStart: Option[Long] = None,
+    timeEnd: Option[Long] = None,
+    limit: Option[Long] = None,
+    offset: Option[Long] = None,
+    source: Option[String] = None,
+    destination: Option[String] = None,
     measurementAgent: Option[String] = None,
-    toolName        : Option[String] = None,
-    dnsMatchRule    : Option[String] = None,
-    eventType       : Option[String] = None
+    toolName: Option[String] = None,
+    dnsMatchRule: Option[String] = None,
+    eventType: Option[String] = None,
+    summaryType: Option[String] = None,
+    summaryWindow: Option[Long] = None,
   ): Try[Iterable[Archive]] = {
     wrapInTrySynchronously(esmondAPI.archiveList(
-      timeRange.map(new JLong(_)).orNull,
-      time.map(new JLong(_)).orNull,
-      timeStart.map(new JLong(_)).orNull,
-      timeEnd.map(new JLong(_)).orNull,
-      source.orNull,
-      destination.orNull,
-      measurementAgent.orNull,
-      toolName.orNull,
-      dnsMatchRule.orNull,
-      eventType.orNull,
+      timeRange = timeRange.map(new JLong(_)).orNull,
+      time = time.map(new JLong(_)).orNull,
+      timeStart = timeStart.map(new JLong(_)).orNull,
+      timeEnd = timeEnd.map(new JLong(_)).orNull,
+      source = source.orNull,
+      destination = destination.orNull,
+      measurementAgent = measurementAgent.orNull,
+      toolName = toolName.orNull,
+      dnsMatchRule = dnsMatchRule.orNull,
+      eventType = eventType.orNull,
+      summaryType = summaryType.orNull,
+      summaryWindow = summaryWindow.map(_.toString).orNull,
+      limit = limit.map(new JLong(_)).orNull,
+      offset = offset.map(new JLong(_)).orNull
     ))
   }
 
-  /** @see [[EsmondAPI.archive]] */
   def getArchive(
     metadataKey: String,
   ): Try[Archive] = {
     wrapInTrySynchronously(esmondAPI.archive(metadataKey))
   }
 
-  /** @see [[EsmondAPI.simpleTimeSeries]] */
-  def getTimeSeriesEntries(
+  def getTimeSeriesEntriesFromMetadata(
     metadataKey: String,
     eventType: String,
     timeRange: Option[Long] = None,
     time: Option[Long] = None,
     timeStart: Option[Long] = None,
-    timeEnd    : Option[Long] = None,
+    timeEnd: Option[Long] = None,
   ): Try[Iterable[AbstractTimeSeriesEntry]] = {
     val args = (
       metadataKey,
@@ -100,15 +109,32 @@ class EsmondConnectionForeground(
       .asInstanceOf[Try[Iterable[AbstractTimeSeriesEntry]]]
   }
 
+  def getTimeSeriesEntries(
+    eventType: EventType,
+    timeRange: Option[Long] = None,
+    time: Option[Long] = None,
+    timeStart: Option[Long] = None,
+    timeEnd: Option[Long] = None,
+  ): Try[Iterable[AbstractTimeSeriesEntry]] = {
+    getTimeSeriesEntriesFromMetadata(
+      eventType.metadataKey,
+      eventType.eventType,
+      timeRange,
+      time,
+      timeStart,
+      timeEnd
+    )
+  }
+
   def getTimeSeriesSummaryEntriesFromMetadata(
     metadataKey: String,
-    eventType: String,
+    eventType  : String,
     summaryType: String,
     summaryWindow: Long,
     timeRange: Option[Long] = None,
     time: Option[Long] = None,
     timeStart: Option[Long] = None,
-    timeEnd      : Option[Long] = None,
+    timeEnd: Option[Long] = None,
   ): Try[Iterable[AbstractTimeSeriesEntry]] = {
     val args = (
       metadataKey,
@@ -132,18 +158,15 @@ class EsmondConnectionForeground(
     timeStart: Option[Long] = None,
     timeEnd  : Option[Long] = None,
   ): Try[Iterable[AbstractTimeSeriesEntry]] = {
-    val args = (
+    getTimeSeriesSummaryEntriesFromMetadata(
       summary.metadataKey,
       summary.eventType,
       summary.summaryType,
-      summary.summaryWindow.toString,
-      timeRange.map(new JLong(_)).orNull,
-      time.map(new JLong(_)).orNull,
-      timeStart.map(new JLong(_)).orNull,
-      timeEnd.map(new JLong(_)).orNull,
+      summary.summaryWindow,
+      timeRange,
+      time,
+      timeStart,
+      timeEnd
     )
-
-    wrapInTrySynchronously(ResponseType.fromString(summary.eventType).toApiCall.tupled(args))
-      .asInstanceOf[Try[Iterable[AbstractTimeSeriesEntry]]]
   }
 }
