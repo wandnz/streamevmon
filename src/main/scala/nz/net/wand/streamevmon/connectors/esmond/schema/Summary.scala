@@ -20,16 +20,10 @@ class Summary extends Serializable {
   // later and it's more work for not much benefit.
   @JsonProperty("summary-type")
   protected val summaryTypeRaw: String = ""
-
-  @JsonIgnore
-  private val summaryTypeOverrides = Map(
-    "aggregation" -> "aggregations",
-    "average" -> "averages"
-  )
   @JsonIgnore
   lazy val summaryType: String = {
-    if (summaryTypeOverrides.contains(summaryTypeRaw)) {
-      summaryTypeOverrides(summaryTypeRaw)
+    if (Summary.summaryTypeOverrides.contains(summaryTypeRaw)) {
+      Summary.summaryTypeOverrides(summaryTypeRaw)
     }
     else {
       summaryTypeRaw
@@ -71,4 +65,11 @@ class Summary extends Serializable {
     val state = Seq(summaryType, summaryWindow, timeUpdated, uri)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
+}
+
+object Summary {
+  protected val summaryTypeOverrides = Map(
+    "aggregation" -> "aggregations",
+    "average" -> "averages"
+  )
 }

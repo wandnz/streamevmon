@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.detectors.baseline
 
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 
 import java.time.{Duration, Instant}
 
@@ -15,7 +15,7 @@ import org.apache.flink.util.Collector
 
 import scala.collection.mutable
 
-class BaselineDetector[MeasT <: Measurement]
+class BaselineDetector[MeasT <: Measurement with HasDefault]
   extends KeyedProcessFunction[String, MeasT, Event] {
 
   final val detectorName = "Baseline Detector"
