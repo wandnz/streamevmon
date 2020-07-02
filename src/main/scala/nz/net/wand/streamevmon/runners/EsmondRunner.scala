@@ -2,13 +2,15 @@ package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.{Configuration, Logging}
 import nz.net.wand.streamevmon.connectors.esmond.EsmondConnectionForeground
-import nz.net.wand.streamevmon.connectors.esmond.schema.Archive
+import nz.net.wand.streamevmon.connectors.esmond.schema.{AbstractTimeSeriesEntry, Archive}
 import nz.net.wand.streamevmon.flink.PollingEsmondSourceFunction
 import nz.net.wand.streamevmon.measurements.esmond.{EsmondMeasurement, RichEsmondMeasurement}
 
 import java.io._
-import java.time.{Duration, Instant}
+import java.time.Duration
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.TimeCharacteristic
 
@@ -18,7 +20,7 @@ object EsmondRunner extends Logging {
   val timeRange: Long = 86400
   val eventType = "packet-count-sent"
 
-  private val connection = new EsmondConnectionForeground("http://denv-owamp.es.net:8085")
+  private val connection = new EsmondConnectionForeground("http://wash-owamp.es.net:8085")
 
   /** This function tries out all the API calls and does some basic sanity checking. */
   def useAllTheCalls(): Unit = {
@@ -79,10 +81,10 @@ object EsmondRunner extends Logging {
   }
 
   val serialiseLocation = "/tmp/sevm/archive.spkl"
-  val timeToCheck: Duration = Duration.ofDays(7)
+  val timeToCheck: Duration = Duration.ofSeconds(600000)
 
   def serialiseTheResults(): Iterable[Archive] = {
-    connection.getArchiveList(timeRange = Some(timeToCheck.getSeconds)) match {
+    connection.getArchiveList(timeRange = Some(3600)) match {
       case Failure(exception) => logger.error(exception.toString); Seq()
       case Success(value) =>
         val f = new File(serialiseLocation)
@@ -124,11 +126,23 @@ object EsmondRunner extends Logging {
     val summaryTypes = summarise(_.eventTypes.flatMap(_.summaries.map(_.summaryType)))
 
     val exampleOfE = eventTypes.keys
-      .map(t => (t, a.find(_.eventTypes.exists(e => e.eventType == t && Instant.ofEpochSecond(e.timeUpdated.getOrElse(0).toLong).isAfter(Instant.now().minus(timeToCheck))))))
-      .map(t => (t._1, t._2, t._2.map(_.eventTypes.find(e => e.eventType == t._1 && Instant.ofEpochSecond(e.timeUpdated.getOrElse(0).toLong).isAfter(Instant.now().minus(timeToCheck))))))
+      .map(t => (t, a.find(ar => ar.inputDestination.getOrElse("").contains("aofa") && ar.eventTypes.exists(e => e.eventType == t))))
+      .map(t => (t._1, t._2, t._2.map(_.eventTypes.find(e => e.eventType == t._1)))) //&& Instant.ofEpochSecond(e.timeUpdated.getOrElse(0).toLong).isAfter(Instant.now().minus(timeToCheck))))))
       .map(t => (t._1, t._2, t._3, t._3.map(_.map { et =>
-        Thread.sleep(5)
-        connection.getTimeSeriesEntriesFromMetadata(et.metadataKey, et.eventType, timeRange = Some(Duration.ofDays(1).getSeconds))
+        var retVal: Option[Try[Iterable[AbstractTimeSeriesEntry]]] = None
+        var count = 0
+        while (retVal.isEmpty) {
+          Thread.sleep(3000)
+          val result = connection.getTimeSeriesEntriesFromMetadata(et.metadataKey, et.eventType, timeRange = Some(3600))
+          result match {
+            case Failure(f) => count += 1
+              if (count > 10) {
+                retVal = Some(result)
+              }
+            case Success(_) => retVal = Some(result)
+          }
+        }
+        retVal.get
       })))
 
     val measurements = exampleOfE
@@ -137,6 +151,12 @@ object EsmondRunner extends Logging {
           (EsmondMeasurement(t._3.get.get, e), RichEsmondMeasurement(t._3.get.get, e))
         }))))
       }
+
+    val mapper = new ObjectMapper()
+    mapper.registerModule(DefaultScalaModule)
+    val out = new FileWriter("out/esmond.json")
+    mapper.writeValue(out, measurements)
+    out.close()
 
     val breakpoint = 1
   }
@@ -161,7 +181,7 @@ object EsmondRunner extends Logging {
   def main(args: Array[String]): Unit = {
     //useAllTheCalls()
     //useSourceFunction()
-    //serialiseTheResults()
+    serialiseTheResults()
     exploreTheResults()
   }
 }

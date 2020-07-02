@@ -1,12 +1,13 @@
 package nz.net.wand.streamevmon.connectors.esmond.schema
 
-import com.fasterxml.jackson.annotation.{JsonProperty, JsonPropertyOrder}
+import com.fasterxml.jackson.annotation.{JsonIgnore, JsonProperty, JsonPropertyOrder}
 
 @JsonPropertyOrder(alphabetic = true)
 class FailureTimeSeriesEntry extends AbstractTimeSeriesEntry {
   @JsonProperty("val")
   val value: Map[String, String] = Map()
 
+  @JsonIgnore
   lazy val failureText: Option[String] = value.get("error")
 
   override def toString: String = {

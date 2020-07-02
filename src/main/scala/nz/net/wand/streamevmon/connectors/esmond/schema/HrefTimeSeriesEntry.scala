@@ -1,12 +1,13 @@
 package nz.net.wand.streamevmon.connectors.esmond.schema
 
-import com.fasterxml.jackson.annotation.{JsonProperty, JsonPropertyOrder}
+import com.fasterxml.jackson.annotation.{JsonIgnore, JsonProperty, JsonPropertyOrder}
 
 @JsonPropertyOrder(alphabetic = true)
 class HrefTimeSeriesEntry extends AbstractTimeSeriesEntry {
   @JsonProperty("val")
   val value: Map[String, String] = Map()
 
+  @JsonIgnore
   lazy val hrefLocation: Option[String] = value.get("href")
 
   override def toString: String = {

@@ -4,7 +4,7 @@ import nz.net.wand.streamevmon.connectors.esmond.EsmondAPI
 
 import java.io.Serializable
 
-import com.fasterxml.jackson.annotation.{JsonProperty, JsonPropertyOrder}
+import com.fasterxml.jackson.annotation.{JsonIgnore, JsonProperty, JsonPropertyOrder}
 
 /** A metadata archive's event-type list should contain some of these.
   *
@@ -25,6 +25,7 @@ class EventType extends Serializable {
   @JsonProperty("time-updated")
   val timeUpdated: Option[Int] = None
 
+  @JsonIgnore
   lazy val metadataKey: String = baseUri.split('/')(4)
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[EventType]

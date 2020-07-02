@@ -50,13 +50,13 @@ class PacketTraceEntry extends Serializable {
   @JsonProperty("success")
   val success: Int = Int.MinValue
   @JsonProperty("ip")
-  val ip: String = null
+  val ip: Option[String] = None
   @JsonProperty("hostname")
-  val hostname: String = null
+  val hostname: Option[String] = None
   @JsonProperty("rtt")
-  val rtt: Double = Double.NaN
+  val rtt: Option[Double] = None
   @JsonProperty("as")
-  val as: ASEntry = null
+  val as: Option[ASEntry] = None
   @JsonProperty("ttl")
   val ttl: Int = Int.MinValue
   @JsonProperty("query")

@@ -4,7 +4,7 @@ import nz.net.wand.streamevmon.connectors.esmond.EsmondAPI
 
 import java.io.Serializable
 
-import com.fasterxml.jackson.annotation.{JsonProperty, JsonPropertyOrder}
+import com.fasterxml.jackson.annotation.{JsonIgnore, JsonProperty, JsonPropertyOrder}
 
 /** An entry in a metadata archive's event-type field might contain some of these.
   *
@@ -21,10 +21,12 @@ class Summary extends Serializable {
   @JsonProperty("summary-type")
   protected val summaryTypeRaw: String = ""
 
+  @JsonIgnore
   private val summaryTypeOverrides = Map(
     "aggregation" -> "aggregations",
     "average" -> "averages"
   )
+  @JsonIgnore
   lazy val summaryType: String = {
     if (summaryTypeOverrides.contains(summaryTypeRaw)) {
       summaryTypeOverrides(summaryTypeRaw)
@@ -45,8 +47,10 @@ class Summary extends Serializable {
 
   // These fields could probably be obtained more elegantly, but it does work
   // for getting the fields which are otherwise missing.
+  @JsonIgnore
   lazy val metadataKey: String = uri.split('/')(4)
 
+  @JsonIgnore
   lazy val eventType: String = uri.split('/')(5)
 
   override def toString: String = uri

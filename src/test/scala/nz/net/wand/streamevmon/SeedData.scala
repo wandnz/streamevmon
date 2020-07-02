@@ -711,13 +711,13 @@ object SeedData {
           val values = Seq(
             new PacketTraceEntry {
               override val success: Int = 1
-              override val ip: String = "2606:2800:220:1:248:1893:25c8:1946"
-              override val hostname: String = "example.com"
-              override val rtt: Double = 42.0
-              override val as: ASEntry = new ASEntry {
+              override val ip: Option[String] = Some("2606:2800:220:1:248:1893:25c8:1946")
+              override val hostname: Option[String] = Some("example.com")
+              override val rtt: Option[Double] = Some(42.0)
+              override val as: Option[ASEntry] = Some(new ASEntry {
                 override val owner: String = "EDGECAST, US"
                 override val number: Int = 15133
-              }
+              })
               override val ttl: Int = 42
               override val query: Int = 1
             }
