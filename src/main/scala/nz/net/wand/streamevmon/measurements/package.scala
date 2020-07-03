@@ -106,6 +106,6 @@ package nz.net.wand.streamevmon
   *
   * Use the [[nz.net.wand.streamevmon.flink.LatencyTSAmpFileInputFormat LatencyTSAmpFileInputFormat]]
   * and [[nz.net.wand.streamevmon.flink.LatencyTSSmokepingFileInputFormat LatencyTSSmokepingFileInputFormat]]
-  * functions to ingest this dataset, as shown in [[nz.net.wand.streamevmon.runners.LatencyTSPrinter LatencyTSPrinter]].
+  * functions to ingest this dataset, as shown in [[nz.net.wand.streamevmon.runners.examples.LatencyTSToCsvPrinter LatencyTSToCsvPrinter]].
   */
 package object measurements {}

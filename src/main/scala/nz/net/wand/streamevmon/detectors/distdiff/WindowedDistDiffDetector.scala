@@ -1,5 +1,6 @@
 package nz.net.wand.streamevmon.detectors.distdiff
 
+import nz.net.wand.streamevmon.detectors.HasNameAndUid
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 
@@ -27,9 +28,10 @@ import org.apache.flink.util.Collector
   */
 class WindowedDistDiffDetector[MeasT <: Measurement with HasDefault, W <: Window]
   extends ProcessWindowFunction[MeasT, Event, String, W]
-          with DistDiffLogic {
+          with DistDiffLogic
+          with HasNameAndUid {
 
-  val detectorName = "Distribution Difference Detector (Windowed)"
+  final val detectorName = "Distribution Difference Detector (Windowed)"
   final val detectorUid = "windowed-distdiff-detector"
 
   /** Called during initialisation. Sets up persistent state variables and

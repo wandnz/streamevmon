@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.runners
+package nz.net.wand.streamevmon.runners.examples
 
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.flink.AmpMeasurementSourceFunction
@@ -10,6 +10,13 @@ import java.util.Date
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.scala._
 
+/** Most basic example of using an [[nz.net.wand.streamevmon.flink.InfluxSourceFunction InfluxSourceFunction]],
+  * in this case an [[nz.net.wand.streamevmon.flink.AmpMeasurementSourceFunction AmpMeasurementSourceFunction]].
+  *
+  * Requires `influx.dataSource.(default|amp).serverName` to be set.
+  *
+  * This just prints the type of measurement that was received and its time.
+  */
 object InfluxSourceReceiver {
 
   def main(args: Array[String]): Unit = {

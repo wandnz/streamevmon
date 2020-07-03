@@ -1,5 +1,6 @@
 package nz.net.wand.streamevmon.detectors.distdiff
 
+import nz.net.wand.streamevmon.detectors.HasNameAndUid
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 
@@ -24,9 +25,10 @@ import scala.collection.mutable
   */
 class DistDiffDetector[MeasT <: Measurement with HasDefault : TypeInformation]
   extends KeyedProcessFunction[String, MeasT, Event]
-          with DistDiffLogic {
+          with DistDiffLogic
+          with HasNameAndUid {
 
-  val detectorName = "Distribution Difference Detector"
+  final val detectorName = "Distribution Difference Detector"
   final val detectorUid = "distdiff-detector"
 
   private var lastObserved: ValueState[MeasT] = _

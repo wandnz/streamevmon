@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.detectors.mode
 
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector._
+import nz.net.wand.streamevmon.detectors.HasNameAndUid
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 
@@ -25,7 +26,8 @@ import scala.collection.mutable
   */
 class ModeDetector[MeasT <: Measurement with HasDefault]
   extends KeyedProcessFunction[String, MeasT, Event]
-          with CheckpointedFunction {
+          with CheckpointedFunction
+          with HasNameAndUid {
 
   final val detectorName = "Mode Detector"
   final val detectorUid = "mode-detector"

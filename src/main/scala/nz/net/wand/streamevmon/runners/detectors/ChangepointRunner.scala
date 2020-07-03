@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.runners
+package nz.net.wand.streamevmon.runners.detectors
 
 import nz.net.wand.streamevmon.flink.{AmpMeasurementSourceFunction, InfluxSinkFunction, MeasurementKeySelector}
 import nz.net.wand.streamevmon.measurements.InfluxMeasurement

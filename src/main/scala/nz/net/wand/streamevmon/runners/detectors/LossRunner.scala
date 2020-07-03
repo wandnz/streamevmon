@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.runners
+package nz.net.wand.streamevmon.runners.detectors
 
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.loss.LossDetector

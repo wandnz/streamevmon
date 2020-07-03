@@ -1,5 +1,6 @@
 package nz.net.wand.streamevmon.detectors.loss
 
+import nz.net.wand.streamevmon.detectors.HasNameAndUid
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements._
 
@@ -23,7 +24,11 @@ import scala.reflect._
   */
 class LossDetector[MeasT <: Measurement : ClassTag]
   extends KeyedProcessFunction[String, MeasT, Event]
-          with CheckpointedFunction {
+          with CheckpointedFunction
+          with HasNameAndUid {
+
+  final val detectorName = "Loss Detector"
+  final val detectorUid = "loss-detector"
 
   /** The maximum number of measurements to retain. */
   private var maxHistory: Int = _
@@ -35,9 +40,6 @@ class LossDetector[MeasT <: Measurement : ClassTag]
 
   /** The number of consecutive lossy measurements before an event is emitted. */
   private var consecutiveCount: Int = _
-
-  final val detectorName = "Loss Detector"
-  final val detectorUid = "loss-detector"
 
   private var recentsStorage: ValueState[mutable.Queue[MeasT]] = _
 

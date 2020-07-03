@@ -38,9 +38,9 @@ class WindowedFunctionWrapper[M <: Measurement : ClassTag, W <: Window](
 
          override def timerService(): TimerService = ???
 
-        override def output[X](outputTag: OutputTag[X], value: X): Unit = ???
+         override def output[X](outputTag: OutputTag[X], value: X): Unit = ???
 
-        override def getCurrentKey: String = keySelector.getKey(e)
+         override def getCurrentKey: String = keySelector.getKey(e)
       }
 
       processFunction.processElement(

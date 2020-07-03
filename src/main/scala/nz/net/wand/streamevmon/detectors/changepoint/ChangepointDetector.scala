@@ -3,6 +3,7 @@ package nz.net.wand.streamevmon.detectors.changepoint
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 import nz.net.wand.streamevmon.Logging
+import nz.net.wand.streamevmon.detectors.HasNameAndUid
 
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.api.common.typeinfo.TypeInformation
@@ -31,11 +32,11 @@ class ChangepointDetector[MeasT <: Measurement with HasDefault : TypeInformation
   shouldDoGraphs     : Boolean = false,
   filename           : Option[String] = None
 ) extends KeyedProcessFunction[String, MeasT, Event]
+          with HasNameAndUid
           with Logging {
 
   final val detectorName = s"Changepoint Detector (${initialDistribution.distributionName})"
-  final val detectorUid = s"changepoint-detector"
-  final val eventDescription = s"Changepoint Event"
+  final val detectorUid = s"changepoint-detector-${initialDistribution.distributionName}"
 
   private var processor: ValueState[ChangepointProcessor[MeasT, DistT]] = _
 

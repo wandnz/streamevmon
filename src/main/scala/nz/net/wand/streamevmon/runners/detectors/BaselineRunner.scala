@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.runners
+package nz.net.wand.streamevmon.runners.detectors
 
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.baseline.BaselineDetector
@@ -19,10 +19,6 @@ object BaselineRunner {
 
     env.setParallelism(1)
 
-    // Check
-    // inspire-facebook-ipv4
-    // inspire-csotago-ipv4
-    // waikato-quickflix-ipv4
     val source = env
       .readFile(new LatencyTSAmpFileInputFormat, "data/latency-ts-i/ampicmp/series/waikato-arin-ipv6.series")
       .setParallelism(1)

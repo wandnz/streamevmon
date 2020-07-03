@@ -1,5 +1,6 @@
 package nz.net.wand.streamevmon.detectors.spike
 
+import nz.net.wand.streamevmon.detectors.HasNameAndUid
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 
@@ -22,7 +23,8 @@ import org.apache.flink.util.Collector
   */
 class SpikeDetector[MeasT <: Measurement with HasDefault]
   extends KeyedProcessFunction[String, MeasT, Event]
-          with CheckpointedFunction {
+          with CheckpointedFunction
+          with HasNameAndUid {
 
   final val detectorName = "Spike Detector"
   final val detectorUid = "spike-detector"

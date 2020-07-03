@@ -7,98 +7,20 @@ import nz.net.wand.streamevmon.detectors.distdiff.{DistDiffDetector, WindowedDis
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.detectors.spike.SpikeDetector
-import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink._
-import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, Measurement}
+import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow
 
 import java.time.Duration
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
-import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
-import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.streaming.api.scala._
-import org.apache.flink.streaming.api.scala.function.ProcessWindowFunction
 import org.apache.flink.streaming.api.windowing.time.Time
-import org.apache.flink.streaming.api.windowing.windows.{GlobalWindow, TimeWindow, Window}
+import org.apache.flink.streaming.api.windowing.windows.GlobalWindow
 
-import scala.collection.mutable
-import scala.language.implicitConversions
-import scala.reflect._
-
-object UnifiedRunner {
-
-  implicit class DataStreamExtensions[MeasT <: Measurement : ClassTag](source: DataStream[MeasT]) {
-    implicit def filterType[T <: MeasT : ClassTag]: DataStream[MeasT] = {
-      source
-        .filter(classTag[T].runtimeClass.isInstance(_))
-        .name(s"Is ${classTag[T].runtimeClass.getSimpleName}?")
-        .uid(s"filter-is-${classTag[T].runtimeClass.getSimpleName}")
-    }
-
-    implicit def notLossy[T <: MeasT : ClassTag]: DataStream[MeasT] = {
-      source
-        .filter((m: MeasT) => !m.isLossy)
-        .name("Is not lossy?")
-        .uid(s"filter-has-data-${classTag[T].getClass.getSimpleName}")
-    }
-  }
-
-  implicit class KeyedStreamExtensions[MeasT <: Measurement, KeyT](source: KeyedStream[MeasT, KeyT]) {
-    implicit def addDetector[T <: KeyedProcessFunction[KeyT, MeasT, Event]](
-      detector: T,
-      name    : String,
-      uid     : String
-    ): Unit = {
-      val result =
-        source
-          .process(detector)
-          .name(name)
-          .uid(uid)
-      detectors.append(result)
-    }
-  }
-
-  implicit class WindowedStreamExtensions[MeasT <: Measurement : ClassTag, W <: Window](source: WindowedStream[MeasT, String, W]) {
-    implicit def addDetector[T <: ProcessWindowFunction[MeasT, Event, String, W]](
-      detector: T,
-      name    : String,
-      uid     : String
-    ): Unit = {
-      val result =
-        source
-          .process(detector)
-          .name(name)
-          .uid(uid)
-      detectors.append(result)
-    }
-
-    implicit def wrapAndAddDetector[T <: KeyedProcessFunction[String, MeasT, Event]](
-      detector: T,
-      name    : String,
-      uid     : String
-    ): Unit = {
-      val wrapped = new WindowedFunctionWrapper[MeasT, TimeWindow](detector)
-        .asInstanceOf[ProcessWindowFunction[MeasT, Event, String, W]]
-      val result =
-        source
-          .process(wrapped)
-          .name(s"$name (Window Wrapped)")
-          .uid(s"window-wrapped-$uid")
-      detectors.append(result)
-    }
-  }
-
-  def isEnabled(env: StreamExecutionEnvironment, detectorName: String): Boolean = {
-    env.getConfig.getGlobalJobParameters
-      .asInstanceOf[ParameterTool]
-      .getBoolean(s"detector.$detectorName.enabled")
-  }
-
-  val detectors: mutable.Buffer[DataStream[Event]] = mutable.Buffer()
-
+object UnifiedRunner extends UnifiedRunnerExtensions {
   def main(args: Array[String]): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
@@ -124,13 +46,13 @@ object UnifiedRunner {
     lazy val icmpStream = ampMeasurementSource
       .filterType[ICMP]
       .notLossy[ICMP]
-      .keyBy(new MeasurementKeySelector[InfluxMeasurement])
+      .keyBy(keySelector)
     lazy val icmpStreamTimeWindow = icmpStream
       .timeWindow(Time.seconds(config.getInt("detector.default.windowDuration")))
 
     lazy val dnsStream = ampMeasurementSource
       .filterType[DNS]
-      .keyBy(new MeasurementKeySelector[InfluxMeasurement])
+      .keyBy(keySelector)
     lazy val dnsStreamTimeWindow = dnsStream
       .timeWindow(Time.seconds(config.getInt("detector.default.windowDuration")))
 
@@ -141,18 +63,23 @@ object UnifiedRunner {
 
     lazy val flowStatisticStream = bigdataMeasurementSource
       .filterType[Flow]
-      .keyBy(new MeasurementKeySelector[InfluxMeasurement])
+      .keyBy(keySelector)
     lazy val flowStatisticStreamTimeWindow = flowStatisticStream
       .timeWindow(Time.seconds(config.getInt("detector.default.windowDuration")))
 
     if (isEnabled(env, "baseline")) {
       val baseline = new BaselineDetector[InfluxMeasurement]
 
+      // TODO: Can we find a way to automatically wrap detectors if the config
+      //  option is set? It would need to be aware of both the raw and windowed
+      //  versions of the stream. I would also like to find a way to make
+      //  the streams present without so much setup code up there, so that would
+      //  tie in with that functionality more easily.
       if (config.getBoolean("detector.default.useFlinkTimeWindow")) {
-        icmpStreamTimeWindow.wrapAndAddDetector(baseline, baseline.detectorName, baseline.detectorUid)
+        icmpStreamTimeWindow.wrapAndAddDetector(baseline)
       }
       else {
-        icmpStream.addDetector(baseline, baseline.detectorName, baseline.detectorUid)
+        icmpStream.addDetector(baseline)
       }
     }
 
@@ -164,10 +91,10 @@ object UnifiedRunner {
         new NormalDistribution(mean = 0)
       )
       if (config.getBoolean("detector.default.useFlinkTimeWindow")) {
-        icmpStreamTimeWindow.wrapAndAddDetector(changepoint, changepoint.detectorName, changepoint.detectorUid)
+        icmpStreamTimeWindow.wrapAndAddDetector(changepoint)
       }
       else {
-        icmpStream.addDetector(changepoint, changepoint.detectorName, changepoint.detectorUid)
+        icmpStream.addDetector(changepoint)
       }
     }
 
@@ -176,41 +103,41 @@ object UnifiedRunner {
         val distDiffDetector = new WindowedDistDiffDetector[InfluxMeasurement, GlobalWindow]
         icmpStream
           .countWindow(config.getInt("detector.distdiff.recentsCount") * 2, 1)
-          .addDetector(distDiffDetector, distDiffDetector.detectorName, distDiffDetector.detectorUid)
+          .addDetector(distDiffDetector)
       }
       else {
         val distDiffDetector = new DistDiffDetector[InfluxMeasurement]
-        icmpStream.addDetector(distDiffDetector, distDiffDetector.detectorName, distDiffDetector.detectorUid)
+        icmpStream.addDetector(distDiffDetector)
       }
     }
 
     if (isEnabled(env, "loss")) {
       val lossDetector = new LossDetector[InfluxMeasurement]
       if (config.getBoolean("detector.default.useFlinkTimeWindow")) {
-        dnsStreamTimeWindow.wrapAndAddDetector(lossDetector, lossDetector.detectorName, lossDetector.detectorUid)
+        dnsStreamTimeWindow.wrapAndAddDetector(lossDetector)
       }
       else {
-        dnsStream.addDetector(lossDetector, lossDetector.detectorName, lossDetector.detectorUid)
+        dnsStream.addDetector(lossDetector)
       }
     }
 
     if (isEnabled(env, "mode")) {
       val modeDetector = new ModeDetector[InfluxMeasurement]
       if (config.getBoolean("detector.default.useFlinkTimeWindow")) {
-        icmpStreamTimeWindow.wrapAndAddDetector(modeDetector, modeDetector.detectorName, modeDetector.detectorUid)
+        icmpStreamTimeWindow.wrapAndAddDetector(modeDetector)
       }
       else {
-        icmpStream.addDetector(modeDetector, modeDetector.detectorName, modeDetector.detectorUid)
+        icmpStream.addDetector(modeDetector)
       }
     }
 
     if (isEnabled(env, "spike")) {
       val spikeDetector = new SpikeDetector[InfluxMeasurement]
       if (config.getBoolean("detector.default.useFlinkTimeWindow")) {
-        icmpStreamTimeWindow.wrapAndAddDetector(spikeDetector, spikeDetector.detectorName, spikeDetector.detectorUid)
+        icmpStreamTimeWindow.wrapAndAddDetector(spikeDetector)
       }
       else {
-        icmpStream.addDetector(spikeDetector, spikeDetector.detectorName, spikeDetector.detectorUid)
+        icmpStream.addDetector(spikeDetector)
       }
     }
 
