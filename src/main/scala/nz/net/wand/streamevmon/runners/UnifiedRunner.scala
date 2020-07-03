@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.Configuration
+import nz.net.wand.streamevmon.detectors.baseline.BaselineDetector
 import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, NormalDistribution}
 import nz.net.wand.streamevmon.detectors.distdiff.{DistDiffDetector, WindowedDistDiffDetector}
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
@@ -144,6 +145,17 @@ object UnifiedRunner {
     lazy val flowStatisticStreamTimeWindow = flowStatisticStream
       .timeWindow(Time.seconds(config.getInt("detector.default.windowDuration")))
 
+    if (isEnabled(env, "baseline")) {
+      val baseline = new BaselineDetector[InfluxMeasurement]
+
+      if (config.getBoolean("detector.default.useFlinkTimeWindow")) {
+        icmpStreamTimeWindow.wrapAndAddDetector(baseline, baseline.detectorName, baseline.detectorUid)
+      }
+      else {
+        icmpStream.addDetector(baseline, baseline.detectorName, baseline.detectorUid)
+      }
+    }
+
     if (isEnabled(env, "changepoint")) {
       implicit val normalDistributionTypeInformation: TypeInformation[NormalDistribution[InfluxMeasurement]] =
         TypeInformation.of(classOf[NormalDistribution[InfluxMeasurement]])
@@ -155,7 +167,7 @@ object UnifiedRunner {
         icmpStreamTimeWindow.wrapAndAddDetector(changepoint, changepoint.detectorName, changepoint.detectorUid)
       }
       else {
-        icmpStream.addDetector(changepoint, changepoint.detectorName, "changepoint-detector")
+        icmpStream.addDetector(changepoint, changepoint.detectorName, changepoint.detectorUid)
       }
     }
 

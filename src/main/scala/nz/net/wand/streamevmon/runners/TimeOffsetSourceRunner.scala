@@ -32,7 +32,7 @@ object TimeOffsetSourceRunner {
       )
       .name("Measurement Subscription")
       .map(i => s"${i.getClass.getSimpleName}(${new SimpleDateFormat("HH:mm:ss").format(Date.from(i.time))})")
-      .print("Measurement Now ")
+      .print("Measurement Now")
 
     env
       .addSource {
