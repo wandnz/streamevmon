@@ -1,5 +1,6 @@
 package nz.net.wand.streamevmon.detectors.checkpointing
 
+import nz.net.wand.streamevmon.detectors.baseline.BaselineDetector
 import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, NormalDistribution}
 import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
@@ -13,6 +14,21 @@ import org.apache.flink.streaming.api.scala._
 class NoDependencyCheckpointingTests extends CheckpointingTestBase {
   "Detectors with no external dependencies" should {
     "restore from checkpoints correctly" when {
+
+      "type is BaselineDetector" in {
+        implicit val detector: BaselineDetector[Measurement] = new BaselineDetector[Measurement]
+
+        var harness = newHarness
+        harness.open()
+
+        sendNormalMeasurement(harness, times = 120)
+        harness.getOutput should have size 0
+
+        harness = snapshotAndRestart(harness)
+
+        sendAnomalousMeasurement(harness, times = 120)
+        harness.getOutput shouldNot have size 0
+      }
 
       "type is ChangepointDetector" in {
         implicit val ti: TypeInformation[NormalDistribution[Measurement]] =
