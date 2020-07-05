@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.detectors.mode
 
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector._
-import nz.net.wand.streamevmon.detectors.HasNameAndUid
+import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 
@@ -27,10 +27,11 @@ import scala.collection.mutable
 class ModeDetector[MeasT <: Measurement with HasDefault]
   extends KeyedProcessFunction[String, MeasT, Event]
           with CheckpointedFunction
-          with HasNameAndUid {
+          with HasFlinkConfig {
 
   final val detectorName = "Mode Detector"
   final val detectorUid = "mode-detector"
+  final val configKeyGroup = "mode"
 
   /** The maximum number of measurements to retain. */
   private var maxHistory: Int = _
@@ -104,11 +105,11 @@ class ModeDetector[MeasT <: Measurement with HasDefault]
 
     val config =
       getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
-    maxHistory = config.getInt("detector.mode.maxHistory")
-    minFrequency = config.getInt("detector.mode.minFrequency")
-    minProminence = config.getInt("detector.mode.minProminence")
-    threshold = config.getDouble("detector.mode.threshold")
-    inactivityPurgeTime = Duration.ofSeconds(config.getInt("detector.mode.inactivityPurgeTime"))
+    maxHistory = config.getInt(s"detector.$configKeyGroup.maxHistory")
+    minFrequency = config.getInt(s"detector.$configKeyGroup.minFrequency")
+    minProminence = config.getInt(s"detector.$configKeyGroup.minProminence")
+    threshold = config.getDouble(s"detector.$configKeyGroup.threshold")
+    inactivityPurgeTime = Duration.ofSeconds(config.getInt(s"detector.$configKeyGroup.inactivityPurgeTime"))
 
     // This only needs to be 2 or so, but we've got a bit of breathing room to
     // let us function properly.

@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.detectors.spike
 
-import nz.net.wand.streamevmon.detectors.HasNameAndUid
+import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 
@@ -24,10 +24,11 @@ import org.apache.flink.util.Collector
 class SpikeDetector[MeasT <: Measurement with HasDefault]
   extends KeyedProcessFunction[String, MeasT, Event]
           with CheckpointedFunction
-          with HasNameAndUid {
+          with HasFlinkConfig {
 
   final val detectorName = "Spike Detector"
   final val detectorUid = "spike-detector"
+  final val configKeyGroup = "spike"
 
   private val detailedOutputTag = OutputTag[SpikeDetail]("detailed-output")
 
@@ -76,10 +77,10 @@ class SpikeDetector[MeasT <: Measurement with HasDefault]
 
     val config =
       getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
-    inactivityPurgeTime = Duration.ofSeconds(config.getInt("detector.spike.inactivityPurgeTime"))
-    lag = config.getInt("detector.spike.lag")
-    threshold = config.getDouble("detector.spike.threshold")
-    influence = config.getDouble("detector.spike.influence")
+    inactivityPurgeTime = Duration.ofSeconds(config.getInt(s"detector.$configKeyGroup.inactivityPurgeTime"))
+    lag = config.getInt(s"detector.$configKeyGroup.lag")
+    threshold = config.getDouble(s"detector.$configKeyGroup.threshold")
+    influence = config.getDouble(s"detector.$configKeyGroup.influence")
   }
 
   /** Resets the state of the detector. Happens on the first measurement, and

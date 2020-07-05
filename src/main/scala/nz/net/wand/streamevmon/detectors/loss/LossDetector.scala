@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.detectors.loss
 
-import nz.net.wand.streamevmon.detectors.HasNameAndUid
+import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements._
 
@@ -25,10 +25,11 @@ import scala.reflect._
 class LossDetector[MeasT <: Measurement : ClassTag]
   extends KeyedProcessFunction[String, MeasT, Event]
           with CheckpointedFunction
-          with HasNameAndUid {
+          with HasFlinkConfig {
 
   final val detectorName = "Loss Detector"
   final val detectorUid = "loss-detector"
+  final val configKeyGroup = "loss"
 
   /** The maximum number of measurements to retain. */
   private var maxHistory: Int = _
@@ -67,9 +68,9 @@ class LossDetector[MeasT <: Measurement : ClassTag]
 
     val config =
       getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
-    maxHistory = config.getInt("detector.loss.maxHistory")
-    lossCount = config.getInt("detector.loss.lossCount")
-    consecutiveCount = config.getInt("detector.loss.consecutiveCount")
+    maxHistory = config.getInt(s"detector.$configKeyGroup.maxHistory")
+    lossCount = config.getInt(s"detector.$configKeyGroup.lossCount")
+    consecutiveCount = config.getInt(s"detector.$configKeyGroup.consecutiveCount")
   }
 
   // Some helper functions here.

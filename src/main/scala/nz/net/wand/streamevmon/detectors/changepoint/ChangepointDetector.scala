@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.detectors.changepoint
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.detectors.HasNameAndUid
+import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.api.common.typeinfo.TypeInformation
@@ -32,11 +32,12 @@ class ChangepointDetector[MeasT <: Measurement with HasDefault : TypeInformation
   shouldDoGraphs     : Boolean = false,
   filename           : Option[String] = None
 ) extends KeyedProcessFunction[String, MeasT, Event]
-          with HasNameAndUid
+          with HasFlinkConfig
           with Logging {
 
   final val detectorName = s"Changepoint Detector (${initialDistribution.distributionName})"
   final val detectorUid = s"changepoint-detector-${initialDistribution.distributionName}"
+  final val configKeyGroup = "changepoint"
 
   private var processor: ValueState[ChangepointProcessor[MeasT, DistT]] = _
 
@@ -55,7 +56,7 @@ class ChangepointDetector[MeasT <: Measurement with HasDefault : TypeInformation
     out  : Collector[Event]
   ): Unit = {
     if (processor.value == null) {
-      processor.update(new ChangepointProcessor[MeasT, DistT](initialDistribution, shouldDoGraphs, filename))
+      processor.update(new ChangepointProcessor[MeasT, DistT](initialDistribution, configKeyGroup, shouldDoGraphs, filename))
       processor.value.open(
         getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
       )

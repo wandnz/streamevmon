@@ -44,7 +44,7 @@ To add a new detection algorithm, a new package should be created within
 `nz.net.wand.streamevmon.detectors`, with a descriptive name. A high-level
 description and configuration details should be placed in the documentation of
 the package object. An entrypoint that runs the detector in a Flink environment
-should be created in the `nz.net.wand.streamevmon.runners` package.
+should be created in the `nz.net.wand.streamevmon.runners.detectors` package.
 See the `mode` package for an example of a reasonably simple stateful detector.
 
 Once your detector is complete, you should also add it to the `UnifiedRunner`.
@@ -75,7 +75,7 @@ strategies are possible:
   * Ensure that the TimeWindow is not sliding, as that will result in
     measurement duplication.
   * Handover from one window to another is not foolproof, so if measurements
-    are received out of order while one window is closing and another is opening,
+    are received out-of-order while one window is closing and another is opening,
     they may still arrive at the detector out of order.
 * Some functions, such as the DistDiffDetector, can be implemented as windowed
   functions from the beginning. Usually, this is best for detectors that don't

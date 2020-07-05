@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.detectors.baseline
 
-import nz.net.wand.streamevmon.detectors.HasNameAndUid
+import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 
@@ -17,10 +17,11 @@ import org.apache.flink.util.Collector
 import scala.collection.mutable
 
 class BaselineDetector[MeasT <: Measurement with HasDefault]
-  extends KeyedProcessFunction[String, MeasT, Event] with HasNameAndUid {
+  extends KeyedProcessFunction[String, MeasT, Event] with HasFlinkConfig {
 
   final val detectorName = "Baseline Detector"
   final val detectorUid = "baseline-detector"
+  final val configKeyGroup = "baseline"
 
   private var lastObserved: ValueState[Instant] = _
 
@@ -55,10 +56,10 @@ class BaselineDetector[MeasT <: Measurement with HasDefault]
 
     val config =
       getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
-    maxHistory = config.getInt("detector.baseline.maxHistory")
-    percentile = config.getDouble("detector.baseline.percentile")
-    threshold = config.getDouble("detector.baseline.threshold")
-    inactivityPurgeTime = Duration.ofSeconds(config.getInt("detector.baseline.inactivityPurgeTime"))
+    maxHistory = config.getInt(s"detector.$configKeyGroup.maxHistory")
+    percentile = config.getDouble(s"detector.$configKeyGroup.percentile")
+    threshold = config.getDouble(s"detector.$configKeyGroup.threshold")
+    inactivityPurgeTime = Duration.ofSeconds(config.getInt(s"detector.$configKeyGroup.inactivityPurgeTime"))
 
     percentileCalc = new Percentile(percentile)
   }

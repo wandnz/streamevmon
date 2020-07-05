@@ -40,7 +40,7 @@ val cacheDependencies = Seq(
 val restApiDependencies = Seq(
   "com.squareup.retrofit2" % "retrofit" % "2.9.0",
   "com.squareup.retrofit2" % "converter-jackson" % "2.9.0",
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.11.0",
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.11.0"
 )
 
 val logDependencies = Seq(

@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.detectors.distdiff
 
-import nz.net.wand.streamevmon.detectors.HasNameAndUid
+import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 
@@ -26,10 +26,11 @@ import scala.collection.mutable
 class DistDiffDetector[MeasT <: Measurement with HasDefault : TypeInformation]
   extends KeyedProcessFunction[String, MeasT, Event]
           with DistDiffLogic
-          with HasNameAndUid {
+          with HasFlinkConfig {
 
   final val detectorName = "Distribution Difference Detector"
   final val detectorUid = "distdiff-detector"
+  final val configKeyGroup = "distdiff"
 
   private var lastObserved: ValueState[MeasT] = _
 
@@ -84,7 +85,7 @@ class DistDiffDetector[MeasT <: Measurement with HasDefault : TypeInformation]
 
     val config =
       getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
-    val prefix = "detector.distdiff"
+    val prefix = s"detector.$configKeyGroup"
     inactivityPurgeTime = Duration.ofSeconds(config.getInt(s"$prefix.inactivityPurgeTime"))
     recentsCount = config.getInt(s"$prefix.recentsCount")
     zThreshold = config.getDouble(s"$prefix.zThreshold")

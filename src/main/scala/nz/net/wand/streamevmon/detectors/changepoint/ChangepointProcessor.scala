@@ -17,6 +17,7 @@ import org.apache.flink.util.Collector
   *
   * @param initialDistribution The distribution that should be used as a base
   *                            when adding new measurements to the runs.
+  * @param configKeyGroup      The key group to use when looking for configuration. Usually 'changepoint'.
   * @param shouldDoGraphs      When true, .csv files are output into the ./out/graphs
   *                            directory which can be used to produce graphs of the
   *                            state of the detector.
@@ -28,6 +29,7 @@ import org.apache.flink.util.Collector
   */
 case class ChangepointProcessor[MeasT <: Measurement with HasDefault : TypeInformation, DistT <: Distribution[MeasT] : TypeInformation](
   initialDistribution: DistT,
+  configKeyGroup     : String,
   shouldDoGraphs     : Boolean,
   filename           : Option[String]
 ) extends RunLogic[MeasT, DistT] with Logging {
@@ -354,7 +356,7 @@ case class ChangepointProcessor[MeasT <: Measurement with HasDefault : TypeInfor
   def open(config: ParameterTool): Unit = {
     isOpen = true
 
-    val prefix = "detector.changepoint"
+    val prefix = s"detector.$configKeyGroup"
     maxHistory = config.getInt(s"$prefix.maxHistory")
     changepointTriggerCount = config.getInt(s"$prefix.triggerCount")
     ignoreOutlierAfterNormalMeasurementCount = config.getInt(s"$prefix.ignoreOutlierNormalCount")
