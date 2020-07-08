@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="6b4b83b0-742a-4c54-b489-f9ee528dcacc" name="public_html" url="https://www.cs.waikato.ac.nz/~doosterw">
+        <fileTransfer rootFolder="/home/doosterw/public_html" accessType="SFTP" host="cms-rg06-80.cms.waikato.ac.nz" port="22" sshConfigId="aa83f2f8-4a66-4365-9b3f-00ef4531ada0" sshConfig="doosterw@cms-rg06-80.cms.waikato.ac.nz:22 agent" authAgent="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
