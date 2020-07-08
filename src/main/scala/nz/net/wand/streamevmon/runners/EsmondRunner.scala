@@ -2,25 +2,29 @@ package nz.net.wand.streamevmon.runners
 
 import nz.net.wand.streamevmon.{Configuration, Logging}
 import nz.net.wand.streamevmon.connectors.esmond.EsmondConnectionForeground
-import nz.net.wand.streamevmon.connectors.esmond.schema.{AbstractTimeSeriesEntry, Archive}
+import nz.net.wand.streamevmon.connectors.esmond.schema.{AbstractTimeSeriesEntry, Archive, EventType}
 import nz.net.wand.streamevmon.flink.PollingEsmondSourceFunction
 import nz.net.wand.streamevmon.measurements.esmond.{EsmondMeasurement, RichEsmondMeasurement}
 
 import java.io._
-import java.time.Duration
+import java.time.{Duration, Instant}
+import java.util.concurrent.ForkJoinPool
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import org.apache.commons.io.FileUtils
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.TimeCharacteristic
 
+import scala.collection.immutable.SortedMap
+import scala.collection.parallel.{ForkJoinTaskSupport, ParIterable}
 import scala.util.{Failure, Success, Try}
 
 object EsmondRunner extends Logging {
   val timeRange: Long = 86400
   val eventType = "packet-count-sent"
 
-  private val connection = new EsmondConnectionForeground("http://wash-owamp.es.net:8085")
+  private val connection = new EsmondConnectionForeground("http://denv-owamp.es.net:8085")
 
   /** This function tries out all the API calls and does some basic sanity checking. */
   def useAllTheCalls(): Unit = {
@@ -93,7 +97,8 @@ object EsmondRunner extends Logging {
         val oos = new ObjectOutputStream(new FileOutputStream(serialiseLocation))
         oos.writeObject(value)
         oos.close()
-        logger.info("Done!")
+        logger.info("Done writing spickle!")
+
         value
     }
   }
@@ -178,10 +183,206 @@ object EsmondRunner extends Logging {
     env.execute("Esmond Runner")
   }
 
+  def storeTheResults(): Unit = {
+    val a = {
+      Try(new ObjectInputStream(new FileInputStream(serialiseLocation)).readObject().asInstanceOf[Iterable[Archive]]) match {
+        case Failure(exception) => logger.error(exception.toString); serialiseTheResults()
+        case Success(value) => value
+      }
+    }
+
+    val mapper = new ObjectMapper()
+    mapper.registerModule(DefaultScalaModule)
+
+    val filtered = a.filter { ar =>
+      ar.inputDestination.getOrElse("").contains("kans")
+    }
+
+    val arOut = new FileWriter("out/esmondOverTime/archives.json")
+    mapper.writeValue(arOut, filtered)
+    arOut.close()
+
+    val baseEvents = filtered.flatMap(ar => ar.eventTypes)
+
+    val results = baseEvents.map { et =>
+      var retVal: Option[(EventType, Try[Iterable[AbstractTimeSeriesEntry]])] = None
+      var count = 0
+      while (retVal.isEmpty) {
+        Thread.sleep(3000)
+        val result = connection.getTimeSeriesEntriesFromMetadata(et.metadataKey, et.eventType, timeRange = Some(3600))
+        result match {
+          case Failure(f) => count += 1
+            if (count > 10) {
+              retVal = Some((et, result))
+            }
+          case Success(_) => retVal = Some((et, result))
+        }
+      }
+      retVal
+    }
+
+    val resOut = new FileWriter(s"out/esmondOverTime/results-${Instant.now()}.json")
+    mapper.writeValue(resOut, results)
+    resOut.close()
+
+    logger.info("Done writing JSON!")
+  }
+
+  def serialiseAllTheArchives(): Unit = {
+    // Configure some settings
+    val outputFolder = "out/allEsmondArchives"
+    val endpointSuffix = "owamp"
+    val tRange = Some(Duration.ofDays(1).getSeconds)
+
+    // Set up the JSON output module
+    val mapper = new ObjectMapper()
+    mapper.registerModule(DefaultScalaModule)
+
+    val validEndpoints = Seq(
+      "pnwg", "bois", "sacr", "sunn", "lsvn", "denv", "albq", "elpa", "kans",
+      "hous", "star", "chic", "nash", "atla", "eqx-ash", "wash", "aofa", "bost",
+      "newy", "lond", "amst", "cern-773", "cern-513",
+      "east-dc",
+      "test"
+      // "eqx-chi" appears to be unreachable
+    )
+
+    val netbeamDevices = Seq(
+      "albq-asw1", "albq-cr5", "albq-mpr1", "ameslab-rt1", "ameslab-rt2",
+      "ameslab-ssw1", "amst-asw1", "amst-cr5", "anl-asw1", "anl-mr2",
+      "anl221-mpr1", "anl541b-mpr1", "aofa-asw1", "aofa-cr5", "atla-asw1",
+      "atla-cr5", "atla-mpr1", "bnl-lsw1", "bnl-lsw2", "bnl-lsw3", "bnl-lsw5",
+      "bnl-lsw6", "bois-asw1", "bois-cr1", "bois-mpr1", "bost-asw1", "bost-cr5",
+      "bost-mpr1", "cern-513-asw1", "cern-513-cr5", "cern-773-asw1",
+      "cern-773-cr5", "chat-mpr1", "chic-asw1", "chic-cr55", "chic-mpr1",
+      "clev-mpr1", "denv-asw1", "denv-cr5", "denv-mpr1", "doe-gtn-rt2",
+      "doe-gtn-ssw1", "elpa-asw1", "elpa-cr5", "elpa-mpr1", "eqx-ash-asw1",
+      "eqx-ash-cr5", "eqx-chi-asw1", "eqx-chi-cr5", "eqx-sj-asw1", "eqx-sj-cr5",
+      "eqxch2-mpr1", "eqxdc4-mpr1", "eqxsv5-mpr1", "esnet-east-rt1",
+      "esnet-west-rt1", "fnal-asw1", "fnal-rt1", "fnal-rt2", "fnalfcc-mpr1",
+      "fnalgcc-mpr1", "forr-rt2", "forr-ssw1", "ga-asw1", "ga-rt1", "ga-rt3",
+      "hous-asw1", "hous-cr5", "hous-mpr1", "kans-asw1", "kans-cr5",
+      "kans-mpr1", "lasv-mpr1", "lbl-1165-lsw1", "lbl-1165a-lsw1",
+      "lbl-2002-asw1", "lbl-2002-ece1", "lbl-2002-ece2", "lbl-2002-lsw1",
+      "lbl-2002-lsw2", "lbl-2002-lsw3", "lbl-2002-lsw4", "lbl-2002-lsw5",
+      "lbl-2002-lsw6", "lbl-2002-lsw7", "lbl-2002-ssw1", "lbl-2275-ssw1",
+      "lbl-mr2", "lbnl50-mpr1", "lbnl59-mpr1", "llnl-mpr1", "llnl-mr2",
+      "llnl-ssw1", "llnldc-rt5", "llnldc-ssw1", "lond-asw1", "lond-cr5",
+      "losa-mpr1", "lsvn-cr1", "lsvn-ssw1", "nash-asw1", "nash-cr5",
+      "nash-mpr1", "netl-alb-rt1", "netl-alb-ssw1", "netl-mgn-rt1",
+      "netl-mgn-ssw1", "netl-pgh-rt1", "netl-pgh-ssw1", "newy-asw1", "newy-cr5",
+      "newy1118th-mpr1", "newy32aoa-mpr1", "orau-rt4", "orau-ssw1", "ornl-asw1",
+      "ornl-cr5", "ornl-rt4", "ornl-ssw2", "osti-asw1", "osti-rt3",
+      "pantex-rt4", "pantex-ssw1", "phil-mpr1", "pnwg-asw1", "pnwg-cr5",
+      "pppl-rt5", "pppl-ssw1", "sacr-asw1", "sacr-cr5", "sacr-mpr1",
+      "salt-mpr1", "sand-mpr1", "seat-mpr1", "slac-asw1", "slac-mr2",
+      "slac50n-mpr1", "slac50s-mpr1", "snla-rt1", "snla-rt2", "snla-ssw1",
+      "snlca-mpr1", "snll-asw1", "snll-mr3", "srs-rt1", "srs-rt2", "srs-ssw1",
+      "srs-ssw2", "star-asw1", "star-cr5", "star-mpr1", "star-ssw2",
+      "star-ssw3", "sunn-asw1", "sunn-cr5", "sunn-cr55", "sunn-mpr1",
+      "wash-asw1", "wash-cr5", "wash-mpr1"
+    )
+    val netbeamDevicesWithoutSuffix = netbeamDevices.map(_.split('-').dropRight(1).mkString("-")).toSet
+
+    // Create connections to all endpoints
+    val connections = validEndpoints
+      .map { endpoint =>
+        if (endpoint == "test") {
+          (endpoint, new EsmondConnectionForeground(s"http://$endpoint-${endpointSuffix}1.es.net:8085"))
+        }
+        else {
+          (endpoint, new EsmondConnectionForeground(s"http://$endpoint-$endpointSuffix.es.net:8085"))
+        }
+      }
+
+    // Do an archiveList request for all endpoints (with parallelism equal to the number of endpoints to make it go quick)
+    val archives = {
+      val parallelCollection = connections.par
+      parallelCollection.tasksupport = new ForkJoinTaskSupport(new ForkJoinPool(connections.size))
+      parallelCollection.map(conn => (conn._1, conn._2.getArchiveList(timeRange = tRange)))
+    }
+
+    // Output the raw archive listings to JSON, one file per endpoint
+    def writeToJson(items: Iterable[(String, Any)], folder: String): Unit = {
+      // Clean the output folder
+      FileUtils.deleteDirectory(new File(s"$outputFolder/$folder"))
+      new File(s"$outputFolder/$folder").mkdirs()
+
+      items.foreach { ar =>
+        ar._2 match {
+          case Failure(exception) => logger.error(s"${ar._1} exception!: $exception")
+          case _ =>
+        }
+
+        val outputFile = new FileWriter(s"$outputFolder/$folder/${ar._1}-$endpointSuffix.json")
+        mapper.writeValue(outputFile, ar._2)
+        outputFile.close()
+      }
+    }
+
+    def writeToJsonPar(items: ParIterable[(String, Any)], folder: String): Unit = writeToJson(items.seq, folder)
+
+    writeToJsonPar(archives, "raw")
+
+    // Group the archive listings by the other end of the test
+    val grouped = archives.map { archive =>
+      (
+        archive._1,
+        archive._2 match {
+          case Success(value) => SortedMap[String, Iterable[Archive]]() ++ value.groupBy { ar =>
+            if (ar.inputSource.getOrElse("").contains(archive._1)) {
+              val dest = ar.inputDestination.getOrElse("Unknown")
+              if (dest.contains("es.net") && netbeamDevicesWithoutSuffix.exists(dev => dest.contains(dev))) {
+                dest
+              }
+              else {
+                "Irrelevant"
+              }
+            }
+            else {
+              val src = ar.inputSource.getOrElse("Unknown")
+              if (src.contains("es.net") && netbeamDevicesWithoutSuffix.exists(dev => src.contains(dev))) {
+                src
+              }
+              else {
+                "Irrelevant"
+              }
+            }
+          }
+          case Failure(_) => SortedMap[String, Iterable[Archive]]()
+        }
+      )
+    }.map(a => (a._1, a._2.filterNot(_._1 == "Irrelevant")))
+
+    writeToJsonPar(grouped.asInstanceOf[ParIterable[(String, Any)]], "grouped")
+  }
+
   def main(args: Array[String]): Unit = {
     //useAllTheCalls()
     //useSourceFunction()
-    serialiseTheResults()
-    exploreTheResults()
+    //serialiseTheResults()
+    //exploreTheResults()
+    //storeTheResults()
+    serialiseAllTheArchives()
   }
+
+
+  // Esmond
+  // Many API endpoints
+  // Each has data for their own tests
+  // Make list of all hosts we might care about
+  // Get archive list for each
+  // For each endpoint, take note of what tests are available
+
+  // albq -> wash
+  // wash-owamp has pscheduler/powstream, pscheduler/traceroute
+  // wash-pt1 has pscheduler/traceroute
+  // others have powstream and traceroute, but no pt1
+
+
+  // Netbeam
+  // Single API endpoint30%
+  // Many edge/src/to/dst pairs
+  // Make list of all hosts we care about
+  // Get a certain day tile's traffic for all pairs
 }

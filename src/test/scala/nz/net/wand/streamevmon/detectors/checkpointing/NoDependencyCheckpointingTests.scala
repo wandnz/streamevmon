@@ -16,7 +16,7 @@ class NoDependencyCheckpointingTests extends CheckpointingTestBase {
     "restore from checkpoints correctly" when {
 
       "type is BaselineDetector" in {
-        implicit val detector: BaselineDetector[Measurement] = new BaselineDetector[Measurement]
+        implicit val detector: BaselineDetector[ICMP] = new BaselineDetector[ICMP]
 
         var harness = newHarness
         harness.open()

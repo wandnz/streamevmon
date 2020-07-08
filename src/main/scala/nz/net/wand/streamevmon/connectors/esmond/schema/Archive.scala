@@ -129,6 +129,10 @@ class Archive extends Serializable {
   @JsonProperty("pscheduler-reference-description")
   val pschedulerReferenceDescription: Option[String] = None
 
+  // Int in string
+  @JsonProperty("trace-first-ttl")
+  val traceFirstTtl: Option[Int] = None
+
   // Boolean in string
   @JsonProperty("mode-flip")
   val modeFlip: Option[Boolean] = None
@@ -136,6 +140,10 @@ class Archive extends Serializable {
   // Observed only "0" - this is probably a string for formatting
   @JsonProperty("ip-packet-padding")
   val ipPacketPadding: Option[String] = None
+
+  // Int in string
+  @JsonProperty("ip-packet-size")
+  val ipPacketSize: Option[Int] = None
 
   // Observed only "1", probably Int in string
   @JsonProperty("bw-parallel-streams")
