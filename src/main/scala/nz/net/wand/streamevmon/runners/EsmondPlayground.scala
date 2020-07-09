@@ -17,10 +17,11 @@ import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.TimeCharacteristic
 
 import scala.collection.immutable.SortedMap
+import scala.collection.mutable
 import scala.collection.parallel.{ForkJoinTaskSupport, ParIterable}
 import scala.util.{Failure, Success, Try}
 
-object EsmondRunner extends Logging {
+object EsmondPlayground extends Logging {
   val timeRange: Long = 86400
   val eventType = "packet-count-sent"
 
@@ -242,6 +243,8 @@ object EsmondRunner extends Logging {
       "pnwg", "bois", "sacr", "sunn", "lsvn", "denv", "albq", "elpa", "kans",
       "hous", "star", "chic", "nash", "atla", "eqx-ash", "wash", "aofa", "bost",
       "newy", "lond", "amst", "cern-773", "cern-513",
+      "anl", "lbl", "ameslab", "fnal", "ga", "llnl", "pppl", "slac", "snll", "ornl",
+      "netl-alb", "snla", "pantex", "doe-gtn", "forr", "netl-mgn", "orau", "srs", "netl-pgh", "eqx-sj", "osti",
       "east-dc",
       "test"
       // "eqx-chi" appears to be unreachable
@@ -355,6 +358,85 @@ object EsmondRunner extends Logging {
     }.map(a => (a._1, a._2.filterNot(_._1 == "Irrelevant")))
 
     writeToJsonPar(grouped.asInstanceOf[ParIterable[(String, Any)]], "grouped")
+
+    // We want to make some adjacency graphs here.
+    // One should be for pscheduler/powstream archives, and the other for pscheduler/traceroute.
+    // First, we should make some adjacency lists.
+
+    def filterArchivesByTool(l: ParIterable[(String, SortedMap[String, Iterable[Archive]])], toolName: String): ParIterable[(String, SortedMap[String, Archive])] = {
+      l.map {
+        case (hostName, items) => (hostName,
+          items.flatMap { case (destName, ars) =>
+            if (ars.exists(_.toolName.contains(toolName))) {
+              Seq((destName, ars.find(_.toolName.contains(toolName)).get))
+            }
+            else {
+              Seq()
+            }
+          }
+        )
+      }
+    }
+
+    val powstreamOnly = filterArchivesByTool(grouped, "pscheduler/powstream")
+    val tracerouteOnly = filterArchivesByTool(grouped, "pscheduler/traceroute")
+    val iperfOnly = filterArchivesByTool(grouped, "pscheduler/iperf3")
+
+    // Then, just drop the Archive from the lists. We don't care about them anymore.
+    def removeArchives(l: ParIterable[(String, SortedMap[String, Archive])]): Map[String, Iterable[String]] = {
+      l.map {
+        case (hostName, items) => (hostName,
+          items.map { case (name, _) => name }
+        )
+      }.toMap.seq
+    }
+
+    val powstreamNamesOnly = removeArchives(powstreamOnly)
+    val tracerouteNamesOnly = removeArchives(tracerouteOnly)
+    val iperfNamesOnly = removeArchives(iperfOnly)
+
+    // Let's keep track of which endpoints show up that we didn't query...
+    val unseenEndpoints: mutable.Buffer[String] = mutable.Buffer()
+
+    // This'll drop the -owamp.es.net from full endpoint names
+    def nameWithoutSuffix(e: String): String = e.split('-').dropRight(1).mkString("-")
+
+    // This function with both create and write to JSON an adjacency matrix. It's
+    // a 2D array of boolean values that show whether a particular endpoint has any
+    // data from each other endpoint with the relevant test type.
+    def outputAdjacencyMatrix(map: Map[String, Iterable[String]], name: String): Unit = {
+      val cols = map.keys.toSeq.sorted
+      val adjacencyMatrix = cols.map { col =>
+        cols.map { c =>
+          powstreamNamesOnly(col).map(nameWithoutSuffix).toSeq.foreach { q =>
+            if (!validEndpoints.contains(q)) {
+              unseenEndpoints.append(q)
+            }
+          }
+
+          powstreamNamesOnly(col).map(nameWithoutSuffix).toSeq.contains(c)
+        }
+      }
+
+      val outputFile = new FileWriter(s"$outputFolder/adjacencyMatrix-$name.json")
+      mapper.writeValue(outputFile, adjacencyMatrix)
+      outputFile.close()
+    }
+
+    // Print out the column and row headers in Python list format
+    val cols = powstreamNamesOnly.keys.toSeq.sorted
+    println(cols.mkString("[\"", "\",\"", "\"]"))
+
+    outputAdjacencyMatrix(powstreamNamesOnly, "powstream")
+    outputAdjacencyMatrix(tracerouteNamesOnly, "traceroute")
+    outputAdjacencyMatrix(iperfNamesOnly, "iperf")
+
+    // If there's any endpoints we didn't query, print them out
+    if (unseenEndpoints.nonEmpty) {
+      println(unseenEndpoints.toSet)
+    }
+
+    val breakpoint = 1
   }
 
   def main(args: Array[String]): Unit = {
@@ -374,15 +456,158 @@ object EsmondRunner extends Logging {
   // Get archive list for each
   // For each endpoint, take note of what tests are available
 
-  // albq -> wash
-  // wash-owamp has pscheduler/powstream, pscheduler/traceroute
-  // wash-pt1 has pscheduler/traceroute
-  // others have powstream and traceroute, but no pt1
-
-
   // Netbeam
-  // Single API endpoint30%
+  // Single API endpoint
   // Many edge/src/to/dst pairs
   // Make list of all hosts we care about
   // Get a certain day tile's traffic for all pairs
+
+  // We now have a list of host pairs with data in both esmond and netbeam.
+  // Netbeam can be easily historically queried.
+  // Esmond archiveList for a time range will only return archives that were
+  // last updated within that time range. Thus, archive discovery must be done
+  // up until the present time regardless of how far in the past we actually
+  // want to query.
+
+  // Netbeam can easily be queried by tile as far back as we want.
+  // Esmond appears to only return up to 1500 measurements at once, which is
+  // just over a day worth of measurements if they're taken every 60s.
+
+  // We could make a function that does a simple day-long query, detects
+  // measurement frequency, then goes ahead and makes sequential queries of
+  // the appropriate range to get about a thousand measurements at a time
+  // without overlap.
+
+  // We should think about how to store these. We likely want them in both
+  // JSON and spickle format. Each host has a set of archives, each archive
+  // has a set of event types, and each event type might have a set of summaries.
+  // We could make this one gigantic object/file, but we probably want to split
+  // it into folders.
+
+  // Each folder should be named after a UID, and contains one file for the
+  // descriptor whose UID it's named after. It can contain a number of folders
+  // for each sub-descriptor, and if it's a descriptor of a time series, it
+  // should also contain a file or a number of files for the values contained
+  // in the time series.
+
+  val validPairs = Seq(
+    ("albq", "denv"),
+    ("albq", "elpa"),
+    ("ameslab", "chic"),
+    ("ameslab", "star"),
+    ("amst", "bost"),
+    ("amst", "cern-513"),
+    ("amst", "lond"),
+    ("anl", "chic"),
+    ("anl", "star"),
+    ("aofa", "newy"),
+    ("aofa", "pppl"),
+    ("aofa", "star"),
+    ("aofa", "wash"),
+    ("atla", "nash"),
+    ("atla", "ornl"),
+    ("atla", "wash"),
+    ("bois", "denv"),
+    ("bois", "pnwg"),
+    ("bost", "amst"),
+    ("bost", "newy"),
+    ("bost", "star"),
+    ("cern-513", "amst"),
+    ("cern-513", "cern-773"),
+    ("cern-773", "cern-513"),
+    ("cern-773", "lond"),
+    ("chic", "ameslab"),
+    ("chic", "anl"),
+    ("chic", "fnal"),
+    ("chic", "kans"),
+    ("chic", "nash"),
+    ("chic", "sacr"),
+    ("chic", "star"),
+    ("chic", "wash"),
+    ("denv", "albq"),
+    ("denv", "bois"),
+    ("denv", "kans"),
+    ("denv", "lsvn"),
+    ("denv", "pnwg"),
+    ("denv", "sacr"),
+    ("elpa", "albq"),
+    ("elpa", "ga"),
+    ("elpa", "hous"),
+    ("elpa", "sunn"),
+    ("fnal", "chic"),
+    ("fnal", "star"),
+    ("ga", "elpa"),
+    ("ga", "lsvn"),
+    ("ga", "sunn"),
+    ("hous", "elpa"),
+    ("hous", "kans"),
+    ("hous", "nash"),
+    ("hous", "pantex"),
+    ("kans", "chic"),
+    ("kans", "denv"),
+    ("kans", "hous"),
+    ("lbl", "sacr"),
+    ("lbl", "sunn"),
+    ("llnl", "sacr"),
+    ("llnl", "snll"),
+    ("llnl", "sunn"),
+    ("llnl", "wash"),
+    ("lond", "amst"),
+    ("lond", "cern-773"),
+    ("lsvn", "denv"),
+    ("lsvn", "ga"),
+    ("lsvn", "sunn"),
+    ("nash", "atla"),
+    ("nash", "chic"),
+    ("nash", "hous"),
+    ("nash", "ornl"),
+    ("nash", "wash"),
+    ("newy", "aofa"),
+    ("newy", "bost"),
+    ("orau", "ornl"),
+    ("ornl", "atla"),
+    ("ornl", "nash"),
+    ("ornl", "orau"),
+    ("ornl", "osti"),
+    ("osti", "ornl"),
+    ("pantex", "hous"),
+    ("pnwg", "bois"),
+    ("pnwg", "denv"),
+    ("pnwg", "sacr"),
+    ("pppl", "aofa"),
+    ("pppl", "wash"),
+    ("sacr", "chic"),
+    ("sacr", "denv"),
+    ("sacr", "lbl"),
+    ("sacr", "llnl"),
+    ("sacr", "pnwg"),
+    ("sacr", "slac"),
+    ("sacr", "snll"),
+    ("sacr", "sunn"),
+    ("slac", "sacr"),
+    ("slac", "sunn"),
+    ("snll", "llnl"),
+    ("snll", "sacr"),
+    ("snll", "sunn"),
+    ("star", "ameslab"),
+    ("star", "anl"),
+    ("star", "aofa"),
+    ("star", "bost"),
+    ("star", "chic"),
+    ("star", "fnal"),
+    ("sunn", "elpa"),
+    ("sunn", "ga"),
+    ("sunn", "lbl"),
+    ("sunn", "llnl"),
+    ("sunn", "lsvn"),
+    ("sunn", "sacr"),
+    ("sunn", "slac"),
+    ("sunn", "snll"),
+    ("wash", "aofa"),
+    ("wash", "atla"),
+    ("wash", "chic"),
+    ("wash", "llnl"),
+    ("wash", "nash"),
+    ("wash", "pppl"),
+  )
 }

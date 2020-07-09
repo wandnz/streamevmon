@@ -36,12 +36,13 @@ class EventType extends Serializable {
         baseUri == that.baseUri &&
         eventType == that.eventType &&
         summaries == that.summaries &&
-        timeUpdated == that.timeUpdated
+        timeUpdated == that.timeUpdated &&
+        metadataKey == that.metadataKey
     case _ => false
   }
 
   override def hashCode(): Int = {
-    val state = Seq(baseUri, eventType, summaries, timeUpdated)
+    val state = Seq(baseUri, eventType, summaries, timeUpdated, metadataKey)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 }

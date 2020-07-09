@@ -69,10 +69,6 @@ class Archive extends Serializable {
   @JsonProperty("sample-bucket-width")
   val sampleBucketWidth: Option[Double] = None
 
-  // Sometimes it's an int, sometimes it's "PT5S"
-  @JsonProperty("bw-ignore-first-seconds")
-  val bwIgnoreFirstSeconds: Option[String] = None
-
   // Double in string
   @JsonProperty("time-probe-interval")
   val timeProbeInterval: Option[Double] = None
@@ -147,11 +143,19 @@ class Archive extends Serializable {
 
   // Observed only "1", probably Int in string
   @JsonProperty("bw-parallel-streams")
-  val BwParallelStreams: Option[Int] = None
+  val bwParallelStreams: Option[Int] = None
+
+  // Int in string
+  @JsonProperty("bw-target-bandwidth")
+  val bwTargetBandwidth: Option[Int] = None
+
+  // Sometimes it's an int, sometimes it's "PT5S"
+  @JsonProperty("bw-ignore-first-seconds")
+  val bwIgnoreFirstSeconds: Option[String] = None
 
   // Int in string
   @JsonProperty("tcp-window-size")
-  val TcpWindowSize: Option[Int] = None
+  val tcpWindowSize: Option[Int] = None
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[Archive]
 
@@ -171,7 +175,6 @@ class Archive extends Serializable {
         inputDestination == that.inputDestination &&
         ipTransportProtocol == that.ipTransportProtocol &&
         sampleBucketWidth == that.sampleBucketWidth &&
-        bwIgnoreFirstSeconds == that.bwIgnoreFirstSeconds &&
         timeProbeInterval == that.timeProbeInterval &&
         timeDuration == that.timeDuration &&
         timeInterval == that.timeInterval &&
@@ -186,15 +189,19 @@ class Archive extends Serializable {
         pschedulerReferenceCreatedByUserAgent == that.pschedulerReferenceCreatedByUserAgent &&
         pschedulerReferenceCreatedByAddress == that.pschedulerReferenceCreatedByAddress &&
         pschedulerReferenceDescription == that.pschedulerReferenceDescription &&
+        traceFirstTtl == that.traceFirstTtl &&
         modeFlip == that.modeFlip &&
         ipPacketPadding == that.ipPacketPadding &&
-        BwParallelStreams == that.BwParallelStreams &&
-        TcpWindowSize == that.TcpWindowSize
+        ipPacketSize == that.ipPacketSize &&
+        bwParallelStreams == that.bwParallelStreams &&
+        bwTargetBandwidth == that.bwTargetBandwidth &&
+        bwIgnoreFirstSeconds == that.bwIgnoreFirstSeconds &&
+        tcpWindowSize == that.tcpWindowSize
     case _ => false
   }
 
   override def hashCode(): Int = {
-    val state = Seq(url, uri, metadataKey, subjectType, eventTypes, source, destination, measurementAgent, toolName, inputSource, inputDestination, ipTransportProtocol, sampleBucketWidth, bwIgnoreFirstSeconds, timeProbeInterval, timeDuration, timeInterval, timeTestTimeout, sampleSize, pschedulerTestType, pschedulerReferenceDisplaySetSource, pschedulerReferenceDisplaySetDest, pschedulerReferencePsconfigCreatedByUuid, pschedulerReferencePsconfigCreatedByUserAgent, pschedulerReferenceCreatedByUuid, pschedulerReferenceCreatedByUserAgent, pschedulerReferenceCreatedByAddress, pschedulerReferenceDescription, modeFlip, ipPacketPadding, BwParallelStreams, TcpWindowSize)
+    val state = Seq(url, uri, metadataKey, subjectType, eventTypes, source, destination, measurementAgent, toolName, inputSource, inputDestination, ipTransportProtocol, sampleBucketWidth, timeProbeInterval, timeDuration, timeInterval, timeTestTimeout, sampleSize, pschedulerTestType, pschedulerReferenceDisplaySetSource, pschedulerReferenceDisplaySetDest, pschedulerReferencePsconfigCreatedByUuid, pschedulerReferencePsconfigCreatedByUserAgent, pschedulerReferenceCreatedByUuid, pschedulerReferenceCreatedByUserAgent, pschedulerReferenceCreatedByAddress, pschedulerReferenceDescription, traceFirstTtl, modeFlip, ipPacketPadding, ipPacketSize, bwParallelStreams, bwTargetBandwidth, bwIgnoreFirstSeconds, tcpWindowSize)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 }

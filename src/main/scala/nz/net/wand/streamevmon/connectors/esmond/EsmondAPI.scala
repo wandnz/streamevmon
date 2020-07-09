@@ -3,6 +3,7 @@ package nz.net.wand.streamevmon.connectors.esmond
 import nz.net.wand.streamevmon.connectors.esmond.schema._
 
 import java.lang.{Long => JLong}
+import java.time._
 
 import retrofit2.http.{GET, Path, Query}
 import retrofit2.Call
@@ -215,4 +216,29 @@ trait EsmondAPI {
     @Query("time-start") timeStart      : JLong = null,
     @Query("time-end") timeEnd          : JLong = null,
   ): Call[Iterable[PacketTraceTimeSeriesEntry]]
+}
+
+object EsmondAPI {
+
+  /** We can query netbeam in terms of tiles, which when in the format '1d-xxxxx'
+    * represent the number of days since the epoch, in UTC. Esmond doesn't
+    * support this, so let's provide a helper function to turn them into a pair
+    * of Instants which can be converted back into a timeStart and timeEnd that
+    * esmond understands.
+    */
+  def tileToTimeRange(tile: Int): (Instant, Instant) = {
+    (
+      LocalDate.ofEpochDay(tile).atStartOfDay().toInstant(ZoneOffset.UTC),
+      LocalDate.ofEpochDay(tile).atTime(LocalTime.MAX).toInstant(ZoneOffset.UTC)
+    )
+  }
+
+  def tileToTimeRange(tile: String): (Instant, Instant) = {
+    if (tile.startsWith("1d-")) {
+      tileToTimeRange(tile.split('-')(1).toInt)
+    }
+    else {
+      throw new IllegalArgumentException(s"Expected tile string to start with '1d-', got $tile")
+    }
+  }
 }

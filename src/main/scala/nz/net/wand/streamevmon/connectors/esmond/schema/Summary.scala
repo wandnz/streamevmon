@@ -57,12 +57,14 @@ class Summary extends Serializable {
         summaryType == that.summaryType &&
         summaryWindow == that.summaryWindow &&
         timeUpdated == that.timeUpdated &&
-        uri == that.uri
+        uri == that.uri &&
+        metadataKey == that.metadataKey &&
+        eventType == that.eventType
     case _ => false
   }
 
   override def hashCode(): Int = {
-    val state = Seq(summaryType, summaryWindow, timeUpdated, uri)
+    val state = Seq(summaryType, summaryWindow, timeUpdated, uri, metadataKey, eventType)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 }
