@@ -61,6 +61,8 @@ class PacketTraceEntry extends Serializable {
   val ttl: Int = Int.MinValue
   @JsonProperty("query")
   val query: Int = Int.MinValue
+  @JsonProperty("error-message")
+  val errorMessage: Option[String] = None
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[PacketTraceEntry]
 
