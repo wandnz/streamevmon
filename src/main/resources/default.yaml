@@ -1,0 +1,55 @@
+source:
+  postgres:
+    portNumber: 5432
+    user: cuz
+    password: ""
+    databaseName: nntsc
+
+  influx:
+    portNumber: 8086
+    listenProtocol: http
+    listenPort: 0
+    listenBacklog: 30
+    amp:
+      user: cuz
+      password: ""
+      databaseName: nntsc
+      retentionPolicy: nntscdefault
+    bigdata:
+      user: bigdata
+      password: bigdata
+      databaseName: bigdata
+      retentionPolicy: autogen
+
+  esmond:
+    fetchHistory: 86400
+    discoverTimeRange: 86400
+    timeOffset: 0
+    targetRefreshInterval: 600
+    minimumTimeBetweenQueries: 1
+
+sink:
+  influx:
+    databaseName: streamevmon
+    retentionPolicy: streamevmondefault
+
+caching:
+  ttl: 0
+  memcached:
+    serverName: localhost
+    port: 11211
+    enabled: false
+
+flink:
+  maxLateness: 20
+  checkpointInterval: 600
+
+detector:
+  default: &detectorDefault
+    enabled: true
+    useFlinkTimeWindow: true
+    windowDuration: 60
+
+  baseline:
+    - *detectorDefault
+    - maxHistory: 60

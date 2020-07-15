@@ -37,10 +37,13 @@ val cacheDependencies = Seq(
   "com.github.cb372" %% "scalacache-memcached" % scalaCacheVersion
 )
 
-val restApiDependencies = Seq(
+val serialisationDependencies = Seq(
+  // Used for REST APIs
   "com.squareup.retrofit2" % "retrofit" % "2.9.0",
   "com.squareup.retrofit2" % "converter-jackson" % "2.9.0",
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.11.0"
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.11.0",
+  // Used for YAML v1.2 configuration parsing
+  "org.snakeyaml" % "snakeyaml-engine" % "2.1"
 )
 
 val logDependencies = Seq(
@@ -66,7 +69,7 @@ lazy val root = (project in file(".")).
         influxDependencies ++
         postgresDependencies ++
         cacheDependencies ++
-        restApiDependencies ++
+        serialisationDependencies ++
         logDependencies ++
       testDependencies
   )
