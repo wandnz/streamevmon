@@ -1,0 +1,10 @@
+caching:
+  ttl: 0
+  memcached:
+    serverName: localhost
+    port: 11211
+    enabled: false
+
+flink:
+  maxLateness: 20
+  checkpointInterval: 600

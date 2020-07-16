@@ -88,6 +88,7 @@ trait UnifiedRunnerExtensions {
       val keyedStream = source.keyBy(new MeasurementKeySelector[MeasT])
       KeyedAndWindowedStreams(
         keyedStream,
+        // TODO: This should use detector-specific window duration configs
         keyedStream.timeWindow(Time.seconds(config.getInt("detector.default.windowDuration")))
       )
     }

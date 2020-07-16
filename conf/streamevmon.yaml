@@ -1,0 +1,6 @@
+# This file contains configuration overrides for local development.
+source:
+  postgres:
+    serverName: localhost
+  influx:
+    serverName: localhost

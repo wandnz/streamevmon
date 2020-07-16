@@ -1,0 +1,52 @@
+detector:
+  default: &timeWindowWrapperSettings
+    enabled: true # Legacy key, will be removed when flows top-level key is implemented
+    useFlinkTimeWindow: true
+    windowDuration: 60
+
+  baseline:
+    - *timeWindowWrapperSettings
+    - inactivityPurgeTime: 600
+    - maxHistory: 50
+    - percentile: 0.10
+    - threshold: 25
+
+  changepoint:
+    - *timeWindowWrapperSettings
+    - inactivityPurgeTime: 60
+    - maxHistory: 60
+    - triggerCount: 40
+    - ignoreOutlierNormalCount: 1
+    - minimumEventInterval: 10
+    - severityThreshold: 30
+
+  # Distdiff doesn't use the window-wrapper, so it has its own window settings
+  distdiff:
+    - enabled: true # legacy key
+    - useFlinkWindow: true
+    - inactivityPurgeTime: 1200
+    - recentsCount: 20
+    - minimumChange: 1.05
+    - zThreshold: 5.0
+    - dropExtremeN: 2
+
+  loss:
+    - *timeWindowWrapperSettings
+    - maxHistory: 30
+    - lossCount: 10
+    - consecutiveCount: 5
+
+  mode:
+    - *timeWindowWrapperSettings
+    - inactivityPurgeTime: 60
+    - maxHistory: 30
+    - minFrequency: 6
+    - minProminence: 3
+    - threshold: 7.5
+
+  spike:
+    - *timeWindowWrapperSettings
+    - inactivityPurgeTime: 60
+    - lag: 50
+    - threshold: 50
+    - influence: 0.01

@@ -1,0 +1,53 @@
+source:
+  postgres:
+    # servername: localhost  # MUST be explicitly set by user
+    portNumber: 5432
+    user: cuz
+    password: ""
+    databaseName: nntsc
+
+  # One of each of the following MUST be set by the user for influx sources to function:
+  # influx.serverName, or influx.<type>.serverName
+  # influx.subscriptionName, or influx.<type>.subscriptionName
+
+  # The following MAY be set to override the value determined at runtime:
+  # influx.listenAddress, or influx.<type>.listenAddress
+  influx:
+    portNumber: 8086
+    listenProtocol: http
+    listenPort: 0
+    listenBacklog: 30
+    amp:
+      user: cuz
+      password: ""
+      databaseName: nntsc
+      retentionPolicy: nntscdefault
+    bigdata:
+      user: bigdata
+      password: bigdata
+      databaseName: bigdata
+      retentionPolicy: autogen
+
+  esmond:
+    # serverName: http://denv-owamp.es.net:8085  # MUST be set by user
+    fetchHistory: 86400
+    discoverTimeRange: 86400
+    timeOffset: 0
+    targetRefreshInterval: 600
+    minimumTimeBetweenQueries: 1
+    # The following keys MAY (but many probably SHOULD) be set by the user.
+    # limit: 0
+    # offset: 0
+    # source: denv-owamp.es.net
+    # destination: bois-owamp.es.net
+    # measurementAgent: denv-owamp.es.net
+    # toolName: pscheduler/powstream
+    # dnsMatchRule: v4v6
+    # eventType: packet-loss-rate
+    # summaryType: aggregation
+    # summaryWindow: 300
+
+sink:
+  influx:
+    databaseName: streamevmon
+    retentionPolicy: streamevmondefault
