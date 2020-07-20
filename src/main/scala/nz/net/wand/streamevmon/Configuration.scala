@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon
 
-import java.io.{FileInputStream, InputStream}
+import java.io.{File, FileInputStream, InputStream}
 
 import org.apache.flink.api.java.utils.ParameterTool
 import org.snakeyaml.engine.v2.api.{Load, LoadSettings}
@@ -103,7 +103,8 @@ object Configuration {
       // Java again. The map() function is just too nice to pass up.
       ParameterTool.fromMap(
         flattenMap(
-          loader.loadFromInputStream(yamlStream)
+          Option(loader.loadFromInputStream(yamlStream))
+            .getOrElse(new java.util.HashMap[String, Any]())
             .asInstanceOf[java.util.Map[String, Any]]
             .asScala.toMap
         )
@@ -111,30 +112,52 @@ object Configuration {
       )
     }
 
-    parameterToolFromYamlStream(
-      getClass.getClassLoader.getResourceAsStream("generalSettings.yaml")
-    )
-      .mergeWith(
-        parameterToolFromYamlStream(
-          getClass.getClassLoader.getResourceAsStream("connectorSettings.yaml")
-        )
-      )
-      .mergeWith(
-        parameterToolFromYamlStream(
-          getClass.getClassLoader.getResourceAsStream("detectorSettings.yaml")
-        )
-      )
-      .mergeWith(
-        parameterToolFromYamlStream(
-          getClass.getClassLoader.getResourceAsStream("flowSettings.yaml")
-        )
-      )
-      .mergeWith(
-        parameterToolFromYamlStream(
-          new FileInputStream("conf/streamevmon.yaml")
-        )
-      )
-      .mergeWith(ParameterTool.fromSystemProperties())
-      .mergeWith(ParameterTool.fromArgs(args))
+    val defaultSettingsFiles = Seq(
+      "generalSettings.yaml",
+      "connectorSettings.yaml",
+      "detectorSettings.yaml",
+      "flowSettings.yaml"
+    ).map(getClass.getClassLoader.getResourceAsStream)
+
+    val customSettingsFiles = new File("conf").listFiles(
+      (_: File, name: String) => name.endsWith(".yaml") || name.endsWith(".yml")
+    ).sorted.map(new FileInputStream(_))
+
+    val pTools = (defaultSettingsFiles ++ customSettingsFiles).map { f =>
+      parameterToolFromYamlStream(f)
+    }
+
+    (
+      pTools :+
+        ParameterTool.fromSystemProperties() :+
+        ParameterTool.fromArgs(args)
+      ).foldLeft(
+      ParameterTool.fromArgs(Array())
+    ) {
+      (p1, p2) => p1.mergeWith(p2)
+    }
+  }
+
+  private def asScalaCollection(x: Any): Any = {
+    x match {
+      case y: java.util.Map[_, _] =>
+        y.asScala.map {
+          case (k, v) => asScalaCollection(k) -> asScalaCollection(v)
+        }.toMap
+      case y: java.util.List[_] =>
+        y.asScala.map(asScalaCollection)
+      case _ => x
+    }
+  }
+
+  def getFlowsAsMap: Map[String, Any] = {
+    val loader = new Load(LoadSettings.builder().build())
+    asScalaCollection {
+      Option(loader.loadFromInputStream(
+        getClass.getClassLoader.getResourceAsStream("flowSettings.yaml")
+      ))
+        .getOrElse(new java.util.HashMap[String, Any]())
+    }
+      .asInstanceOf[Map[String, Any]]
   }
 }

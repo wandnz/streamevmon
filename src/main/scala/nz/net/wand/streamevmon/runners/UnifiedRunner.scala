@@ -25,8 +25,8 @@ object UnifiedRunner extends UnifiedRunnerExtensions {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    System.setProperty("influx.dataSource.amp.subscriptionName", "AmpUnifiedRunner")
-    System.setProperty("influx.dataSource.bigdata.subscriptionName", "BigDataUnifiedRunner")
+    System.setProperty("source.influx.amp.subscriptionName", "AmpUnifiedRunner")
+    System.setProperty("source.influx.bigdata.subscriptionName", "BigDataUnifiedRunner")
 
     config = Configuration.get(args)
     env.getConfig.setGlobalJobParameters(config)

@@ -1,2 +1,22 @@
+defaultFlowSinks: &allSinks
+  influx: true
+  print: true
+
 flows:
-  placeholder: true
+  influx:
+    amp:
+      icmp:
+        filterLossy:
+          baseline:
+            *allSinks
+          changepoint:
+            *allSinks
+          distdiff:
+            *allSinks
+          mode:
+            *allSinks
+          spike:
+            *allSinks
+      dns:
+        loss:
+          *allSinks
