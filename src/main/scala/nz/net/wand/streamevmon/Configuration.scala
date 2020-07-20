@@ -35,52 +35,59 @@ object Configuration {
 
   def get(): ParameterTool = get(Array())
 
-  /** Flattens a Map[String, Map[String, T]\] to a Map[String, String], such
-    * that nested maps are flattened into several dot-separated keys.
+  /** Flattens a `Map[_, Map[_, _]]` to a `Map[String, String]`, such
+    * that nested maps are flattened into several dot-separated keys. All keys
+    * and values have toString called on them in the process, which should
+    * remain meaningful for all the primitive types being encoded.
     *
     * The following two maps show an example input and output of this function.
     *
+    * {{{
     * Map(
-    * "topLevel" -> Map(
-    * "secondLevel" -> true,
-    * "thirdLevel" -> false
-    * ),
+    *   "topLevel" -> Map(
+    *     "secondLevel" -> true,
+    *     "thirdLevel" -> false
+    *   ),
     * "secondLevel" -> false
     * )
     *
     * Map(
-    * "topLevel.secondLevel" -> true
-    * "topLevel.thirdLevel" -> false
-    * "secondLevel" -> false
+    *   "topLevel.secondLevel" -> true
+    *   "topLevel.thirdLevel" -> false
+    *   "secondLevel" -> false
     * )
+    * }}}
     *
-    * Supported values for the T field are: String, Map[String, T],
-    * java.util.Map[String, T], java.util.List[T]. Java classes are
-    * converted into Scala classes, then passed back into the function. Lists
-    * are handled as though they are just several entries in the original map.
+    * Java classes are converted into Scala classes, then passed back into the
+    * function. Lists are handled as though they are just several entries in the
+    * original map. This isn't a perfect representation of YAML structure, but
+    * it works fine for our purposes.
     */
-  private def flattenMap[T](map: Map[String, T]): Map[String, String] = {
+  def flattenMap(map: Map[String, _]): Map[String, String] = {
     map.flatMap {
       case (k, v) => v match {
         // If we're passed a Java map, just convert it to Scala and try again.
         // We really want to use the Scala map() function instead of messing
         // around with iterators and mutable holder buffers.
-        case jMap: java.util.Map[String, T] => flattenMap(Map(k -> jMap.asScala.toMap))
+        case jMap: java.util.Map[_, _] => flattenMap(Map(k -> jMap.asScala.toMap))
         // If we're passed a Java list, it will most likely contain a series of
         // either additional maps, or leaves. Maps should be passed back in,
         // while leaves should be converted to String and returned.
-        case jList: java.util.List[T] =>
+        case jList: java.util.List[_] =>
           jList.asScala.flatMap {
-            case item: java.util.Map[String, T] => flattenMap(Map(k -> item.asScala.toMap))
-            case item: Map[String, T] => flattenMap(Map(k -> item))
+            case item: java.util.Map[_, _] => flattenMap(Map(k -> item.asScala.toMap))
+            case item: Map[_, _] => flattenMap(Map(k -> item))
             case leaf => Map(k -> leaf.toString)
           }
         // If we're given a map, just pass it back into the function. When we
         // hit a leaf, it will return a Map(deeperKey -> leaf). We want to
         // prepend the key at our current level to the deeper key, and pass it
         // back up the chain.
-        case map: Map[String, T] =>
-          flattenMap(map).map {
+        case map: Map[_, _] =>
+          val ensureStringKeys = map.map {
+            case (a, b) => (a.toString, b)
+          }
+          flattenMap(ensureStringKeys).map {
             case (key, value) => (
               key match {
                 case "" => key
