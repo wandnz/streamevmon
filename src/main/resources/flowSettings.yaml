@@ -17,6 +17,12 @@ flows:
             *allSinks
           spike:
             *allSinks
+          notADetector:
+            *allSinks
       dns:
         loss:
           *allSinks
+      notAType:
+        loss:
+          *allSinks
+

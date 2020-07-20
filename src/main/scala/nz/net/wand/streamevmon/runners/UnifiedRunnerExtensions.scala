@@ -36,14 +36,17 @@ trait UnifiedRunnerExtensions {
     /** Adds a detector to the appropriate stream depending on if windowing is enabled. */
     def addDetector[T <: KeyedProcessFunction[String, MeasT, Event] with HasFlinkConfig](
       keyedDetector: T
-    ): Unit = {
+    ): Option[DataStream[Event]] = {
       if (isEnabled(keyedDetector.configKeyGroup)) {
         if (config.getBoolean("detector.default.useFlinkTimeWindow")) {
-          windowed.wrapAndAddDetector(keyedDetector)
+          Some(windowed.wrapAndAddDetector(keyedDetector))
         }
         else {
-          keyed.addDetector(keyedDetector)
+          Some(keyed.addDetector(keyedDetector))
         }
+      }
+      else {
+        None
       }
     }
 
@@ -54,14 +57,17 @@ trait UnifiedRunnerExtensions {
       WindowedT <: ProcessWindowFunction[MeasT, Event, String, W] with HasFlinkConfig](
       keyedDetector   : KeyedT,
       windowedDetector: WindowedT
-    ): Unit = {
+    ): Option[DataStream[Event]] = {
       if (isEnabled(windowedDetector.configKeyGroup)) {
         if (config.getBoolean(s"detector.${windowedDetector.configKeyGroup}.useFlinkWindow")) {
-          windowed.addDetector(windowedDetector)
+          Some(windowed.addDetector(windowedDetector))
         }
         else {
-          keyed.addDetector(keyedDetector)
+          Some(keyed.addDetector(keyedDetector))
         }
+      }
+      else {
+        None
       }
     }
   }
@@ -107,13 +113,14 @@ trait UnifiedRunnerExtensions {
     /** Adds a detector to a KeyedStream, and our list of existing detectors. */
     implicit def addDetector[T <: KeyedProcessFunction[KeyT, MeasT, Event] with HasFlinkConfig](
       detector: T
-    ): Unit = {
+    ): DataStream[Event] = {
       val result =
         source
           .process(detector)
           .name(detector.detectorName)
           .uid(detector.detectorUid)
       detectors.append(result)
+      result
     }
   }
 
@@ -121,19 +128,20 @@ trait UnifiedRunnerExtensions {
     /** Adds a detector to a WindowedStream, and our list of existing detectors. */
     implicit def addDetector[T <: ProcessWindowFunction[MeasT, Event, String, W] with HasFlinkConfig](
       detector: T
-    ): Unit = {
+    ): DataStream[Event] = {
       val result =
         source
           .process(detector)
           .name(detector.detectorName)
           .uid(detector.detectorUid)
       detectors.append(result)
+      result
     }
 
     /** Wraps a detector to turn it into a windowed function, and adds it. */
     implicit def wrapAndAddDetector[T <: KeyedProcessFunction[String, MeasT, Event] with HasFlinkConfig](
       detector: T
-    ): Unit = {
+    ): DataStream[Event] = {
       val wrapped = new WindowedFunctionWrapper[MeasT, TimeWindow](detector)
         .asInstanceOf[ProcessWindowFunction[MeasT, Event, String, W]]
       val result =
@@ -142,6 +150,7 @@ trait UnifiedRunnerExtensions {
           .name(s"${detector.detectorName} (Window Wrapped)")
           .uid(s"window-wrapped-${detector.detectorUid}")
       detectors.append(result)
+      result
     }
   }
 }
