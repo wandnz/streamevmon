@@ -8,7 +8,6 @@ import java.time.{Duration, Instant}
 
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.api.common.typeinfo.TypeInformation
-import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
@@ -26,8 +25,8 @@ class SpikeDetector[MeasT <: Measurement with HasDefault]
           with CheckpointedFunction
           with HasFlinkConfig {
 
-  final val detectorName = "Spike Detector"
-  final val detectorUid = "spike-detector"
+  final val flinkName = "Spike Detector"
+  final val flinkUid = "spike-detector"
   final val configKeyGroup = "spike"
 
   private val detailedOutputTag = OutputTag[SpikeDetail]("detailed-output")
@@ -75,8 +74,7 @@ class SpikeDetector[MeasT <: Measurement with HasDefault]
       )
     )
 
-    val config =
-      getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
+    val config = configWithOverride(getRuntimeContext)
     inactivityPurgeTime = Duration.ofSeconds(config.getInt(s"detector.$configKeyGroup.inactivityPurgeTime"))
     lag = config.getInt(s"detector.$configKeyGroup.lag")
     threshold = config.getDouble(s"detector.$configKeyGroup.threshold")

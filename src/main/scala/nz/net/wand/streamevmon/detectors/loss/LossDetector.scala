@@ -8,7 +8,6 @@ import java.time.Duration
 
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.api.common.typeinfo.TypeInformation
-import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
@@ -27,8 +26,8 @@ class LossDetector[MeasT <: Measurement : ClassTag]
           with CheckpointedFunction
           with HasFlinkConfig {
 
-  final val detectorName = "Loss Detector"
-  final val detectorUid = "loss-detector"
+  final val flinkName = "Loss Detector"
+  final val flinkUid = "loss-detector"
   final val configKeyGroup = "loss"
 
   /** The maximum number of measurements to retain. */
@@ -66,8 +65,7 @@ class LossDetector[MeasT <: Measurement : ClassTag]
       )
     )
 
-    val config =
-      getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
+    val config = configWithOverride(getRuntimeContext)
     maxHistory = config.getInt(s"detector.$configKeyGroup.maxHistory")
     lossCount = config.getInt(s"detector.$configKeyGroup.lossCount")
     consecutiveCount = config.getInt(s"detector.$configKeyGroup.consecutiveCount")

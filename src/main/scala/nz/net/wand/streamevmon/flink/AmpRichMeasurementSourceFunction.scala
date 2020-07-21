@@ -17,7 +17,7 @@ import org.apache.flink.configuration.Configuration
   *      for configuration details.
   */
 class AmpRichMeasurementSourceFunction(
-  configPrefix: String = "influx.dataSource",
+  configPrefix: String = "source.influx",
   fetchHistory: Duration = Duration.ZERO
 )
   extends InfluxSourceFunction[RichInfluxMeasurement](
@@ -43,4 +43,7 @@ class AmpRichMeasurementSourceFunction(
   override protected def processLine(line: String): Option[RichInfluxMeasurement] = {
     InfluxMeasurementFactory.createRichMeasurement(pgConnection, line)
   }
+
+  override val flinkName: String = "AMP Rich Measurement Source"
+  override val flinkUid: String = "amp-rich-measurement-source"
 }

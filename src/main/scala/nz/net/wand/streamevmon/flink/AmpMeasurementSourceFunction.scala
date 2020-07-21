@@ -13,7 +13,7 @@ import java.time.Duration
   *      for configuration details.
   */
 class AmpMeasurementSourceFunction(
-  configPrefix: String = "influx.dataSource",
+  configPrefix: String = "source.influx",
   fetchHistory: Duration = Duration.ZERO
 )
   extends InfluxSourceFunction[InfluxMeasurement](
@@ -29,4 +29,7 @@ class AmpMeasurementSourceFunction(
   override protected def processLine(line: String): Option[InfluxMeasurement] = {
     InfluxMeasurementFactory.createMeasurement(line)
   }
+
+  override val flinkName: String = "AMP Measurement Source"
+  override val flinkUid: String = "amp-measurement-source"
 }

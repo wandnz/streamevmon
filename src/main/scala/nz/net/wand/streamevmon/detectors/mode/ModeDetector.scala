@@ -10,7 +10,6 @@ import java.time.{Duration, Instant}
 
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.api.common.typeinfo._
-import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
@@ -29,8 +28,8 @@ class ModeDetector[MeasT <: Measurement with HasDefault]
           with CheckpointedFunction
           with HasFlinkConfig {
 
-  final val detectorName = "Mode Detector"
-  final val detectorUid = "mode-detector"
+  final val flinkName = "Mode Detector"
+  final val flinkUid = "mode-detector"
   final val configKeyGroup = "mode"
 
   /** The maximum number of measurements to retain. */
@@ -103,8 +102,7 @@ class ModeDetector[MeasT <: Measurement with HasDefault]
       )
     )
 
-    val config =
-      getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
+    val config = configWithOverride(getRuntimeContext)
     maxHistory = config.getInt(s"detector.$configKeyGroup.maxHistory")
     minFrequency = config.getInt(s"detector.$configKeyGroup.minFrequency")
     minProminence = config.getInt(s"detector.$configKeyGroup.minProminence")

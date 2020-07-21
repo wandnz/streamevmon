@@ -10,7 +10,7 @@ import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 
 abstract class PollingInfluxSourceFunction[T <: InfluxMeasurement](
-  configPrefix: String = "influx.dataSource",
+  configPrefix   : String = "source.influx",
   datatype       : String = "amp",
   fetchHistory   : Duration = Duration.ZERO,
   timeOffset     : Duration = Duration.ZERO,

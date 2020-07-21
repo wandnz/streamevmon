@@ -19,7 +19,7 @@ object LossRunner {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    System.setProperty("influx.dataSource.default.subscriptionName", "LossDetector")
+    System.setProperty("source.influx.subscriptionName", "LossDetector")
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
@@ -38,7 +38,7 @@ object LossRunner {
 
     val process = source
       .process(detector)
-      .name(detector.detectorName)
+      .name(detector.flinkName)
       .uid("loss-detector")
 
     process

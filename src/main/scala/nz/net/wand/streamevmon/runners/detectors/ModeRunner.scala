@@ -17,7 +17,7 @@ object ModeRunner {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    System.setProperty("influx.dataSource.default.subscriptionName", "ModeDetector")
+    System.setProperty("source.influx.subscriptionName", "ModeDetector")
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
@@ -33,8 +33,8 @@ object ModeRunner {
 
     val process = source
       .process(detector)
-      .name(detector.detectorName)
-      .uid(detector.detectorUid)
+      .name(detector.flinkName)
+      .uid(detector.flinkUid)
 
     process.print(s"Mode Event ($filename)")
 

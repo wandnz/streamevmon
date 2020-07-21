@@ -8,7 +8,6 @@ import java.time.{Duration, Instant}
 
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.api.common.typeinfo.TypeInformation
-import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.streaming.api.scala._
@@ -28,8 +27,8 @@ class DistDiffDetector[MeasT <: Measurement with HasDefault : TypeInformation]
           with DistDiffLogic
           with HasFlinkConfig {
 
-  final val detectorName = "Distribution Difference Detector"
-  final val detectorUid = "distdiff-detector"
+  final val flinkName = "Distribution Difference Detector"
+  final val flinkUid = "distdiff-detector"
   final val configKeyGroup = "distdiff"
 
   private var lastObserved: ValueState[MeasT] = _
@@ -83,8 +82,7 @@ class DistDiffDetector[MeasT <: Measurement with HasDefault : TypeInformation]
       )
     )
 
-    val config =
-      getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
+    val config = configWithOverride(getRuntimeContext)
     val prefix = s"detector.$configKeyGroup"
     inactivityPurgeTime = Duration.ofSeconds(config.getInt(s"$prefix.inactivityPurgeTime"))
     recentsCount = config.getInt(s"$prefix.recentsCount")

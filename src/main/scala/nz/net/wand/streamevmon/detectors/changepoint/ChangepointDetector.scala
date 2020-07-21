@@ -7,7 +7,6 @@ import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.api.common.typeinfo.TypeInformation
-import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.util.Collector
@@ -35,8 +34,8 @@ class ChangepointDetector[MeasT <: Measurement with HasDefault : TypeInformation
           with HasFlinkConfig
           with Logging {
 
-  final val detectorName = s"Changepoint Detector (${initialDistribution.distributionName})"
-  final val detectorUid = s"changepoint-detector-${initialDistribution.distributionName}"
+  final val flinkName = s"Changepoint Detector (${initialDistribution.distributionName})"
+  final val flinkUid = s"changepoint-detector-${initialDistribution.distributionName}"
   final val configKeyGroup = "changepoint"
 
   private var processor: ValueState[ChangepointProcessor[MeasT, DistT]] = _
@@ -57,9 +56,7 @@ class ChangepointDetector[MeasT <: Measurement with HasDefault : TypeInformation
   ): Unit = {
     if (processor.value == null) {
       processor.update(new ChangepointProcessor[MeasT, DistT](initialDistribution, configKeyGroup, shouldDoGraphs, filename))
-      processor.value.open(
-        getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
-      )
+      processor.value.open(configWithOverride(getRuntimeContext))
     }
     processor.value.processElement(value, out)
   }

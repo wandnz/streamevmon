@@ -29,8 +29,8 @@ object BaselineRunner {
 
     val process = source
       .process(detector)
-      .name(detector.detectorName)
-      .uid(detector.detectorUid)
+      .name(detector.flinkName)
+      .uid(detector.flinkUid)
 
     process.print("Baseline Change")
 

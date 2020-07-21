@@ -8,21 +8,31 @@ flows:
       icmp:
         filterLossy:
           baseline:
-            *allSinks
+            sinks:
+              *allSinks
+            config:
+              threshold: 30
           changepoint:
-            *allSinks
+            sinks:
+              *allSinks
           distdiff:
-            *allSinks
+            sinks:
+              *allSinks
           mode:
-            *allSinks
+            sinks:
+              *allSinks
           spike:
-            *allSinks
+            sinks:
+              *allSinks
           notADetector:
-            *allSinks
+            sinks:
+              *allSinks
       dns:
         loss:
-          *allSinks
+          sinks:
+            *allSinks
       notAType:
         loss:
-          *allSinks
+          sinks:
+            *allSinks
 

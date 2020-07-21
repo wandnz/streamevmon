@@ -15,7 +15,7 @@ object DistDiffRunner {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    System.setProperty("influx.dataSource.subscriptionName", "DistDiffDetector")
+    System.setProperty("source.influx.subscriptionName", "DistDiffDetector")
 
     val config = Configuration.get(args)
     env.getConfig.setGlobalJobParameters(config)
@@ -40,14 +40,14 @@ object DistDiffRunner {
       val detector = new WindowedDistDiffDetector[LatencyTSAmpICMP, GlobalWindow]
       window
         .process(detector)
-        .name(detector.detectorName)
+        .name(detector.flinkName)
     }
     else {
       {
         val detector = new DistDiffDetector[LatencyTSAmpICMP]
         source
           .process(detector)
-          .name(detector.detectorName)
+          .name(detector.flinkName)
         }
         .uid("distdiff-detector")
         .setParallelism(1)

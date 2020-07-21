@@ -117,8 +117,8 @@ trait UnifiedRunnerExtensions {
       val result =
         source
           .process(detector)
-          .name(detector.detectorName)
-          .uid(detector.detectorUid)
+          .name(detector.flinkName)
+          .uid(detector.flinkUid)
       detectors.append(result)
       result
     }
@@ -132,8 +132,8 @@ trait UnifiedRunnerExtensions {
       val result =
         source
           .process(detector)
-          .name(detector.detectorName)
-          .uid(detector.detectorUid)
+          .name(detector.flinkName)
+          .uid(detector.flinkUid)
       detectors.append(result)
       result
     }
@@ -147,8 +147,8 @@ trait UnifiedRunnerExtensions {
       val result =
         source
           .process(wrapped)
-          .name(s"${detector.detectorName} (Window Wrapped)")
-          .uid(s"window-wrapped-${detector.detectorUid}")
+          .name(s"${detector.flinkName} (Window Wrapped)")
+          .uid(s"window-wrapped-${detector.flinkUid}")
       detectors.append(result)
       result
     }

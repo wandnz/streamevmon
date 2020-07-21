@@ -13,7 +13,7 @@ import org.apache.flink.streaming.api.scala._
 /** Most basic example of using an [[nz.net.wand.streamevmon.flink.InfluxSourceFunction InfluxSourceFunction]],
   * in this case an [[nz.net.wand.streamevmon.flink.AmpMeasurementSourceFunction AmpMeasurementSourceFunction]].
   *
-  * Requires `influx.dataSource.(default|amp).serverName` to be set.
+  * Requires `source.influx.(amp.)?serverName` to be set.
   *
   * This just prints the type of measurement that was received and its time.
   */
@@ -25,7 +25,7 @@ object InfluxSourceReceiver {
 
     env.enableCheckpointing(10000, CheckpointingMode.EXACTLY_ONCE)
 
-    System.setProperty("influx.dataSource.default.subscriptionName", "InfluxSourceReceiver")
+    System.setProperty("source.influx.subscriptionName", "InfluxSourceReceiver")
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 

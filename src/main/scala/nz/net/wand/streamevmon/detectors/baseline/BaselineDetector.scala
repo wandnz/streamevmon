@@ -3,12 +3,12 @@ package nz.net.wand.streamevmon.detectors.baseline
 import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
+import nz.net.wand.streamevmon.Logging
 
 import java.time.{Duration, Instant}
 
 import org.apache.commons.math3.stat.descriptive.rank.Percentile
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
-import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.streaming.api.scala.createTypeInformation
@@ -17,10 +17,10 @@ import org.apache.flink.util.Collector
 import scala.collection.mutable
 
 class BaselineDetector[MeasT <: Measurement with HasDefault]
-  extends KeyedProcessFunction[String, MeasT, Event] with HasFlinkConfig {
+  extends KeyedProcessFunction[String, MeasT, Event] with HasFlinkConfig with Logging {
 
-  final val detectorName = "Baseline Detector"
-  final val detectorUid = "baseline-detector"
+  final val flinkName = "Baseline Detector"
+  final val flinkUid = "baseline-detector"
   final val configKeyGroup = "baseline"
 
   private var lastObserved: ValueState[Instant] = _
@@ -54,8 +54,7 @@ class BaselineDetector[MeasT <: Measurement with HasDefault]
       )
     )
 
-    val config =
-      getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
+    val config = configWithOverride(getRuntimeContext)
     maxHistory = config.getInt(s"detector.$configKeyGroup.maxHistory")
     percentile = config.getDouble(s"detector.$configKeyGroup.percentile")
     threshold = config.getDouble(s"detector.$configKeyGroup.threshold")

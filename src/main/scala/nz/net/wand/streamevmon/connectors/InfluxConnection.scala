@@ -70,7 +70,7 @@ object InfluxConnection extends Logging {
   private[this] def getWithFallback(p: ParameterTool, configPrefix: String, datatype: String, item: String): String = {
     val result = p.get(s"$configPrefix.$datatype.$item", null)
     if (result == null) {
-      p.get(s"$configPrefix.default.$item")
+      p.get(s"$configPrefix.$item")
     }
     else {
       result
@@ -87,7 +87,10 @@ object InfluxConnection extends Logging {
     *
     * @return A new InfluxConnection object.
     */
-  def apply(p: ParameterTool, configPrefix: String = "influx.dataSource", datatype: String = "amp"): InfluxConnection =
+  def apply(p: ParameterTool, configPrefix: String = "source.influx", datatype: String = "amp"): InfluxConnection = {
+    if (getWithFallback(p, configPrefix, datatype, "subscriptionName") == null) {
+      throw new IllegalArgumentException(s"$configPrefix.$datatype.subscriptionName cannot be null!")
+    }
     InfluxConnection(
       getWithFallback(p, configPrefix, datatype, "subscriptionName"),
       getWithFallback(p, configPrefix, datatype, "databaseName"),
@@ -101,6 +104,7 @@ object InfluxConnection extends Logging {
       getWithFallback(p, configPrefix, datatype, "user"),
       getWithFallback(p, configPrefix, datatype, "password")
     )
+  }
 }
 
 /** InfluxDB subscription manager which produces corresponding ServerSockets.
@@ -109,11 +113,11 @@ object InfluxConnection extends Logging {
   *
   * ==Configuration==
   *
-  * This class is configured by the `influx.dataSource` config key group, which
+  * This class is configured by the `source.influx` config key group, which
   * also configures [[InfluxHistoryConnection]]. Note that this will take
   * configuration from subgroups depending on the database being pulled from:
-  * If the object is retrieving AMP data, it will use `influx.dataSource.amp`,
-  * and fall back to `influx.dataSource.default` if keys are not found under `amp`.
+  * If the object is retrieving AMP data, it will use `source.influx.amp`,
+  * and fall back to `influx.source` if keys are not found under `amp`.
   *
   * - `listenAddress`: The address to listen on for this subscription.
   * If not specified, this will be automatically generated at runtime by

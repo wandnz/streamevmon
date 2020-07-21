@@ -23,7 +23,7 @@ object ChangepointRunner {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    System.setProperty("influx.dataSource.default.subscriptionName", "ChangepointDetector")
+    System.setProperty("source.influx.subscriptionName", "ChangepointDetector")
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
@@ -52,7 +52,7 @@ object ChangepointRunner {
 
     val process = source
       .process(detector)
-      .name(detector.detectorName)
+      .name(detector.flinkName)
       .uid("changepoint-processor")
 
     process.addSink(new InfluxSinkFunction)

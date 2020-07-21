@@ -55,7 +55,7 @@ object ChangepointGraphs {
 
     val process = source
       .process(detector)
-      .name(detector.detectorName)
+      .name(detector.flinkName)
 
     process.print(s"${getClass.getSimpleName} sink")
 

@@ -26,7 +26,7 @@ object TimeOffsetSourceRunner {
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     // Sets the subscription name for the AmpMeasurementSourceFunction.
-    System.setProperty("influx.dataSource.default.subscriptionName", "LiveSource")
+    System.setProperty("source.influx.subscriptionName", "LiveSource")
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
     env.setParallelism(1)
@@ -50,6 +50,9 @@ object TimeOffsetSourceRunner {
           timeOffset = Duration.ofMinutes(1)
         ) {
           override protected[this] def processLine(line: String): Option[InfluxMeasurement] = InfluxMeasurementFactory.createMeasurement(line)
+
+          override val flinkName: String = "Offset 1 Minute AMP Measurement Source"
+          override val flinkUid: String = "1-min-ago-amp-measurement-source"
         }
         // TODO: Check that we actually need this separate configuration.
         //  Since this is a polling function, it shouldn't subscribe and won't
@@ -57,7 +60,7 @@ object TimeOffsetSourceRunner {
         s.overrideConfig(
           env.getConfig.getGlobalJobParameters.asInstanceOf[ParameterTool].mergeWith(
             ParameterTool.fromMap(Map(
-              "influx.dataSource.default.subscriptionName" -> "TimeOffsetSource"
+              "source.influx.subscriptionName" -> "TimeOffsetSource"
             ).asJava)
           ))
         s

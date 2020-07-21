@@ -3,6 +3,7 @@ package nz.net.wand.streamevmon.flink
 import nz.net.wand.streamevmon.connectors.esmond.schema.{AbstractTimeSeriesEntry, EventType, Summary}
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.connectors.esmond._
+import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement
 
 import java.time.{Duration, Instant}
@@ -37,7 +38,7 @@ class PollingEsmondSourceFunction[
   EsmondConnectionT <: AbstractEsmondConnection,
   EsmondDiscoveryT <: AbstractEsmondStreamDiscovery
 ](
-  configPrefix     : String = "esmond.dataSource",
+  configPrefix     : String = "source.esmond",
   // Man, this is a pain. You can't instantiate a type parameter, so instead
   // you've got to include builders as arguments. These defaults are sensible.
   // Mainly useful for testing.
@@ -47,6 +48,7 @@ class PollingEsmondSourceFunction[
   (s: String, p: ParameterTool, c: AbstractEsmondConnection) => new EsmondStreamDiscovery(s, p, c)
 )
   extends RichSourceFunction[RichEsmondMeasurement]
+          with HasFlinkConfig
           with CheckpointedFunction
           with GloballyStoppableFunction
           with Logging {
@@ -64,8 +66,6 @@ class PollingEsmondSourceFunction[
 
   @transient protected var esmond: Option[AbstractEsmondConnection] = None
 
-  protected var overrideParams: Option[ParameterTool] = None
-
   protected var firstMeasurementTime: Instant = _
 
   @transient protected var fetchHistory: Duration = _
@@ -79,9 +79,9 @@ class PollingEsmondSourceFunction[
   protected var selectedStreams: Iterable[Endpoint] = Seq()
   @transient protected var selectedStreamsStorage: ListState[Endpoint] = _
 
-  def overrideConfig(config: ParameterTool): Unit = {
-    overrideParams = Some(config)
-  }
+  override val configKeyGroup: String = configPrefix
+  override val flinkName: String = "Polling Esmond Source"
+  override val flinkUid: String = "polling-flink-source"
 
   override def open(parameters: Configuration): Unit = {
     if (getRuntimeContext.getNumberOfParallelSubtasks > 1) {
@@ -89,9 +89,7 @@ class PollingEsmondSourceFunction[
     }
 
     // Set up config
-    val params: ParameterTool = overrideParams.getOrElse(
-      getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
-    )
+    val params: ParameterTool = configWithOverride(getRuntimeContext)
     esmond = Some(connectionBuilder(params.get(s"$configPrefix.serverName")))
 
     fetchHistory = Duration.ofSeconds(params.getInt(s"$configPrefix.fetchHistory"))

@@ -7,7 +7,6 @@ import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 import java.time.Duration
 
 import org.apache.flink.api.common.state.ValueStateDescriptor
-import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.scala.createTypeInformation
 import org.apache.flink.streaming.api.scala.function.ProcessWindowFunction
@@ -31,8 +30,8 @@ class WindowedDistDiffDetector[MeasT <: Measurement with HasDefault, W <: Window
           with DistDiffLogic
           with HasFlinkConfig {
 
-  final val detectorName = "Distribution Difference Detector (Windowed)"
-  final val detectorUid = "windowed-distdiff-detector"
+  final val flinkName = "Distribution Difference Detector (Windowed)"
+  final val flinkUid = "windowed-distdiff-detector"
   final val configKeyGroup: String = "distdiff"
 
   /** Called during initialisation. Sets up persistent state variables and
@@ -46,8 +45,7 @@ class WindowedDistDiffDetector[MeasT <: Measurement with HasDefault, W <: Window
       )
     )
 
-    val config =
-      getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
+    val config = configWithOverride(getRuntimeContext)
     val prefix = s"detector.$configKeyGroup"
     recentsCount = config.getInt(s"$prefix.recentsCount")
     zThreshold = config.getDouble(s"$prefix.zThreshold")

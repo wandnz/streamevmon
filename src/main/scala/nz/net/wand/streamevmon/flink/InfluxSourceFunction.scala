@@ -2,6 +2,7 @@ package nz.net.wand.streamevmon.flink
 
 import nz.net.wand.streamevmon.connectors.{InfluxConnection, InfluxHistoryConnection}
 import nz.net.wand.streamevmon.Logging
+import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 
 import java.io.{BufferedReader, InputStreamReader}
@@ -10,7 +11,6 @@ import java.time.{Duration, Instant}
 import java.util.{List => JavaList}
 
 import org.apache.commons.lang3.time.DurationFormatUtils
-import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.streaming.api.checkpoint.ListCheckpointed
 import org.apache.flink.streaming.api.functions.source.{RichSourceFunction, SourceFunction}
 import org.apache.flink.streaming.api.watermark.Watermark
@@ -45,14 +45,17 @@ import scala.collection.JavaConverters._
   * @see [[AmpRichMeasurementSourceFunction]]
   */
 abstract class InfluxSourceFunction[T <: InfluxMeasurement](
-  configPrefix: String = "influx.dataSource",
+  configPrefix: String = "source.influx",
   datatype    : String = "amp",
   fetchHistory: Duration = Duration.ZERO
 )
   extends RichSourceFunction[T]
           with GloballyStoppableFunction
+          with HasFlinkConfig
           with Logging
           with ListCheckpointed[Instant] {
+
+  lazy override val configKeyGroup: String = configPrefix
 
   @volatile
   @transient protected[this] var isRunning = false
@@ -86,29 +89,16 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
     Some(measurement.asInstanceOf[T])
   }
 
-  protected[this] var overrideParams: Option[ParameterTool] = None
-
-  def overrideConfig(config: ParameterTool): Unit = {
-    overrideParams = Some(config)
-  }
-
   /** Starts the source, setting up the listen server.
     *
     * @param ctx The SourceContext associated with the current execution.
     */
   override def run(ctx: SourceFunction.SourceContext[T]): Unit = {
     // Set up config
-    if (overrideParams.isDefined) {
-      influxConnection = Some(InfluxConnection(overrideParams.get, configPrefix, datatype))
-      influxHistory = Some(InfluxHistoryConnection(overrideParams.get, configPrefix, datatype))
-      maxLateness = overrideParams.get.getLong("flink.maxLateness")
-    }
-    else {
-      val params: ParameterTool =
-        getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
-      influxConnection = Some(InfluxConnection(params, configPrefix, datatype))
-      influxHistory = Some(InfluxHistoryConnection(params, configPrefix, datatype))
-    }
+    val params = configWithOverride(getRuntimeContext)
+    influxConnection = Some(InfluxConnection(params, configPrefix, datatype))
+    influxHistory = Some(InfluxHistoryConnection(params, configPrefix, datatype))
+    maxLateness = params.getLong("flink.maxLateness")
 
     if (getRuntimeContext.getNumberOfParallelSubtasks > 1) {
       throw new IllegalStateException("Parallelism for this SourceFunction must be 1.")

@@ -2,6 +2,7 @@ package nz.net.wand.streamevmon.flink
 
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.Logging
+import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 
 import java.util.{List => JList}
 
@@ -26,7 +27,7 @@ import scala.concurrent.duration.Duration
   * ==Configuration==
   *
   * This class is configured first by the `influx.sink` config key group, then
-  * by `influx.dataSource.default` and finally `influx.dataSource.amp` if a key
+  * by `influx.source` and finally `influx.source.amp` if a key
   * is not found under `sink`. ''Note that this means the InfluxDB username and
   * password will default to the credentials for an AMP Influx instance if not
   * specified!''
@@ -53,6 +54,7 @@ import scala.concurrent.duration.Duration
   */
 class InfluxSinkFunction
   extends RichSinkFunction[Event]
+          with HasFlinkConfig
           with ListCheckpointed[Event]
           with Logging {
 
@@ -68,25 +70,23 @@ class InfluxSinkFunction
 
   private[streamevmon] var retentionPolicy: String = _
 
+  override val flinkName: String = "Influx Sink"
+  override val flinkUid: String = "influx-sink"
+  override val configKeyGroup: String = "sink.influx"
+
   private[this] var influx: AhcIOClient = _
 
   private[this] val bufferedEvents: ListBuffer[Event] = ListBuffer()
 
-  private[this] var overrideParams: Option[ParameterTool] = None
-
-  def overrideConfig(config: ParameterTool): Unit = {
-    overrideParams = Some(config)
-  }
-
   /** A pretty gross way of getting a key from the config structure, with
-    * preference for influx.sink and then influx.dataSource.default.
+    * preference for influx.sink and then source.influx.
     */
   private[this] def getWithFallback(parameters: ParameterTool, key: String): String = {
-    var result = parameters.get(s"influx.sink.$key", null)
+    var result = parameters.get(s"sink.influx.$key", null)
     if (result == null) {
-      result = parameters.get(s"influx.dataSource.default.$key", null)
+      result = parameters.get(s"source.influx.$key", null)
       if (result == null) {
-        parameters.get(s"influx.dataSource.amp.$key", null)
+        parameters.get(s"source.influx.amp.$key", null)
       }
       else {
         result
@@ -101,8 +101,8 @@ class InfluxSinkFunction
     val host = getWithFallback(p, "serverName")
     if (host == null) {
       throw new RuntimeException(
-        "You must specify the config key 'influx.dataSource.default.serverName' " +
-          "or 'influx.sink.serverName'.")
+        "You must specify the config key 'source.influx.serverName' " +
+          "or 'sink.influx.serverName'.")
     }
     host
   }

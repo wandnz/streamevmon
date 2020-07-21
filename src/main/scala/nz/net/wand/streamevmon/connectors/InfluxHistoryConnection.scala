@@ -22,7 +22,7 @@ object InfluxHistoryConnection {
   private[this] def getWithFallback(p: ParameterTool, configPrefix: String, datatype: String, item: String): String = {
     val result = p.get(s"$configPrefix.$datatype.$item", null)
     if (result == null) {
-      p.get(s"$configPrefix.default.$item")
+      p.get(s"$configPrefix.$item")
     }
     else {
       result
@@ -39,7 +39,7 @@ object InfluxHistoryConnection {
     *
     * @return A new InfluxHistoryConnection object.
     */
-  def apply(p: ParameterTool, configPrefix: String = "influx.dataSource", datatype: String = "amp"): InfluxHistoryConnection =
+  def apply(p: ParameterTool, configPrefix: String = "source.influx", datatype: String = "amp"): InfluxHistoryConnection =
     InfluxHistoryConnection(
       getWithFallback(p, configPrefix, datatype, "databaseName"),
       getWithFallback(p, configPrefix, datatype, "retentionPolicy"),
@@ -58,7 +58,7 @@ object InfluxHistoryConnection {
   *
   * ==Configuration==
   *
-  * This class is configured by the `influx.dataSource` config key group. See
+  * This class is configured by the `source.influx` config key group. See
   * [[InfluxConnection]] for additional details on how to configure this class.
   *
   * - `databaseName`: The name of the InfluxDB database to retrieve data from.

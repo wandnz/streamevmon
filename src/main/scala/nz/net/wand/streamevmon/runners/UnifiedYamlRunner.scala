@@ -16,14 +16,16 @@ import nz.net.wand.streamevmon.measurements.bigdata.Flow
 
 import java.time.Duration
 
-import org.apache.commons.lang3.text.WordUtils
+import org.apache.flink.api.common.restartstrategy.RestartStrategies
 import org.apache.flink.api.common.typeinfo.TypeInformation
+import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.streaming.api.functions.sink.{PrintSinkFunction, SinkFunction}
 import org.apache.flink.streaming.api.scala._
 
 import scala.collection.mutable
+import scala.collection.JavaConverters._
 import scala.reflect._
 
 object UnifiedYamlRunner extends UnifiedRunnerExtensions with Logging {
@@ -122,12 +124,9 @@ object UnifiedYamlRunner extends UnifiedRunnerExtensions with Logging {
   }
 
   def main(args: Array[String]): Unit = {
-    // == Setup config ==
+    // == Setup flink config ==
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
-
-    System.setProperty("source.influx.amp.subscriptionName", "AmpUnifiedRunner")
-    System.setProperty("source.influx.bigdata.subscriptionName", "BigDataUnifiedRunner")
 
     config = Configuration.get(args)
     env.getConfig.setGlobalJobParameters(config)
@@ -139,23 +138,37 @@ object UnifiedYamlRunner extends UnifiedRunnerExtensions with Logging {
       CheckpointingMode.EXACTLY_ONCE
     )
 
-    // == Parse flow config key ==
+    env.setRestartStrategy(RestartStrategies.noRestart())
 
+    // == Parse flow config key ==
     val flows = Configuration.getFlowsAsMap
 
-    val sinks: Map[String, SinkFunction[Event]] =
+    val sinks: Map[String, SinkFunction[Event] with HasFlinkConfig] =
       flows
         .asMapParent
+        // This config key names the sinks that get used in the config.
         .getOrElse("defaultFlowSinks", Map())
         .flatMap { case (sinkName, enabled) =>
+          // We'll give each of them a list of detectors, and instantiate them.
           detectorsBySink(sinkName) = mutable.Buffer()
-          sinkName match {
+          val sink = sinkName match {
+            // This includes some setup for some of them.
             case "influx" => Some((sinkName, new InfluxSinkFunction))
-            case "print" => Some((sinkName, new PrintSinkFunction[Event]()))
+            case "print" => Some((sinkName,
+              new PrintSinkFunction[Event]() with HasFlinkConfig {
+                override val flinkName: String = "Print: Std Out"
+                override val flinkUid: String = "print-sink"
+                override val configKeyGroup: String = ""
+              }
+            ))
             case _ => logger.warn(s"Unknown sink name $sinkName"); None
           }
+          sink.asInstanceOf[Option[(String, SinkFunction[Event] with HasFlinkConfig)]]
         }
 
+    /** The lowest-level key sets whether the detector wants to output to each
+      * sink. If the value is true, add it.
+      */
     def recordSinkRequests(
       sinks: Map[String, Boolean],
       stream: DataStream[Event]
@@ -177,22 +190,39 @@ object UnifiedYamlRunner extends UnifiedRunnerExtensions with Logging {
     ): Unit = {
       dTypeChildren.foreach { case (child, grandchild) =>
         child.toLowerCase match {
+          // This layer can include a directive to filter out lossy measurements.
+          // All measurements can be filtered by lossiness.
           case "filterlossy" =>
             val furtherFilteredStream = filteredStream.notLossy[MeasT]
+            // The child of this layer is the same type of layer again.
             processDatatypeChildLayer(
               grandchild.asMapParent,
               source,
               furtherFilteredStream
             )
+          // Any other directive is a detector name. We should create the
+          // detector, then figure out where it wants its output to be sunk to.
           case detectorName =>
             newDetectorFromName[MeasT](detectorName).map { det =>
+              // The user might specify extra config here, which we should
+              // merge in and pass through.
+              val overrideConfigMap = Configuration.flattenMap(
+                Map(
+                  s"detector.${det.configKeyGroup}" -> grandchild.getOrElse("config", Map())
+                )
+              )
+
+              det.overrideConfig(ParameterTool.fromMap(overrideConfigMap.asJava))
+
+              // Add the detector to its input
               val eventStream = filteredStream
                 .keyAndTimeWindowStreams
                 .addDetector(det)
 
+              // And set it up to be added to its output(s)
               eventStream.map { stream =>
                 recordSinkRequests(
-                  grandchild.asInstanceOf[Map[String, Boolean]],
+                  grandchild.getOrElse("sinks", Map()).asInstanceOf[Map[String, Boolean]],
                   stream
                 )
               }
@@ -201,6 +231,9 @@ object UnifiedYamlRunner extends UnifiedRunnerExtensions with Logging {
       }
     }
 
+    /** This layer just filters a stream by concrete type. Detectors should
+      * specify which datatypes they accept in the config.
+      */
     def processDatatypeLayer(
       dataTypes: Map[String, Map[String, Any]],
       source   : DataStream[Measurement]
@@ -253,28 +286,32 @@ object UnifiedYamlRunner extends UnifiedRunnerExtensions with Logging {
 
     def processInfluxSourceLayer(sources: Map[String, Map[String, Any]]): Unit = {
       sources.foreach { case (sourceName, dTypes) =>
-        sourceName.toLowerCase match {
-          case "amp" =>
-            processDatatypeLayer(
-              dTypes.asMapParent,
-              env
-                .addSource(new AmpMeasurementSourceFunction)
-                .name("AMP Measurement Subscription")
-                .uid("amp-measurement-source")
-                .asInstanceOf[DataStream[Measurement]]
-            )
-
-          case "bigdata" =>
-            processDatatypeLayer(
-              dTypes.asMapParent,
-              env
-                .addSource(new BigDataSourceFunction)
-                .name("Libtrace-Bigdata Measurement Subscription")
-                .uid("bigdata-measurement-source")
-                .asInstanceOf[DataStream[Measurement]]
-            )
-
-          case _ => logger.warn(s"Unknown influx source name $sourceName")
+        val source = sourceName.toLowerCase match {
+          case "amp" => Some {
+            val func = new AmpMeasurementSourceFunction
+            func.overrideConfig(ParameterTool.fromMap(Map(
+              "source.influx.amp.subscriptionName" -> "UnifiedRunnerSubscription"
+            ).asJava))
+            func
+          }
+          case "bigdata" => Some {
+            val func = new BigDataSourceFunction
+            func.overrideConfig(ParameterTool.fromMap(Map(
+              "source.influx.bigdata.subscriptionName" -> "UnifiedRunnerSubscription"
+            ).asJava))
+            func
+          }
+          case _ => logger.warn(s"Unknown influx source name $sourceName"); None
+        }
+        source.map { s =>
+          processDatatypeLayer(
+            dTypes.asMapParent,
+            env
+              .addSource(s)
+              .name(s.flinkName)
+              .uid(s.flinkUid)
+              .asInstanceOf[DataStream[Measurement]]
+          )
         }
       }
     }
@@ -306,13 +343,13 @@ object UnifiedYamlRunner extends UnifiedRunnerExtensions with Logging {
         union.map { dets =>
           dets
             .addSink(sinks(sinkName))
-            .name(WordUtils.capitalize(s"$sinkName Sink"))
-            .uid(s"${sinkName.toLowerCase}-sink")
+            .name(sinks(sinkName).flinkName)
+            .uid(sinks(sinkName).flinkUid)
         }
     }
 
-    env.execute()
-
     val breakpoint = 1
+
+    env.execute()
   }
 }
