@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.runners
+package nz.net.wand.streamevmon.runners.unified
 
 import nz.net.wand.streamevmon.{Configuration, Logging}
 import nz.net.wand.streamevmon.detectors.baseline.BaselineDetector
@@ -288,18 +288,16 @@ object UnifiedYamlRunner extends UnifiedRunnerExtensions with Logging {
       sources.foreach { case (sourceName, dTypes) =>
         val source = sourceName.toLowerCase match {
           case "amp" => Some {
-            val func = new AmpMeasurementSourceFunction
-            func.overrideConfig(ParameterTool.fromMap(Map(
-              "source.influx.amp.subscriptionName" -> "UnifiedRunnerSubscription"
-            ).asJava))
-            func
+            new AmpMeasurementSourceFunction()
+              .overrideConfig(ParameterTool.fromMap(Map(
+                "source.influx.amp.subscriptionName" -> "UnifiedRunnerSubscription"
+              ).asJava))
           }
           case "bigdata" => Some {
-            val func = new BigDataSourceFunction
-            func.overrideConfig(ParameterTool.fromMap(Map(
-              "source.influx.bigdata.subscriptionName" -> "UnifiedRunnerSubscription"
-            ).asJava))
-            func
+            new BigDataSourceFunction()
+              .overrideConfig(ParameterTool.fromMap(Map(
+                "source.influx.bigdata.subscriptionName" -> "UnifiedRunnerSubscription"
+              ).asJava))
           }
           case _ => logger.warn(s"Unknown influx source name $sourceName"); None
         }

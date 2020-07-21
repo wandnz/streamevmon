@@ -1,7 +1,11 @@
 package nz.net.wand.streamevmon
 
+import nz.net.wand.streamevmon.runners.unified.schema.FlowSchema
+
 import java.io.{File, FileInputStream, InputStream}
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.flink.api.java.utils.ParameterTool
 import org.snakeyaml.engine.v2.api.{Load, LoadSettings}
 
@@ -166,5 +170,24 @@ object Configuration {
         .getOrElse(new java.util.HashMap[String, Any]())
     }
       .asInstanceOf[Map[String, Any]]
+  }
+
+  def getFlowsDag: FlowSchema = {
+    val loader = new Load(LoadSettings.builder.build)
+    val mapper = new ObjectMapper()
+    mapper.registerModule(DefaultScalaModule)
+
+    val result = Option(loader.loadFromInputStream(
+      getClass.getClassLoader.getResourceAsStream("flowDag.yaml")
+    ))
+      .map(obj => mapper.convertValue(obj, classOf[FlowSchema]))
+
+    val sources = result.map { schema =>
+      schema.sources.map { source =>
+        source.build
+      }
+    }
+
+    result.get // breakpoint for testing
   }
 }

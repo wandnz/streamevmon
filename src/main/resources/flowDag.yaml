@@ -1,0 +1,48 @@
+sources:
+  - name: amp
+    type: influx
+    subtype: amp
+    config:
+      serverName: 192.168.122.144
+  - name: bigdata
+    type: influx
+    subtype: bigdata
+    config:
+      serverName: 192.168.122.144
+  - name: esmond
+    type: esmond
+    config:
+      serverName: http://denv-owamp.es.net:8085
+
+sinks:
+  - name: print
+    type: print
+  - name: influx
+    type: influx
+    config:
+      serverName: 192.168.122.144
+
+detectors:
+  baseline-icmp:
+    type: baseline
+    config:
+      threshold: 60
+    instances:
+      - source:
+          - name: amp
+            datatype: icmp
+            filterLossy: true
+        sink:
+          - name: influx
+          - name: print
+
+  loss-dns:
+    type: loss
+    config:
+    instances:
+      - source:
+          - name: amp
+            datatype: dns
+        sink:
+          - name: influx
+          - name: print

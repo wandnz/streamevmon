@@ -45,7 +45,7 @@ object TimeOffsetSourceRunner {
     // Grab data from a minute ago, and print its class and time.
     env
       .addSource {
-        val s = new PollingInfluxSourceFunction[InfluxMeasurement](
+        new PollingInfluxSourceFunction[InfluxMeasurement](
           fetchHistory = Duration.ofMinutes(1),
           timeOffset = Duration.ofMinutes(1)
         ) {
@@ -54,16 +54,16 @@ object TimeOffsetSourceRunner {
           override val flinkName: String = "Offset 1 Minute AMP Measurement Source"
           override val flinkUid: String = "1-min-ago-amp-measurement-source"
         }
-        // TODO: Check that we actually need this separate configuration.
-        //  Since this is a polling function, it shouldn't subscribe and won't
-        //  overwrite the subscription for the real-time function.
-        s.overrideConfig(
-          env.getConfig.getGlobalJobParameters.asInstanceOf[ParameterTool].mergeWith(
-            ParameterTool.fromMap(Map(
-              "source.influx.subscriptionName" -> "TimeOffsetSource"
-            ).asJava)
-          ))
-        s
+          // TODO: Check that we actually need this separate configuration.
+          //  Since this is a polling function, it shouldn't subscribe and won't
+          //  overwrite the subscription for the real-time function.
+          .overrideConfig(
+            env.getConfig.getGlobalJobParameters.asInstanceOf[ParameterTool].mergeWith(
+              ParameterTool.fromMap(Map(
+                "source.influx.subscriptionName" -> "TimeOffsetSource"
+              ).asJava)
+            )
+          )
       }
       .name("Measurement Subscription")
       .map(i => s"${i.getClass.getSimpleName}(${new SimpleDateFormat("HH:mm:ss").format(Date.from(i.time))})")
