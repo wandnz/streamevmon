@@ -1,23 +1,25 @@
 sources:
-  - name: amp
+  amp:
     type: influx
     subtype: amp
     config:
       serverName: 192.168.122.144
-  - name: bigdata
+      subscriptionName: YamlDagRunnerAmpSubscription
+  bigdata:
     type: influx
     subtype: bigdata
     config:
       serverName: 192.168.122.144
-  - name: esmond
+      subscriptionName: YamlDagRunnerEsmondSubscription
+  esmond:
     type: esmond
     config:
       serverName: http://denv-owamp.es.net:8085
 
 sinks:
-  - name: print
+  print:
     type: print
-  - name: influx
+  influx:
     type: influx
     config:
       serverName: 192.168.122.144
@@ -27,7 +29,7 @@ detectors:
     type: baseline
     config:
       threshold: 60
-    instances:
+    instances: &ampIcmpToAllSources
       - source:
           - name: amp
             datatype: icmp
@@ -35,6 +37,10 @@ detectors:
         sink:
           - name: influx
           - name: print
+
+  changepoint-icmp:
+    type: changepoint
+    instances: *ampIcmpToAllSources
 
   loss-dns:
     type: loss

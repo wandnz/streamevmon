@@ -112,12 +112,7 @@ class InfluxSinkFunction
     * @param parameters Ignored.
     */
   override def open(parameters: flinkconf.Configuration): Unit = {
-    val p = if (overrideParams.isDefined) {
-      overrideParams.get
-    }
-    else {
-      getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
-    }
+    val p = configWithOverride(getRuntimeContext)
 
     host = getHost(p)
     port = getWithFallback(p, "portNumber").toInt

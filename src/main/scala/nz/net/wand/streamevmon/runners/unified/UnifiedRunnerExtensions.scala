@@ -78,7 +78,7 @@ trait UnifiedRunnerExtensions {
       source
         .filter(classTag[T].runtimeClass.isInstance(_))
         .name(s"Is ${classTag[T].runtimeClass.getSimpleName}?")
-        .uid(s"filter-is-${classTag[T].runtimeClass.getSimpleName}")
+        //.uid(s"filter-is-${classTag[T].runtimeClass.getSimpleName}")
     }
 
     /** Filters a DataStream to only include Measurements that aren't lossy. */
@@ -86,7 +86,7 @@ trait UnifiedRunnerExtensions {
       source
         .filter((m: MeasT) => !m.isLossy)
         .name("Is not lossy?")
-        .uid(s"filter-has-data-${classTag[T].getClass.getSimpleName}")
+      //.uid(s"filter-has-data-${classTag[T].getClass.getSimpleName}")
     }
 
     /** Create a keyed stream and a time-window stream from an input stream. */

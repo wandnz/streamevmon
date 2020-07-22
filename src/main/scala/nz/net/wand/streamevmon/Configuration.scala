@@ -177,17 +177,10 @@ object Configuration {
     val mapper = new ObjectMapper()
     mapper.registerModule(DefaultScalaModule)
 
-    val result = Option(loader.loadFromInputStream(
+    Option(loader.loadFromInputStream(
       getClass.getClassLoader.getResourceAsStream("flowDag.yaml")
     ))
       .map(obj => mapper.convertValue(obj, classOf[FlowSchema]))
-
-    val sources = result.map { schema =>
-      schema.sources.map { source =>
-        source.build
-      }
-    }
-
-    result.get // breakpoint for testing
+      .get
   }
 }
