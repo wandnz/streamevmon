@@ -10,6 +10,7 @@ import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{CsvOutputable, HasDefault, Measurement}
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow
+import nz.net.wand.streamevmon.measurements.esmond._
 import nz.net.wand.streamevmon.runners.unified.UnifiedYamlRunner.Perhaps
 
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -25,11 +26,10 @@ case class DetectorSchema(
   @JsonProperty("type")
   @JsonScalaEnumeration(classOf[DetectorTypeReference])
   detType: DetectorType.ValueBuilder,
-  config: Map[String, String] = Map(),
   instances: Iterable[DetectorInstance]
 ) {
   def build: Iterable[(DetectorInstance, KeyedProcessFunction[String, Measurement, Event] with HasFlinkConfig)] = {
-    instances.map(inst => (inst, inst.build(detType, config)))
+    instances.map(inst => (inst, inst.build(detType)))
   }
 }
 
@@ -37,11 +37,11 @@ case class DetectorInstance(
   @JsonProperty("source")
   sources: Iterable[SourceReference],
   @JsonProperty("sink")
-  sinks  : Iterable[SinkReference]
+  sinks: Iterable[SinkReference],
+  config : Map[String, String] = Map()
 ) {
   def build(
-    detType: DetectorType.ValueBuilder,
-    config : Map[String, String] = Map(),
+    detType: DetectorType.ValueBuilder
   ): KeyedProcessFunction[String, Measurement, Event] with HasFlinkConfig = {
     // Currently, all detectors have a single input type
     val source = sources.headOption.getOrElse(
@@ -54,7 +54,12 @@ case class DetectorInstance(
       case SourceReferenceDatatype.TCPPing => detType.build[TCPPing]
       case SourceReferenceDatatype.Traceroute => detType.build[Traceroute]
       case SourceReferenceDatatype.Flow => detType.build[Flow]
-      // TODO: Esmond measurements
+      case SourceReferenceDatatype.Failure => detType.build[Failure]
+      case SourceReferenceDatatype.Histogram => detType.build[Histogram]
+      case SourceReferenceDatatype.Href => detType.build[Href]
+      case SourceReferenceDatatype.PacketTrace => detType.build[PacketTrace]
+      case SourceReferenceDatatype.Simple => detType.build[Simple]
+      case SourceReferenceDatatype.Subinterval => detType.build[Subinterval]
     }
     det.overrideConfig(config, s"detector.${det.configKeyGroup}")
   }

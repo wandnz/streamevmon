@@ -15,7 +15,7 @@ import scala.util.{Failure, Success, Try}
   *
   * == Configuration ==
   *
-  * This class is configured by the `esmond.dataSource` config key group, which
+  * This class is configured by the `source.esmond` config key group, which
   * is used to filter the results returned by the API. As such, many keys are
   * optional. Many of these keys have additional details in [[EsmondAPI.archiveList]].
   *
@@ -59,7 +59,7 @@ import scala.util.{Failure, Success, Try}
   *               obtained implicitly.
   */
 class EsmondStreamDiscovery[ConnT <: AbstractEsmondConnection](
-  configPrefix: String = "esmond.dataSource",
+  configPrefix: String = "source.esmond",
   params      : ParameterTool,
   esmond      : ConnT
 ) extends AbstractEsmondStreamDiscovery with Logging {

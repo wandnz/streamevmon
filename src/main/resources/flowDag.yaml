@@ -24,12 +24,19 @@ sinks:
     config:
       serverName: 192.168.122.144
 
+instanceTemplates: &ampIcmpToAllSources
+  - source:
+      - name: amp
+        datatype: icmp
+        filterLossy: true
+    sink:
+      - name: influx
+      - name: print
+
 detectors:
   baseline-icmp:
     type: baseline
-    config:
-      threshold: 60
-    instances: &ampIcmpToAllSources
+    instances:
       - source:
           - name: amp
             datatype: icmp
@@ -37,14 +44,26 @@ detectors:
         sink:
           - name: influx
           - name: print
+        config:
+          threshold: 60
 
   changepoint-icmp:
     type: changepoint
     instances: *ampIcmpToAllSources
 
-  loss-dns:
+  distdiff-esmond:
+    type: distdiff
+    instances:
+      - source:
+          - name: esmond
+            datatype: simple
+            filterLossy: true
+        sink:
+          - name: influx
+          - name: print
+
+  loss:
     type: loss
-    config:
     instances:
       - source:
           - name: amp
@@ -52,3 +71,18 @@ detectors:
         sink:
           - name: influx
           - name: print
+        config:
+      - source:
+          - name: amp
+            datatype: icmp
+        sink:
+          - name: influx
+          - name: print
+
+  mode-icmp:
+    type: mode
+    instances: *ampIcmpToAllSources
+
+  spike-icmp:
+    type: spike
+    instances: *ampIcmpToAllSources

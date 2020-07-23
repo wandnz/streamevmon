@@ -63,13 +63,13 @@ object YamlDagRunner extends UnifiedRunnerExtensions {
 
     flows.detectors.foreach {
       case (name, detSchema) =>
-        detSchema.instances.foreach { detInstance =>
+        detSchema.instances.zipWithIndex.foreach { case (detInstance, index) =>
           val sourcesList = detInstance.sources.map(s => (s, sources(s.name)))
           // Just one input source for now
           val eventStream: DataStream[Event] = sourcesList.headOption
             .map {
               case (srcReference, streamWithFilters) =>
-                val detector = detInstance.build(detSchema.detType, detSchema.config)
+                val detector = detInstance.build(detSchema.detType)
 
                 val stream = if (srcReference.filterLossy) {
                   streamWithFilters.typedAs(srcReference.datatype).notLossyKeyedStream
@@ -81,7 +81,7 @@ object YamlDagRunner extends UnifiedRunnerExtensions {
                 stream
                   .process(detector)
                   .name(s"$name (${detector.flinkName})")
-                  .uid(s"${detector.flinkUid}-$name")
+                  .uid(s"${detector.flinkUid}-$name-$index")
             }
             .getOrElse(
               throw new IllegalArgumentException("Detector instance must have at least one source!")

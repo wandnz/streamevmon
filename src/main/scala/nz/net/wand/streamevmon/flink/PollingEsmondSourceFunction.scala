@@ -209,12 +209,11 @@ class PollingEsmondSourceFunction[
 
   override def run(ctx: SourceFunction.SourceContext[RichEsmondMeasurement]): Unit = {
     // Figure out which streams we're going to use
+    val params = configWithOverride(getRuntimeContext)
     if (selectedStreams.isEmpty) {
       val discovery = discoveryBuilder(
         configPrefix,
-        overrideParams.getOrElse(
-          getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
-        ),
+        params,
         esmond.get
       )
       selectedStreams = discovery.discoverStreams().map(Endpoint(_, firstMeasurementTime))
