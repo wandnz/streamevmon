@@ -13,7 +13,7 @@ import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.{GlobalWindow, TimeWindow, Window}
 
 import scala.collection.mutable
-import scala.language.{higherKinds, implicitConversions}
+import scala.language.implicitConversions
 import scala.reflect._
 
 /** Defines a number of extension methods for use in [[UnifiedRunner]]. */

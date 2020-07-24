@@ -1,9 +1,9 @@
 package nz.net.wand.streamevmon.runners.unified
 
-import nz.net.wand.streamevmon.Configuration
+import nz.net.wand.streamevmon.{Configuration, Lazy}
 import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.runners.unified.schema.{Lazy, SourceAndFilters}
+import nz.net.wand.streamevmon.runners.unified.schema.StreamToTypedStreams
 
 import java.time.Duration
 
@@ -14,14 +14,14 @@ import org.apache.flink.streaming.api.scala._
 
 import scala.collection.mutable
 
-object YamlDagRunner extends UnifiedRunnerExtensions {
+object YamlDagRunner {
 
   def main(args: Array[String]): Unit = {
     // == Setup flink config ==
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    config = Configuration.get(args)
+    val config = Configuration.get(args)
     env.getConfig.setGlobalJobParameters(config)
 
     env.disableOperatorChaining
@@ -36,49 +36,68 @@ object YamlDagRunner extends UnifiedRunnerExtensions {
     // == Parse flow config key ==
     val flows = Configuration.getFlowsDag
 
+    // We keep track of which detectors subscribe to each sink as they're created,
+    // so that we can tie them together once we've made all our detectors.
+    // detectorsBySink and sinks share the same keys, since they have related values.
     val detectorsBySink: mutable.Map[String, mutable.Buffer[DataStream[Event]]] = mutable.Map()
+
+    // We don't need to build sinks lazily since they don't get added to the
+    // execution plan unless they get tied to a detector.
     val sinks: Map[String, SinkFunction[Event] with HasFlinkConfig] =
-      flows.sinks.map {
-        case (name, sink) =>
-          detectorsBySink(name) = mutable.Buffer()
-          (name, sink.build)
-      }
+    flows.sinks.map {
+      case (name, sink) =>
+        detectorsBySink(name) = mutable.Buffer()
+        (name, sink.build)
+    }
 
-    val sources: Map[String, SourceAndFilters] =
-      flows.sources.map {
-        case (name, sourceInstance) =>
-          val lazyBuilt = new Lazy({
-            val built = sourceInstance.build
-            env
-              .addSource(built)
-              .name(s"$name (${built.flinkName})")
-              .uid(s"${built.flinkUid}-$name")
-          })
+    // We build all our sources lazily. This means that if their output isn't
+    // used, they won't be constructed and won't appear in the execution plan.
+    // Since sources get tied to the environment rather than another stream,
+    // they'll appear regardless of if they're used if they're not built lazily.
+    val sources: Map[String, StreamToTypedStreams] =
+    flows.sources.map {
+      case (name, sourceInstance) =>
+        val lazyBuilt = new Lazy({
+          val built = sourceInstance.build
+          env
+            .addSource(built)
+            .name(s"$name (${built.flinkName})")
+            .uid(s"${built.flinkUid}-$name")
+        })
 
-          (
-            name,
-            SourceAndFilters(lazyBuilt)
-          )
-      }
+        (
+          name,
+          StreamToTypedStreams(lazyBuilt)
+        )
+    }
 
+    // Time to build detectors and tie them to I/O.
     flows.detectors.foreach {
       case (name, detSchema) =>
+        // Each schema can have several instances.
         detSchema.instances.zipWithIndex.foreach { case (detInstance, index) =>
+          // Each instance can have several sources...
           val sourcesList = detInstance.sources.map(s => (s, sources(s.name)))
-          // Just one input source for now
+          // ... but there's only one per detector for now.
           val eventStream: DataStream[Event] = sourcesList.headOption
             .map {
-              case (srcReference, streamWithFilters) =>
+              case (srcReference, stream) =>
+                // Let's construct the detector with its config. This also
+                // enforces that the measurement type has the right attributes
+                // for the detector, like HasDefault.
                 val detector = detInstance.build(detSchema.detType)
 
-                val stream = if (srcReference.filterLossy) {
-                  streamWithFilters.typedAs(srcReference.datatype).notLossyKeyedStream
+                // We'll only grab the appropriate stream. The unused ones don't
+                // get built, since they're lazy.
+                val selectedStream = if (srcReference.filterLossy) {
+                  stream.typedAs(srcReference.datatype).notLossyKeyedStream
                 }
                 else {
-                  streamWithFilters.typedAs(srcReference.datatype).keyedStream
+                  stream.typedAs(srcReference.datatype).keyedStream
                 }
 
-                stream
+                // Hook in the source.
+                selectedStream
                   .process(detector)
                   .name(s"$name (${detector.flinkName})")
                   .uid(s"${detector.flinkUid}-$name-$index")
@@ -87,14 +106,19 @@ object YamlDagRunner extends UnifiedRunnerExtensions {
               throw new IllegalArgumentException("Detector instance must have at least one source!")
             )
 
+          // Register the instance for the sinks it wants.
           detInstance.sinks.foreach { sink =>
             detectorsBySink(sink.name).append(eventStream)
           }
         }
     }
 
+    // Now that we've made all our detctors, we can go ahead and tie them to
+    // their sinks.
     detectorsBySink.foreach {
       case (sinkName, dets) =>
+        // We need to tie all the detector outputs together into one DataStream
+        // so that there's only one sink instance.
         val union = dets.size match {
           case 0 => None
           case 1 => Some(dets.head)
@@ -111,6 +135,7 @@ object YamlDagRunner extends UnifiedRunnerExtensions {
 
     val breakpoint = 1
 
-    env.execute()
+    //env.execute()
+    println(env.getExecutionPlan)
   }
 }

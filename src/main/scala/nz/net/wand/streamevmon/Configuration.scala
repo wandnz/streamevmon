@@ -126,8 +126,7 @@ object Configuration {
     val defaultSettingsFiles = Seq(
       "generalSettings.yaml",
       "connectorSettings.yaml",
-      "detectorSettings.yaml",
-      "flowSettings.yaml"
+      "detectorSettings.yaml"
     ).map(getClass.getClassLoader.getResourceAsStream)
 
     val customSettingsFiles = new File("conf").listFiles(
@@ -147,29 +146,6 @@ object Configuration {
     ) {
       (p1, p2) => p1.mergeWith(p2)
     }
-  }
-
-  private def asScalaCollection(x: Any): Any = {
-    x match {
-      case y: java.util.Map[_, _] =>
-        y.asScala.map {
-          case (k, v) => asScalaCollection(k) -> asScalaCollection(v)
-        }.toMap
-      case y: java.util.List[_] =>
-        y.asScala.map(asScalaCollection)
-      case _ => x
-    }
-  }
-
-  def getFlowsAsMap: Map[String, Any] = {
-    val loader = new Load(LoadSettings.builder().build())
-    asScalaCollection {
-      Option(loader.loadFromInputStream(
-        getClass.getClassLoader.getResourceAsStream("flowSettings.yaml")
-      ))
-        .getOrElse(new java.util.HashMap[String, Any]())
-    }
-      .asInstanceOf[Map[String, Any]]
   }
 
   def getFlowsDag: FlowSchema = {

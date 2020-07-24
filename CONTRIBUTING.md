@@ -1,3 +1,8 @@
+# TODO: This file is likely out of date, and should be thoroughly checked over.
+
+It probably wouldn't hurt to check on README.md as well. Certain package objects,
+like the one for `runners`, should be checked too.
+
 # Contributing to Streamevmon
 
 As for building, IntelliJ is the recommended way to develop this project.
