@@ -67,7 +67,7 @@ object YamlDagRunner {
 
         (
           name,
-          StreamToTypedStreams(lazyBuilt)
+          StreamToTypedStreams(lazyBuilt, sourceInstance)
         )
     }
 
