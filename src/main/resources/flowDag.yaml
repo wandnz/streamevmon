@@ -46,6 +46,7 @@ detectors:
           - name: print
         config:
           threshold: 60
+          useFlinkTimeWindow: false
 
   changepoint-icmp:
     type: changepoint

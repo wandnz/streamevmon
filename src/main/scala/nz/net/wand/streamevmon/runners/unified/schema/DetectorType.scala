@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.runners.unified.schema
 
 import nz.net.wand.streamevmon.detectors.baseline.BaselineDetector
 import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, NormalDistribution}
-import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
+import nz.net.wand.streamevmon.detectors.distdiff.{DistDiffDetector, WindowedDistDiffDetector}
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.detectors.spike.SpikeDetector
@@ -10,10 +10,13 @@ import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{CsvOutputable, HasDefault, Measurement}
 import nz.net.wand.streamevmon.Perhaps
+import nz.net.wand.streamevmon.flink.WindowedFunctionWrapper
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.streaming.api.scala._
+import org.apache.flink.streaming.api.scala.function.ProcessWindowFunction
+import org.apache.flink.streaming.api.windowing.windows.{GlobalWindow, TimeWindow, Window}
 
 import scala.reflect._
 
@@ -29,6 +32,14 @@ object DetectorType extends Enumeration {
 
   class ValueBuilder(name: String) extends Val(name) {
 
+    private def noHasDefaultException[MeasT: ClassTag]: Exception = {
+      new IllegalArgumentException(s"Could not create $this detector as ${classTag[MeasT].toString()} does not have HasDefault!")
+    }
+
+    private def noCsvOutputableException[MeasT: ClassTag]: Exception = {
+      new IllegalArgumentException(s"Could not create $this detector as ${classTag[MeasT].toString()} does not have CsvOutputable!")
+    }
+
     /** Builds a detector with the specified Measurement type, or throws an
       * IllegalArgumentException if the type does not have the traits that this
       * detector type requires.
@@ -36,12 +47,10 @@ object DetectorType extends Enumeration {
       * @param hasDefault    Defined if `MeasT <: HasDefault`.
       * @param csvOutputable Defined if `MeasT <: CsvOutputable`.
       */
-    def build[MeasT <: Measurement : ClassTag](
+    def buildKeyed[MeasT <: Measurement : ClassTag](
       implicit hasDefault: Perhaps[MeasT <:< HasDefault],
       csvOutputable      : Perhaps[MeasT <:< CsvOutputable]
     ): KeyedProcessFunction[String, Measurement, Event] with HasFlinkConfig = {
-      lazy val noHasDefaultException = new IllegalArgumentException(s"Could not create $this detector as ${classTag[MeasT].toString()} does not have HasDefault!")
-      lazy val noCsvOutputableException = new IllegalArgumentException(s"Could not create $this detector as ${classTag[MeasT].toString()} does not have CsvOutputable!")
 
       // Most of these detectors just require HasDefault. It would be lovely to
       // have a wrapper function to provide the check and exception, but I can't
@@ -52,7 +61,7 @@ object DetectorType extends Enumeration {
             new BaselineDetector[MeasT with HasDefault]
           }
           else {
-            throw noHasDefaultException
+            throw noHasDefaultException[MeasT]
           }
         case Changepoint =>
           if (hasDefault.isDefined) {
@@ -65,14 +74,14 @@ object DetectorType extends Enumeration {
             )
           }
           else {
-            throw noHasDefaultException
+            throw noHasDefaultException[MeasT]
           }
         case DistDiff =>
           if (hasDefault.isDefined) {
             new DistDiffDetector[MeasT with HasDefault]
           }
           else {
-            throw noHasDefaultException
+            throw noHasDefaultException[MeasT]
           }
         // Loss detector doesn't care about any attributes, since it only uses isLossy.
         case Loss => new LossDetector[MeasT]
@@ -81,18 +90,56 @@ object DetectorType extends Enumeration {
             new ModeDetector[MeasT with HasDefault]
           }
           else {
-            throw noHasDefaultException
+            throw noHasDefaultException[MeasT]
           }
         case Spike =>
           if (hasDefault.isDefined) {
             new SpikeDetector[MeasT with HasDefault]
           }
           else {
-            throw noHasDefaultException
+            throw noHasDefaultException[MeasT]
           }
       }
       detector.asInstanceOf[KeyedProcessFunction[String, Measurement, Event] with HasFlinkConfig]
     }
-  }
 
+    def buildWindowed[MeasT <: Measurement : ClassTag](
+      implicit hasDefault: Perhaps[MeasT <:< HasDefault],
+      csvOutputable      : Perhaps[MeasT <:< CsvOutputable]
+    ): (ProcessWindowFunction[Measurement, Event, String, Window] with HasFlinkConfig, StreamWindowType.Value) = {
+      val customWindowedImplementation = this match {
+        case DistDiff =>
+          if (hasDefault.isDefined) {
+            val det = new WindowedDistDiffDetector[MeasT with HasDefault, GlobalWindow]
+            Some(
+              (
+                det,
+                StreamWindowType.CountWithOverrides(
+                  size = Some { params =>
+                    params.getLong(s"detector.${det.configKeyGroup}.recentsCount") * 2
+                  },
+                  slide = None
+                )
+              )
+            )
+          }
+          else {
+            throw noHasDefaultException[MeasT]
+          }
+        case _ => None
+      }
+
+      customWindowedImplementation.getOrElse {
+        val detector = buildKeyed[MeasT]
+        (
+          new WindowedFunctionWrapper[Measurement, TimeWindow](detector),
+          StreamWindowType.Time
+        )
+      }
+        .asInstanceOf[(
+        ProcessWindowFunction[Measurement, Event, String, Window] with HasFlinkConfig,
+          StreamWindowType.Value
+        )]
+    }
+  }
 }

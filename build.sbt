@@ -84,7 +84,7 @@ Compile / run := Defaults.runTask(Compile / run / fullClasspath,
 Compile / run / fork := true
 Global / cancelable := true
 
-mainClass in assembly := Some("nz.net.wand.streamevmon.runners.UnifiedRunner")
+mainClass in assembly := Some("nz.net.wand.streamevmon.runners.unified.YamlDagRunner")
 assemblyExcludedJars in assembly := {
   (fullClasspath in assembly).value.filter(_.data.getName.contains("scalatest"))
 }

@@ -3,14 +3,16 @@ package nz.net.wand.streamevmon.runners.unified
 import nz.net.wand.streamevmon.{Configuration, Lazy}
 import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.runners.unified.schema.StreamToTypedStreams
+import nz.net.wand.streamevmon.runners.unified.schema.{StreamToTypedStreams, StreamWindowType}
 
 import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 import org.apache.flink.api.common.restartstrategy.RestartStrategies
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala._
+import org.apache.flink.streaming.api.windowing.time.Time
 
 import scala.collection.mutable
 
@@ -82,25 +84,70 @@ object YamlDagRunner {
           val eventStream: DataStream[Event] = sourcesList.headOption
             .map {
               case (srcReference, stream) =>
-                // Let's construct the detector with its config. This also
-                // enforces that the measurement type has the right attributes
-                // for the detector, like HasDefault.
-                val detector = detInstance.build(detSchema.detType)
+                // The best way to get the new detector with its correctly
+                // overridden config is to just build it and let HasFlinkConfig
+                // do its magic. Building the detector also enforces that the
+                // measurement type has the right attributes for the detector,
+                // like HasDefault.
+                val keyedDetector = detInstance.buildKeyed(detSchema.detType)
+                val detConf = keyedDetector.configWithOverride(config)
 
-                // We'll only grab the appropriate stream. The unused ones don't
-                // get built, since they're lazy.
-                val selectedStream = if (srcReference.filterLossy) {
-                  stream.typedAs(srcReference.datatype).notLossyKeyedStream
+                // If we end out only needing the windowed version of the
+                // detector, the keyed one will just get garbage collected. That's fine.
+                if (detConf.getBoolean(s"detector.${keyedDetector.configKeyGroup}.useFlinkTimeWindow")) {
+                  // Since we know we want the windowed version now, let's build it.
+                  val (windowedDetector, windowType) = detInstance.buildWindowed(detSchema.detType)
+
+                  // We'll also grab the config settings while we're at it.
+                  // Detectors might provide their own overrides, but if they
+                  // don't, we'll use the default method.
+                  val timeWindowDuration = windowType match {
+                    case t: StreamWindowType.TimeWithOverrides if t.size.isDefined => Time.of(t.size.get(detConf), TimeUnit.SECONDS)
+                    case _ => Time.of(detConf.getLong(s"detector.${windowedDetector.configKeyGroup}.windowDuration"), TimeUnit.SECONDS)
+                  }
+
+                  val countWindowSize = windowType match {
+                    case t: StreamWindowType.CountWithOverrides if t.size.isDefined => t.size.get(detConf)
+                    case _ => detConf.getLong(s"detector.${windowedDetector.configKeyGroup}.windowSize")
+                  }
+
+                  val countWindowSlide = windowType match {
+                    case t: StreamWindowType.CountWithOverrides if t.slide.isDefined => t.slide.get(detConf)
+                    case _ => detConf.getLong(s"detector.${windowedDetector.configKeyGroup}.windowSlide")
+                  }
+
+                  // Finally, let's turn our source into a windowed stream...
+                  val windowedStream = stream.typedAs(srcReference.datatype).getWindowedStream(
+                    srcReference.name,
+                    srcReference.filterLossy,
+                    windowType,
+                    timeWindowDuration,
+                    countWindowSize,
+                    countWindowSlide
+                  )
+
+                  // ... and hook it into the detector.
+                  windowedStream
+                    .process(windowedDetector)
+                    .name(s"$name (${windowedDetector.flinkName})")
+                    .uid(s"${windowedDetector.flinkUid}-$name-$index")
                 }
                 else {
-                  stream.typedAs(srcReference.datatype).keyedStream
-                }
+                  // We only grab the appropriate stream. The unused ones don't
+                  // get built, since they're lazy.
+                  val selectedStream = if (srcReference.filterLossy) {
+                    stream.typedAs(srcReference.datatype).notLossyKeyedStream
+                  }
+                  else {
+                    stream.typedAs(srcReference.datatype).keyedStream
+                  }
 
-                // Hook in the source.
-                selectedStream
-                  .process(detector)
-                  .name(s"$name (${detector.flinkName})")
-                  .uid(s"${detector.flinkUid}-$name-$index")
+                  // Hook in the source.
+                  selectedStream
+                    .process(keyedDetector)
+                    .name(s"$name (${keyedDetector.flinkName})")
+                    .uid(s"${keyedDetector.flinkUid}-$name-$index")
+                }
             }
             .getOrElse(
               throw new IllegalArgumentException("Detector instance must have at least one source!")

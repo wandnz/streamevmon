@@ -7,6 +7,8 @@ import nz.net.wand.streamevmon.measurements.Measurement
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.scala.JsonScalaEnumeration
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
+import org.apache.flink.streaming.api.scala.function.ProcessWindowFunction
+import org.apache.flink.streaming.api.windowing.windows.Window
 
 /** An entry in the `detectors` key of the yaml configuration. Can be built,
   * resulting in an Iterable of all represented detectors.
@@ -20,7 +22,14 @@ case class DetectorSchema(
   detType: DetectorType.ValueBuilder,
   instances: Iterable[DetectorInstance]
 ) {
-  def build: Iterable[(DetectorInstance, KeyedProcessFunction[String, Measurement, Event] with HasFlinkConfig)] = {
-    instances.map(inst => (inst, inst.build(detType)))
+  def buildKeyed: Iterable[(DetectorInstance, KeyedProcessFunction[String, Measurement, Event] with HasFlinkConfig)] = {
+    instances.map(inst => (inst, inst.buildKeyed(detType)))
+  }
+
+  def buildWindowed: Iterable[(DetectorInstance, ProcessWindowFunction[Measurement, Event, String, Window] with HasFlinkConfig, StreamWindowType.Value)] = {
+    instances.map { inst =>
+      val windowed = inst.buildWindowed(detType)
+      (inst, windowed._1, windowed._2)
+    }
   }
 }

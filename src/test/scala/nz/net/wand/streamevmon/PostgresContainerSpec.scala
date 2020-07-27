@@ -5,7 +5,6 @@ import nz.net.wand.streamevmon.connectors.PostgresConnection
 import java.sql.DriverManager
 
 import com.dimafeng.testcontainers.{ForAllTestContainer, PostgreSQLContainer}
-import org.apache.flink.api.java.utils.ParameterTool
 import org.squeryl.{Session, SessionFactory}
 import org.squeryl.adapters.PostgreSqlAdapter
 
@@ -15,12 +14,11 @@ trait PostgresContainerSpec extends TestBase with ForAllTestContainer {
   // that version. Alpine for size benefits.
   override val container: PostgreSQLContainer = PostgreSQLContainer("postgres:10-alpine")
     .configure(db => {
-      val params = ParameterTool.fromPropertiesFile(
-        getClass.getClassLoader.getResourceAsStream("default.properties"))
+      val params = Configuration.get()
 
-      db.withUsername(params.get("postgres.dataSource.user"))
-      db.withPassword(params.get("postgres.dataSource.password"))
-      db.withDatabaseName(params.get("postgres.dataSource.databaseName"))
+      db.withUsername(params.get("source.postgres.user"))
+      db.withPassword(params.get("source.postgres.password"))
+      db.withDatabaseName(params.get("source.postgres.databaseName"))
 
       // Postgres requires either this or an admin password to be set.
       // We choose trust authentication because we simply don't care about

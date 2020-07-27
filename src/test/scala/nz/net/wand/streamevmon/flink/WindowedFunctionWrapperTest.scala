@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.flink
 
 import nz.net.wand.streamevmon.{Configuration, TestBase}
+import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 import nz.net.wand.streamevmon.measurements.amp.Traceroute
@@ -46,14 +47,19 @@ class MyReallyFunOutOfOrderSourceFunction extends SourceFunction[InfluxMeasureme
   override def cancel(): Unit = {}
 }
 
-class AwesomeCheckOnlyIncreasingTimeFunction extends KeyedProcessFunction[String, InfluxMeasurement, Event] with
-                                                     Serializable {
+class AwesomeCheckOnlyIncreasingTimeFunction extends KeyedProcessFunction[String, InfluxMeasurement, Event]
+                                                     with Serializable
+                                                     with HasFlinkConfig {
   var lastTimeObserved = Instant.MIN
 
   override def processElement(value: InfluxMeasurement, ctx: KeyedProcessFunction[String, InfluxMeasurement, Event]#Context, out: Collector[Event]): Unit = {
     assert(value.time.compareTo(lastTimeObserved) >= 0)
     lastTimeObserved = value.time
   }
+
+  override val flinkName = ""
+  override val flinkUid = ""
+  override val configKeyGroup = ""
 }
 
 class WindowedFunctionWrapperTest extends TestBase {

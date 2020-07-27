@@ -20,10 +20,12 @@ case class StreamToTypedStreams(
 
   /** Applies the filter operation, and names it. */
   private def getTypedAs[MeasT <: Measurement : ClassTag](d: SourceDatatype.Value): (SourceDatatype.Value, TypedStreams) = {
-    (d, TypedStreams(new Lazy(rawStream.get
-      .filter(classTag[MeasT].runtimeClass.isInstance(_))
-      .name(s"Is ${classTag[MeasT].runtimeClass.getSimpleName}?")
-    )))
+    (d, TypedStreams(
+      new Lazy(rawStream.get
+        .filter(classTag[MeasT].runtimeClass.isInstance(_))
+        .name(s"Is ${classTag[MeasT].runtimeClass.getSimpleName}?")
+      )
+    ))
   }
 
   /** Maps the given SourceDatatype to a TypedStreams, which includes further filters.
@@ -33,7 +35,7 @@ case class StreamToTypedStreams(
     */
   lazy val typedAs: Map[SourceDatatype.Value, TypedStreams] = {
     // We construct a map that only consists of types supported by the source stream.
-    val supportedTypesMap = sourceInstance.sourceType match {
+    val supportedTypesMap: Map[SourceDatatype.Value, TypedStreams] = sourceInstance.sourceType match {
       case SourceType.Influx => sourceInstance.sourceSubtype match {
         case _@Some(SourceSubtype.Amp) => SourceDatatype.values.flatMap {
           case d@SourceDatatype.DNS => Some(getTypedAs[DNS](d))
@@ -47,6 +49,7 @@ case class StreamToTypedStreams(
           case d@SourceDatatype.Flow => Some(getTypedAs[Flow](d))
           case _ => None
         }.toMap
+        case sub => throw new IllegalArgumentException(s"Invalid subtype $sub for source type ${sourceInstance.sourceType}!")
       }
       case SourceType.Esmond => SourceDatatype.values.flatMap {
         case d@SourceDatatype.Failure => Some(getTypedAs[Failure](d))
@@ -57,6 +60,7 @@ case class StreamToTypedStreams(
         case d@SourceDatatype.Subinterval => Some(getTypedAs[Subinterval](d))
         case _ => None
       }.toMap
+      case _ => Map()
     }
 
     /** Thin wrapper around whatever Map type gets returned earlier, to make the

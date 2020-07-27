@@ -12,10 +12,12 @@ trait HasFlinkConfig {
   val flinkUid: String
   val configKeyGroup: String
 
-  protected var overrideParams: Option[ParameterTool] = None
+  var overrideParams: Option[ParameterTool] = None
+
+  def overrideParameters: Option[ParameterTool] = overrideParams
 
   def overrideConfig(
-    config: Map[String, String],
+    config   : Map[String, String],
     addPrefix: String = ""
   ): this.type = {
     if (config.nonEmpty) {
@@ -36,7 +38,7 @@ trait HasFlinkConfig {
     this
   }
 
-  protected def configWithOverride(config: ParameterTool): ParameterTool = {
+  def configWithOverride(config: ParameterTool): ParameterTool = {
     overrideParams.fold {
       config
     } {
@@ -44,7 +46,7 @@ trait HasFlinkConfig {
     }
   }
 
-  protected def configWithOverride(context: RuntimeContext): ParameterTool = {
+  def configWithOverride(context: RuntimeContext): ParameterTool = {
     configWithOverride(context.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool])
   }
 }

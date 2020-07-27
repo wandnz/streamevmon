@@ -1,5 +1,6 @@
 package nz.net.wand.streamevmon.flink
 
+import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.Measurement
 
@@ -13,9 +14,9 @@ import org.apache.flink.util.{Collector, OutputTag}
 import scala.reflect.ClassTag
 
 class WindowedFunctionWrapper[M <: Measurement : ClassTag, W <: Window](
-  processFunction  : KeyedProcessFunction[String, M, Event]
+  processFunction: KeyedProcessFunction[String, M, Event] with HasFlinkConfig
 )
-  extends ProcessWindowFunction[M, Event, String, W] {
+  extends ProcessWindowFunction[M, Event, String, W] with HasFlinkConfig {
 
   private lazy val keySelector: MeasurementKeySelector[M] = new MeasurementKeySelector[M]
 
@@ -41,13 +42,17 @@ class WindowedFunctionWrapper[M <: Measurement : ClassTag, W <: Window](
          override def output[X](outputTag: OutputTag[X], value: X): Unit = ???
 
          override def getCurrentKey: String = keySelector.getKey(e)
-      }
+       }
 
-      processFunction.processElement(
-        e,
-        ctx,
-        out
-      )
-    }
-  }
+       processFunction.processElement(
+         e,
+         ctx,
+         out
+       )
+     }
+   }
+
+  override val flinkName: String = s"${processFunction.flinkName} (Window Wrapped)"
+  override val flinkUid: String = s"window-wrapped-${processFunction.flinkUid}"
+  override val configKeyGroup: String = processFunction.configKeyGroup
 }

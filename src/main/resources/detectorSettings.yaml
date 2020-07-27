@@ -3,6 +3,8 @@ detector:
     enabled: true # Legacy key, will be removed when flows top-level key is implemented
     useFlinkTimeWindow: true
     windowDuration: 60
+    windowSize: 50
+    windowSlide: 1
 
   baseline:
     - *timeWindowWrapperSettings
@@ -22,8 +24,7 @@ detector:
 
   # Distdiff doesn't use the window-wrapper, so it has its own window settings
   distdiff:
-    - enabled: true # legacy key
-    - useFlinkWindow: true
+    - *timeWindowWrapperSettings
     - inactivityPurgeTime: 1200
     - recentsCount: 20
     - minimumChange: 1.05
