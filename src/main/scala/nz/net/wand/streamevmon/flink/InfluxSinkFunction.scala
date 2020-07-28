@@ -72,21 +72,21 @@ class InfluxSinkFunction
 
   override val flinkName: String = "Influx Sink"
   override val flinkUid: String = "influx-sink"
-  override val configKeyGroup: String = "sink.influx"
+  override val configKeyGroup: String = "influx"
 
   private[this] var influx: AhcIOClient = _
 
   private[this] val bufferedEvents: ListBuffer[Event] = ListBuffer()
 
   /** A pretty gross way of getting a key from the config structure, with
-    * preference for influx.sink and then source.influx.
+    * preference for sink.influx and then source.influx.
     */
   private[this] def getWithFallback(parameters: ParameterTool, key: String): String = {
-    var result = parameters.get(s"sink.influx.$key", null)
+    var result = parameters.get(s"sink.$configKeyGroup.$key", null)
     if (result == null) {
-      result = parameters.get(s"source.influx.$key", null)
+      result = parameters.get(s"source.$configKeyGroup.$key", null)
       if (result == null) {
-        parameters.get(s"source.influx.amp.$key", null)
+        parameters.get(s"source.$configKeyGroup.amp.$key", null)
       }
       else {
         result
@@ -118,8 +118,8 @@ class InfluxSinkFunction
     port = getWithFallback(p, "portNumber").toInt
     username = getWithFallback(p, "user")
     password = getWithFallback(p, "password")
-    database = p.get("influx.sink.databaseName")
-    retentionPolicy = p.get("influx.sink.retentionPolicy")
+    database = p.get(s"sink.$configKeyGroup.databaseName")
+    retentionPolicy = p.get(s"sink.$configKeyGroup.retentionPolicy")
 
     influx = new AhcIOClient(
       host,
@@ -132,7 +132,7 @@ class InfluxSinkFunction
     val mng = InfluxMng(host, port, Some(InfluxCredentials(username, password)))
 
     mng.createDatabase(database)
-    mng.createRetentionPolicy(retentionPolicy, database, "8760h0m0s", default = true)
+    mng.createRetentionPolicy(retentionPolicy, database, "0s", default = true)
   }
 
   /** Teardown method for RichFunctions. Occurs after all calls to `invoke()`.

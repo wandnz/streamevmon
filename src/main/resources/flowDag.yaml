@@ -15,6 +15,11 @@ sources:
     type: esmond
     config:
       serverName: http://denv-owamp.es.net:8085
+  latencyts-waikato:
+    type: latencyts
+    subtype: ampicmp
+    config:
+      files: waikato-*
 
 sinks:
   print:
@@ -62,6 +67,11 @@ detectors:
         sink:
           - name: influx
           - name: print
+      - source:
+          - name: latencyts-waikato
+            datatype: ampicmp
+        sink:
+          - name: influx
 
   loss:
     type: loss

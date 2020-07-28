@@ -5,6 +5,7 @@ import nz.net.wand.streamevmon.measurements.Measurement
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.scala.JsonScalaEnumeration
+import org.apache.flink.api.common.io.FileInputFormat
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 
 /** From-yaml representation of a source to build.
@@ -23,13 +24,23 @@ case class SourceInstance(
   config: Map[String, String] = Map()
 ) {
   /** Builds the appropriate source with overridden config. */
-  def build: SourceFunction[Measurement] with HasFlinkConfig = {
+  def buildSourceFunction: SourceFunction[Measurement] with HasFlinkConfig = {
     val configPrefixNoSubtype = s"source.$sourceType"
     val configPrefix = sourceSubtype.map(s => s"$configPrefixNoSubtype.$s")
       .getOrElse(configPrefixNoSubtype)
 
     sourceType
-      .build(sourceSubtype)
+      .buildSourceFunction(sourceSubtype)
+      .overrideConfig(config, configPrefix)
+  }
+
+  def buildFileInputFormat: FileInputFormat[Measurement] with HasFlinkConfig = {
+    val configPrefixNoSubtype = s"source.$sourceType"
+    val configPrefix = sourceSubtype.map(s => s"$configPrefixNoSubtype.$s")
+      .getOrElse(configPrefixNoSubtype)
+
+    sourceType
+      .buildFileInputFormat(sourceSubtype)
       .overrideConfig(config, configPrefix)
   }
 }

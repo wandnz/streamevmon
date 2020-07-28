@@ -6,7 +6,6 @@ import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 import java.time.{Duration, Instant}
 
 import org.apache.commons.lang3.time.DurationFormatUtils
-import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 
 abstract class PollingInfluxSourceFunction[T <: InfluxMeasurement](
@@ -22,14 +21,8 @@ abstract class PollingInfluxSourceFunction[T <: InfluxMeasurement](
 
   override def run(ctx: SourceFunction.SourceContext[T]): Unit = {
     // Set up config
-    if (overrideParams.isDefined) {
-      influxHistory = Some(InfluxHistoryConnection(overrideParams.get, configPrefix, datatype))
-    }
-    else {
-      val params: ParameterTool =
-        getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
-      influxHistory = Some(InfluxHistoryConnection(params, configPrefix, datatype))
-    }
+    val params = configWithOverride(getRuntimeContext)
+    influxHistory = Some(InfluxHistoryConnection(params, configPrefix, datatype))
 
     if (getRuntimeContext.getNumberOfParallelSubtasks > 1) {
       throw new IllegalStateException("Parallelism for this SourceFunction must be 1.")

@@ -3,18 +3,24 @@ package nz.net.wand.streamevmon.runners.unified
 import nz.net.wand.streamevmon.{Configuration, Lazy}
 import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.events.Event
+import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.runners.unified.schema.{StreamToTypedStreams, StreamWindowType}
 
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 
+import org.apache.flink.api.common.io.GlobFilePathFilter
 import org.apache.flink.api.common.restartstrategy.RestartStrategies
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
+import org.apache.flink.streaming.api.functions.source.FileProcessingMode
+import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.windowing.time.Time
 
 import scala.collection.mutable
+import scala.collection.JavaConverters._
+import scala.util.Try
 
 object YamlDagRunner {
 
@@ -60,11 +66,47 @@ object YamlDagRunner {
     flows.sources.map {
       case (name, sourceInstance) =>
         val lazyBuilt = new Lazy({
-          val built = sourceInstance.build
-          env
-            .addSource(built)
-            .name(s"$name (${built.flinkName})")
-            .uid(s"${built.flinkUid}-$name")
+          Try(sourceInstance.buildSourceFunction).toOption.fold {
+            val format = sourceInstance.buildFileInputFormat
+            val formatConf = format.configWithOverride(config)
+
+            val configPrefixNoSubtype = s"source.${sourceInstance.sourceType}"
+            val configPrefix = sourceInstance.sourceSubtype
+              .map(s => s"$configPrefixNoSubtype.$s")
+              .getOrElse(configPrefixNoSubtype)
+
+            format.setFilesFilter(
+              new GlobFilePathFilter(
+                Seq(formatConf.get(s"$configPrefix.files"))
+                  .map(f => s"**/$f.series")
+                  .asJava,
+                Seq().asJava
+              ))
+
+            env
+              .readFile(
+                format,
+                formatConf.get(s"$configPrefix.location"),
+                FileProcessingMode.PROCESS_ONCE,
+                0L
+              )
+              .setParallelism(1)
+              .name(s"$name (${format.flinkName})")
+              .uid(s"${format.flinkUid}-$name")
+              .assignTimestampsAndWatermarks(
+                new BoundedOutOfOrdernessTimestampExtractor[Measurement](
+                  Time.of(config.getInt("flink.maxLateness"), TimeUnit.SECONDS)
+                ) {
+                  override def extractTimestamp(element: Measurement): Long =
+                    element.time.toEpochMilli
+                }
+              )
+          } { sourceFunction =>
+            env
+              .addSource(sourceFunction)
+              .name(s"$name (${sourceFunction.flinkName})")
+              .uid(s"${sourceFunction.flinkUid}-$name")
+          }
         })
 
         (
@@ -117,14 +159,16 @@ object YamlDagRunner {
                   }
 
                   // Finally, let's turn our source into a windowed stream...
-                  val windowedStream = stream.typedAs(srcReference.datatype).getWindowedStream(
-                    srcReference.name,
-                    srcReference.filterLossy,
-                    windowType,
-                    timeWindowDuration,
-                    countWindowSize,
-                    countWindowSlide
-                  )
+                  val windowedStream = stream
+                    .typedAs(srcReference.datatype)
+                    .getWindowedStream(
+                      srcReference.name,
+                      srcReference.filterLossy,
+                      windowType,
+                      timeWindowDuration,
+                      countWindowSize,
+                      countWindowSlide
+                    )
 
                   // ... and hook it into the detector.
                   windowedStream
@@ -182,7 +226,7 @@ object YamlDagRunner {
 
     val breakpoint = 1
 
-    //env.execute()
     println(env.getExecutionPlan)
+    env.execute()
   }
 }

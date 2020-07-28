@@ -12,7 +12,7 @@ trait HasFlinkConfig {
   val flinkUid: String
   val configKeyGroup: String
 
-  var overrideParams: Option[ParameterTool] = None
+  protected var overrideParams: Option[ParameterTool] = None
 
   def overrideParameters: Option[ParameterTool] = overrideParams
 

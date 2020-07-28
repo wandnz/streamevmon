@@ -1,5 +1,6 @@
 package nz.net.wand.streamevmon.flink
 
+import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
 
 import org.apache.flink.api.common.io.GenericCsvInputFormat
@@ -12,7 +13,12 @@ import scala.collection.mutable
   * @see [[nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP LatencyTSAmpICMP]]
   * @see [[https://wand.net.nz/wits/latency/1/]]
   */
-class LatencyTSAmpFileInputFormat extends GenericCsvInputFormat[LatencyTSAmpICMP] {
+class LatencyTSAmpFileInputFormat extends GenericCsvInputFormat[LatencyTSAmpICMP]
+                                          with HasFlinkConfig {
+
+  override val flinkName: String = "Latency TS Amp Source"
+  override val flinkUid: String = "latency-ts-amp-source"
+  override val configKeyGroup: String = "latencyts"
 
   override def openInputFormat(): Unit = {
     if (getRuntimeContext.getNumberOfParallelSubtasks > 1) {
@@ -22,7 +28,8 @@ class LatencyTSAmpFileInputFormat extends GenericCsvInputFormat[LatencyTSAmpICMP
 
   val recordToStream: mutable.Map[String, Int] = mutable.Map()
 
-  override def readRecord(reuse: LatencyTSAmpICMP,
+  override def readRecord(
+    reuse                      : LatencyTSAmpICMP,
                           bytes: Array[Byte],
                           offset: Int,
                           numBytes: Int): LatencyTSAmpICMP = {

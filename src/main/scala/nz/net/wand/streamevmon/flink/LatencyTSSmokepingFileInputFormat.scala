@@ -1,5 +1,6 @@
 package nz.net.wand.streamevmon.flink
 
+import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSSmokeping
 
 import org.apache.flink.api.common.io.GenericCsvInputFormat
@@ -12,7 +13,12 @@ import scala.collection.mutable
   * @see [[nz.net.wand.streamevmon.measurements.latencyts.LatencyTSSmokeping LatencyTSSmokeping]]
   * @see [[https://wand.net.nz/wits/latency/1/]]
   */
-class LatencyTSSmokepingFileInputFormat extends GenericCsvInputFormat[LatencyTSSmokeping] {
+class LatencyTSSmokepingFileInputFormat extends GenericCsvInputFormat[LatencyTSSmokeping]
+                                                with HasFlinkConfig {
+
+  override val flinkName: String = "Latency TS Smokeping Source"
+  override val flinkUid: String = "latency-ts-smokeping-source"
+  override val configKeyGroup: String = "latencyts"
 
   override def openInputFormat(): Unit = {
     if (getRuntimeContext.getNumberOfParallelSubtasks > 1) {
@@ -22,7 +28,8 @@ class LatencyTSSmokepingFileInputFormat extends GenericCsvInputFormat[LatencyTSS
 
   val recordToStream: mutable.Map[String, Int] = mutable.Map()
 
-  override def readRecord(reuse: LatencyTSSmokeping,
+  override def readRecord(
+    reuse                      : LatencyTSSmokeping,
                           bytes: Array[Byte],
                           offset: Int,
                           numBytes: Int): LatencyTSSmokeping = {

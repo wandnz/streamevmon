@@ -47,6 +47,12 @@ source:
     # summaryType: aggregation
     # summaryWindow: 300
 
+  latencyts:
+    ampicmp:
+      location: ./data/latency-ts-i/ampicmp/series
+    smokeping:
+      location: ./data/latency-ts-i/smokeping/series
+
 sink:
   influx:
     databaseName: streamevmon

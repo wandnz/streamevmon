@@ -5,6 +5,7 @@ import nz.net.wand.streamevmon.Lazy
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow
 import nz.net.wand.streamevmon.measurements.esmond._
+import nz.net.wand.streamevmon.measurements.latencyts._
 
 import java.util.NoSuchElementException
 
@@ -58,6 +59,11 @@ case class StreamToTypedStreams(
         case d@SourceDatatype.PacketTrace => Some(getTypedAs[PacketTrace](d))
         case d@SourceDatatype.Simple => Some(getTypedAs[Simple](d))
         case d@SourceDatatype.Subinterval => Some(getTypedAs[Subinterval](d))
+        case _ => None
+      }.toMap
+      case SourceType.LatencyTS => SourceDatatype.values.flatMap {
+        case d@SourceDatatype.LatencyTSAmp => Some(getTypedAs[LatencyTSAmpICMP](d))
+        case d@SourceDatatype.LatencyTSSmokeping => Some(getTypedAs[LatencyTSSmokeping](d))
         case _ => None
       }.toMap
       case _ => Map()

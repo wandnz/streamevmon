@@ -17,4 +17,7 @@ object SourceDatatype extends Enumeration {
   val PacketTrace: Value = Value("packettrace")
   val Simple: Value = Value("simple")
   val Subinterval: Value = Value("subinterval")
+  // Latency TS
+  val LatencyTSAmp: Value = Value("ampicmp")
+  val LatencyTSSmokeping: Value = Value("latencytssmokeping")
 }

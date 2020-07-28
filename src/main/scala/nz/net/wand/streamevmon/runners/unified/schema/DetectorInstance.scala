@@ -6,6 +6,7 @@ import nz.net.wand.streamevmon.measurements.bigdata.Flow
 import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.esmond._
+import nz.net.wand.streamevmon.measurements.latencyts.{LatencyTSAmpICMP, LatencyTSSmokeping}
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
@@ -55,6 +56,8 @@ case class DetectorInstance(
       case SourceDatatype.PacketTrace => detType.buildKeyed[PacketTrace]
       case SourceDatatype.Simple => detType.buildKeyed[Simple]
       case SourceDatatype.Subinterval => detType.buildKeyed[Subinterval]
+      case SourceDatatype.LatencyTSAmp => detType.buildKeyed[LatencyTSAmpICMP]
+      case SourceDatatype.LatencyTSSmokeping => detType.buildKeyed[LatencyTSSmokeping]
     }
 
     det.overrideConfig(config, s"detector.${det.configKeyGroup}")
@@ -80,6 +83,8 @@ case class DetectorInstance(
       case SourceDatatype.PacketTrace => detType.buildWindowed[PacketTrace]
       case SourceDatatype.Simple => detType.buildWindowed[Simple]
       case SourceDatatype.Subinterval => detType.buildWindowed[Subinterval]
+      case SourceDatatype.LatencyTSAmp => detType.buildWindowed[LatencyTSAmpICMP]
+      case SourceDatatype.LatencyTSSmokeping => detType.buildWindowed[LatencyTSSmokeping]
     }
 
     (
