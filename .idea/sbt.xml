@@ -4,6 +4,7 @@
     <option name="customVMPath" />
     <option name="linkedExternalProjectsSettings">
       <SbtProjectSettings>
+        <option name="allowSbtVersionOverride" value="false" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
@@ -13,7 +14,7 @@
           </set>
         </option>
         <option name="resolveSbtClassifiers" value="true" />
-        <option name="sbtVersion" value="1.3.10" />
+        <option name="sbtVersion" value="1.2.8" />
         <option name="useQualifiedModuleNames" value="true" />
         <option name="useSbtShellForBuild" value="true" />
         <option name="useSbtShellForImport" value="true" />
