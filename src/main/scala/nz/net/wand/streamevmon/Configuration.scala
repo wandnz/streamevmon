@@ -10,6 +10,7 @@ import org.apache.flink.api.java.utils.ParameterTool
 import org.snakeyaml.engine.v2.api.{Load, LoadSettings}
 
 import scala.collection.JavaConverters._
+import scala.util.Try
 
 /** Common configuration setup for Flink jobs. The result of get should be
   * set as the global job parameters.
@@ -154,16 +155,16 @@ object Configuration {
     val mapper = new ObjectMapper()
     mapper.registerModule(DefaultScalaModule)
 
-    val loadedYaml = Option(loader.loadFromInputStream(
+    val loadedYaml = Try(loader.loadFromInputStream(
       new FileInputStream(new File("conf/flows.yaml"))
-    )) match {
-      case Some(value) =>
-        value
-      case None =>
+    )).toOption match {
+      case None | Some(null) =>
         val defaults = loader.loadFromInputStream(
           getClass.getClassLoader.getResourceAsStream("flows.yaml")
         )
         defaults
+      case Some(value) =>
+        value
     }
 
     val result = mapper.convertValue(loadedYaml, classOf[FlowSchema])
