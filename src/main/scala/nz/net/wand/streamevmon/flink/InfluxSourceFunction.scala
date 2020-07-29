@@ -8,14 +8,13 @@ import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 import java.io.{BufferedReader, InputStreamReader}
 import java.net.{ServerSocket, SocketTimeoutException}
 import java.time.{Duration, Instant}
-import java.util.{List => JavaList}
 
 import org.apache.commons.lang3.time.DurationFormatUtils
-import org.apache.flink.streaming.api.checkpoint.ListCheckpointed
+import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
+import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
+import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.source.{RichSourceFunction, SourceFunction}
 import org.apache.flink.streaming.api.watermark.Watermark
-
-import scala.collection.JavaConverters._
 
 /** Retrieves new data from InfluxDB as a streaming source function.
   *
@@ -53,7 +52,7 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
           with GloballyStoppableFunction
           with HasFlinkConfig
           with Logging
-          with ListCheckpointed[Instant] {
+          with CheckpointedFunction {
 
   lazy override val configKeyGroup: String = configPrefix
 
@@ -218,11 +217,20 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
   protected[this] def stopListener(): Unit =
     listener.foreach(l => influxConnection.foreach(_.stopSubscriptionListener(l)))
 
-  override def snapshotState(checkpointId: Long, timestamp: Long): JavaList[Instant] = {
-    Seq(lastMeasurementTime).asJava
+  private var checkpointState: ListState[Instant] = _
+
+  override def snapshotState(context: FunctionSnapshotContext): Unit = {
+    checkpointState.clear()
+    checkpointState.add(lastMeasurementTime)
   }
 
-  override def restoreState(state: JavaList[Instant]): Unit = {
-    lastMeasurementTime = state.get(0)
+  override def initializeState(context: FunctionInitializationContext): Unit = {
+    checkpointState = context
+      .getOperatorStateStore
+      .getListState(new ListStateDescriptor[Instant]("lastMeasurementTime", classOf[Instant]))
+
+    if (context.isRestored) {
+      lastMeasurementTime = checkpointState.get().iterator().next()
+    }
   }
 }

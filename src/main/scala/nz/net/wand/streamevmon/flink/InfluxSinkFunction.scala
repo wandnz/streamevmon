@@ -4,19 +4,19 @@ import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 
-import java.util.{List => JList}
-
 import com.github.fsanaulla.chronicler.ahc.io.AhcIOClient
 import com.github.fsanaulla.chronicler.ahc.management.InfluxMng
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
 import org.apache.flink.{configuration => flinkconf}
+import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
 import org.apache.flink.api.java.utils.ParameterTool
-import org.apache.flink.streaming.api.checkpoint.ListCheckpointed
+import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
+import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction
 import org.apache.flink.streaming.api.functions.sink.SinkFunction.Context
 
 import scala.collection.JavaConverters._
-import scala.collection.mutable.ListBuffer
+import scala.collection.mutable
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
@@ -55,7 +55,7 @@ import scala.concurrent.duration.Duration
 class InfluxSinkFunction
   extends RichSinkFunction[Event]
           with HasFlinkConfig
-          with ListCheckpointed[Event]
+          with CheckpointedFunction
           with Logging {
 
   private[streamevmon] var host: String = _
@@ -76,7 +76,7 @@ class InfluxSinkFunction
 
   private[this] var influx: AhcIOClient = _
 
-  private[this] val bufferedEvents: ListBuffer[Event] = ListBuffer()
+  private[this] val bufferedEvents: mutable.Buffer[Event] = mutable.Buffer()
 
   /** A pretty gross way of getting a key from the config structure, with
     * preference for sink.influx and then source.influx.
@@ -169,11 +169,20 @@ class InfluxSinkFunction
     }
   }
 
-  override def snapshotState(checkpointId: Long, timestamp: Long): JList[Event] = {
-    bufferedEvents.asJava
+  private var checkpointState: ListState[Event] = _
+
+  override def snapshotState(context: FunctionSnapshotContext): Unit = {
+    checkpointState.clear()
+    checkpointState.addAll(bufferedEvents.asJava)
   }
 
-  override def restoreState(state: JList[Event]): Unit = {
-    bufferedEvents ++= state.asScala
+  override def initializeState(context: FunctionInitializationContext): Unit = {
+    checkpointState = context
+      .getOperatorStateStore
+      .getListState(new ListStateDescriptor[Event]("bufferedEvents", classOf[Event]))
+
+    if (context.isRestored) {
+      checkpointState.get().forEach { item => bufferedEvents.append(item) }
+    }
   }
 }

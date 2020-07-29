@@ -11,7 +11,7 @@ sources:
       subscriptionName: YamlDagRunnerBigdataSubscription
   esmond:
     type: esmond
-  latencyts-waikato:
+  latencyts:
     type: latencyts
     subtype: ampicmp
 
@@ -60,7 +60,7 @@ detectors:
           - name: influx
           - name: print
       - source:
-          - name: latencyts-waikato
+          - name: latencyts
             datatype: ampicmp
         sink:
           - name: influx

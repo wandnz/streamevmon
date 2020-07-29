@@ -3,18 +3,19 @@ package nz.net.wand.streamevmon.runners.unified
 import nz.net.wand.streamevmon.{Configuration, Lazy}
 import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.events.Event
+import nz.net.wand.streamevmon.flink.MeasurementTimestampAssigner
 import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.runners.unified.schema.{StreamToTypedStreams, StreamWindowType}
 
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 
+import org.apache.flink.api.common.eventtime.WatermarkStrategy
 import org.apache.flink.api.common.io.GlobFilePathFilter
 import org.apache.flink.api.common.restartstrategy.RestartStrategies
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.functions.source.FileProcessingMode
-import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.windowing.time.Time
 
@@ -83,6 +84,8 @@ object YamlDagRunner {
                 Seq().asJava
               ))
 
+            val timestampAssigner = new MeasurementTimestampAssigner
+
             env
               .readFile(
                 format,
@@ -94,12 +97,9 @@ object YamlDagRunner {
               .name(s"$name (${format.flinkName})")
               .uid(s"${format.flinkUid}-$name")
               .assignTimestampsAndWatermarks(
-                new BoundedOutOfOrdernessTimestampExtractor[Measurement](
-                  Time.of(config.getInt("flink.maxLateness"), TimeUnit.SECONDS)
-                ) {
-                  override def extractTimestamp(element: Measurement): Long =
-                    element.time.toEpochMilli
-                }
+                WatermarkStrategy
+                  .forBoundedOutOfOrderness[Measurement](Duration.ofSeconds(config.getInt("flink.maxLateness")))
+                  .withTimestampAssigner(timestampAssigner)
               )
           } { sourceFunction =>
             env
