@@ -26,7 +26,7 @@ val influxDependencies = Seq(
 )
 
 val postgresDependencies = Seq(
-  "org.postgresql" % "postgresql" % "42.2.12",
+  "org.postgresql" % "postgresql" % "42.2.14",
   "org.squeryl" %% "squeryl" % "0.9.15"
 )
 
@@ -41,25 +41,26 @@ val serialisationDependencies = Seq(
   // Used for REST APIs
   "com.squareup.retrofit2" % "retrofit" % "2.9.0",
   "com.squareup.retrofit2" % "converter-jackson" % "2.9.0",
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.11.0",
   // Used for YAML v1.2 configuration parsing
-  "org.snakeyaml" % "snakeyaml-engine" % "2.1"
+  "org.snakeyaml" % "snakeyaml-engine" % "2.1",
+  // Type conversion supporting scala
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.11.1"
 )
 
 val logDependencies = Seq(
   "org.slf4j" % "slf4j-simple" % "1.7.30" % Provided
 )
 
-val testcontainersScalaVersion = "0.37.0"
+val testcontainersScalaVersion = "0.38.1"
 val testDependencies = Seq(
-  "org.apache.flink" %% "flink-test-utils" % flinkVersion % Test,
-  "org.apache.flink" %% "flink-runtime" % flinkVersion % Test classifier "tests",
-  "org.apache.flink" %% "flink-streaming-java" % flinkVersion % Test classifier "tests",
-  "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+  "org.scalatest" %% "scalatest" % "3.2.0",
   "com.dimafeng" %% "testcontainers-scala" % testcontainersScalaVersion % Test,
   "com.dimafeng" %% "testcontainers-scala-scalatest" % testcontainersScalaVersion % Test,
   "com.dimafeng" %% "testcontainers-scala-postgresql" % testcontainersScalaVersion % Test,
-  "com.dimafeng" %% "testcontainers-scala-influxdb" % testcontainersScalaVersion % Test
+  "com.dimafeng" %% "testcontainers-scala-influxdb" % testcontainersScalaVersion % Test,
+  "org.apache.flink" %% "flink-test-utils" % flinkVersion % Test,
+  "org.apache.flink" %% "flink-runtime" % flinkVersion % Test classifier "tests",
+  "org.apache.flink" %% "flink-streaming-java" % flinkVersion % Test classifier "tests"
 )
 
 lazy val root = (project in file(".")).
