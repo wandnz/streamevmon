@@ -1,6 +1,5 @@
 detector:
   default: &timeWindowWrapperSettings
-    enabled: true # Legacy key, will be removed when flows top-level key is implemented
     useFlinkTimeWindow: true
     windowDuration: 60
     windowSize: 50
@@ -22,7 +21,6 @@ detector:
     - minimumEventInterval: 10
     - severityThreshold: 30
 
-  # Distdiff doesn't use the window-wrapper, so it has its own window settings
   distdiff:
     - *timeWindowWrapperSettings
     - inactivityPurgeTime: 1200

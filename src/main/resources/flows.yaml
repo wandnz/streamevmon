@@ -3,31 +3,23 @@ sources:
     type: influx
     subtype: amp
     config:
-      serverName: 192.168.122.144
       subscriptionName: YamlDagRunnerAmpSubscription
   bigdata:
     type: influx
     subtype: bigdata
     config:
-      serverName: 192.168.122.144
-      subscriptionName: YamlDagRunnerEsmondSubscription
+      subscriptionName: YamlDagRunnerBigdataSubscription
   esmond:
     type: esmond
-    config:
-      serverName: http://denv-owamp.es.net:8085
   latencyts-waikato:
     type: latencyts
     subtype: ampicmp
-    config:
-      files: waikato-*
 
 sinks:
   print:
     type: print
   influx:
     type: influx
-    config:
-      serverName: 192.168.122.144
 
 instanceTemplates: &ampIcmpToAllSources
   - source:

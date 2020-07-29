@@ -130,7 +130,8 @@ object Configuration {
     ).map(getClass.getClassLoader.getResourceAsStream)
 
     val customSettingsFiles = new File("conf").listFiles(
-      (_: File, name: String) => name.endsWith(".yaml") || name.endsWith(".yml")
+      (_: File, name: String) =>
+        (name.endsWith(".yaml") || name.endsWith(".yml")) && (name != "flows.yaml")
     ).sorted.map(new FileInputStream(_))
 
     val pTools = (defaultSettingsFiles ++ customSettingsFiles).map { f =>
@@ -153,10 +154,24 @@ object Configuration {
     val mapper = new ObjectMapper()
     mapper.registerModule(DefaultScalaModule)
 
-    Option(loader.loadFromInputStream(
-      getClass.getClassLoader.getResourceAsStream("flowDag.yaml")
-    ))
-      .map(obj => mapper.convertValue(obj, classOf[FlowSchema]))
-      .get
+    val loadedYaml = Option(loader.loadFromInputStream(
+      new FileInputStream(new File("conf/flows.yaml"))
+    )) match {
+      case Some(value) =>
+        value
+      case None =>
+        val defaults = loader.loadFromInputStream(
+          getClass.getClassLoader.getResourceAsStream("flows.yaml")
+        )
+        defaults
+    }
+
+    val result = mapper.convertValue(loadedYaml, classOf[FlowSchema])
+
+    if (result.sources == null || result.sinks == null || result.detectors == null) {
+      throw new IllegalArgumentException("flows.yaml must contain keys for sources, sinks, and detectors!")
+    }
+
+    result
   }
 }
