@@ -9,7 +9,7 @@ version := "0.1-SNAPSHOT"
 
 organization := "nz.net.wand"
 
-ThisBuild / scalaVersion := "2.12.11"
+ThisBuild / scalaVersion := "2.12.12"
 
 val flinkVersion = "1.10.1"
 val flinkDependencies = Seq(
