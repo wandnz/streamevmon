@@ -15,8 +15,7 @@ val flinkVersion = "1.11.1"
 val flinkDependencies = Seq(
   "org.apache.flink" %% "flink-scala" % flinkVersion % Provided,
   "org.apache.flink" %% "flink-clients" % flinkVersion % Provided,
-  "org.apache.flink" %% "flink-streaming-scala" % flinkVersion % Provided,
-  "org.apache.flink" %% "flink-table-api-scala" % flinkVersion % Provided
+  "org.apache.flink" %% "flink-streaming-scala" % flinkVersion % Provided
 )
 
 val chroniclerVersion = "0.6.4"
@@ -54,7 +53,7 @@ val logDependencies = Seq(
 
 val testcontainersScalaVersion = "0.38.1"
 val testDependencies = Seq(
-  "org.scalatest" %% "scalatest" % "3.2.0",
+  "org.scalatest" %% "scalatest" % "3.2.0" % Test,
   "com.dimafeng" %% "testcontainers-scala" % testcontainersScalaVersion % Test,
   "com.dimafeng" %% "testcontainers-scala-scalatest" % testcontainersScalaVersion % Test,
   "com.dimafeng" %% "testcontainers-scala-postgresql" % testcontainersScalaVersion % Test,
@@ -68,11 +67,11 @@ lazy val root = (project in file(".")).
   settings(
     libraryDependencies ++=
       flinkDependencies ++
-        influxDependencies ++
-        postgresDependencies ++
-        cacheDependencies ++
-        serialisationDependencies ++
-        logDependencies ++
+      influxDependencies ++
+      postgresDependencies ++
+      cacheDependencies ++
+      serialisationDependencies ++
+      logDependencies ++
       testDependencies
   )
 
