@@ -150,21 +150,28 @@ object Configuration {
     }
   }
 
-  def getFlowsDag: FlowSchema = {
+  def getFlowsDag(file: Option[InputStream] = None): FlowSchema = {
     val loader = new Load(LoadSettings.builder.build)
     val mapper = new ObjectMapper()
     mapper.registerModule(DefaultScalaModule)
 
-    val loadedYaml = Try(loader.loadFromInputStream(
-      new FileInputStream(new File("conf/flows.yaml"))
-    )).toOption match {
-      case None | Some(null) =>
-        val defaults = loader.loadFromInputStream(
-          getClass.getClassLoader.getResourceAsStream("flows.yaml")
-        )
-        defaults
-      case Some(value) =>
-        value
+    // Where we load from depends on our input.
+    val loadedYaml = file match {
+      // If the caller specified a file, we'll use it and error out if it doesn't work.
+      case Some(value) => loader.loadFromInputStream(value)
+      // If they didn't specify anything, we'll use our default conf file location with
+      // fallback to the internal default configuration.
+      case None => Try(loader.loadFromInputStream(
+        new FileInputStream(new File("conf/flows.yaml"))
+      )).toOption match {
+        case None | Some(null) =>
+          val defaults = loader.loadFromInputStream(
+            getClass.getClassLoader.getResourceAsStream("flows.yaml")
+          )
+          defaults
+        case Some(value) =>
+          value
+      }
     }
 
     val result = mapper.convertValue(loadedYaml, classOf[FlowSchema])

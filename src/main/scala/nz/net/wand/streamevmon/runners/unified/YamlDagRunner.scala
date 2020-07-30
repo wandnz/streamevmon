@@ -43,7 +43,7 @@ object YamlDagRunner {
     env.setRestartStrategy(RestartStrategies.noRestart())
 
     // == Parse flow config key ==
-    val flows = Configuration.getFlowsDag
+    val flows = Configuration.getFlowsDag()
 
     // We keep track of which detectors subscribe to each sink as they're created,
     // so that we can tie them together once we've made all our detectors.

@@ -7,6 +7,7 @@ import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow
 import nz.net.wand.streamevmon.measurements.esmond._
 import nz.net.wand.streamevmon.measurements.latencyts._
+import nz.net.wand.streamevmon.runners.unified.schema._
 
 import java.time.{Duration, Instant}
 import java.util.concurrent.TimeUnit
@@ -827,6 +828,154 @@ object SeedData {
           )
       }
     }
+  }
+
+  object flowDag {
+    val sharedIcmpToSinks =
+      Seq(
+        DetectorInstance(
+          Seq(
+            SourceReference(
+              "amp",
+              SourceDatatype.ICMP,
+              filterLossy = true
+            )
+          ),
+          Seq(
+            SinkReference("influx"),
+            SinkReference("print")
+          ),
+          Map()
+        )
+      )
+
+    val expectedSchema = FlowSchema(
+      sources = Map(
+        "amp" -> SourceInstance(
+          SourceType.Influx,
+          Some(SourceSubtype.Amp),
+          Map("subscriptionName" -> "YamlDagRunnerAmpSubscription")
+        ),
+        "bigdata" -> SourceInstance(
+          SourceType.Influx,
+          Some(SourceSubtype.Bigdata),
+          Map("subscriptionName" -> "YamlDagRunnerBigdataSubscription")
+        ),
+        "esmond" -> SourceInstance(
+          SourceType.Esmond,
+          None
+        ),
+        "latencyts" -> SourceInstance(
+          SourceType.LatencyTS,
+          Some(SourceSubtype.LatencyTSAmp)
+        ),
+      ),
+      sinks = Map(
+        "print" -> SinkInstance(
+          SinkType.Print
+        ),
+        "influx" -> SinkInstance(
+          SinkType.Influx
+        )
+      ),
+      detectors = Map(
+        "baseline-icmp" -> DetectorSchema(
+          DetectorType.Baseline,
+          Seq(
+            DetectorInstance(
+              Seq(
+                SourceReference(
+                  "amp",
+                  SourceDatatype.ICMP,
+                  filterLossy = true
+                )
+              ),
+              Seq(
+                SinkReference("influx"),
+                SinkReference("print")
+              ),
+              Map(
+                "threshold" -> "60",
+                "useFlinkTimeWindow" -> "false"
+              )
+            )
+          )
+        ),
+        "changepoint-icmp" -> DetectorSchema(
+          DetectorType.Changepoint,
+          sharedIcmpToSinks
+        ),
+        "distdiff" -> DetectorSchema(
+          DetectorType.DistDiff,
+          Seq(
+            DetectorInstance(
+              Seq(
+                SourceReference(
+                  "esmond",
+                  SourceDatatype.Simple,
+                  filterLossy = true
+                )
+              ),
+              Seq(
+                SinkReference("influx"),
+                SinkReference("print")
+              )
+            ),
+            DetectorInstance(
+              Seq(
+                SourceReference(
+                  "latencyts",
+                  SourceDatatype.LatencyTSAmp,
+                  filterLossy = false
+                )
+              ),
+              Seq(
+                SinkReference("influx")
+              )
+            )
+          )
+        ),
+        "loss" -> DetectorSchema(
+          DetectorType.Loss,
+          Seq(
+            DetectorInstance(
+              Seq(
+                SourceReference(
+                  "amp",
+                  SourceDatatype.DNS,
+                  filterLossy = false
+                )
+              ),
+              Seq(
+                SinkReference("influx"),
+                SinkReference("print")
+              )
+            ),
+            DetectorInstance(
+              Seq(
+                SourceReference(
+                  "amp",
+                  SourceDatatype.ICMP,
+                  filterLossy = false
+                )
+              ),
+              Seq(
+                SinkReference("influx"),
+                SinkReference("print")
+              )
+            )
+          )
+        ),
+        "mode-icmp" -> DetectorSchema(
+          DetectorType.Mode,
+          sharedIcmpToSinks
+        ),
+        "spike-icmp" -> DetectorSchema(
+          DetectorType.Spike,
+          sharedIcmpToSinks
+        ),
+      )
+    )
   }
 
 }

@@ -1,0 +1,91 @@
+sources:
+  amp:
+    type: influx
+    subtype: amp
+    config:
+      subscriptionName: YamlDagRunnerAmpSubscription
+  bigdata:
+    type: influx
+    subtype: bigdata
+    config:
+      subscriptionName: YamlDagRunnerBigdataSubscription
+  esmond:
+    type: esmond
+  latencyts:
+    type: latencyts
+    subtype: ampicmp
+
+sinks:
+  print:
+    type: print
+  influx:
+    type: influx
+
+instanceTemplates: &ampIcmpToAllSources
+  - source:
+      - name: amp
+        datatype: icmp
+        filterLossy: true
+    sink:
+      - name: influx
+      - name: print
+
+detectors:
+  baseline-icmp:
+    type: baseline
+    instances:
+      - source:
+          - name: amp
+            datatype: icmp
+            filterLossy: true
+        sink:
+          - name: influx
+          - name: print
+        config:
+          threshold: 60
+          useFlinkTimeWindow: false
+
+  changepoint-icmp:
+    type: changepoint
+    instances: *ampIcmpToAllSources
+
+  distdiff:
+    type: distdiff
+    instances:
+      - source:
+          - name: esmond
+            datatype: simple
+            filterLossy: true
+        sink:
+          - name: influx
+          - name: print
+      - source:
+          - name: latencyts
+            datatype: ampicmp
+        sink:
+          - name: influx
+
+  loss:
+    type: loss
+    instances:
+      - source:
+          - name: amp
+            datatype: dns
+        sink:
+          - name: influx
+          - name: print
+        config:
+      - source:
+          - name: amp
+            datatype: icmp
+        sink:
+          - name: influx
+          - name: print
+
+  mode-icmp:
+    type: mode
+    instances: *ampIcmpToAllSources
+
+  spike-icmp:
+    type: spike
+    instances: *ampIcmpToAllSources
