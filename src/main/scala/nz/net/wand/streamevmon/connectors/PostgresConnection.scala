@@ -27,7 +27,7 @@ object PostgresConnection extends Caching {
     *
     * @return A new PostgresConnection object.
     */
-  def apply(p: ParameterTool, configPrefix: String = "postgres.dataSource"): PostgresConnection = {
+  def apply(p: ParameterTool, configPrefix: String = "source.postgres"): PostgresConnection = {
     PostgresConnection(
       p.get(s"$configPrefix.serverName"),
       p.getInt(s"$configPrefix.portNumber"),
@@ -71,7 +71,7 @@ object PostgresConnection extends Caching {
   *
   * ==Configuration==
   *
-  * This class is configured by the `postgres.dataSource` config key group.
+  * This class is configured by the `source.postgres` config key group.
   *
   * - `serverName`: The hostname which the PostgreSQL database can be reached on.
   * Default: "localhost"

@@ -15,8 +15,7 @@ import scala.concurrent.duration.{Duration => ScalaDuration}
 class InfluxSinkTest extends InfluxContainerSpec {
   "InfluxSink" should {
     "write data to InfluxDB" in {
-      val sink = new InfluxSinkFunction
-      sink.overrideConfig(getInfluxConfig("no-subscription"))
+      val sink = getSinkFunction("no-subscription")
       sink.open(null)
 
       sink.invoke(SeedData.event.withTags, new MockSinkContext(SeedData.event.withTags.time))

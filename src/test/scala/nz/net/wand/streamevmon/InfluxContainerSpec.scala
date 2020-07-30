@@ -3,10 +3,11 @@ package nz.net.wand.streamevmon
 import nz.net.wand.streamevmon.connectors.{InfluxConnection, InfluxHistoryConnection}
 import nz.net.wand.streamevmon.flink.InfluxSinkFunction
 
-import com.dimafeng.testcontainers.{ForAllTestContainer, InfluxDBContainer => DIDBContainer}
+import com.dimafeng.testcontainers.{ForAllTestContainer, InfluxDBContainer}
 import com.github.fsanaulla.chronicler.ahc.management.InfluxMng
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
 import org.apache.flink.api.java.utils.ParameterTool
+import org.apache.flink.streaming.util.MockStreamingRuntimeContext
 
 import scala.collection.JavaConverters._
 import scala.concurrent.duration.Duration
@@ -15,15 +16,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class InfluxContainerSpec extends TestBase with ForAllTestContainer {
 
-  // Influx containers have been a little flaky in the past, and official
-  // support from testcontainers-scala is fairly new, so we'll stick to their
-  // default version for now just to make sure. We will use the alpine image
-  // for the size benefits.
   // We're turning off auth because we don't really care.
-  // See [[PostgresContainerSpec]] for a little more detail.
-  override val container: DIDBContainer = DIDBContainer(tag = s"${DIDBContainer.defaultTag}-alpine", authEnabled = false)
+  override val container: InfluxDBContainer = InfluxDBContainer(tag = s"${InfluxDBContainer.defaultTag}-alpine", authEnabled = false)
 
-  protected lazy val containerAddress = container.containerIpAddress
+  protected lazy val containerAddress = container.host
   protected lazy val containerPort = container.mappedPort(8086)
 
   override def afterStart(): Unit = {
@@ -32,7 +28,7 @@ class InfluxContainerSpec extends TestBase with ForAllTestContainer {
     Await.result(influx.updateRetentionPolicy(
       "autogen",
       container.database,
-      duration = Some("8760h0m0s")
+      duration = Some("0s")
     ),
       Duration.Inf)
   }
@@ -80,19 +76,19 @@ class InfluxContainerSpec extends TestBase with ForAllTestContainer {
     listenAddress: String = null
   ): Map[String, String] = {
     Map(
-      "influx.dataSource.default.subscriptionName" -> subscriptionName,
-      "influx.dataSource.default.databaseName" -> container.database,
-      "influx.dataSource.default.retentionPolicyName" -> "autogen",
-      "influx.dataSource.default.listenProtocol" -> "http",
-      "influx.dataSource.default.listenAddress" -> listenAddress,
-      "influx.dataSource.default.listenPort" -> "0",
-      "influx.dataSource.default.listenBacklog" -> "5",
-      "influx.dataSource.default.serverName" -> containerAddress,
-      "influx.dataSource.default.portNumber" -> containerPort.toString,
-      "influx.dataSource.default.user" -> container.username,
-      "influx.dataSource.default.password" -> container.password,
-      "influx.sink.databaseName" -> container.database,
-      "influx.sink.retentionPolicy" -> "autogen",
+      "source.influx.subscriptionName" -> subscriptionName,
+      "source.influx.databaseName" -> container.database,
+      "source.influx.retentionPolicyName" -> "autogen",
+      "source.influx.listenProtocol" -> "http",
+      "source.influx.listenAddress" -> listenAddress,
+      "source.influx.listenPort" -> "0",
+      "source.influx.listenBacklog" -> "5",
+      "source.influx.serverName" -> containerAddress,
+      "source.influx.portNumber" -> containerPort.toString,
+      "source.influx.user" -> container.username,
+      "source.influx.password" -> container.password,
+      "sink.influx.databaseName" -> container.database,
+      "sink.influx.retentionPolicy" -> "autogen",
       "flink.maxLateness" -> "1"
     )
   }
@@ -104,15 +100,13 @@ class InfluxContainerSpec extends TestBase with ForAllTestContainer {
     ParameterTool.fromMap(getInfluxConfigMap(subscriptionName, listenAddress).asJava)
   }
 
-  protected def getSinkFunction: InfluxSinkFunction = {
+  protected def getSinkFunction(subscriptionName: String): InfluxSinkFunction = {
     val sink = new InfluxSinkFunction
-
-    sink.host = containerAddress
-    sink.port = containerPort
-    sink.username = container.username
-    sink.password = container.password
-    sink.database = container.database
-
+    val context = new MockStreamingRuntimeContext(true, 1, 0)
+    val params = getInfluxConfig(subscriptionName)
+    context.getExecutionConfig.setGlobalJobParameters(params)
+    sink.overrideConfig(params)
+    sink.setRuntimeContext(context)
     sink
   }
 }
