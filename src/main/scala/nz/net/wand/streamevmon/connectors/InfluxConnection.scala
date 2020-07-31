@@ -68,9 +68,9 @@ object InfluxConnection extends Logging {
   }
 
   private[this] def getWithFallback(p: ParameterTool, configPrefix: String, datatype: String, item: String): String = {
-    val result = p.get(s"$configPrefix.$datatype.$item", null)
+    val result = p.get(s"source.$configPrefix.$datatype.$item", null)
     if (result == null) {
-      p.get(s"$configPrefix.$item")
+      p.get(s"source.$configPrefix.$item")
     }
     else {
       result
@@ -87,7 +87,7 @@ object InfluxConnection extends Logging {
     *
     * @return A new InfluxConnection object.
     */
-  def apply(p: ParameterTool, configPrefix: String = "source.influx", datatype: String = "amp"): InfluxConnection = {
+  def apply(p: ParameterTool, configPrefix: String = "influx", datatype: String = "amp"): InfluxConnection = {
     if (getWithFallback(p, configPrefix, datatype, "subscriptionName") == null) {
       throw new IllegalArgumentException(s"$configPrefix.$datatype.subscriptionName cannot be null!")
     }

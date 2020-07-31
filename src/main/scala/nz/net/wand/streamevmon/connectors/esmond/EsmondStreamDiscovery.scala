@@ -59,22 +59,22 @@ import scala.util.{Failure, Success, Try}
   *               obtained implicitly.
   */
 class EsmondStreamDiscovery[ConnT <: AbstractEsmondConnection](
-  configPrefix: String = "source.esmond",
+  configPrefix: String = "esmond",
   params      : ParameterTool,
   esmond      : ConnT
 ) extends AbstractEsmondStreamDiscovery with Logging {
-  lazy protected val timeRange: Duration = Duration.ofSeconds(params.getInt(s"$configPrefix.discoverTimeRange"))
-  lazy protected val timeOffset: Duration = Duration.ofSeconds(params.getInt(s"$configPrefix.timeOffset"))
-  lazy protected val limit: Option[Long] = Try(params.getLong(s"$configPrefix.limit")).toOption
-  lazy protected val offset: Option[Long] = Try(params.getLong(s"$configPrefix.offset")).toOption
-  lazy protected val source: Option[String] = Option(params.get(s"$configPrefix.source"))
-  lazy protected val destination: Option[String] = Option(params.get(s"$configPrefix.destination"))
-  lazy protected val measurementAgent: Option[String] = Option(params.get(s"$configPrefix.measurementAgent"))
-  lazy protected val toolName: Option[String] = Option(params.get(s"$configPrefix.toolName"))
-  lazy protected val dnsMatchRule: Option[String] = Option(params.get(s"$configPrefix.dnsMatchRule"))
-  lazy protected val eventType: Option[String] = Option(params.get(s"$configPrefix.eventType"))
-  lazy protected val summaryType: Option[String] = Option(params.get(s"$configPrefix.summaryType"))
-  lazy protected val summaryWindow: Option[Long] = Try(params.getLong(s"$configPrefix.summaryWindow")).toOption
+  lazy protected val timeRange: Duration = Duration.ofSeconds(params.getInt(s"source.$configPrefix.discoverTimeRange"))
+  lazy protected val timeOffset: Duration = Duration.ofSeconds(params.getInt(s"source.$configPrefix.timeOffset"))
+  lazy protected val limit: Option[Long] = Try(params.getLong(s"source.$configPrefix.limit")).toOption
+  lazy protected val offset: Option[Long] = Try(params.getLong(s"source.$configPrefix.offset")).toOption
+  lazy protected val source: Option[String] = Option(params.get(s"source.$configPrefix.source"))
+  lazy protected val destination: Option[String] = Option(params.get(s"source.$configPrefix.destination"))
+  lazy protected val measurementAgent: Option[String] = Option(params.get(s"source.$configPrefix.measurementAgent"))
+  lazy protected val toolName: Option[String] = Option(params.get(s"source.$configPrefix.toolName"))
+  lazy protected val dnsMatchRule: Option[String] = Option(params.get(s"source.$configPrefix.dnsMatchRule"))
+  lazy protected val eventType: Option[String] = Option(params.get(s"source.$configPrefix.eventType"))
+  lazy protected val summaryType: Option[String] = Option(params.get(s"source.$configPrefix.summaryType"))
+  lazy protected val summaryWindow: Option[Long] = Try(params.getLong(s"source.$configPrefix.summaryWindow")).toOption
 
   def discoverStreams(): Iterable[Either[EventType, Summary]] = {
     // TODO: Support querying for multiples of summaryType and summaryWindow.

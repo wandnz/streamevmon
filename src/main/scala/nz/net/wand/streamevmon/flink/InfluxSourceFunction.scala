@@ -43,7 +43,6 @@ import org.apache.flink.streaming.api.watermark.Watermark
   * @see [[AmpRichMeasurementSourceFunction]]
   */
 abstract class InfluxSourceFunction[T <: InfluxMeasurement](
-  configPrefix: String = "source.influx",
   datatype    : String = "amp",
   fetchHistory: Duration = Duration.ZERO
 )
@@ -53,7 +52,7 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
           with Logging
           with CheckpointedFunction {
 
-  lazy override val configKeyGroup: String = configPrefix
+  lazy override val configKeyGroup: String = "influx"
 
   @volatile
   @transient protected[this] var isRunning = false
@@ -94,8 +93,8 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
   override def run(ctx: SourceFunction.SourceContext[T]): Unit = {
     // Set up config
     val params = configWithOverride(getRuntimeContext)
-    influxConnection = Some(InfluxConnection(params, configPrefix, datatype))
-    influxHistory = Some(InfluxHistoryConnection(params, configPrefix, datatype))
+    influxConnection = Some(InfluxConnection(params, configKeyGroup, datatype))
+    influxHistory = Some(InfluxHistoryConnection(params, configKeyGroup, datatype))
     maxLateness = params.getLong("flink.maxLateness")
 
     if (getRuntimeContext.getNumberOfParallelSubtasks > 1) {

@@ -20,9 +20,9 @@ import scala.reflect._
 object InfluxHistoryConnection {
 
   private[this] def getWithFallback(p: ParameterTool, configPrefix: String, datatype: String, item: String): String = {
-    val result = p.get(s"$configPrefix.$datatype.$item", null)
+    val result = p.get(s"source.$configPrefix.$datatype.$item", null)
     if (result == null) {
-      p.get(s"$configPrefix.$item")
+      p.get(s"source.$configPrefix.$item")
     }
     else {
       result
@@ -39,7 +39,7 @@ object InfluxHistoryConnection {
     *
     * @return A new InfluxHistoryConnection object.
     */
-  def apply(p: ParameterTool, configPrefix: String = "source.influx", datatype: String = "amp"): InfluxHistoryConnection =
+  def apply(p: ParameterTool, configPrefix: String = "influx", datatype: String = "amp"): InfluxHistoryConnection =
     InfluxHistoryConnection(
       getWithFallback(p, configPrefix, datatype, "databaseName"),
       getWithFallback(p, configPrefix, datatype, "retentionPolicy"),

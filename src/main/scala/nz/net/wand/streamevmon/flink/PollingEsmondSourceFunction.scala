@@ -37,7 +37,7 @@ class PollingEsmondSourceFunction[
   EsmondConnectionT <: AbstractEsmondConnection,
   EsmondDiscoveryT <: AbstractEsmondStreamDiscovery
 ](
-  configPrefix     : String = "source.esmond",
+  configPrefix     : String = "esmond",
   // Man, this is a pain. You can't instantiate a type parameter, so instead
   // you've got to include builders as arguments. These defaults are sensible.
   // Mainly useful for testing.

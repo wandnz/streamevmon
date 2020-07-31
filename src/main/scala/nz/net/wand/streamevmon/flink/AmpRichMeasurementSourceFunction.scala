@@ -17,11 +17,9 @@ import org.apache.flink.configuration.Configuration
   *      for configuration details.
   */
 class AmpRichMeasurementSourceFunction(
-  configPrefix: String = "source.influx",
   fetchHistory: Duration = Duration.ZERO
 )
   extends InfluxSourceFunction[RichInfluxMeasurement](
-    configPrefix,
     "amp",
     fetchHistory
   ) {

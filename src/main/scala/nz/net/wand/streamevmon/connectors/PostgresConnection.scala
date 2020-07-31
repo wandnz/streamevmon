@@ -27,13 +27,13 @@ object PostgresConnection extends Caching {
     *
     * @return A new PostgresConnection object.
     */
-  def apply(p: ParameterTool, configPrefix: String = "source.postgres"): PostgresConnection = {
+  def apply(p: ParameterTool, configPrefix: String = "postgres"): PostgresConnection = {
     PostgresConnection(
-      p.get(s"$configPrefix.serverName"),
-      p.getInt(s"$configPrefix.portNumber"),
-      p.get(s"$configPrefix.databaseName"),
-      p.get(s"$configPrefix.user"),
-      p.get(s"$configPrefix.password"),
+      p.get(s"source.$configPrefix.serverName"),
+      p.getInt(s"source.$configPrefix.portNumber"),
+      p.get(s"source.$configPrefix.databaseName"),
+      p.get(s"source.$configPrefix.user"),
+      p.get(s"source.$configPrefix.password"),
       p.getInt("caching.ttl")
     ).withMemcachedIfEnabled(p)
   }

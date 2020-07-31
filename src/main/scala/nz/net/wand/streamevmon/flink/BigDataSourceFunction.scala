@@ -5,12 +5,9 @@ import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasuremen
 import java.time.Duration
 
 class BigDataSourceFunction(
-  configPrefix: String = "source.influx",
   fetchHistory: Duration = Duration.ZERO
 )
   extends InfluxSourceFunction[InfluxMeasurement](
-    configPrefix = configPrefix,
-    datatype = "bigdata",
     fetchHistory = fetchHistory
   ) {
 

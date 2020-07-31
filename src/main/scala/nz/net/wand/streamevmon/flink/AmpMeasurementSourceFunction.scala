@@ -13,11 +13,9 @@ import java.time.Duration
   *      for configuration details.
   */
 class AmpMeasurementSourceFunction(
-  configPrefix: String = "source.influx",
   fetchHistory: Duration = Duration.ZERO
 )
   extends InfluxSourceFunction[InfluxMeasurement](
-    configPrefix,
     "amp",
     fetchHistory
   ) {

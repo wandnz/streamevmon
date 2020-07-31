@@ -9,7 +9,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 
 abstract class PollingInfluxSourceFunction[T <: InfluxMeasurement](
-  configPrefix   : String = "source.influx",
+  configPrefix   : String = "influx",
   datatype       : String = "amp",
   fetchHistory   : Duration = Duration.ZERO,
   timeOffset     : Duration = Duration.ZERO,
