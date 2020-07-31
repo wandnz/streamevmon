@@ -4,13 +4,14 @@ import nz.net.wand.streamevmon.measurements.amp.ICMP
 import nz.net.wand.streamevmon.SeedData
 
 import java.time.Instant
-import java.util
 
-import org.apache.flink.streaming.api.checkpoint.ListCheckpointed
+import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
+import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
+import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 import org.apache.flink.streaming.api.windowing.time.Time
 
-class FailingSource extends SourceFunction[ICMP] with ListCheckpointed[(Long, Int, Boolean)] {
+class FailingSource extends SourceFunction[ICMP] with CheckpointedFunction {
   def sendMeasurement(ctx: SourceFunction.SourceContext[ICMP], value: Int, time: Long): Unit = {
     val e = SeedData.icmp.expected
     ctx.collectWithTimestamp(
@@ -78,19 +79,26 @@ class FailingSource extends SourceFunction[ICMP] with ListCheckpointed[(Long, In
 
   override def cancel(): Unit = {}
 
-  override def snapshotState(checkpointId: Long, timestamp: Long): util.List[(Long, Int, Boolean)] = {
+  private var checkpointState: ListState[(Long, Int, Boolean)] = _
+
+  override def snapshotState(context: FunctionSnapshotContext): Unit = {
     hasCheckpointed = true
-    val r = new util.ArrayList[(Long, Int, Boolean)]()
-    r.add((currentTime, sentMeasurements, hasCheckpointed))
-    println(s"Checkpointing: $r")
-    r
+    checkpointState.clear()
+    checkpointState.add((currentTime, sentMeasurements, hasCheckpointed))
+    println(s"Checkpointing: $checkpointState")
   }
 
-  override def restoreState(state: util.List[(Long, Int, Boolean)]): Unit = {
-    println(s"Restoring: $state")
-    currentTime = state.get(0)._1
-    sentMeasurements = state.get(0)._2
-    hasCheckpointed = state.get(0)._3
-    hasRestored = true
+  override def initializeState(context: FunctionInitializationContext): Unit = {
+    checkpointState = context
+      .getOperatorStateStore
+      .getListState(new ListStateDescriptor[(Long, Int, Boolean)]("FailingSource-state", classOf[(Long, Int, Boolean)]))
+
+    if (context.isRestored) {
+      val state = checkpointState.get().iterator().next()
+      currentTime = state._1
+      sentMeasurements = state._2
+      hasCheckpointed = state._3
+      hasRestored = true
+    }
   }
 }
