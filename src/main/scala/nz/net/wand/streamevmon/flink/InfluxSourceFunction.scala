@@ -2,7 +2,6 @@ package nz.net.wand.streamevmon.flink
 
 import nz.net.wand.streamevmon.connectors.{InfluxConnection, InfluxHistoryConnection}
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 
 import java.io.{BufferedReader, InputStreamReader}

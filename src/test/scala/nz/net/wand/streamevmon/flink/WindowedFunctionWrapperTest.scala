@@ -1,7 +1,6 @@
 package nz.net.wand.streamevmon.flink
 
 import nz.net.wand.streamevmon.{Configuration, TestBase}
-import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 import nz.net.wand.streamevmon.measurements.amp.Traceroute

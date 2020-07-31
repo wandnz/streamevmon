@@ -1,6 +1,5 @@
 package nz.net.wand.streamevmon.flink
 
-import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSSmokeping
 
 import org.apache.flink.api.common.io.GenericCsvInputFormat

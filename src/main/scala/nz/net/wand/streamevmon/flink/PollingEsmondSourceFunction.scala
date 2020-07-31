@@ -3,7 +3,6 @@ package nz.net.wand.streamevmon.flink
 import nz.net.wand.streamevmon.connectors.esmond.schema.{AbstractTimeSeriesEntry, EventType, Summary}
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.connectors.esmond._
-import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement
 
 import java.time.{Duration, Instant}

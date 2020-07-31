@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.detectors
+package nz.net.wand.streamevmon.flink
 
 import org.apache.flink.api.common.functions.RuntimeContext
 import org.apache.flink.api.java.utils.ParameterTool

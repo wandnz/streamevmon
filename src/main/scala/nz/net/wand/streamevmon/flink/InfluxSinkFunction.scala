@@ -2,7 +2,6 @@ package nz.net.wand.streamevmon.flink
 
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 
 import com.github.fsanaulla.chronicler.ahc.io.AhcIOClient
 import com.github.fsanaulla.chronicler.ahc.management.InfluxMng

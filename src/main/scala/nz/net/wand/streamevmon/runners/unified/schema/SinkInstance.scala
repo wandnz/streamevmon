@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.runners.unified.schema
 
-import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.events.Event
+import nz.net.wand.streamevmon.flink.HasFlinkConfig
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.scala.JsonScalaEnumeration

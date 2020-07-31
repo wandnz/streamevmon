@@ -1,8 +1,7 @@
 package nz.net.wand.streamevmon.runners.unified.schema
 
-import nz.net.wand.streamevmon.detectors.HasFlinkConfig
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.flink.InfluxSinkFunction
+import nz.net.wand.streamevmon.flink.{HasFlinkConfig, InfluxSinkFunction}
 
 import org.apache.flink.streaming.api.functions.sink.{PrintSinkFunction, SinkFunction}
 
