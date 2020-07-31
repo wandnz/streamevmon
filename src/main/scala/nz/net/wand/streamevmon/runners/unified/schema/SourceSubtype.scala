@@ -34,5 +34,5 @@ object SourceSubtype extends Enumeration {
   val Amp: ValueBuilder = new ValueBuilder("amp")
   val Bigdata: ValueBuilder = new ValueBuilder("bigdata")
   val LatencyTSAmp: ValueBuilder = new ValueBuilder("ampicmp")
-  val LatencyTSSmokeping: ValueBuilder = new ValueBuilder("latencytssmokeping")
+  val LatencyTSSmokeping: ValueBuilder = new ValueBuilder("smokeping")
 }

@@ -19,5 +19,5 @@ object SourceDatatype extends Enumeration {
   val Subinterval: Value = Value("subinterval")
   // Latency TS
   val LatencyTSAmp: Value = Value("ampicmp")
-  val LatencyTSSmokeping: Value = Value("latencytssmokeping")
+  val LatencyTSSmokeping: Value = Value("smokeping")
 }
