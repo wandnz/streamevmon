@@ -22,10 +22,10 @@ object Configuration {
     *
     * First, the default configuration is loaded.
     *
-    * Second, a file called `streamevmon.properties` in "./conf" (relative to
-    * the working directory) is searched for and loaded if present. This file
-    * can be used to provide environment-specific configuration options when it
-    * is inconvenient to adjust the system properties or program arguments.
+    * Second, the `./conf` directory is searched for files with the `.yml` or
+    * `.yaml` extension. Any files that are not called `flows.yaml` or
+    * `flows.yml` are loaded in lexicographical order. These files can be used
+    * to provide environment-specific configuration options.
     *
     * Next, the system properties are loaded.
     *
@@ -65,15 +65,13 @@ object Configuration {
     *
     * Java classes are converted into Scala classes, then passed back into the
     * function. Lists are handled as though they are just several entries in the
-    * original map. This isn't a perfect representation of YAML structure, but
-    * it works fine for our purposes.
+    * original map. This means that list type values are '''not supported''', but it
+    * would be difficult to represent them in a flat Map anyway.
     */
   def flattenMap(map: Map[String, _]): Map[String, String] = {
     map.flatMap {
       case (k, v) => v match {
         // If we're passed a Java map, just convert it to Scala and try again.
-        // We really want to use the Scala map() function instead of messing
-        // around with iterators and mutable holder buffers.
         case jMap: java.util.Map[_, _] => flattenMap(Map(k -> jMap.asScala.toMap))
         // If we're passed a Java list, it will most likely contain a series of
         // either additional maps, or leaves. Maps should be passed back in,
@@ -107,7 +105,8 @@ object Configuration {
     }
   }
 
-  private def getFromYaml(args: Array[String]): ParameterTool = {
+  /** Function backing get(). */
+  protected def getFromYaml(args: Array[String]): ParameterTool = {
     val loader = new Load(LoadSettings.builder().build())
 
     def parameterToolFromYamlStream(yamlStream: InputStream): ParameterTool = {
@@ -115,7 +114,8 @@ object Configuration {
       // Java again. The map() function is just too nice to pass up.
       ParameterTool.fromMap(
         flattenMap(
-          Option(loader.loadFromInputStream(yamlStream))
+          Try(loader.loadFromInputStream(yamlStream))
+            .toOption
             .getOrElse(new java.util.HashMap[String, Any]())
             .asInstanceOf[java.util.Map[String, Any]]
             .asScala.toMap
@@ -132,7 +132,7 @@ object Configuration {
 
     val customSettingsFiles = new File("conf").listFiles(
       (_: File, name: String) =>
-        (name.endsWith(".yaml") || name.endsWith(".yml")) && (name != "flows.yaml")
+        (name.endsWith(".yaml") || name.endsWith(".yml")) && (name != "flows.yaml" && name != "flows.yml")
     ).sorted.map(new FileInputStream(_))
 
     val pTools = (defaultSettingsFiles ++ customSettingsFiles).map { f =>
@@ -150,21 +150,33 @@ object Configuration {
     }
   }
 
+  /** Gets a [[nz.net.wand.streamevmon.runners.unified.schema.FlowSchema FlowSchema]]
+    * from a configuration file.
+    *
+    * If a text stream is provided as input, it is parsed as YAML.
+    *
+    * Otherwise, if the file `conf/flows.yaml` is present and contains valid
+    * YAML, it is loaded.
+    *
+    * Otherwise, the internal default configuration is loaded.
+    *
+    * If the result does not contain keys titled `sources`, `flows`, and
+    * `detectors`, an IllegalArgumentException is thrown.
+    */
   def getFlowsDag(file: Option[InputStream] = None): FlowSchema = {
     val loader = new Load(LoadSettings.builder.build)
     val mapper = new ObjectMapper()
     mapper.registerModule(DefaultScalaModule)
 
-    // Where we load from depends on our input.
     val loadedYaml = file match {
-      // If the caller specified a file, we'll use it and error out if it doesn't work.
+      // Argument input stream
       case Some(value) => loader.loadFromInputStream(value)
-      // If they didn't specify anything, we'll use our default conf file location with
-      // fallback to the internal default configuration.
+      // External user configuration
       case None => Try(loader.loadFromInputStream(
         new FileInputStream(new File("conf/flows.yaml"))
       )).toOption match {
         case None | Some(null) =>
+          // Internal default configuration
           val defaults = loader.loadFromInputStream(
             getClass.getClassLoader.getResourceAsStream("flows.yaml")
           )

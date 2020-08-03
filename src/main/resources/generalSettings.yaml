@@ -1,5 +1,5 @@
 caching:
-  ttl: 0
+  ttl: 30
   memcached:
     serverName: localhost
     port: 11211

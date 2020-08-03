@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.connectors
+package nz.net.wand.streamevmon.connectors.influx
 
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow

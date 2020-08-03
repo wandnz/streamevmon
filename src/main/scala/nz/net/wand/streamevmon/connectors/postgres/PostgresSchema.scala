@@ -1,14 +1,12 @@
-package nz.net.wand.streamevmon.connectors
+package nz.net.wand.streamevmon.connectors.postgres
 
-import nz.net.wand.streamevmon.connectors.SquerylEntrypoint._
+import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
 import nz.net.wand.streamevmon.measurements.amp._
 
 import org.squeryl.{Schema, Table}
 
 /** Defines the database schema of the PostgreSQL connection. Should be used in
   * conjunction with [[SquerylEntrypoint]].
-  *
-  * Used in [[PostgresConnection]].
   */
 object PostgresSchema extends Schema {
   val icmpMeta: Table[ICMPMeta] = table("streams_amp_icmp")

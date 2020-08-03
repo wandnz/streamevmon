@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.connectors
+package nz.net.wand.streamevmon.connectors.postgres
 
 import nz.net.wand.streamevmon.{Caching, Logging}
 import nz.net.wand.streamevmon.measurements.Measurement
@@ -67,31 +67,8 @@ object PostgresConnection extends Caching {
 
 /** PostgreSQL interface which produces
   * [[nz.net.wand.streamevmon.measurements.amp.MeasurementMeta MeasurementMeta]]
-  * objects.
-  *
-  * ==Configuration==
-  *
-  * This class is configured by the `source.postgres` config key group.
-  *
-  * - `serverName`: The hostname which the PostgreSQL database can be reached on.
-  * Default: "localhost"
-  *
-  * - `portNumber`: The port that PostgreSQL is running on.
-  * Default: 5432
-  *
-  * - `databaseName`: The database which the metadata is stored in.
-  * Default: "nntsc"
-  *
-  * - `user`: The username which should be used to connect to the database.
-  * Default: "cuz"
-  *
-  * - `password`: The password which should be used to connect to the database.
-  * Default: ""
-  *
-  * This class uses [[Caching]]. The TTL value of the cached results can be set
-  * with the `caching.ttl` configuration key, which defaults to 30 seconds.
-  *
-  * @see [[InfluxConnection]]
+  * objects. See the package description for configuration details for normal
+  * usage.
   */
 case class PostgresConnection(
   host: String,
@@ -102,7 +79,7 @@ case class PostgresConnection(
   caching_ttl : Int
 ) extends Caching with Logging {
 
-  @transient private[this] lazy val ttl: Option[FiniteDuration] = {
+  @transient protected lazy val ttl: Option[FiniteDuration] = {
     if (caching_ttl == 0) {
       None
     }
@@ -111,11 +88,11 @@ case class PostgresConnection(
     }
   }
 
-  private[this] def jdbcUrl: String = {
+  protected def jdbcUrl: String = {
     s"jdbc:postgresql://$host:$port/$databaseName?loggerLevel=OFF"
   }
 
-  private[this] def getOrInitSession(): Boolean = {
+  protected def getOrInitSession(): Boolean = {
     SessionFactory.concreteFactory match {
       case Some(_) => true
       case None =>
@@ -156,8 +133,8 @@ case class PostgresConnection(
           None
         }
         else {
-          import nz.net.wand.streamevmon.connectors.PostgresSchema._
-          import nz.net.wand.streamevmon.connectors.SquerylEntrypoint._
+          import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
+          import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
 
           base match {
             case _: ICMP => transaction(icmpMeta.where(m => m.stream === base.stream).headOption)
@@ -178,7 +155,7 @@ case class PostgresConnection(
     result
   }
 
-  /** Enables Memcached caching according to the specified configuration.
+  /** Enables Memcached caching if required by the specified configuration.
     *
     * @see [[nz.net.wand.streamevmon.Caching Caching]] for relevant config keys.
     */

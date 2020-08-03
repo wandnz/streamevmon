@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.flink
 
-import nz.net.wand.streamevmon.connectors.{InfluxConnection, InfluxHistoryConnection}
+import nz.net.wand.streamevmon.connectors.influx.{InfluxConnection, InfluxHistoryConnection}
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 
@@ -33,8 +33,8 @@ import org.apache.flink.streaming.api.watermark.Watermark
   * obtained from Flink's global configuration storage.
   *
   * This custom configuration is also used to configure the
-  * [[nz.net.wand.streamevmon.connectors.InfluxConnection InfluxConnection]]
-  * and [[nz.net.wand.streamevmon.connectors.InfluxHistoryConnection InfluxHistoryConnection]]
+  * [[nz.net.wand.streamevmon.connectors.influx.InfluxConnection InfluxConnection]]
+  * and [[nz.net.wand.streamevmon.connectors.influx.InfluxHistoryConnection InfluxHistoryConnection]]
   * used.
   *
   * @tparam T The type used to represent the data received.

@@ -14,8 +14,8 @@ class PostgresConnectionTest extends PostgresContainerSpec {
     }
 
     "contain expected metadata" in {
-      import nz.net.wand.streamevmon.connectors.PostgresSchema._
-      import nz.net.wand.streamevmon.connectors.SquerylEntrypoint._
+      import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
+      import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
 
       transaction(icmpMeta.allRows.toList) shouldBe SeedData.icmp.allExpectedMeta
       transaction(dnsMeta.allRows.toList) shouldBe SeedData.dns.allExpectedMeta

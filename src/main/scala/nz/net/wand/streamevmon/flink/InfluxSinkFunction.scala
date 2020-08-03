@@ -49,7 +49,7 @@ import scala.concurrent.duration.Duration
   * Default "streamevmondefault".
   *
   * @see [[https://ci.apache.org/projects/flink/flink-docs-stable/dev/table/sourceSinks.html]]
-  * @see [[nz.net.wand.streamevmon.connectors.InfluxConnection InfluxConnection]]
+  * @see [[nz.net.wand.streamevmon.connectors.influx.InfluxConnection InfluxConnection]]
   */
 class InfluxSinkFunction
   extends RichSinkFunction[Event]

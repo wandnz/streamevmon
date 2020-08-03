@@ -8,9 +8,8 @@ import java.time.Duration
   * values from InfluxDB in a streaming fashion. This source retrieves AMP
   * measurements.
   *
-  * @see [[nz.net.wand.streamevmon.connectors.InfluxConnection InfluxConnection]]
-  *      and [[nz.net.wand.streamevmon.connectors.InfluxHistoryConnection InfluxHistoryConnection]]
-  *      for configuration details.
+  * @see [[nz.net.wand.streamevmon.connectors.influx connectors.influx]] package
+  *      object for configuration details.
   */
 class AmpMeasurementSourceFunction(
   fetchHistory: Duration = Duration.ZERO

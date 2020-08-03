@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.flink
 
-import nz.net.wand.streamevmon.connectors.InfluxHistoryConnection
+import nz.net.wand.streamevmon.connectors.influx.InfluxHistoryConnection
 import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 
 import java.time.{Duration, Instant}

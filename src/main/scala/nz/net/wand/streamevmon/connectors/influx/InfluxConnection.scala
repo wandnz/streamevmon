@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.connectors
+package nz.net.wand.streamevmon.connectors.influx
 
 import nz.net.wand.streamevmon.Logging
 
@@ -107,61 +107,8 @@ object InfluxConnection extends Logging {
   }
 }
 
-/** InfluxDB subscription manager which produces corresponding ServerSockets.
-  *
-  * Used in [[nz.net.wand.streamevmon.flink.InfluxSourceFunction InfluxSourceFunction]].
-  *
-  * ==Configuration==
-  *
-  * This class is configured by the `source.influx` config key group, which
-  * also configures [[InfluxHistoryConnection]]. Note that this will take
-  * configuration from subgroups depending on the database being pulled from:
-  * If the object is retrieving AMP data, it will use `source.influx.amp`,
-  * and fall back to `influx.source` if keys are not found under `amp`.
-  *
-  * - `listenAddress`: The address to listen on for this subscription.
-  * If not specified, this will be automatically generated at runtime by
-  * inspecting the IP addresses attached to the interfaces on the host machine.
-  * If a non-loopback, non-link-local address is found, the program will bind to
-  * it. If several are found, it will prefer any that are not in restricted
-  * private IP ranges. Specify this option if the automatic selection does not
-  * fit your needs.
-  *
-  * - `listenPort`: The port this program should listen on.
-  * Defaults to an ephemeral port if no configuration is supplied or if the desired port cannot be bound.
-  *
-  * - `listenBacklog`: The requested maximum length of the queue of incoming connections.
-  * Default 5.
-  * See [[https://docs.oracle.com/javase/8/docs/api/java/net/ServerSocket.html ServerSocket]] documentation.
-  *
-  * - `serverName`: The address that InfluxDB can be found at.
-  * Default "localhost".
-  *
-  * - `portNumber`: The port that InfluxDB is listening on.
-  * Default 8086.
-  *
-  * - `user`: The username that should be used to connect to InfluxDB.
-  * Default "cuz"
-  *
-  * - `password`: The password that should be used to connect to InfluxDB.
-  * Default "".
-  *
-  * - `subscriptionName`: The name of the subscription that will be created in InfluxDB.
-  * Default "SubscriptionServer".
-  *
-  * - `databaseName`: The name of the InfluxDB database to subscribe to.
-  * Default "nntsc".
-  *
-  * - `retentionPolicyName`: The name of the InfluxDB retention policy to subscribe to.
-  * Default "nntscdefault".
-  *
-  * - `listenProtocol`: The transport protocol for this subscription. Can be one of
-  * "http", "https", or "udp", although https and udp have not been tested.
-  * Default "http".
-  *
-  * @see [[https://docs.oracle.com/javase/8/docs/api/java/net/ServerSocket.html]]
-  * @see [[nz.net.wand.streamevmon.flink.InfluxSinkFunction InfluxSinkFunction]]
-  * @see [[PostgresConnection]]
+/** InfluxDB subscription manager which produces ServerSockets. See the package
+  * object for details on how to configure this class.
   */
 case class InfluxConnection(
   subscriptionName: String,
@@ -177,23 +124,22 @@ case class InfluxConnection(
   influxPassword  : String
 ) extends Logging {
 
-  private[this] var obtainedPort: Int = 0
+  private var obtainedPort: Int = 0
 
   /** The value of the DESTINATIONS field of the subscription that is created
     * in InfluxDB.
     */
-  private[connectors] def destinations: Array[String] =
-    Array(s"$listenProtocol://$listenAddress:$obtainedPort")
+  def destinations: Array[String] = Array(s"$listenProtocol://$listenAddress:$obtainedPort")
 
-  private[connectors] def listenInet: InetAddress = InetAddress.getByName(listenAddress)
+  private def listenInet: InetAddress = InetAddress.getByName(listenAddress)
 
-  private[connectors] def influxCredentials = InfluxCredentials(influxUsername, influxPassword)
+  private def influxCredentials = InfluxCredentials(influxUsername, influxPassword)
 
-  private[connectors] lazy val influx: Option[AhcManagementClient] = {
+  protected[connectors] lazy val influx: Option[AhcManagementClient] = {
     getManagement
   }
 
-  private[this] var subscriptionRemoveHooks: Seq[(String, ShutdownHookThread)] = Seq()
+  private var subscriptionRemoveHooks: Seq[(String, ShutdownHookThread)] = Seq()
 
   /** Disconnect the InfluxDB connection.
     */
@@ -206,7 +152,7 @@ case class InfluxConnection(
     *
     * @return The ServerSocket if successful, or None.
     */
-  private[this] def getServerSocket: Option[ServerSocket] = {
+  protected def getServerSocket: Option[ServerSocket] = {
     // Try get a socket with the specified or default port
     try {
       val r = new ServerSocket(listenPort, listenBacklog, listenInet)
@@ -214,7 +160,7 @@ case class InfluxConnection(
       obtainedPort = r.getLocalPort
       Some(r)
     }
-    // If the port couldn't be bound, try with an ephemeral port
+      // If the port couldn't be bound, try with an ephemeral port
     catch {
       case _: IOException =>
         try {
@@ -272,16 +218,16 @@ case class InfluxConnection(
     *
     * @return A Future of either an error or the response from InfluxDB.
     */
-  private[connectors] def addSubscription(): Future[ErrorOr[ResponseCode]] = {
+  protected[connectors] def addSubscription(): Future[ErrorOr[ResponseCode]] = {
     influx match {
       case Some(db) =>
         db.createSubscription(
-            subscriptionName,
-            dbName,
-            rpName,
-            Destinations.ALL,
-            destinations
-          )
+          subscriptionName,
+          dbName,
+          rpName,
+          Destinations.ALL,
+          destinations
+        )
           .flatMap { subscribeResult =>
             if (subscribeResult.isRight) {
               subscriptionRemoveHooks = subscriptionRemoveHooks :+
@@ -312,7 +258,7 @@ case class InfluxConnection(
     *
     * @return A Future of either an error or the response from InfluxDB.
     */
-  private[connectors] def dropSubscription(): Future[ErrorOr[ResponseCode]] = {
+  protected[connectors] def dropSubscription(): Future[ErrorOr[ResponseCode]] = {
     influx match {
       case Some(db) =>
         subscriptionRemoveHooks.filter(_._1 == subscriptionName).foreach { hook =>
@@ -337,7 +283,7 @@ case class InfluxConnection(
     *
     * @return A Future of either an error or the response from InfluxDB.
     */
-  private[connectors] def addOrUpdateSubscription(): Future[ErrorOr[ResponseCode]] = {
+  protected[connectors] def addOrUpdateSubscription(): Future[ErrorOr[ResponseCode]] = {
     addSubscription().flatMap(addResult =>
       if (addResult.isRight) {
         Future(addResult)
@@ -359,7 +305,7 @@ case class InfluxConnection(
     *
     * @return Whether the connection can ping InfluxDB.
     */
-  private[this] def checkConnection(influx: AhcManagementClient): Boolean = {
+  protected def checkConnection(influx: AhcManagementClient): Boolean = {
     Await.result(influx.ping.map {
       case Right(_) => true
       case Left(e) => throw e
@@ -370,7 +316,7 @@ case class InfluxConnection(
     *
     * @return A management client if the connection was valid, otherwise None.
     */
-  private[this] def getManagement: Option[AhcManagementClient] = {
+  protected def getManagement: Option[AhcManagementClient] = {
     def influx: AhcManagementClient = InfluxMng(influxAddress, influxPort, Some(influxCredentials))
 
     if (checkConnection(influx)) {

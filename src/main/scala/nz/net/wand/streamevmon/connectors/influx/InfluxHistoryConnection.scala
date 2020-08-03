@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.connectors
+package nz.net.wand.streamevmon.connectors.influx
 
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.measurements.amp._
@@ -19,7 +19,7 @@ import scala.reflect._
 /** Additional constructors for the companion class. */
 object InfluxHistoryConnection {
 
-  private[this] def getWithFallback(p: ParameterTool, configPrefix: String, datatype: String, item: String): String = {
+  private def getWithFallback(p: ParameterTool, configPrefix: String, datatype: String, item: String): String = {
     val result = p.get(s"source.$configPrefix.$datatype.$item", null)
     if (result == null) {
       p.get(s"source.$configPrefix.$item")
@@ -50,58 +50,29 @@ object InfluxHistoryConnection {
     )
 }
 
-/** InfluxDB connector which allows retrieving historical data.
-  *
-  * Used in [[nz.net.wand.streamevmon.flink.InfluxSourceFunction InfluxSourceFunction]]
-  * to catch up with data missed since the last checkpoint, and to get some history
-  * at first startup.
-  *
-  * ==Configuration==
-  *
-  * This class is configured by the `source.influx` config key group. See
-  * [[InfluxConnection]] for additional details on how to configure this class.
-  *
-  * - `databaseName`: The name of the InfluxDB database to retrieve data from.
-  * Default "nntsc".
-  *
-  * - `retentionPolicy`: The name of the retention policy to retrieve data from.
-  * Default "nntscdefault".
-  *
-  * - `serverName`: The address that InfluxDB can be found at.
-  * Default "localhost".
-  *
-  * - `portNumber`: The port that InfluxDB is listening on.
-  * Default 8086.
-  *
-  * - `user`: The username that should be used to connect to InfluxDB.
-  * Default "cuz"
-  *
-  * - `password`: The password that should be used to connect to InfluxDB.
-  * Default "".
-  *
-  * @see [[nz.net.wand.streamevmon.flink.InfluxSinkFunction InfluxSinkFunction]]
-  * @see [[PostgresConnection]]
+/** InfluxDB connector which allows retrieving historical data. See the package
+  * object for details on how to configure this class.
   */
 case class InfluxHistoryConnection(
-    dbName: String,
-    rpName: String,
-    influxAddress: String,
-    influxPort: Int,
-    influxUsername: String,
-    influxPassword: String
+  dbName        : String,
+  rpName        : String,
+  influxAddress : String,
+  influxPort    : Int,
+  influxUsername: String,
+  influxPassword: String
 ) extends Logging {
 
-  private[connectors] lazy val influx: Option[AhcIOClient] = getClient
+  private lazy val influx: Option[AhcIOClient] = getClient
 
-  private[this] def checkConnection(influx: AhcIOClient): Boolean = {
+  private def checkConnection(influx: AhcIOClient): Boolean = {
     Await.result(influx.ping.map {
       case Right(_) => true
-      case Left(_)  => false
+      case Left(_) => false
     }, Duration.Inf)
   }
 
   /** @return The Influx IO connection, or None. */
-  private[this] def getClient: Option[AhcIOClient] = {
+  private def getClient: Option[AhcIOClient] = {
     val influx: AhcIOClient = InfluxIO(influxAddress, influxPort, Some(InfluxCredentials(influxUsername, influxPassword)))
 
     Some(influx).filter(checkConnection)

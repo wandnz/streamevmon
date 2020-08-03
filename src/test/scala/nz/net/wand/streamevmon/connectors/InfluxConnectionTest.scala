@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.connectors
 
 import nz.net.wand.streamevmon.{InfluxContainerSpec, SeedData}
+import nz.net.wand.streamevmon.connectors.influx.InfluxConnection
 import nz.net.wand.streamevmon.measurements.InfluxMeasurementFactory
 
 import java.io.{BufferedReader, InputStreamReader}
@@ -27,9 +28,9 @@ class InfluxConnectionTest extends InfluxContainerSpec {
   }
 
   def checkSubscription(
-      influx: AhcManagementClient,
-      subscriptionInfo: SubscriptionInfo,
-      checkPresent: Boolean
+    influx          : AhcManagementClient,
+    subscriptionInfo: SubscriptionInfo,
+    checkPresent    : Boolean
   ): Unit = {
     Await.result(
       influx.showSubscriptionsInfo.map {
