@@ -7,7 +7,7 @@ import nz.net.wand.streamevmon.Logging
   * [[EsmondConnectionForeground]], which includes a function to map these
   * types to constructors.
   */
-private[streamevmon] object ResponseType extends Enumeration with Logging {
+object ResponseType extends Enumeration with Logging {
   type ResponseType = Value
   val Failure: Value = Value
   val Histogram: Value = Value

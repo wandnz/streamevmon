@@ -81,7 +81,7 @@ object Event {
     */
   def changeMagnitudeSeverity(old: Double, current: Double): Int = {
     // I stole this from netevmon's Event::eventMagnitudeLatency. The comments
-    // up until out.collect are verbatim, and not written by me.
+    // are verbatim, and not written by me.
     val max = Math.max(old, current)
     val min = Math.min(old, current)
 

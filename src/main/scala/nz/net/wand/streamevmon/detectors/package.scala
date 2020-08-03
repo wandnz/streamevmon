@@ -8,5 +8,7 @@ package nz.net.wand.streamevmon
   * [[nz.net.wand.streamevmon.measurements.Measurement Measurements]] (keyed,
   * windowed, or otherwise) and produce a stream of
   * [[nz.net.wand.streamevmon.events.Event Events]].
+  *
+  * See CONTRIBUTING.md for details.
   */
 package object detectors {}

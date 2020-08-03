@@ -17,13 +17,14 @@ import org.scalactic.{Equality, TolerantNumerics}
   * @see [[https://en.wikipedia.org/wiki/Normal_distribution]]
   */
 case class NormalDistribution[T <: Measurement with HasDefault : TypeInformation](
-  mean: Double,
-  variance: Double = NormalDistribution.defaultVariance,
-  n: Int = 0
+  mean    : Double,
+  variance: Double = 1E8,
+  n       : Int = 0
 )
   extends Distribution[T] with Logging {
 
-  import nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution._
+  @transient implicit private val doubleEquality: Equality[Double] =
+    TolerantNumerics.tolerantDoubleEquality(1E-15)
 
   override def toString: String = {
     s"${getClass.getSimpleName}(n=$n,mean=$mean,variance=$variance)"
@@ -65,14 +66,4 @@ case class NormalDistribution[T <: Measurement with HasDefault : TypeInformation
 
     NormalDistribution(newMean, newVariance, newN)
   }
-}
-
-/** Companion object with some constructors and the default variance value.
-  */
-object NormalDistribution {
-
-  @transient implicit private[changepoint] val doubleEquality: Equality[Double] =
-    TolerantNumerics.tolerantDoubleEquality(1E-15)
-
-  private[changepoint] val defaultVariance: Double = 1E8
 }

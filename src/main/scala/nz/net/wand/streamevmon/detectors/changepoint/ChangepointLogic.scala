@@ -1,10 +1,12 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 
 import java.time.Instant
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
+
+import scala.language.implicitConversions
 
 /** This trait is simply used to separate the run processing logic from the main
   * algorithm logic, since otherwise the class is hard to read as it does a
@@ -12,7 +14,10 @@ import org.apache.flink.api.common.typeinfo.TypeInformation
   *
   * @see [[ChangepointProcessor]]
   */
-abstract class RunLogic[MeasT <: Measurement : TypeInformation, DistT <: Distribution[MeasT] : TypeInformation] {
+abstract class ChangepointLogic[
+  MeasT <: Measurement with HasDefault : TypeInformation,
+  DistT <: Distribution[MeasT] : TypeInformation
+] {
 
   /** Controls the decay rate of the probabilities of old runs. A hazard closer
     * to 1.0 will tend to be more sensitive. The value selected generally
@@ -26,8 +31,6 @@ abstract class RunLogic[MeasT <: Measurement : TypeInformation, DistT <: Distrib
   protected var maxHistory: Int
 
   protected def newRunFor(value: MeasT, probability: Double): Run
-
-  import scala.language.implicitConversions
 
   implicit protected def DistToDistT(d: Distribution[MeasT]): DistT = d.asInstanceOf[DistT]
 

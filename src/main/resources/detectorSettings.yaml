@@ -14,10 +14,10 @@ detector:
 
   changepoint:
     - *timeWindowWrapperSettings
-    - inactivityPurgeTime: 60
     - maxHistory: 60
     - triggerCount: 40
     - ignoreOutlierNormalCount: 1
+    - inactivityPurgeTime: 60
     - minimumEventInterval: 10
     - severityThreshold: 30
 

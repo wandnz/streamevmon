@@ -32,9 +32,7 @@ case class ChangepointProcessor[MeasT <: Measurement with HasDefault : TypeInfor
   configKeyGroup     : String,
   shouldDoGraphs     : Boolean,
   filename           : Option[String]
-) extends RunLogic[MeasT, DistT] with Logging {
-
-  //region Configurable options
+) extends ChangepointLogic[MeasT, DistT] with Logging {
 
   /** The maximum number of runs to retain. */
   protected override var maxHistory: Int = _
@@ -64,8 +62,6 @@ case class ChangepointProcessor[MeasT <: Measurement with HasDefault : TypeInfor
     * changes to be ignored.
     */
   private var severityThreshold: Int = _
-
-  //endregion
 
   /** The current runs that reflect a set of rolling distribution models of the
     * recently observed measurements. For example, if DistT is a normal
@@ -166,7 +162,7 @@ case class ChangepointProcessor[MeasT <: Measurement with HasDefault : TypeInfor
     *
     * @return A value from 0-100 representing the severity of the changepoint.
     */
-  def getSeverity(oldNormal: Run, newNormal: Run): Int = {
+  private def getSeverity(oldNormal: Run, newNormal: Run): Int = {
     Event.changeMagnitudeSeverity(oldNormal.dist.mean, newNormal.dist.mean)
   }
 
@@ -179,12 +175,12 @@ case class ChangepointProcessor[MeasT <: Measurement with HasDefault : TypeInfor
     * @param value     The most recent measurement, which is after the changepoint.
     * @param severity  The severity of the event as returned by getSeverity.
     */
-  def newEvent(
-    out: Collector[Event],
-    oldNormal     : Run,
-    newNormal     : Run,
-    value         : MeasT,
-    severity      : Int
+  private def newEvent(
+    out      : Collector[Event],
+    oldNormal: Run,
+    newNormal: Run,
+    value    : MeasT,
+    severity : Int
   ): Unit = {
     if (Duration
       .between(lastEventTime.getOrElse(Instant.EPOCH), value.time)
@@ -356,13 +352,13 @@ case class ChangepointProcessor[MeasT <: Measurement with HasDefault : TypeInfor
   def open(config: ParameterTool): Unit = {
     isOpen = true
 
-    val prefix = s"detector.$configKeyGroup"
-    maxHistory = config.getInt(s"$prefix.maxHistory")
-    changepointTriggerCount = config.getInt(s"$prefix.triggerCount")
-    ignoreOutlierAfterNormalMeasurementCount = config.getInt(s"$prefix.ignoreOutlierNormalCount")
-    inactivityPurgeTime = Duration.ofSeconds(config.getInt(s"$prefix.inactivityPurgeTime"))
-    minimumEventInterval = Duration.ofSeconds(config.getInt(s"$prefix.minimumEventInterval"))
-    severityThreshold = config.getInt(s"$prefix.severityThreshold")
+    val configPrefix = s"detector.$configKeyGroup"
+    maxHistory = config.getInt(s"$configPrefix.maxHistory")
+    changepointTriggerCount = config.getInt(s"$configPrefix.triggerCount")
+    ignoreOutlierAfterNormalMeasurementCount = config.getInt(s"$configPrefix.ignoreOutlierNormalCount")
+    inactivityPurgeTime = Duration.ofSeconds(config.getInt(s"$configPrefix.inactivityPurgeTime"))
+    minimumEventInterval = Duration.ofSeconds(config.getInt(s"$configPrefix.minimumEventInterval"))
+    severityThreshold = config.getInt(s"$configPrefix.severityThreshold")
 
     if (shouldDoGraphs) {
       writer = new PrintWriter(new File(s"./out/graphs/$getFile.csv"))

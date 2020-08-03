@@ -1,9 +1,9 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 
-/** Mixed into classes representing continuous probability distributions
-  * that evolve as more data is provided to them.
+/** Parent class for continuous probability distributions that evolve as more
+  * data is provided to them.
   *
   * @tparam T The type of object that the implementing class can accept as a
   *           new point to add to the model. Should be the same as the MeasT of
@@ -11,7 +11,7 @@ import nz.net.wand.streamevmon.measurements.Measurement
   *
   * @see [[NormalDistribution]]
   */
-trait Distribution[T <: Measurement] {
+trait Distribution[T <: Measurement with HasDefault] {
 
   /** A friendly name for this distribution. */
   val distributionName: String

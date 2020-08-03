@@ -16,6 +16,11 @@ import org.apache.flink.util.Collector
 
 import scala.collection.mutable
 
+/** Simple detector that gives events when the "baseline" of a time series
+  * changes significantly. The baseline is defined as the value at a certain
+  * percentile over a sliding window. See the package object for configuration
+  * details.
+  */
 class BaselineDetector[MeasT <: Measurement with HasDefault]
   extends KeyedProcessFunction[String, MeasT, Event] with HasFlinkConfig with Logging {
 
@@ -111,7 +116,6 @@ class BaselineDetector[MeasT <: Measurement with HasDefault]
     if (recents.value.size >= maxHistory) {
       val severity = Event.changeMagnitudeSeverity(lastResult, result)
       if (severity > threshold) {
-        //println(s"[${value.time.toEpochMilli}, $lastResult, $result, ${Math.abs(lastResult - result)}, $severity],")
         out.collect(
           new Event(
             "baseline_events",
