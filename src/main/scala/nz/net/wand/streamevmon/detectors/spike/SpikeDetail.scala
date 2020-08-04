@@ -1,7 +1,5 @@
 package nz.net.wand.streamevmon.detectors.spike
 
-import nz.net.wand.streamevmon.detectors.spike.SignalType.SignalType
-
 /** Detailed output from the spike detector. This can be used to tune the
   * detector, perhaps along with a graphing library.
   *
@@ -18,5 +16,5 @@ case class SpikeDetail(
   lowerBound: Double,
   upperBound: Double,
   diff      : Double,
-  signal    : SignalType
+  signal: SignalType.Value
 )

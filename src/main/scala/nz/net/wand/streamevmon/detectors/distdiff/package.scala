@@ -29,7 +29,7 @@ package nz.net.wand.streamevmon.detectors
   * to have much absolute meaning, but it is useful for tuning sensitivity.
   * Default 5.0.
   *
-  * - `dropExtremeN`: When analysing the two sets of measurement, they are first
+  * - `dropExtremeN`: When analysing the two sets of measurements, they are first
   * sorted, then this many entries are dropped from the high and low ends in
   * order to ignore outliers.
   * Default 2.

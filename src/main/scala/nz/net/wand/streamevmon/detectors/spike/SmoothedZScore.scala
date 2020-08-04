@@ -40,13 +40,14 @@ case class SmoothedZScore(
     // We start off by determining if the new value is a signal or not, since
     // this only depends on the new value and the summary statistics of the
     // previous iteration.
-    val signal: SignalType.Value = if (
+
     // If we haven't got enough values to work with yet, just return no signal.
-    history.size >= lag &&
-      // If the distance between the new value and the last average is enough
-      // standard deviations (threshold many) away, then it's a signal.
-      Math.abs(value - lastMean) > threshold * lastStd
-      ) {
+    val haveEnoughValues = history.size >= lag
+    // If the distance between the new value and the last average is enough
+    // standard deviations (threshold many) away, then it's a signal.
+    val distanceLargeEnough = Math.abs(value - lastMean) > threshold * lastStd
+
+    val signal: SignalType.Value = if (haveEnoughValues && distanceLargeEnough) {
       // Filter any signals out from the history proportionally to the influence
       // parameter.
       history.enqueue((influence * value) + ((1 - influence) * history.last))
@@ -81,14 +82,12 @@ case class SmoothedZScore(
     signal
   }
 
-  /** Refreshes the queue to avoid issues with broken entries.
-    */
+  /** Refreshes the queue to avoid issues with broken entries. */
   def refreshState(): Unit = {
     history = history.map(identity)
   }
 
-  /** Resets this instance to its original state.
-    */
+  /** Resets this instance to its original state. */
   def reset(): Unit = {
     history = mutable.Queue()
   }

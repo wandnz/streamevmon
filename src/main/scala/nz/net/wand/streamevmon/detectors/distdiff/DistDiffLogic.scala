@@ -7,6 +7,8 @@ import org.apache.flink.api.common.state.ValueState
 
 import scala.annotation.tailrec
 
+/** Separates the tricky logic from the Flink stuff in the DistDiff detectors.
+  */
 trait DistDiffLogic extends Logging {
 
   /** Events are only emitted the first time they are detected, and not

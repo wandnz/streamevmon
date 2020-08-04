@@ -7,7 +7,6 @@ package nz.net.wand.streamevmon.detectors.spike
   * within the bounds of reason.
   */
 object SignalType extends Enumeration {
-  type SignalType = Value
   val Negative: Value = Value(-1)
   val NoSignal: Value = Value(0)
   val Positive: Value = Value(1)

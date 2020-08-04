@@ -31,7 +31,7 @@ package nz.net.wand.streamevmon.detectors
   *
   * - `inactivityPurgeTime`: The amount of time between events, in seconds,
   * before history is purged.
-  * Default 60s.
+  * Default 60.
   *
   */
 package object mode {}

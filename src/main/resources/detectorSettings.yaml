@@ -23,11 +23,11 @@ detector:
 
   distdiff:
     - *timeWindowWrapperSettings
-    - inactivityPurgeTime: 1200
     - recentsCount: 20
     - minimumChange: 1.05
     - zThreshold: 5.0
     - dropExtremeN: 2
+    - inactivityPurgeTime: 1200
 
   loss:
     - *timeWindowWrapperSettings
@@ -37,11 +37,11 @@ detector:
 
   mode:
     - *timeWindowWrapperSettings
-    - inactivityPurgeTime: 60
     - maxHistory: 30
     - minFrequency: 6
     - minProminence: 3
     - threshold: 7.5
+    - inactivityPurgeTime: 60
 
   spike:
     - *timeWindowWrapperSettings

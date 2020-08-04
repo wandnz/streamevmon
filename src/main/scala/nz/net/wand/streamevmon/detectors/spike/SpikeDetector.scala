@@ -16,7 +16,7 @@ import org.apache.flink.streaming.api.scala._
 import org.apache.flink.util.Collector
 
 /** This detector emits varying signals depending on how different the given
-  * measurement is from recent ones.
+  * measurement is from recent ones. See the package object for details.
   *
   * @tparam MeasT The type of measurement to analyse.
   */
@@ -142,9 +142,8 @@ class SpikeDetector[MeasT <: Measurement with HasDefault]
     signal match {
       case SignalType.NoSignal =>
       case SignalType.Negative | SignalType.Positive =>
-        // This could feasibly cause issues if lastObserved is lossy, but all
-        // the implementations at time of writing are guarded by a filter for
-        // those measurements.
+        // TODO: This could feasibly cause issues if lastObserved is lossy.
+        //  Is it worth adding a `requiresNonLossy` field to HasFlinkConfig?
         val severity = Event.changeMagnitudeSeverity(lastObservedValue.value.get, value.defaultValue.get)
 
         out.collect(

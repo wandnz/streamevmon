@@ -1,6 +1,5 @@
 package nz.net.wand.streamevmon.detectors.mode
 
-import nz.net.wand.streamevmon.detectors.mode.ModeDetector._
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
@@ -19,7 +18,8 @@ import org.apache.flink.util.Collector
 import scala.collection.mutable
 
 /** This detector measures the mode value of recent measurements, and inspects
-  * the value for significant changes over time.
+  * the value for significant changes over time. See the package object for
+  * configuration details.
   *
   * @tparam MeasT The type of measurement to analyse.
   */
@@ -31,6 +31,19 @@ class ModeDetector[MeasT <: Measurement with HasDefault]
   final val flinkName = "Mode Detector"
   final val flinkUid = "mode-detector"
   final val configKeyGroup = "mode"
+
+  // These case classes just made the code look a bit nicer than using tuples
+  // everywhere. Flink doesn't appear to recognise them as POJOs, so they have to
+  // be serialised via Kryo, the same as tuples.
+  private case class Mode(value: Int, count: Int)
+
+  private object Mode {
+    def apply(input: (Int, Int)): Mode = Mode(input._1, input._2)
+  }
+
+  private case class HistoryItem(id: Int, value: Int)
+
+  private case class ModeTuple(primary: Mode, secondary: Mode, lastEvent: Mode)
 
   /** The maximum number of measurements to retain. */
   private var maxHistory: Int = _
@@ -371,21 +384,4 @@ class ModeDetector[MeasT <: Measurement with HasDefault]
     // breaks queues.
     justInitialised = true
   }
-}
-
-// These case classes just made the code look a bit nicer than using tuples
-// everywhere. Flink doesn't appear to recognise them as POJOs, so they have to
-// be serialised via Kryo, the same as tuples.
-private object ModeDetector {
-
-  case class Mode(value: Int, count: Int)
-
-  object Mode {
-    def apply(input: (Int, Int)): Mode = Mode(input._1, input._2)
-  }
-
-  case class HistoryItem(id: Int, value: Int)
-
-  case class ModeTuple(primary: Mode, secondary: Mode, lastEvent: Mode)
-
 }
