@@ -50,7 +50,7 @@ case class RichICMP(
 
 object RichICMP extends RichInfluxMeasurementFactory {
 
-  override def create(base: Measurement, meta: MeasurementMeta): Option[RichICMP] = {
+  override def create(base: InfluxMeasurement, meta: MeasurementMeta): Option[RichInfluxMeasurement] = {
     base match {
       case b: ICMP =>
         meta match {

@@ -55,7 +55,7 @@ case class RichHTTP(
 }
 
 object RichHTTP extends RichInfluxMeasurementFactory {
-  override def create(base: Measurement, meta: MeasurementMeta): Option[RichHTTP] = {
+  override def create(base: InfluxMeasurement, meta: MeasurementMeta): Option[RichInfluxMeasurement] = {
     base match {
       case b: HTTP =>
         meta match {

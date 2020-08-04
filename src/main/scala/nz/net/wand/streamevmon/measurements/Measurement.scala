@@ -6,13 +6,13 @@ import java.time.Instant
   */
 trait Measurement extends Serializable {
 
-  /** AMP measurements are tagged with a stream ID which corresponds to a
-    * particular unique scheduled test.
+  /** Measurements have a stream ID which is used to distinguish entries from
+    * separate time series. For example, amp measurements have a stream ID which
+    * corresponds to a particular test schedule.
     */
   val stream: Int
 
-  /** The time at which the measurement occurred.
-    */
+  /** The time at which the measurement occurred. */
   val time: Instant
 
   /** @return True if the object represents a measurement that encountered loss.

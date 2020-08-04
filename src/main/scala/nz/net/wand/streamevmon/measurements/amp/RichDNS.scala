@@ -123,7 +123,7 @@ case class RichDNS(
 
 object RichDNS extends RichInfluxMeasurementFactory {
 
-  override def create(base: Measurement, meta: MeasurementMeta): Option[RichDNS] = {
+  override def create(base: InfluxMeasurement, meta: MeasurementMeta): Option[RichInfluxMeasurement] = {
     base match {
       case b: DNS =>
         meta match {

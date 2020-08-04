@@ -10,11 +10,10 @@ import scala.annotation.tailrec
 import scala.reflect.runtime.universe._
 import scala.util.control.Breaks._
 
-/** Mixed into companion objects of concrete [[Measurement]] classes.
+/** Mixed into companion objects of concrete [[InfluxMeasurement]] classes.
   * Provides helper functions for common requirements to generate objects.
   *
   * @see [[RichInfluxMeasurementFactory]]
-  * @see This trait's companion object for measurement creation functions.
   */
 trait InfluxMeasurementFactory {
 
@@ -28,7 +27,7 @@ trait InfluxMeasurementFactory {
     *
     * @tparam T The type to determine the overrides for.
     */
-  private[this] def getColumnNameOverrides[T <: InfluxMeasurement : TypeTag]: Seq[(String, String)] =
+  private def getColumnNameOverrides[T <: InfluxMeasurement : TypeTag]: Seq[(String, String)] =
     symbolOf[T].toType.members.map { m =>
       if (m.annotations.exists(a => a.tree.tpe <:< typeOf[Column])) {
         (
@@ -79,7 +78,7 @@ trait InfluxMeasurementFactory {
     *
     * @return The value if found, or None. If several are found, returns the first.
     */
-  protected[this] def getNamedField(fields: Iterable[String], name: String): Option[String] = {
+  protected def getNamedField(fields: Iterable[String], name: String): Option[String] = {
     fields
       .filter(entry => name == entry.split('=')(0))
       .map(entry => entry.split('=')(1))
@@ -93,10 +92,10 @@ trait InfluxMeasurementFactory {
     * @param separators        The separators to split on.
     */
   @tailrec
-  final protected[this] def splitLineProtocol(
-    line: String,
+  final protected def splitLineProtocol(
+    line             : String,
     precedingElements: Seq[String] = Seq(),
-    separators: Seq[Char] = Seq(',', ' ')
+    separators       : Seq[Char] = Seq(',', ' ')
   ): Seq[String] = {
     var splitPoint = -1
     var quoteCount = 0
@@ -128,7 +127,7 @@ trait InfluxMeasurementFactory {
     }
   }
 
-  /** Creates a Measurement from an InfluxDB subscription result, in Line Protocol format.
+  /** Creates an InfluxMeasurement from an InfluxDB subscription result, in Line Protocol format.
     *
     * @param subscriptionLine The line received from the subscription.
     *
@@ -136,7 +135,7 @@ trait InfluxMeasurementFactory {
     *
     * @see [[https://docs.influxdata.com/influxdb/v1.7/write_protocols/line_protocol_reference/]]
     */
-  private[measurements] def create(subscriptionLine: String): Option[InfluxMeasurement]
+  def create(subscriptionLine: String): Option[InfluxMeasurement]
 
   /** Converts the "rtts" field, used in a number of AMP measurements, into an
     * appropriate datatype.
@@ -145,7 +144,7 @@ trait InfluxMeasurementFactory {
     *
     * @return A sequence of round-trip times.
     */
-  protected[this] def getRtts(in: String): Seq[Option[Int]] = {
+  protected def getRtts(in: String): Seq[Option[Int]] = {
     in.drop(2).dropRight(2).split(',').map { x =>
       val y = x.trim
       if (y == "None") {
@@ -158,26 +157,8 @@ trait InfluxMeasurementFactory {
   }
 }
 
-/** Mixed into companion objects of concrete [[RichMeasurement]] classes.
-  *
-  * @see [[InfluxMeasurementFactory]]
-  */
-trait RichInfluxMeasurementFactory {
 
-  /** Creates a RichMeasurement by mixing a Measurement with its associated
-    * metadata.
-    *
-    * @param base The measurement.
-    * @param meta The metadata associated with the measurement.
-    *
-    * @return The result if successful, or None.
-    */
-  private[measurements] def create(
-    base                               : Measurement,
-                                   meta: MeasurementMeta): Option[RichMeasurement]
-}
-
-/** Creates [[Measurement]] and [[RichMeasurement]] objects.
+/** Creates [[InfluxMeasurement]] and [[RichInfluxMeasurement]] objects.
   *
   * @see [[InfluxMeasurementFactory]]
   * @see [[RichInfluxMeasurementFactory]]
@@ -206,13 +187,13 @@ object InfluxMeasurementFactory {
     *
     * @param pgConnection A connection to a PostgreSQL server containing
     *                     metadata for the measurement.
-    * @param base         The Measurement to enrich.
+    * @param base         The InfluxMeasurement to enrich.
     *
-    * @return The RichMeasurement if enrichment was successful, otherwise None.
+    * @return The RichInfluxMeasurement if enrichment was successful, otherwise None.
     */
   def enrichMeasurement(
     pgConnection: PostgresConnection,
-    base        : Measurement
+    base: InfluxMeasurement
   ): Option[RichInfluxMeasurement] = {
     pgConnection.getMeta(base) match {
       case Some(x) =>
@@ -228,13 +209,13 @@ object InfluxMeasurementFactory {
     }
   }
 
-  /** Creates a RichMeasurement directly from a string in InfluxDB Line Protocol format.
+  /** Creates a RichInfluxMeasurement directly from a string in InfluxDB Line Protocol format.
     *
     * @param pgConnection A connection to a PostgreSQL server containing
     *                     metadata for the measurement.
     * @param line         The string describing the measurement.
     *
-    * @return The RichMeasurement if both measurement creation and enrichment
+    * @return The RichInfluxMeasurement if both measurement creation and enrichment
     *         were successful, otherwise None.
     */
   def createRichMeasurement(

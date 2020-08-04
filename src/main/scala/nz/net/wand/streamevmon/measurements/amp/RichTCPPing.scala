@@ -53,7 +53,7 @@ case class RichTCPPing(
 }
 
 object RichTCPPing extends RichInfluxMeasurementFactory {
-  override def create(base: Measurement, meta: MeasurementMeta): Option[RichTCPPing] = {
+  override def create(base: InfluxMeasurement, meta: MeasurementMeta): Option[RichInfluxMeasurement] = {
     base match {
       case b: TCPPing =>
         meta match {

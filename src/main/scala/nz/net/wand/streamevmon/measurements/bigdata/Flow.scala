@@ -168,7 +168,7 @@ object Flow extends InfluxMeasurementFactory {
 
   override def columnNames: Seq[String] = getColumnNames[Flow]
 
-  override private[measurements] def create(subscriptionLine: String): Option[Flow] = {
+  override def create(subscriptionLine: String): Option[Flow] = {
     val data = splitLineProtocol(subscriptionLine)
     if (data.head != table_name) {
       None
