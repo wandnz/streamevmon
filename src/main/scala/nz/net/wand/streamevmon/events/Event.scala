@@ -66,10 +66,10 @@ case class Event(
   }
 }
 
-/** Conversion util for Chronicler database writes. */
 object Event {
   def getWriter[T <: Event]: InfluxWriter[T] = EventWriter[T]()
 
+  /** Conversion util for Chronicler database writes. */
   case class EventWriter[T <: Event]() extends InfluxWriter[T] {
     override def write(obj: T): ErrorOr[String] = Right(obj.toLineProtocol)
   }

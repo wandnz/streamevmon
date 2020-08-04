@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon
 
 import nz.net.wand.streamevmon.connectors.influx.{InfluxConnection, InfluxHistoryConnection}
-import nz.net.wand.streamevmon.flink.InfluxSinkFunction
+import nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction
 
 import com.dimafeng.testcontainers.{ForAllTestContainer, InfluxDBContainer}
 import com.github.fsanaulla.chronicler.ahc.management.InfluxMng

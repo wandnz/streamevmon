@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.flink
+package nz.net.wand.streamevmon.flink.sources
 
 import nz.net.wand.streamevmon.connectors.influx.InfluxHistoryConnection
 import nz.net.wand.streamevmon.measurements.InfluxMeasurement
@@ -8,6 +8,10 @@ import java.time.{Duration, Instant}
 import org.apache.commons.lang3.time.DurationFormatUtils
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 
+/** Gets data from InfluxDB in a polling fashion. Currently in a proof of
+  * concept stage, and shouldn't be used over the other implementations of
+  * InfluxSourceFunction.
+  */
 abstract class PollingInfluxSourceFunction[T <: InfluxMeasurement](
   configPrefix   : String = "influx",
   datatype       : String = "amp",
@@ -46,12 +50,12 @@ abstract class PollingInfluxSourceFunction[T <: InfluxMeasurement](
     listen(ctx)
   }
 
-  override protected[this] def listen(ctx: SourceFunction.SourceContext[T]): Unit = {
+  override protected def listen(ctx: SourceFunction.SourceContext[T]): Unit = {
     logger.info("Listening for subscribed events...")
 
     isRunning = true
 
-    while (isRunning && !shouldShutdown) {
+    while (isRunning) {
       Thread.sleep(refreshInterval.toMillis)
       val data = influxHistory.get.getAllAmpData(lastMeasurementTime, Instant.now().minus(timeOffset))
       data.foreach { m =>

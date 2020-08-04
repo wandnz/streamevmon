@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.runners.examples
 
-import nz.net.wand.streamevmon.flink.LatencyTSAmpFileInputFormat
 import nz.net.wand.streamevmon.Configuration
+import nz.net.wand.streamevmon.flink.sources.LatencyTSAmpFileInputFormat
 
 import org.apache.flink.api.scala.operators.ScalaCsvOutputFormat
 import org.apache.flink.core.fs.FileSystem.WriteMode

@@ -5,7 +5,10 @@ import org.apache.flink.api.java.utils.ParameterTool
 
 import scala.collection.JavaConverters._
 
-/** Inherited by detectors which want to set their own name and UID in a Flink pipeline.
+/** Inherited by items which are intended for use in a Flink pipeline.
+  *
+  * Allows the inheritor to set a custom Flink operator name and UID, as well
+  * as providing support for overriding the global configuration.
   */
 trait HasFlinkConfig {
   val flinkName: String
@@ -14,7 +17,7 @@ trait HasFlinkConfig {
 
   protected var overrideParams: Option[ParameterTool] = None
 
-  def overrideParameters: Option[ParameterTool] = overrideParams
+  def getOverrideParams: Option[ParameterTool] = overrideParams
 
   def overrideConfig(
     config   : Map[String, String],

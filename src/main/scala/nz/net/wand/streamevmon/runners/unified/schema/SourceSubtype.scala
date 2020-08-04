@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.runners.unified.schema
 
-import nz.net.wand.streamevmon.flink.{HasFlinkConfig, _}
+import nz.net.wand.streamevmon.flink.HasFlinkConfig
+import nz.net.wand.streamevmon.flink.sources._
 import nz.net.wand.streamevmon.measurements.Measurement
 
 import org.apache.flink.api.common.io.FileInputFormat

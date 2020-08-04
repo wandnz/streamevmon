@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.runners.unified
 
 import nz.net.wand.streamevmon.TestBase
 import nz.net.wand.streamevmon.connectors.esmond.{EsmondConnectionForeground, EsmondStreamDiscovery}
-import nz.net.wand.streamevmon.flink._
+import nz.net.wand.streamevmon.flink.sources._
 import nz.net.wand.streamevmon.runners.unified.schema.{SourceInstance, SourceSubtype, SourceType}
 
 import org.apache.flink.api.java.utils.ParameterTool

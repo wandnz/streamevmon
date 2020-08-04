@@ -14,12 +14,17 @@ import org.apache.flink.util.{Collector, OutputTag => JOutputTag}
 
 import scala.reflect.ClassTag
 
-class WindowedFunctionWrapper[M <: Measurement : ClassTag, W <: Window](
-  val processFunction: KeyedProcessFunction[String, M, Event] with HasFlinkConfig,
-) extends ProcessWindowFunction[M, Event, String, W]
+/** Wraps a KeyedProcessFunction, which most detectors are, to turn them into
+  * ProcessWindowFunctions. This lets us use Flink's windowing system with any
+  * detector if we so choose, not just those which implement windowed behaviour
+  * manually.
+  */
+class WindowedFunctionWrapper[MeasT <: Measurement : ClassTag, W <: Window](
+  val processFunction: KeyedProcessFunction[String, MeasT, Event] with HasFlinkConfig,
+) extends ProcessWindowFunction[MeasT, Event, String, W]
           with HasFlinkConfig {
 
-  private lazy val keySelector: MeasurementKeySelector[M] = new MeasurementKeySelector[M]
+  private lazy val keySelector: MeasurementKeySelector[MeasT] = new MeasurementKeySelector[MeasT]
 
   override def open(parameters: Configuration): Unit = {
     processFunction.setRuntimeContext(getRuntimeContext)
@@ -31,13 +36,16 @@ class WindowedFunctionWrapper[M <: Measurement : ClassTag, W <: Window](
   override def process(
     key : String,
     myContext: this.Context,
-    elements: Iterable[M],
+    elements: Iterable[MeasT],
     out: Collector[Event]
   ): Unit = {
-    for (e <- elements.map(identity).toSeq.sortBy(_.time)) {
+    // We'll make sure that they're sorted correctly - they probably already
+    // are, but this won't hurt.
+    elements.toSeq.sortBy(_.time).foreach { e =>
       val ctx: processFunction.Context = new processFunction.Context() {
         override def timestamp(): java.lang.Long = e.time.toEpochMilli
 
+        // We don't use this in any of our detectors, so we'll leave it unimplemented.
         override def timerService(): TimerService = ???
 
         override def output[X](outputTag: JOutputTag[X], value: X): Unit = {
@@ -58,6 +66,7 @@ class WindowedFunctionWrapper[M <: Measurement : ClassTag, W <: Window](
     }
   }
 
+  // Most function calls just get passed down into the wrapped object.
   override def overrideConfig(config: Map[String, String], addPrefix: String): WindowedFunctionWrapper.this.type = {
     processFunction.overrideConfig(config, addPrefix)
     super.overrideConfig(config, addPrefix)

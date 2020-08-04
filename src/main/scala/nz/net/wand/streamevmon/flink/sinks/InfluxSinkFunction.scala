@@ -1,7 +1,8 @@
-package nz.net.wand.streamevmon.flink
+package nz.net.wand.streamevmon.flink.sinks
 
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.Logging
+import nz.net.wand.streamevmon.flink.HasFlinkConfig
 
 import com.github.fsanaulla.chronicler.ahc.io.AhcIOClient
 import com.github.fsanaulla.chronicler.ahc.management.InfluxMng
@@ -19,19 +20,23 @@ import scala.collection.mutable
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
+import scala.util.{Failure, Success, Try}
 
-/** A [[https://ci.apache.org/projects/flink/flink-docs-stable/api/java/org/apache/flink/streaming/api/functions/sink/SinkFunction.html SinkFunction]]
-  * which stores Event objects in InfluxDB.
+/** A SinkFunction which stores Event objects in InfluxDB. This function makes
+  * use of Flink checkpointing to ensure that no Events get lost in a failure.
   *
   * ==Configuration==
   *
-  * This class is configured first by the `influx.sink` config key group, then
-  * by `influx.source` and finally `influx.source.amp` if a key
-  * is not found under `sink`. ''Note that this means the InfluxDB username and
-  * password will default to the credentials for an AMP Influx instance if not
-  * specified!''
+  * This class can be configured by several config key groups. When looking for
+  * most keys, it will first search under `influx.sink`. If it's not found there,
+  * it will look under `influx.source`, then `influx.source.amp`. ''Note that
+  * this means the InfluxDB username and password will default to the
+  * credentials for an AMP Influx instance if not specified!''
   *
-  * - `serverName`: '''Required'''. The host that is running InfluxDB.
+  * This behaviour does not apply to `databaseName` or `retentionPolicy`.
+  *
+  * - `serverName`: The host that is running InfluxDB.
+  * Default localhost.
   *
   * - `portNumber`: The port that InfluxDB is running on.
   * Default 8086.
@@ -48,8 +53,7 @@ import scala.concurrent.duration.Duration
   * - `retentionPolicy`: The name of the retention policy to create or add to.
   * Default "streamevmondefault".
   *
-  * @see [[https://ci.apache.org/projects/flink/flink-docs-stable/dev/table/sourceSinks.html]]
-  * @see [[nz.net.wand.streamevmon.connectors.influx.InfluxConnection InfluxConnection]]
+  * @see [[nz.net.wand.streamevmon.connectors.influx Influx connectors package]]
   */
 class InfluxSinkFunction
   extends RichSinkFunction[Event]
@@ -57,53 +61,45 @@ class InfluxSinkFunction
           with CheckpointedFunction
           with Logging {
 
-  private[streamevmon] var host: String = _
-
-  private[streamevmon] var port: Int = _
-
-  private[streamevmon] var username: String = _
-
-  private[streamevmon] var password: String = _
-
-  private[streamevmon] var database: String = _
-
-  private[streamevmon] var retentionPolicy: String = _
-
   override val flinkName: String = "Influx Sink"
   override val flinkUid: String = "influx-sink"
   override val configKeyGroup: String = "influx"
 
-  private[this] var influx: AhcIOClient = _
+  private var host: String = _
 
-  private[this] val bufferedEvents: mutable.Buffer[Event] = mutable.Buffer()
+  private var port: Int = _
 
-  /** A pretty gross way of getting a key from the config structure, with
-    * preference for sink.influx and then source.influx.
-    */
-  private[this] def getWithFallback(parameters: ParameterTool, key: String): String = {
+  private var username: String = _
+
+  private var password: String = _
+
+  private var database: String = _
+
+  private var retentionPolicy: String = _
+
+  private var influx: AhcIOClient = _
+
+  private val bufferedEvents: mutable.Buffer[Event] = mutable.Buffer()
+
+  private def getWithFallback(parameters: ParameterTool, key: String): String = {
     var result = parameters.get(s"sink.$configKeyGroup.$key", null)
     if (result == null) {
       result = parameters.get(s"source.$configKeyGroup.$key", null)
       if (result == null) {
-        parameters.get(s"source.$configKeyGroup.amp.$key", null)
-      }
-      else {
-        result
+        parameters.get(s"source.$configKeyGroup.amp.$key")
       }
     }
-    else {
-      result
-    }
+    result
   }
 
-  private[this] def getHost(p: ParameterTool): String = {
-    val host = getWithFallback(p, "serverName")
-    if (host == null) {
-      throw new RuntimeException(
+  private def getHost(p: ParameterTool): String = {
+    val host = Try(getWithFallback(p, "serverName"))
+    host match {
+      case Failure(_) => throw new RuntimeException(
         "You must specify the config key 'source.influx.serverName' " +
           "or 'sink.influx.serverName'.")
+      case Success(value) => value
     }
-    host
   }
 
   /** Initialisation method for RichFunctions. Occurs before any calls to `invoke()`.
@@ -134,8 +130,7 @@ class InfluxSinkFunction
     mng.createRetentionPolicy(retentionPolicy, database, "0s", default = true)
   }
 
-  /** Teardown method for RichFunctions. Occurs after all calls to `invoke()`.
-    */
+  /** Teardown method for RichFunctions. Occurs after all calls to `invoke()`. */
   override def close(): Unit = {
     if (influx != null) {
       influx.close()

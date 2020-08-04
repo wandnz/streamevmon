@@ -1,18 +1,17 @@
-package nz.net.wand.streamevmon.flink
+package nz.net.wand.streamevmon.flink.sources
 
 import nz.net.wand.streamevmon.connectors.postgres.PostgresConnection
 import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasurementFactory, RichInfluxMeasurement}
 
 import java.time.Duration
 
-import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.configuration.Configuration
 
-/** Receives [[nz.net.wand.streamevmon.measurements.RichMeasurement RichMeasurement]]
-  * values from InfluxDB in a streaming fashion.This source retrieves AMP
+/** Produces [[nz.net.wand.streamevmon.measurements.RichInfluxMeasurement RichInfluxMeasurement]]
+  * values from InfluxDB in a streaming fashion. This source retrieves AMP
   * measurements.
   *
-  * @see [[nz.net.wand.streamevmon.connectors.influx connectors.influx]] package
+  * @see [[nz.net.wand.streamevmon.connectors.influx Influx connectors]] package
   *      object for configuration details.
   */
 class AmpRichMeasurementSourceFunction(
@@ -23,11 +22,10 @@ class AmpRichMeasurementSourceFunction(
     fetchHistory
   ) {
 
-  private[this] var pgConnection: PostgresConnection = _
+  private var pgConnection: PostgresConnection = _
 
   override def open(parameters: Configuration): Unit = {
-    val globalParams =
-      getRuntimeContext.getExecutionConfig.getGlobalJobParameters.asInstanceOf[ParameterTool]
+    val globalParams = configWithOverride(getRuntimeContext)
     pgConnection = PostgresConnection(globalParams)
   }
 

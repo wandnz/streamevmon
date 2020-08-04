@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.runners.examples
 
 import nz.net.wand.streamevmon.Configuration
-import nz.net.wand.streamevmon.flink.{AmpMeasurementSourceFunction, PollingInfluxSourceFunction}
+import nz.net.wand.streamevmon.flink.sources.{AmpMeasurementSourceFunction, PollingInfluxSourceFunction}
 import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasurementFactory}
 
 import java.text.SimpleDateFormat
@@ -14,9 +14,9 @@ import org.apache.flink.streaming.api.scala._
 
 import scala.collection.JavaConverters._
 
-/** Shows the usage of the [[nz.net.wand.streamevmon.flink.PollingInfluxSourceFunction PollingInfluxSourceFunction]]
+/** Shows the usage of the [[PollingInfluxSourceFunction PollingInfluxSourceFunction]]
   * to gather "live" data with a time offset. Outputs measurements arriving in
-  * real-time with an [[nz.net.wand.streamevmon.flink.AmpMeasurementSourceFunction AmpMeasurementSourceFunction]],
+  * real-time with an [[AmpMeasurementSourceFunction AmpMeasurementSourceFunction]],
   * as well as measurements arriving a minute ago.
   *
   */

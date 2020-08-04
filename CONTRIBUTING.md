@@ -194,7 +194,7 @@ InfluxDB, but come from a new table or program.
 
 * `InfluxSourceFunction` is the base class which handles both subscription and
   historical data from InfluxDB. It should be inherited, very similarly to
-  `nz.net.wand.streamevmon.flink.AmpMeasurementSourceFunction`.
+  `nz.net.wand.streamevmon.flink.sources.AmpMeasurementSourceFunction`.
 * You will likely want to add a new section into `default.properties`
   corresponding to the table your source is pulling from.
 * A new runner should be created in the `runners` package. This is useful both

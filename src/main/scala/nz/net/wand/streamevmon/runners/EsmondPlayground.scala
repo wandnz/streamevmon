@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.runners
 import nz.net.wand.streamevmon.{Configuration, Logging}
 import nz.net.wand.streamevmon.connectors.esmond.EsmondConnectionForeground
 import nz.net.wand.streamevmon.connectors.esmond.schema.{AbstractTimeSeriesEntry, Archive, EventType}
-import nz.net.wand.streamevmon.flink.PollingEsmondSourceFunction
+import nz.net.wand.streamevmon.flink.sources.PollingEsmondSourceFunction
 import nz.net.wand.streamevmon.measurements.esmond.{EsmondMeasurement, RichEsmondMeasurement}
 
 import java.io._

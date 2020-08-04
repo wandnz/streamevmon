@@ -1,7 +1,8 @@
-package nz.net.wand.streamevmon.flink
+package nz.net.wand.streamevmon.flink.sources
 
 import nz.net.wand.streamevmon.connectors.influx.{InfluxConnection, InfluxHistoryConnection}
 import nz.net.wand.streamevmon.Logging
+import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 
 import java.io.{BufferedReader, InputStreamReader}
@@ -24,48 +25,37 @@ import org.apache.flink.streaming.api.watermark.Watermark
   *
   * They may also optionally implement processHistoricalMeasurement, which allows
   * for additional processing on historical measurements received at startup.
-  * These measurements arrive as basic Measurement types: ICMP, DNS, and so on.
+  * These measurements arrive as concrete InfluxMeasurement types: ICMP, DNS, and so on.
   *
   * ==Configuration==
   *
-  * If a custom configuration is desired, the overrideConfig function can be
-  * called before any calls to run(). This will replace the configuration
-  * obtained from Flink's global configuration storage.
-  *
-  * This custom configuration is also used to configure the
-  * [[nz.net.wand.streamevmon.connectors.influx.InfluxConnection InfluxConnection]]
-  * and [[nz.net.wand.streamevmon.connectors.influx.InfluxHistoryConnection InfluxHistoryConnection]]
-  * used.
-  *
-  * @tparam T The type used to represent the data received.
-  *
-  * @see [[AmpMeasurementSourceFunction]]
-  * @see [[AmpRichMeasurementSourceFunction]]
+  * See [[nz.net.wand.streamevmon.connectors.influx Influx connectors]] package
+  * object for configuration details. Any configuration given to `overrideConfig`
+  * from [[HasFlinkConfig]] will also be passed to the Influx connectors.
   */
 abstract class InfluxSourceFunction[T <: InfluxMeasurement](
   datatype    : String = "amp",
   fetchHistory: Duration = Duration.ZERO
 )
   extends RichSourceFunction[T]
-          with GloballyStoppableFunction
           with HasFlinkConfig
           with Logging
           with CheckpointedFunction {
 
-  lazy override val configKeyGroup: String = "influx"
+  override val configKeyGroup: String = "influx"
 
   @volatile
-  @transient protected[this] var isRunning = false
+  @transient protected var isRunning = false
 
-  protected[this] var listener: Option[ServerSocket] = Option.empty
+  @transient protected var listener: Option[ServerSocket] = None
 
-  @transient protected[this] var influxConnection: Option[InfluxConnection] = None
+  @transient protected var influxConnection: Option[InfluxConnection] = None
 
-  @transient protected[this] var influxHistory: Option[InfluxHistoryConnection] = None
+  @transient protected var influxHistory: Option[InfluxHistoryConnection] = None
 
   var lastMeasurementTime: Instant = Instant.now().minus(fetchHistory)
 
-  var maxLateness: Long = _
+  protected var maxLateness: Long = _
 
   /** Transforms a single line received from InfluxDB in Line Protocol format
     * into an object of type T.
@@ -74,7 +64,7 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
     *
     * @return The object representing the data received.
     */
-  protected[this] def processLine(line: String): Option[T]
+  protected def processLine(line: String): Option[T]
 
   /** Overriding this function allows implementing classes to perform additional
     * processing on historical data received in Measurement format.
@@ -82,14 +72,11 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
     * @return The measurement as the more specific type T, or None if conversion
     *         failed.
     */
-  protected[this] def processHistoricalMeasurement(measurement: InfluxMeasurement): Option[T] = {
+  protected def processHistoricalMeasurement(measurement: InfluxMeasurement): Option[T] = {
     Some(measurement.asInstanceOf[T])
   }
 
-  /** Starts the source, setting up the listen server.
-    *
-    * @param ctx The SourceContext associated with the current execution.
-    */
+  /** Starts the source, setting up the listen server. */
   override def run(ctx: SourceFunction.SourceContext[T]): Unit = {
     // Set up config
     val params = configWithOverride(getRuntimeContext)
@@ -118,6 +105,7 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
       val timeSinceLastMeasurement = Duration.between(lastMeasurementTime, now)
       val historyString = DurationFormatUtils.formatDuration(timeSinceLastMeasurement.toMillis, "H:mm:ss")
       logger.info(s"Fetching data since $lastMeasurementTime ($historyString ago)")
+
       val historicalData = influxHistory.get.getAllAmpData(lastMeasurementTime, now)
       historicalData.foreach { m =>
         processHistoricalMeasurement(m) match {
@@ -149,28 +137,31 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
     *
     * @param ctx The SourceContext associated with the current execution.
     */
-  protected[this] def listen(ctx: SourceFunction.SourceContext[T]): Unit = {
+  protected def listen(ctx: SourceFunction.SourceContext[T]): Unit = {
     logger.info("Listening for subscribed events...")
 
     isRunning = true
 
-    while (isRunning && !shouldShutdown) {
+    while (isRunning) {
       try {
         listener match {
           case Some(serverSock) =>
+            // Get the socket to receive data on, and make a reader for it
             val sock = serverSock.accept
             sock.setSoTimeout(100)
             val reader = new BufferedReader(new InputStreamReader(sock.getInputStream))
 
-            // This is hardcoded for HTTP. If we ever care to make UDP or HTTPS
-            // work, this will need refactoring. Chances are we won't bother.
             Stream
               .continually {
                 reader.readLine
               }
+              // Stop reading when we reach the end of the transmission.
               .takeWhile(line => line != null)
+              // Drop the HTTP header - some number of nonempty lines, followed
+              // by one empty line.
               .dropWhile(line => !line.isEmpty)
               .drop(1)
+              // Process the lines we care about.
               .foreach(line => {
                 processLine(line) match {
                   case Some(value) =>
@@ -200,7 +191,7 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
     isRunning = false
   }
 
-  protected[this] def startListener(): Boolean = {
+  protected def startListener(): Boolean = {
     influxConnection match {
       case Some(c) =>
         listener = c.getSubscriptionListener
@@ -212,8 +203,15 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
     }
   }
 
-  protected[this] def stopListener(): Unit =
-    listener.foreach(l => influxConnection.foreach(_.stopSubscriptionListener(l)))
+  protected def stopListener(): Unit = {
+    listener.foreach(l => influxConnection match {
+      case Some(value) => value.stopSubscriptionListener(l)
+      case None => logger.error("Couldn't drop subscription! influxConnection doesn't exist.")
+    })
+  }
+
+  // We only put the last measurement time in our checkpoint state. The rest
+  // is transient and should get reconstructed at next startup.
 
   private var checkpointState: ListState[Instant] = _
 

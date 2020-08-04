@@ -1,14 +1,14 @@
-package nz.net.wand.streamevmon.flink
+package nz.net.wand.streamevmon.flink.sources
 
 import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasurementFactory}
 
 import java.time.Duration
 
-/** Receives [[nz.net.wand.streamevmon.measurements.Measurement Measurement]]
+/** Produces [[nz.net.wand.streamevmon.measurements.InfluxMeasurement InfluxMeasurement]]
   * values from InfluxDB in a streaming fashion. This source retrieves AMP
   * measurements.
   *
-  * @see [[nz.net.wand.streamevmon.connectors.influx connectors.influx]] package
+  * @see [[nz.net.wand.streamevmon.connectors.influx Influx connectors]] package
   *      object for configuration details.
   */
 class AmpMeasurementSourceFunction(

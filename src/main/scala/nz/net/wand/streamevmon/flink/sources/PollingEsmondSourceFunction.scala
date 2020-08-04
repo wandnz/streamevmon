@@ -1,8 +1,9 @@
-package nz.net.wand.streamevmon.flink
+package nz.net.wand.streamevmon.flink.sources
 
 import nz.net.wand.streamevmon.connectors.esmond.schema.{AbstractTimeSeriesEntry, EventType, Summary}
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.connectors.esmond._
+import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement
 
 import java.time.{Duration, Instant}
@@ -25,13 +26,12 @@ import scala.util.{Failure, Try}
   * of [[nz.net.wand.streamevmon.connectors.esmond.AbstractEsmondStreamDiscovery AbstractEsmondStreamDiscovery]]
   * constructed using `discoveryBuilder`.
   *
-  * Configuration for both can be overridden by using `overrideConfig`.
+  * Configuration passed via HasFlinkConfig's `overrideConfig` gets passed to
+  * the StreamDiscovery and the EsmondConnection.
   *
-  * @param configPrefix      A custom config prefix to use. You will need one instance
-  *                          of this SourceFunction for each endpoint being queried,
-  *                          and each will need a unique configPrefix.
-  * @param connectionBuilder A function which builds the Esmond connection
-  *                          implementation.
+  * @param configPrefix      A custom config prefix to use.
+  * @param connectionBuilder A function which builds the Esmond connection implementation.
+  * @param discoveryBuilder  A function which builds the Esmond stream discovery implementation.
   */
 class PollingEsmondSourceFunction[
   EsmondConnectionT <: AbstractEsmondConnection,
@@ -49,7 +49,6 @@ class PollingEsmondSourceFunction[
   extends RichSourceFunction[RichEsmondMeasurement]
           with HasFlinkConfig
           with CheckpointedFunction
-          with GloballyStoppableFunction
           with Logging {
 
   /** Keeps track of an endpoint that's being queried, as well as the time of
@@ -262,7 +261,7 @@ class PollingEsmondSourceFunction[
 
     isRunning = true
 
-    while (isRunning && !shouldShutdown) {
+    while (isRunning) {
       selectedStreams = getAndUpdateEndpoints(ctx, selectedStreams, loopInterval)
     }
   }

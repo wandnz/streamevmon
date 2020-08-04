@@ -1,5 +1,7 @@
 package nz.net.wand.streamevmon
 
+import nz.net.wand.streamevmon.flink.sources.{LatencyTSAmpFileInputFormat, LatencyTSSmokepingFileInputFormat, PollingEsmondSourceFunction}
+
 /** Contains classes representing network measurements, such as those gathered
   * by AMP or perfSONAR.
   *
@@ -75,7 +77,7 @@ package nz.net.wand.streamevmon
   * This section describes the usage of classes representing data from the
   * ESnet perfSONAR Esmond API.
   *
-  * The [[nz.net.wand.streamevmon.flink.PollingEsmondSourceFunction PollingEsmondSourceFunction]]
+  * The [[PollingEsmondSourceFunction PollingEsmondSourceFunction]]
   * produces [[nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement RichEsmondMeasurements]].
   * These represent time series entries, which are either raw data or a summary
   * over time thereof.
@@ -104,8 +106,8 @@ package nz.net.wand.streamevmon
   * tool which expects regular AMP measurements. They cannot be enriched,
   * nor do they have any corresponding MeasurementMeta entries.
   *
-  * Use the [[nz.net.wand.streamevmon.flink.LatencyTSAmpFileInputFormat LatencyTSAmpFileInputFormat]]
-  * and [[nz.net.wand.streamevmon.flink.LatencyTSSmokepingFileInputFormat LatencyTSSmokepingFileInputFormat]]
+  * Use the [[LatencyTSAmpFileInputFormat LatencyTSAmpFileInputFormat]]
+  * and [[LatencyTSSmokepingFileInputFormat LatencyTSSmokepingFileInputFormat]]
   * functions to ingest this dataset, as shown in [[nz.net.wand.streamevmon.runners.examples.LatencyTSToCsvPrinter LatencyTSToCsvPrinter]].
   */
 package object measurements {}

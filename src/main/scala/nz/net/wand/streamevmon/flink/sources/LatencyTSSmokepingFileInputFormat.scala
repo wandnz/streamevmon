@@ -1,5 +1,6 @@
-package nz.net.wand.streamevmon.flink
+package nz.net.wand.streamevmon.flink.sources
 
+import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSSmokeping
 
 import org.apache.flink.api.common.io.GenericCsvInputFormat
@@ -20,6 +21,7 @@ class LatencyTSSmokepingFileInputFormat extends GenericCsvInputFormat[LatencyTSS
   override val configKeyGroup: String = "latencyts"
 
   override def openInputFormat(): Unit = {
+    // We need parallelism 1 because we want to make unique stream IDs.
     if (getRuntimeContext.getNumberOfParallelSubtasks > 1) {
       throw new IllegalStateException("Parallelism for this InputFormat must be 1.")
     }
@@ -28,10 +30,11 @@ class LatencyTSSmokepingFileInputFormat extends GenericCsvInputFormat[LatencyTSS
   val recordToStream: mutable.Map[String, Int] = mutable.Map()
 
   override def readRecord(
-    reuse                      : LatencyTSSmokeping,
-                          bytes: Array[Byte],
-                          offset: Int,
-                          numBytes: Int): LatencyTSSmokeping = {
+    reuse: LatencyTSSmokeping,
+    bytes: Array[Byte],
+    offset: Int,
+    numBytes: Int
+  ): LatencyTSSmokeping = {
 
     val line = new String(bytes.slice(offset, offset + numBytes))
     val key = line.split(",")(0)

@@ -1,9 +1,11 @@
 package nz.net.wand.streamevmon.runners.detectors
 
-import nz.net.wand.streamevmon.flink.{AmpMeasurementSourceFunction, InfluxSinkFunction, MeasurementKeySelector}
+import nz.net.wand.streamevmon.flink.MeasurementKeySelector
 import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.changepoint._
+import nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction
+import nz.net.wand.streamevmon.flink.sources.AmpMeasurementSourceFunction
 import nz.net.wand.streamevmon.measurements.amp.ICMP
 
 import java.time.Duration
@@ -47,7 +49,7 @@ object ChangepointRunner {
 
     val detector = new ChangepointDetector
                          [InfluxMeasurement, NormalDistribution[InfluxMeasurement]](
-      new NormalDistribution(mean = 0)
+      NormalDistribution(mean = 0)
     )
 
     val process = source

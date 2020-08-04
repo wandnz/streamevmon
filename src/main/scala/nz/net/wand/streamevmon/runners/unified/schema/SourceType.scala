@@ -1,7 +1,8 @@
 package nz.net.wand.streamevmon.runners.unified.schema
 
 import nz.net.wand.streamevmon.connectors.esmond.{EsmondConnectionForeground, EsmondStreamDiscovery}
-import nz.net.wand.streamevmon.flink.{HasFlinkConfig, PollingEsmondSourceFunction}
+import nz.net.wand.streamevmon.flink.HasFlinkConfig
+import nz.net.wand.streamevmon.flink.sources.PollingEsmondSourceFunction
 import nz.net.wand.streamevmon.measurements.Measurement
 
 import org.apache.flink.api.common.io.FileInputFormat

@@ -1,5 +1,6 @@
 package nz.net.wand.streamevmon.measurements.latencyts
 
+import nz.net.wand.streamevmon.flink.sources.LatencyTSAmpFileInputFormat
 import nz.net.wand.streamevmon.measurements.{CsvOutputable, HasDefault, RichMeasurement}
 
 import java.time.Instant
@@ -9,7 +10,7 @@ import java.time.Instant
   * some fields.
   *
   * @see [[nz.net.wand.streamevmon.measurements.amp.RichICMP RichICMP]]
-  * @see [[nz.net.wand.streamevmon.flink.LatencyTSAmpFileInputFormat LatencyTSAmpFileInputFormat]]
+  * @see [[LatencyTSAmpFileInputFormat LatencyTSAmpFileInputFormat]]
   * @see [[LatencyTSSmokeping]]
   * @see [[https://wand.net.nz/wits/latency/1/]]
   */

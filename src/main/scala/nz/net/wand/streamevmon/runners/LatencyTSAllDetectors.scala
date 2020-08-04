@@ -7,7 +7,8 @@ import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.detectors.spike.SpikeDetector
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.flink.{LatencyTSAmpFileInputFormat, MeasurementKeySelector}
+import nz.net.wand.streamevmon.flink.MeasurementKeySelector
+import nz.net.wand.streamevmon.flink.sources.LatencyTSAmpFileInputFormat
 import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
 
 import java.io.File

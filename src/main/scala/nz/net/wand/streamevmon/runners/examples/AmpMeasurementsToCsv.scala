@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.runners.examples
 
 import nz.net.wand.streamevmon.{Configuration, Logging}
-import nz.net.wand.streamevmon.flink.LatencyTSAmpFileInputFormat
+import nz.net.wand.streamevmon.flink.sources.LatencyTSAmpFileInputFormat
 import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
 
 import java.io.OutputStream

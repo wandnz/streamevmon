@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.runners.examples
 
 import nz.net.wand.streamevmon.Configuration
-import nz.net.wand.streamevmon.flink.AmpMeasurementSourceFunction
+import nz.net.wand.streamevmon.flink.sources.{AmpMeasurementSourceFunction, InfluxSourceFunction}
 
 import java.text.SimpleDateFormat
 import java.time.Duration
@@ -10,8 +10,8 @@ import java.util.Date
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.scala._
 
-/** Most basic example of using an [[nz.net.wand.streamevmon.flink.InfluxSourceFunction InfluxSourceFunction]],
-  * in this case an [[nz.net.wand.streamevmon.flink.AmpMeasurementSourceFunction AmpMeasurementSourceFunction]].
+/** Most basic example of using an [[InfluxSourceFunction InfluxSourceFunction]],
+  * in this case an [[AmpMeasurementSourceFunction AmpMeasurementSourceFunction]].
   *
   * Requires `source.influx.(amp.)?serverName` to be set.
   *

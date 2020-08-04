@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.runners.unified
 
 import nz.net.wand.streamevmon.TestBase
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.flink.InfluxSinkFunction
+import nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction
 import nz.net.wand.streamevmon.runners.unified.schema.{SinkInstance, SinkType}
 
 import org.apache.flink.api.java.utils.ParameterTool

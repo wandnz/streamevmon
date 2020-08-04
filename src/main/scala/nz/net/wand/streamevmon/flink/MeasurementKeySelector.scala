@@ -10,6 +10,11 @@ import org.apache.flink.api.java.functions.KeySelector
 
 import scala.reflect.ClassTag
 
+/** Used to convert a DataStream to a KeyedStream. Stream ID is based on the
+  * type and `stream` field of the measurement. This means that items sharing a
+  * value for `stream`, but with a different concrete type will usually not be
+  * sent to the same downstream operators.
+  */
 class MeasurementKeySelector[T <: Measurement : ClassTag] extends KeySelector[T, String] {
   override def getKey(value: T): String =
     value match {

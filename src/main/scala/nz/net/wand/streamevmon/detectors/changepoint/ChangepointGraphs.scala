@@ -1,7 +1,8 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
-import nz.net.wand.streamevmon.flink.{LatencyTSAmpFileInputFormat, MeasurementKeySelector}
+import nz.net.wand.streamevmon.flink.MeasurementKeySelector
 import nz.net.wand.streamevmon.Configuration
+import nz.net.wand.streamevmon.flink.sources.LatencyTSAmpFileInputFormat
 import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
 
 import java.io.File
