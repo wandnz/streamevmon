@@ -4,6 +4,9 @@ import nz.net.wand.streamevmon.connectors.esmond.schema.{PacketTraceEntry, Packe
 
 import java.time.Instant
 
+/** @see [[PacketTrace]]
+  * @see [[RichEsmondMeasurement]]
+  */
 case class RichPacketTrace(
   stream       : Int,
   value        : Iterable[PacketTraceEntry],

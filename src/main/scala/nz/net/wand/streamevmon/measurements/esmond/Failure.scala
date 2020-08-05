@@ -5,6 +5,9 @@ import nz.net.wand.streamevmon.measurements.CsvOutputable
 
 import java.time.Instant
 
+/** Esmond can provide standalone streams of measurement failures. These just
+  * include a time and a description.
+  */
 case class Failure(
   stream     : Int,
   failureText: Option[String],

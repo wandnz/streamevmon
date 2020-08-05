@@ -5,6 +5,9 @@ import nz.net.wand.streamevmon.measurements.{CsvOutputable, HasDefault}
 
 import java.time.Instant
 
+/** @see [[Simple]]
+  * @see [[RichEsmondMeasurement]]
+  */
 case class RichSimple(
   stream       : Int,
   value        : Double,

@@ -4,6 +4,9 @@ import nz.net.wand.streamevmon.connectors.esmond.schema.{PacketTraceEntry, Packe
 
 import java.time.Instant
 
+/** Contains a list of packet trace entries showing hops on the path from one
+  * host to another.
+  */
 case class PacketTrace(
   stream: Int,
   value : Iterable[PacketTraceEntry],

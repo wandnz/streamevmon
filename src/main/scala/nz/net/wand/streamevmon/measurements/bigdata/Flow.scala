@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 
 import org.squeryl.annotations.Column
 
-/** @see [[nz.net.wand.streamevmon.measurements]] for description.
+/** @see [[nz.net.wand.streamevmon.measurements.bigdata package object]] for description.
   */
 case class Flow(
   capture_application                                                                               : String,
@@ -98,9 +98,7 @@ case class Flow(
   /** We'd put the source and destination Endpoint objects directly in the
     * constructor, but that would hide the database column names and make it a
     * little less easy to read from it. Instead, we'll just provide these in
-    * case anyone wants to use them. We could make those fields private, but
-    * that of course messes with our reflection and that's even more effort to
-    * fix!
+    * case anyone wants to use them.
     */
   lazy val source: Endpoint = Endpoint(
     source_ip,

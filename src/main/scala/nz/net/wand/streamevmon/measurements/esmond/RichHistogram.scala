@@ -4,6 +4,9 @@ import nz.net.wand.streamevmon.connectors.esmond.schema.HistogramTimeSeriesEntry
 
 import java.time.Instant
 
+/** @see [[Histogram]]
+  * @see [[RichEsmondMeasurement]]
+  */
 case class RichHistogram(
   stream       : Int,
   value        : Map[Double, Int],

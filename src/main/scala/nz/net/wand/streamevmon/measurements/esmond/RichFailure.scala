@@ -5,6 +5,9 @@ import nz.net.wand.streamevmon.measurements.CsvOutputable
 
 import java.time.Instant
 
+/** @see [[Failure]]
+  * @see [[RichEsmondMeasurement]]
+  */
 case class RichFailure(
   stream       : Int,
   failureText  : Option[String],

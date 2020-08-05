@@ -1,18 +1,16 @@
 package nz.net.wand.streamevmon.measurements.latencyts
 
-import nz.net.wand.streamevmon.flink.sources.LatencyTSSmokepingFileInputFormat
 import nz.net.wand.streamevmon.measurements.{CsvOutputable, HasDefault, RichMeasurement}
 
 import java.time.Instant
 
 import scala.math.round
 
-/** Represents an AMP ICMP measurement, but only containing the data contained
-  * in the Latency TS I dataset. Comparable to a RichICMP object, but missing
-  * some fields.
+/** Represents a latency measurement reported by fping, used with the
+  * Smokeping latency monitoring software. Similar to an AMP RichICMP.
   *
   * @see [[nz.net.wand.streamevmon.measurements.amp.RichICMP RichICMP]]
-  * @see [[LatencyTSSmokepingFileInputFormat LatencyTSSmokepingFileInputFormat]]
+  * @see [[nz.net.wand.streamevmon.flink.sources.LatencyTSSmokepingFileInputFormat LatencyTSSmokepingFileInputFormat]]
   * @see [[LatencyTSAmpICMP]]
   * @see [[https://wand.net.nz/wits/latency/1/]]
   */
@@ -65,21 +63,21 @@ object LatencyTSSmokeping {
     }
   }
 
-  private def getMedian(in: Seq[Double]): Option[Double] = {
+  private def getMedian(items: Seq[Double]): Option[Double] = {
     def roundTo3DP(n: Double): Double = {
       round(n * 1000).toDouble / 1000
     }
 
-    if (in.isEmpty) {
+    if (items.isEmpty) {
       None
     }
     else {
-      val s = in.sorted
-      if (in.length % 2 != 0) {
-        Some(roundTo3DP(s(in.length / 2)))
+      val s = items.sorted
+      if (items.length % 2 != 0) {
+        Some(roundTo3DP(s(items.length / 2)))
       }
       else {
-        Some(roundTo3DP((s((in.length / 2) - 1) + s(in.length / 2)) / 2))
+        Some(roundTo3DP((s((items.length / 2) - 1) + s(items.length / 2)) / 2))
       }
     }
   }

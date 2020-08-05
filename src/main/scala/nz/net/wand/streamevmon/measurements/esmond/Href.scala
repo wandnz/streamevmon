@@ -5,6 +5,7 @@ import nz.net.wand.streamevmon.measurements.CsvOutputable
 
 import java.time.Instant
 
+/** Just a link to another API endpoint. */
 case class Href(
   stream      : Int,
   hrefLocation: Option[String],

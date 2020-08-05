@@ -4,6 +4,9 @@ import nz.net.wand.streamevmon.connectors.esmond.schema.{SubintervalTimeSeriesEn
 
 import java.time.Instant
 
+/** Subinterval-type measurements contain detail about values at fine-grained
+  * time intervals.
+  */
 case class Subinterval(
   stream: Int,
   value : Iterable[SubintervalValue],

@@ -5,6 +5,9 @@ import nz.net.wand.streamevmon.measurements.CsvOutputable
 
 import java.time.Instant
 
+/** @see [[Href]]
+  * @see [[RichEsmondMeasurement]]
+  */
 case class RichHref(
   stream       : Int,
   hrefLocation : Option[String],

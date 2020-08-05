@@ -4,6 +4,9 @@ import nz.net.wand.streamevmon.connectors.esmond.schema.{SubintervalTimeSeriesEn
 
 import java.time.Instant
 
+/** @see [[Subinterval]]
+  * @see [[RichEsmondMeasurement]]
+  */
 case class RichSubinterval(
   stream       : Int,
   value        : Iterable[SubintervalValue],

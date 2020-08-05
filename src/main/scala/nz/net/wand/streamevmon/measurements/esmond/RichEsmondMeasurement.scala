@@ -3,6 +3,10 @@ package nz.net.wand.streamevmon.measurements.esmond
 import nz.net.wand.streamevmon.connectors.esmond.schema._
 import nz.net.wand.streamevmon.measurements.RichMeasurement
 
+/** A RichEsmondMeasurement keeps track of a few more things than a regular
+  * EsmondMeasurement. In particular, the measurement stream's unique key, and
+  * information about the event and summary types.
+  */
 trait RichEsmondMeasurement
   extends EsmondMeasurement
           with RichMeasurement {
@@ -14,18 +18,17 @@ trait RichEsmondMeasurement
 
   if (summaryType.isDefined != summaryWindow.isDefined) {
     throw new IllegalArgumentException(
-      "summaryType and summaryWindow must both be defined in a valid RichEsmondMeasurement"
+      "In a valid RichEsmondMeasurement, summaryType and summaryWindow must " +
+        "either both be defined or both be undefined."
     )
   }
-
-  override def isLossy: Boolean = false
 }
 
 object RichEsmondMeasurement {
-  def calculateStreamId(eventType: EventType): Int = EsmondMeasurement.calculateStreamId(eventType)
 
-  def calculateStreamId(summary: Summary): Int = EsmondMeasurement.calculateStreamId(summary)
-
+  /** The apply methods of this obejct will return the correct type of
+    * measurement according to the entry passed to it.
+    */
   def apply(
     stream       : Int,
     entry        : AbstractTimeSeriesEntry,
@@ -48,7 +51,7 @@ object RichEsmondMeasurement {
     eventType: EventType,
     entry    : AbstractTimeSeriesEntry
   ): RichEsmondMeasurement = apply(
-    calculateStreamId(eventType),
+    EsmondMeasurement.calculateStreamId(eventType),
     entry,
     eventType.metadataKey,
     eventType.eventType,
@@ -60,7 +63,7 @@ object RichEsmondMeasurement {
     summary: Summary,
     entry  : AbstractTimeSeriesEntry
   ): RichEsmondMeasurement = apply(
-    calculateStreamId(summary),
+    EsmondMeasurement.calculateStreamId(summary),
     entry,
     summary.metadataKey,
     summary.eventType,
@@ -68,6 +71,8 @@ object RichEsmondMeasurement {
     Some(summary.summaryWindow)
   )
 
+  /** We can also enrich existing EsmondMeasurements.
+    */
   def apply(
     entry        : EsmondMeasurement,
     metadataKey  : String,

@@ -5,6 +5,9 @@ import nz.net.wand.streamevmon.measurements.{CsvOutputable, HasDefault}
 
 import java.time.Instant
 
+/** This type can represent quite a few esmond event types for simple time
+  * series data.
+  */
 case class Simple(
   stream: Int,
   value : Double,

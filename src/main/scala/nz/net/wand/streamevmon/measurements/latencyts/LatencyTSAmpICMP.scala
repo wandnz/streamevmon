@@ -1,6 +1,5 @@
 package nz.net.wand.streamevmon.measurements.latencyts
 
-import nz.net.wand.streamevmon.flink.sources.LatencyTSAmpFileInputFormat
 import nz.net.wand.streamevmon.measurements.{CsvOutputable, HasDefault, RichMeasurement}
 
 import java.time.Instant
@@ -10,7 +9,7 @@ import java.time.Instant
   * some fields.
   *
   * @see [[nz.net.wand.streamevmon.measurements.amp.RichICMP RichICMP]]
-  * @see [[LatencyTSAmpFileInputFormat LatencyTSAmpFileInputFormat]]
+  * @see [[nz.net.wand.streamevmon.flink.sources.LatencyTSAmpFileInputFormat LatencyTSAmpFileInputFormat]]
   * @see [[LatencyTSSmokeping]]
   * @see [[https://wand.net.nz/wits/latency/1/]]
   */
@@ -40,8 +39,6 @@ object LatencyTSAmpICMP {
   def create(line: String, streamId: Int): LatencyTSAmpICMP = {
     val fields = line.split(',')
     val meta = fields(0).split('-')
-
-    // TODO: Make sure the isLossy field is set up correctly here.
 
     LatencyTSAmpICMP(
       streamId,
