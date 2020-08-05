@@ -18,7 +18,7 @@ import org.apache.flink.streaming.api.scala._
   * found in the [[nz.net.wand.streamevmon.detectors.changepoint]] package.
   *
   * @see [[nz.net.wand.streamevmon.detectors.changepoint the package description]] for details.
-  * @see [[nz.net.wand.streamevmon.detectors.changepoint.ChangepointGraphs ChangepointGraphs]] for an alternative bulk runner.
+  * @see [[nz.net.wand.streamevmon.runners.detectors.ChangepointGraphs ChangepointGraphs]] for an alternative bulk runner.
   */
 object ChangepointRunner {
   def main(args: Array[String]): Unit = {

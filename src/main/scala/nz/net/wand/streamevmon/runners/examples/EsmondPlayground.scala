@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.runners
+package nz.net.wand.streamevmon.runners.examples
 
 import nz.net.wand.streamevmon.{Configuration, Logging}
 import nz.net.wand.streamevmon.connectors.esmond.EsmondConnectionForeground
@@ -21,6 +21,9 @@ import scala.collection.mutable
 import scala.collection.parallel.{ForkJoinTaskSupport, ParIterable}
 import scala.util.{Failure, Success, Try}
 
+/** Used during implementation of the Esmond API. Rather messy, but shows usage
+  * of the tools and some manipulation of the results.
+  */
 object EsmondPlayground extends Logging {
   val timeRange: Long = 86400
   val eventType = "packet-count-sent"

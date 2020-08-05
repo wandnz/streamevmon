@@ -1,7 +1,8 @@
-package nz.net.wand.streamevmon.detectors.changepoint
+package nz.net.wand.streamevmon.runners.detectors
 
 import nz.net.wand.streamevmon.flink.MeasurementKeySelector
 import nz.net.wand.streamevmon.Configuration
+import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, NormalDistribution}
 import nz.net.wand.streamevmon.flink.sources.LatencyTSAmpFileInputFormat
 import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
 
@@ -15,6 +16,8 @@ import org.apache.flink.streaming.api.TimeCharacteristic
   * iteration over configuration changes and various input files. It also has
   * the graphing options turned on, meaning some .csv files will be output into
   * ./out/graphs
+  *
+  * @see [[ChangepointRunner]]
   */
 object ChangepointGraphs {
 

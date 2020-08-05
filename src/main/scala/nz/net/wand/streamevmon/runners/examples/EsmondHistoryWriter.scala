@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.runners
+package nz.net.wand.streamevmon.runners.examples
 
 import nz.net.wand.streamevmon.connectors.esmond.{AbstractEsmondConnection, EsmondAPI, EsmondConnectionForeground}
 import nz.net.wand.streamevmon.Logging
@@ -14,6 +14,16 @@ import org.apache.commons.io.FileUtils
 import scala.collection.parallel.ForkJoinTaskSupport
 import scala.util.{Failure, Success}
 
+/** Tools for writing historical Esmond measurements to a local archive.
+  *
+  * This doesn't write anything to disk until all the measurements are queried,
+  * which can cause very high memory usage when archiving longer durations. It
+  * is recommended to provide a higher-than-default -Xmx argument to the JVM.
+  *
+  * The data is written in four formats: Two JSON, two Java-Serialization.
+  * Each of these are written both as a large single blob, and as many files:
+  * one file for each stream, placed into sensible folders.
+  */
 object EsmondHistoryWriter extends Logging {
 
   private val lastTile = 18451

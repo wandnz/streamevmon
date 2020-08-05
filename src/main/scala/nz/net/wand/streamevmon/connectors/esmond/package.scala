@@ -9,7 +9,7 @@ package nz.net.wand.streamevmon.connectors
   *
   * See [[nz.net.wand.streamevmon.connectors.esmond.EsmondStreamDiscovery EsmondStreamDiscovery]] for configuration.
   *
-  * Schema objects can be used to build [[nz.net.wand.streamevmon.measurements.esmond measurements]].
+  * Schema objects can be used to build [[nz.net.wand.streamevmon.measurements.esmond EsmondMeasurements]].
   *
   * @see [[https://docs.perfsonar.net/esmond_api_rest.html]]
   */
