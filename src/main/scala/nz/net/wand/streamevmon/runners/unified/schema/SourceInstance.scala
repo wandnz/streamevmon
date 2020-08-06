@@ -8,7 +8,7 @@ import com.fasterxml.jackson.module.scala.JsonScalaEnumeration
 import org.apache.flink.api.common.io.FileInputFormat
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 
-/** From-yaml representation of a source to build.
+/** Represents a source. This will get built if it's required by any detectors.
   *
   * @param sourceType    The type of source, such as Influx or Esmond.
   * @param sourceSubtype The subtype of source where applicable, such as Amp or Bigdata.

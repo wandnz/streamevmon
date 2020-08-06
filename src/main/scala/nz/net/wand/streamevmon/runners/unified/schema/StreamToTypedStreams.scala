@@ -20,13 +20,13 @@ case class StreamToTypedStreams(
 ) {
 
   /** Applies the filter operation, and names it. */
-  private def getTypedAs[MeasT <: Measurement : ClassTag](d: SourceDatatype.Value): (SourceDatatype.Value, TypedStreams) = {
-    (d, TypedStreams(
+  private def getTypedAs[MeasT <: Measurement : ClassTag]: TypedStreams = {
+    TypedStreams(
       new Lazy(rawStream.get
         .filter(classTag[MeasT].runtimeClass.isInstance(_))
         .name(s"Is ${classTag[MeasT].runtimeClass.getSimpleName}?")
       )
-    ))
+    )
   }
 
   /** Maps the given SourceDatatype to a TypedStreams, which includes further filters.
@@ -39,31 +39,31 @@ case class StreamToTypedStreams(
     val supportedTypesMap: Map[SourceDatatype.Value, TypedStreams] = sourceInstance.sourceType match {
       case SourceType.Influx => sourceInstance.sourceSubtype match {
         case _@Some(SourceSubtype.Amp) => SourceDatatype.values.flatMap {
-          case d@SourceDatatype.DNS => Some(getTypedAs[DNS](d))
-          case d@SourceDatatype.HTTP => Some(getTypedAs[HTTP](d))
-          case d@SourceDatatype.ICMP => Some(getTypedAs[ICMP](d))
-          case d@SourceDatatype.TCPPing => Some(getTypedAs[TCPPing](d))
-          case d@SourceDatatype.Traceroute => Some(getTypedAs[Traceroute](d))
+          case d@SourceDatatype.DNS => Some((d, getTypedAs[DNS]))
+          case d@SourceDatatype.HTTP => Some((d, getTypedAs[HTTP]))
+          case d@SourceDatatype.ICMP => Some((d, getTypedAs[ICMP]))
+          case d@SourceDatatype.TCPPing => Some((d, getTypedAs[TCPPing]))
+          case d@SourceDatatype.Traceroute => Some((d, getTypedAs[Traceroute]))
           case _ => None
         }.toMap
         case _@Some(SourceSubtype.Bigdata) => SourceDatatype.values.flatMap {
-          case d@SourceDatatype.Flow => Some(getTypedAs[Flow](d))
+          case d@SourceDatatype.Flow => Some((d, getTypedAs[Flow]))
           case _ => None
         }.toMap
         case sub => throw new IllegalArgumentException(s"Invalid subtype $sub for source type ${sourceInstance.sourceType}!")
       }
       case SourceType.Esmond => SourceDatatype.values.flatMap {
-        case d@SourceDatatype.Failure => Some(getTypedAs[Failure](d))
-        case d@SourceDatatype.Histogram => Some(getTypedAs[Histogram](d))
-        case d@SourceDatatype.Href => Some(getTypedAs[Href](d))
-        case d@SourceDatatype.PacketTrace => Some(getTypedAs[PacketTrace](d))
-        case d@SourceDatatype.Simple => Some(getTypedAs[Simple](d))
-        case d@SourceDatatype.Subinterval => Some(getTypedAs[Subinterval](d))
+        case d@SourceDatatype.Failure => Some((d, getTypedAs[Failure]))
+        case d@SourceDatatype.Histogram => Some((d, getTypedAs[Histogram]))
+        case d@SourceDatatype.Href => Some((d, getTypedAs[Href]))
+        case d@SourceDatatype.PacketTrace => Some((d, getTypedAs[PacketTrace]))
+        case d@SourceDatatype.Simple => Some((d, getTypedAs[Simple]))
+        case d@SourceDatatype.Subinterval => Some((d, getTypedAs[Subinterval]))
         case _ => None
       }.toMap
       case SourceType.LatencyTS => SourceDatatype.values.flatMap {
-        case d@SourceDatatype.LatencyTSAmp => Some(getTypedAs[LatencyTSAmpICMP](d))
-        case d@SourceDatatype.LatencyTSSmokeping => Some(getTypedAs[LatencyTSSmokeping](d))
+        case d@SourceDatatype.LatencyTSAmp => Some((d, getTypedAs[LatencyTSAmpICMP]))
+        case d@SourceDatatype.LatencyTSSmokeping => Some((d, getTypedAs[LatencyTSSmokeping]))
         case _ => None
       }.toMap
       case _ => Map()

@@ -16,11 +16,12 @@ object SinkType extends Enumeration {
     def build: SinkFunction[Event] with HasFlinkConfig = {
       this match {
         case Influx => new InfluxSinkFunction
-        // Override configurations can be supplied, but will be ignored.
         case Print => new PrintSinkFunction[Event] with HasFlinkConfig {
           override val flinkName: String = "Print: Std Out"
           override val flinkUid: String = "print-sink"
           override val configKeyGroup: String = ValueBuilder.this.name
+
+          // Override configurations can be supplied to the print sink, but will be ignored.
         }
         case t => throw new UnsupportedOperationException(s"Unknown sink type $t")
       }

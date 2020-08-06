@@ -12,6 +12,11 @@ import org.apache.flink.streaming.api.functions.source.SourceFunction
   */
 object SourceSubtype extends Enumeration {
 
+  val Amp: ValueBuilder = new ValueBuilder("amp")
+  val Bigdata: ValueBuilder = new ValueBuilder("bigdata")
+  val LatencyTSAmp: ValueBuilder = new ValueBuilder("ampicmp")
+  val LatencyTSSmokeping: ValueBuilder = new ValueBuilder("smokeping")
+
   class ValueBuilder(name: String) extends Val(name) {
     def buildSourceFunction(): SourceFunction[Measurement] with HasFlinkConfig = {
       val built = this match {
@@ -31,9 +36,4 @@ object SourceSubtype extends Enumeration {
       built.asInstanceOf[FileInputFormat[Measurement] with HasFlinkConfig]
     }
   }
-
-  val Amp: ValueBuilder = new ValueBuilder("amp")
-  val Bigdata: ValueBuilder = new ValueBuilder("bigdata")
-  val LatencyTSAmp: ValueBuilder = new ValueBuilder("ampicmp")
-  val LatencyTSSmokeping: ValueBuilder = new ValueBuilder("smokeping")
 }

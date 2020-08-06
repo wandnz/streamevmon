@@ -22,6 +22,9 @@ import scala.collection.mutable
 import scala.collection.JavaConverters._
 import scala.util.Try
 
+/** Reads a flow configuration from a YAML file, and constructs and executes
+  * a Flink pipeline for it.
+  */
 object YamlDagRunner {
 
   def main(args: Array[String]): Unit = {

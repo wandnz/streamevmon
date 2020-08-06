@@ -69,7 +69,7 @@ object DetectorType extends Enumeration {
             implicit val normalDistributionTypeInformation: TypeInformation[NormalDistribution[MeasT with HasDefault]] =
             TypeInformation.of(classOf[NormalDistribution[MeasT with HasDefault]])
             new ChangepointDetector[MeasT with HasDefault, NormalDistribution[MeasT with HasDefault]](
-              new NormalDistribution(mean = 0)
+              NormalDistribution(mean = 0)
             )
           }
           else {
@@ -102,6 +102,16 @@ object DetectorType extends Enumeration {
       detector.asInstanceOf[KeyedProcessFunction[String, Measurement, Event] with HasFlinkConfig]
     }
 
+    /** If a detector has a separate windowed implementation, it will be
+      * built. Otherwise, the regular keyed detector will be built, then wrapped
+      * in a [[nz.net.wand.streamevmon.flink.WindowedFunctionWrapper WindowedFunctionWrapper]].
+      *
+      * Throws an IllegalArgumentException if the type does not have the traits
+      * that this detector type requires.
+      *
+      * @param hasDefault    Defined if `MeasT <: HasDefault`.
+      * @param csvOutputable Defined if `MeasT <: CsvOutputable`.
+      */
     def buildWindowed[MeasT <: Measurement : ClassTag](
       implicit hasDefault: Perhaps[MeasT <:< HasDefault],
       csvOutputable      : Perhaps[MeasT <:< CsvOutputable]

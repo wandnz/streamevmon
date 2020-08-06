@@ -8,7 +8,9 @@ import nz.net.wand.streamevmon.measurements.Measurement
 import org.apache.flink.api.common.io.FileInputFormat
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 
-/** This enum includes logic to build sources. */
+/** This enum includes logic to build sources. It's usually deferred to the
+  * relevant [[SourceSubtype]].
+  */
 object SourceType extends Enumeration {
 
   val Influx: ValueBuilder = new ValueBuilder("influx")
@@ -16,17 +18,14 @@ object SourceType extends Enumeration {
   val LatencyTS: ValueBuilder = new ValueBuilder("latencyts")
 
   class ValueBuilder(name: String) extends Val(name) {
+
     def buildSourceFunction(
       subtype: Option[SourceSubtype.ValueBuilder]
     ): SourceFunction[Measurement] with HasFlinkConfig = {
       val source = this match {
         case Influx => subtype match {
           case Some(value) => value match {
-            // Since we can't do enum inheritance, we have to manually check
-            // valid subtypes for each type. The subtypes know how to build
-            // themselves, so we'll let them do it.
-            case SourceSubtype.Amp | SourceSubtype.Bigdata =>
-              value.buildSourceFunction()
+            case SourceSubtype.Amp | SourceSubtype.Bigdata => value.buildSourceFunction()
             case _ => throw new IllegalArgumentException(s"Cannot build $this type source with ${subtype.getOrElse("no")} subtype!")
           }
           case None => throw new IllegalArgumentException(s"Cannot build $this type source with no subtype!")

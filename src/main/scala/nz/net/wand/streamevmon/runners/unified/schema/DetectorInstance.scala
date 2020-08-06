@@ -7,13 +7,14 @@ import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.esmond._
 import nz.net.wand.streamevmon.measurements.latencyts.{LatencyTSAmpICMP, LatencyTSSmokeping}
+import nz.net.wand.streamevmon.Perhaps._
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.streaming.api.scala.function.ProcessWindowFunction
 import org.apache.flink.streaming.api.windowing.windows.Window
 
-/** Represents the configuration of a detector. Detector type is informed by
+/** Represents a configuration for a detector. Detector type is informed by
   * the DetectorSchema which holds this class. Measurement type is informed by
   * the sources involved.
   *
@@ -30,8 +31,6 @@ case class DetectorInstance(
   sinks: Iterable[SinkReference],
   config : Map[String, String] = Map()
 ) {
-
-  import nz.net.wand.streamevmon.Perhaps._
 
   /** Builds a detector instance with the appropriate measurement type. */
   def buildKeyed(

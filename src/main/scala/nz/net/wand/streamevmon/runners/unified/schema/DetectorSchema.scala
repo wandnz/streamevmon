@@ -10,8 +10,9 @@ import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.streaming.api.scala.function.ProcessWindowFunction
 import org.apache.flink.streaming.api.windowing.windows.Window
 
-/** An entry in the `detectors` key of the yaml configuration. Can be built,
-  * resulting in an Iterable of all represented detectors.
+/** This is the highest level of representation for detectors. A schema is
+  * named, has a type, and has several instances which can be configured
+  * individually with different sources, sinks, and config overrides.
   *
   * @param detType   The type of detector this represents.
   * @param instances A list of instances, with more specific details.

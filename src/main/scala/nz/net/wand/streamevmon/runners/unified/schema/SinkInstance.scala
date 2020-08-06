@@ -7,7 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.scala.JsonScalaEnumeration
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 
-/** From-yaml representation of a sink to build.
+/** Represents a configuration for a sink. It just has a type and optionally
+  * some override parameters.
   *
   * @param sinkType The type of sink, such as Influx or Print.
   * @param config   Any configuration overrides that should be passed to the sink.

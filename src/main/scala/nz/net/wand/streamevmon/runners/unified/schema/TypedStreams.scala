@@ -8,7 +8,10 @@ import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.Window
 
-/** Contains a type-filtered stream, as well as keyed and non-lossy variants. */
+/** Contains a type-filtered stream, and allows further modifying it to filter
+  * lossy measurements and get the keyed variant. Everything is lazy, so streams
+  * are only constructed and put onto the execution graph if they need to be.
+  */
 case class TypedStreams(
   typedStream: Lazy[DataStream[Measurement]]
 ) extends Caching {
