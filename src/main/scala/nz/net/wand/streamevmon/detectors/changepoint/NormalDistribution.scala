@@ -23,7 +23,7 @@ case class NormalDistribution[T <: Measurement with HasDefault : TypeInformation
 )
   extends Distribution[T] with Logging {
 
-  @transient implicit private val doubleEquality: Equality[Double] =
+  @transient implicit private lazy val doubleEquality: Equality[Double] =
     TolerantNumerics.tolerantDoubleEquality(1E-15)
 
   override def toString: String = {

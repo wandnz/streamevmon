@@ -6,12 +6,13 @@ import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 import java.time.Instant
 
 import org.apache.flink.streaming.api.scala._
+import org.scalactic.{Equality, TolerantNumerics}
 
 import scala.language.implicitConversions
 
 class DistributionTest extends TestBase {
 
-  import nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution._
+  implicit val doubleEquality: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1E-15)
 
   "NormalDistribution" should {
     "generate the correct values" in {
