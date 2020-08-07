@@ -1,7 +1,8 @@
-package nz.net.wand.streamevmon.flink
+package nz.net.wand.streamevmon.connectors
 
 import nz.net.wand.streamevmon.{InfluxContainerSpec, SeedData}
 import nz.net.wand.streamevmon.events.Event
+import nz.net.wand.streamevmon.flink.MockSinkContext
 
 import java.time.{Instant, Duration => JavaDuration}
 

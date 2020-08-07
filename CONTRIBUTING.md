@@ -205,3 +205,28 @@ must be unique within the enum.
     detector as `MeasT <: Measurement with HasDefault`, you should check that
     the `hasDefault` parameter is defined *before* constructing your detector,
     and throw an exception with a useful error message otherwise.
+
+## Writing tests
+
+It's highly encouraged to write tests for new code where possible. Most new
+tests can be made based on existing ones in existing files. Check the package
+under `src/test/scala` corresponding to the files you edited when adding your
+code. 
+
+Most of the existing tests for detectors are under 
+`detectors.checkpointing`, but consider adding a new package to test your own
+detector if it has any components which need it. You should also add a new entry
+in `runners.unified.DetectorBuildTest`.
+
+Sources and sinks themselves don't have a lot of existing tests, since the
+connectors used interface with external systems are tested instead. Those tests 
+are in the `connectors` package. New connectors should be tested. You should
+also add a new entry for each new type and subtype in 
+`runners.unified.SourceBuildTest` or `SinkBuildTest`.
+
+New measurements should have their creation and any enrichment methods tested
+in the `measurements` package.
+
+Note that we have a number of convenience traits for writing tests, and make
+use of [TestContainers](https://github.com/testcontainers/testcontainers-scala) 
+for testing a connector's integration with an external system where possible.
