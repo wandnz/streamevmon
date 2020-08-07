@@ -1,47 +1,10 @@
-# TODO: This file is likely out of date, and should be thoroughly checked over.
-
-It probably wouldn't hurt to check on README.md as well. Certain package objects,
-like the one for `runners`, should be checked too.
-
 # Contributing to Streamevmon
 
-As for building, IntelliJ is the recommended way to develop this project.
+In this document, it is assumed that you will be using IntelliJ with the Scala 
+plugin.
 
 All code is located in `src/main/scala`. You are encouraged to also write
-additional tests where relevant.
-
-The project makes use of Java's packaging system. See the ScalaDoc documentation
-for descriptions of each package to determine where new classes should go.
-
-## Important notes on statefulness and serialisation with Flink 
-
-Flink includes mechanisms for restoring state after a crash, meaning any
-detectors, SourceFunctions, or other parts of the pipeline that rely on
-persistent state must use their system in order to function correctly. An
-outline can be found [here](https://ci.apache.org/projects/flink/flink-docs-stable/dev/types_serialization.html).
-An example of the usage of these tools is the `ModeDetector`. Take particular
-note of the `ValueState` type fields, the fact that the class extends
-`KeyedProcessFunction`, and the `open` function.
-
-While the serialisation process generally works quite well despite many classes
-having to fall back to the slower Kryo serialiser, it has a few weaknesses that
-must be kept in mind.
-
-* Serialising lambdas does not appear to be supported.
-* While the Flink documentation discusses the treatment of case classes as POJO
-  types, which are serialised more efficiently. Testing has shown this to not
-  always be the case, but it is unclear what causes the difference. The Kryo
-  serialiser does work fine for most cases, but if a type is not supported it
-  will simply initialise it as null.
-* The behaviour of a Scala `mutable.Queue` has been observed to be unstable
-  afte restoration. The first addition to the queue will instead result in a
-  'super-null' value that breaks the data structure, throwing a 
-  NoSuchElementException whenever it is accessed. The `ModeDetector` and other
-  classes utilising a Queue implement a workaround where they detect restoration
-  and recreate the queue. This appears to stop the issue from appearing.
-
-It is very important to test state recovery, such as using a test harness like
-`NoDependencyCheckpointingTests`.
+additional tests for new or modified code where possible.
 
 ## Detection algorithms
 
@@ -52,82 +15,79 @@ the package object. An entrypoint that runs the detector in a Flink environment
 should be created in the `nz.net.wand.streamevmon.runners.detectors` package.
 See the `mode` package for an example of a reasonably simple stateful detector.
 
-Once your detector is complete, you should also add it to the `UnifiedRunner`.
-This will make it run in the default entrypoint for the program, along with the
-other enabled detectors. While extending the runner, you can also decide what
-type of measurements you want to accept, such as selecting from ICMP, DNS, or
-other measurement types, and whether you want lossy measurements to be filtered
-out before they get to you. Don't forget to test it from within a standalone
-Flink environment with a parallelism greater than 1.
+Once your detector is complete, you should also add support for it to
+`runners.unified.schema`. This will allow it to be used by the default
+entrypoint. See [the relevant section](#adding-support-to-the-main-entrypoint)
+for details.
 
 ### Windowed Operators
 
-`KeyedProcessFunction`, which most detectors implement, will receive from Flink
-a stream of measurements at approximately the rate they are ingested by the
-Flink pipeline. The "keyed" part means that each stream of measurements (such
-as ICMP results from a particular AMP host to a single destination) will be
-processed by a separate instance of the detector. However, if Flink receives
-measurements out of order, they will be passed to the detector out of order.
-For some detectors, this won't matter too much. For others, a few mitigation
-strategies are possible:
+Most detectors will be implemented as a `KeyedProcessFunction`. These receive
+measurements from Flink in effectively real-time. Each stream (referred to by
+a key) will be processed by a separate instance of your detector. Users can
+instead choose to use your detector as a windowed function, which receives
+groups of measurements instead.
 
-* When instantiating your detector, you can provide it as an argument to the
-  constructor of `WindowedFunctionWrapper`. This function will reorder any
-  measurements received within the TimeWindow provided to it, and pass the
-  measurements in the correct order to the detector it contains. In effect, it
-  ensures correct ordering within certain time windows, at the cost of some
-  latency.
-  * Ensure that the TimeWindow is not sliding, as that will result in
-    measurement duplication.
-  * Handover from one window to another is not foolproof, so if measurements
-    are received out-of-order while one window is closing and another is opening,
-    they may still arrive at the detector out of order.
-* Some functions, such as the DistDiffDetector, can be implemented as windowed
-  functions from the beginning. Usually, this is best for detectors that don't
-  keep much rolling state derived from the stream of measurements received, but
-  exceptions should exist. See the `WindowedDistDiffDetector` for an example,
-  and compare it with the `DistDiffDetector`.
+This is done automatically if not supported by your detector. A time window will
+be used, with the user's configuration applied. Alternatively, you can create
+your own implementation as a `ProcessWindowFunction`, which allows you more
+flexibility in how you use these groups of measurements. You can choose what
+kind of window your windowed function uses when integrating it with the default
+entrypoint.
 
 ## Measurements
 
 Adding a new type of measurement includes a number of steps, depending on how
 the measurement is obtained.
 
+### All measurement types
+
+If this is a measurement from a new source type, a new package within
+`measurements` should be created. You may also want to create a new parent
+class, like `EsmondMeasurement`.
+
+Any Measurement can also inherit from `HasDefault` or `CsvOutputable`. These
+provide extra methods for detectors to use if they don't know the concrete
+type of a measurement. HasDefault is particularly useful, and is recommended to
+use if possible.
+
+* If your measurement can report lossy results, such as an ICMP test which 
+  received no responses, implement the `isLossy` function from Measurement.
+  Otherwise, just implement it to unconditionally return `false`.
+* `toCsvFormat` should be implemented similarly to the following:
+
+  `override def toCsvFormat: Seq[String] = DNS.unapply(this).get.productIterator.toSeq.map(toCsvEntry)`
+  
+  Note that case classes don't get an unapply() method if they have more than
+  22 fields. See `RichDNS` for an example of how to implement this without
+  using unapply.
+* Feel free to create additional case classes to represent groups of fields, or
+  add additional derived values.
+
 ### InfluxDB measurement
 
-Measurements from InfluxDB can be gathered either via a subscription as they
-arrive in the database, or in the traditional query-based fashion. This section
-covers both methods, since both are usually required.
+Measurements from InfluxDB are well-supported, so adding them is likely to be
+fairly straightforward. All InfluxMeasurements inherit from HasDefault and
+CsvOutputable.
 
 #### Measurement class
 
-* If this is a measurement from a new source program, a new package within
-  `measurements` should be created.
 * New measurements should be implemented as case classes, where each argument 
   to the class constructor corresponds to a column in the InfluxDB table the
-  measurement represents. They should also inherit from Measurement.
+  measurement represents. They should also inherit from `InfluxMeasurement`.
 * If a field name is desired that does not match the database column, the column
   name can be specified using the `org.squeryl.annotations.Column` annotation.
   While this annotation comes from our PostgreSQL library, it is easiest to use
   it for the same purpose with both databases.
-* It is encouraged to use `java.time.Instant` for time fields, but otherwise the
-  datatypes used should match those in the database. Use `Option` when fields
+* `java.time.Instant` is used for time fields. Other fields (except `stream`)
+  should have datatypes matching those in the database. Use `Option` when fields
   might be omitted.
-* If your measurement can report lossy results, such as an ICMP test that did
-  not receive any responses, implement the `isLossy` function from Measurement.
-  Otherwise, just implement it to unconditionally return `false`.
-* Feel free to create additional case classes to represent groups of fields or
-  derived values, but do not use a single field to represent multiple database
-  columns. This should instead be implemented via a lazy val which constructs
-  your class from the database columns.
 
 #### Measurement companion object
 
-A companion object which extends `MeasurementFactory` should be created. This is
-where you should declare relevant case classes, additional constructors, and
-other static methods.
+A companion object which extends `InfluxMeasurementFactory` should be created.
 
-* You should override `table_name` with the name of the measurement as it appears
+* You should override `table_name` with the name of the table as it appears
   in InfluxDB.
 * You should override `columnNames` as follows, where T is your measurement type:  
   `override def columnNames: Seq[String] = getColumnNames[T]`
@@ -157,7 +117,7 @@ other static methods.
   * String values are surrounded by quotes, which you must deal with manually via
     `.map(_.drop(1).dropRight(1))` (for optional fields).
   * Integer values have a suffix of `i`, which should be removed before parsing.
-  * Add a reference to this function in the `MeasurementFactory` object, in
+  * Add a reference to this function in the `InfluxMeasurementFactory` object, in
     `createMeasurement` so that your measurement type is supported by this
     generic factory.
   * Don't forget to add some line protocol examples in `SeedData` and tests for
@@ -165,41 +125,83 @@ other static methods.
 
 #### InfluxSchema
 
-`nz.net.wand.streamevmon.connectors.InfluxSchema` contains the `InfluxReader`
-classes used to parse the results of queries for historical data. Currently, 
-the results are given as `org.typelevel.jawn.ast.JValue` subclasses, which must
-be converted to plain Scala types manually.
+`nz.net.wand.streamevmon.connectors.influx.InfluxSchema` contains definitions
+for the `InfluxReader` classes used to parse the results of queries for 
+historical data. The results are given as `org.typelevel.jawn.ast.JValue` 
+subclasses, which must be converted to plain Scala types manually.
 
 * The structure of an InfluxReader definition should be self-evident from the
-  existing parsers. There has, at time of writing, been no evidence of a
-  requirement to implement `readUnsafe`, so we leave it unimplemented.
+  existing parsers. There has been no evidence of a requirement to implement 
+  `readUnsafe`, so we leave it unimplemented.
 * It is recommended to make use of the `js.get(cols.indexOf("name"))` pattern,
-  for readability and maintainability, especially if you later decide to reorder
-  the fields of your measurement.
-* Also make use of `nullToOption`. Unfortunately, the existing parsers are not
-  very type-safe, but if the schema of the tables they represent does not change,
-  there should not be any issues.
+  as well as `nullToOption`. This is for readability and maintainability, 
+  especially if you later decide to reorder the fields of your measurement.
 * Add a function to utilise the reader in `InfluxHistoryConnection`.
-* Tests for these readers should go in `InfluxHistoryConnectionTest`.
+* Tests for these readers should go in `InfluxHistoryConnectionTest`. 
 
-## SourceFunctions
+## Important notes on statefulness and serialisation with Flink 
 
-A SourceFunction is the way that Flink ingests records from external programs,
-such as InfluxDB. As such, a new SourceFunction might be required if you add a
-new type of measurement from a program that isn't currently supported, or perhaps
-a new delivery mechanism, such as a new type of database.
+Flink includes mechanisms for restoring state after a crash, meaning any
+detectors, SourceFunctions, or other parts of the pipeline that rely on
+persistent state must use their system in order to function correctly. An
+outline can be found [here](https://ci.apache.org/projects/flink/flink-docs-stable/dev/types_serialization.html).
+An example of the usage of these tools is the `ModeDetector`. Take particular
+note of the `ValueState` type fields, the fact that the class extends
+`KeyedProcessFunction`, and the `open` function.
 
-The following covers the scenario where the desired measurements are stored in
-InfluxDB, but come from a new table or program.
+While the serialisation process generally works quite well despite many classes
+having to fall back to the slower Kryo serialiser, it has a few weaknesses that
+must be kept in mind.
 
-* `InfluxSourceFunction` is the base class which handles both subscription and
-  historical data from InfluxDB. It should be inherited, very similarly to
-  `nz.net.wand.streamevmon.flink.sources.AmpMeasurementSourceFunction`.
-* You will likely want to add a new section into `default.properties`
-  corresponding to the table your source is pulling from.
-* A new runner should be created in the `runners` package. This is useful both
-  for testing and if you want to just use your new SourceFunction without the
-  extra complexity that the UnifiedRunner introduces.
-* You should also add your SourceFunction as a new source in the `UnifiedRunner`.
-  Make sure that the configured `subscriptionName` for your configuration
-  datatype is set to something unique, as well as the source's name and uid.
+* Serialising lambdas does not appear to be supported.
+* While the Flink documentation discusses the treatment of case classes as POJO
+  types, which are serialised more efficiently, testing has shown this to not
+  always be the case. It is unclear what causes this difference. The Kryo
+  serialiser does work fine for most cases, but it is recommended to test your
+  code to ensure that fields are not re-initialised as null when they are not
+  expected to be.
+* The behaviour of a Scala `mutable.Queue` has been observed to be unstable
+  afte restoration. The first addition to the queue will instead result in a
+  'super-null' value that breaks the data structure, throwing a 
+  NoSuchElementException whenever it is accessed. The `ModeDetector` and other
+  classes utilising a Queue implement a workaround where they detect restoration
+  and recreate the queue. This appears to stop the issue from appearing.
+
+It is very important to test state recovery, such as using a test harness like
+`NoDependencyCheckpointingTests`. It can also be useful to test your code in a
+standalone Flink environment with a parallelism greater than 1.
+
+## Adding support to the main entrypoint
+
+The main entrypoint uses classes in the `runners.unified.schema` package to
+build instances of sources, detectors, and sinks as required. These need to have
+support specifically added for them to work. See 
+[CONFIGURING_FLOWS.md](CONFIGURING_FLOWS.md) for details on how the config file
+is structured.
+
+Whenever you need to add new values to an Enumeration, note that the string you
+pass as an argument to `Value`, `ValueBuilder`, or other equivalent classes
+will become the name your type is referred to with in configuration files. It
+must be unique within the enum.
+
+* Sources (SourceFunctions or FileInputFormats) have two relevant files: 
+  `SourceType` and `SourceSubtype`. If a SourceType, like `influx`, has 
+  subtypes, they must be specified for a config to be valid. The logic to 
+  construct a source should be placed in SourceSubtype if subtypes are 
+  supported, or SourceType otherwise. In either case, add new values of type 
+  `ValueBuilder` to the relevant class.
+* Sinks are even simpler. Just add a new `ValueBuilder` and some construction
+  logic to `SinkType`.
+* Measurement types should be added to `SourceDatatype`. These new values should
+  be added to both functions in `DetectorInstance`, and the `typedAs` definition
+  in `StreamToTypedStreams`.
+  * Note the structure of `typedAs`: It defines what measurement types each
+    source type can generate. You will need to specify a SourceType that matches
+    your SourceDatatype.
+* Detectors should be added as new `ValueBuilder`s within `DetectorType`.
+  * Next, add support for your detector in `ValueBuilder`'s `buildKeyed` method.
+  * You should declare your Measurement trait dependencies here in the same
+    style as the existing detectors. If you declared the input type of your
+    detector as `MeasT <: Measurement with HasDefault`, you should check that
+    the `hasDefault` parameter is defined *before* constructing your detector,
+    and throw an exception with a useful error message otherwise.

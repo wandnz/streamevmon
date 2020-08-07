@@ -181,8 +181,8 @@ class InfluxConnectionTest extends InfluxContainerSpec {
   }
 
   var shouldSend = false
-  private[this] lazy val ourClassLoader: ClassLoader = this.getClass.getClassLoader
-  private[this] lazy val actorSystem =
+  private lazy val ourClassLoader: ClassLoader = this.getClass.getClassLoader
+  private lazy val actorSystem =
     akka.actor.ActorSystem(getClass.getSimpleName, classLoader = Some(ourClassLoader))
 
   def sendData(andThen: () => Any = () => Unit): Unit = {

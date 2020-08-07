@@ -67,7 +67,7 @@ object InfluxConnection extends Logging {
     }
   }
 
-  private[this] def getWithFallback(p: ParameterTool, configPrefix: String, datatype: String, item: String): String = {
+  private def getWithFallback(p: ParameterTool, configPrefix: String, datatype: String, item: String): String = {
     val result = p.get(s"source.$configPrefix.$datatype.$item", null)
     if (result == null) {
       p.get(s"source.$configPrefix.$item")

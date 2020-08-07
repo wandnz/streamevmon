@@ -57,6 +57,7 @@ case class DetectorInstance(
       case SourceDatatype.Subinterval => detType.buildKeyed[Subinterval]
       case SourceDatatype.LatencyTSAmp => detType.buildKeyed[LatencyTSAmpICMP]
       case SourceDatatype.LatencyTSSmokeping => detType.buildKeyed[LatencyTSSmokeping]
+      case d => throw new IllegalArgumentException(s"Unknown datatype $d!")
     }
 
     det.overrideConfig(config, s"detector.${det.configKeyGroup}")
@@ -84,6 +85,7 @@ case class DetectorInstance(
       case SourceDatatype.Subinterval => detType.buildWindowed[Subinterval]
       case SourceDatatype.LatencyTSAmp => detType.buildWindowed[LatencyTSAmpICMP]
       case SourceDatatype.LatencyTSSmokeping => detType.buildWindowed[LatencyTSSmokeping]
+      case d => throw new IllegalArgumentException(s"Unknown datatype $d!")
     }
 
     (

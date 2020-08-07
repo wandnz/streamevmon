@@ -239,7 +239,7 @@ class PollingEsmondSourceFunction[
   }
 
   /** Continually polls all the endpoints for new data. */
-  protected[this] def listen(ctx: SourceFunction.SourceContext[RichEsmondMeasurement]): Unit = {
+  protected def listen(ctx: SourceFunction.SourceContext[RichEsmondMeasurement]): Unit = {
     // targetRefreshInterval tells us how long we aim to have between each refresh
     // of a single endpoint. targetLoopInterval is based on that, and is our goal
     // for how long there should be between each query we send.

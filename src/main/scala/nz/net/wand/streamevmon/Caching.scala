@@ -27,6 +27,30 @@ object Caching {
   * methods to change caching mode. Be aware that changing mode will not
   * transfer any currently cached results.
   *
+  * ==Configuration==
+  *
+  * General caching configuration is configured by the `caching` config key
+  * group.
+  *
+  * - `ttl`: While this class does not use this key directly, inheriting classes
+  * may use this value as a user-configurable default expiry time, in seconds,
+  * for cached values.
+  * Default 30.
+  *
+  * The `caching.memcached` key group configured the memcached settings.
+  * Caffeine caches are not affected by this group.
+  *
+  * - `enabled`: This class also does not directly use this key, but inheriting
+  * classes which would like to support memcached caching should check the key's
+  * boolean value before setting this class to memcached mode.
+  * Default false.
+  *
+  * - `serverName`: The address which the memcached server is running at.
+  * Default localhost.
+  *
+  * - `port`: The port which the memcached server is listening on.
+  * Default 11211.
+  *
   * @see [[https://github.com/ben-manes/caffeine]]
   * @see [[https://memcached.org/]]
   * @example
@@ -71,7 +95,7 @@ trait Caching {
     cacheMode = CacheMode.InMemory
   }
 
-  implicit private[this] def cache: Cache[Option[Any]] = cacheMode match {
+  implicit private def cache: Cache[Option[Any]] = cacheMode match {
     case CacheMode.InMemory => Caching.caffeineCache
     case CacheMode.Memcached => memcachedCache
   }
@@ -88,15 +112,15 @@ trait Caching {
     * @return The result of `method`, regardless of whether it was
     *         obtained from the cache or from a new execution of `method`.
     */
-  protected[this] def getWithCache[T](
-    key: String,
-    ttl: Option[FiniteDuration],
+  protected def getWithCache[T](
+    key   : String,
+    ttl   : Option[FiniteDuration],
     method: => Option[Any]
   ): Option[T] = {
     sync.caching(key)(ttl)(method).asInstanceOf[Option[T]]
   }
 
-  protected[this] def invalidate(key: String): Unit = {
+  protected def invalidate(key: String): Unit = {
     sync.remove(key)
   }
 }

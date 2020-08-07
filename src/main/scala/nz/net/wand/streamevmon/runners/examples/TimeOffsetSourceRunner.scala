@@ -48,7 +48,7 @@ object TimeOffsetSourceRunner {
           fetchHistory = Duration.ofMinutes(1),
           timeOffset = Duration.ofMinutes(1)
         ) {
-          override protected[this] def processLine(line: String): Option[InfluxMeasurement] = InfluxMeasurementFactory.createMeasurement(line)
+          override protected def processLine(line: String): Option[InfluxMeasurement] = InfluxMeasurementFactory.createMeasurement(line)
 
           override val flinkName: String = "Offset 1 Minute AMP Measurement Source"
           override val flinkUid: String = "1-min-ago-amp-measurement-source"

@@ -49,12 +49,12 @@ detectors:
     type: changepoint
     instances: *ampIcmpToAllSources
 
-  distdiff-esmond:
+  distdiff:
     type: distdiff
     instances:
       - source:
-          - name: esmond
-            datatype: simple
+          - name: latencyts
+            datatype: dns
             filterLossy: true
         sink:
           - name: influx
