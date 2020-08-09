@@ -1,7 +1,6 @@
 package nz.net.wand.streamevmon.runners.unified
 
 import nz.net.wand.streamevmon.TestBase
-import nz.net.wand.streamevmon.connectors.esmond.{EsmondConnectionForeground, EsmondStreamDiscovery}
 import nz.net.wand.streamevmon.flink.sources._
 import nz.net.wand.streamevmon.runners.unified.schema.{SourceInstance, SourceSubtype, SourceType}
 
@@ -46,10 +45,7 @@ class SourceBuildTest extends TestBase {
         )
         val built = srcInstance.buildSourceFunction
 
-        built shouldBe a[PollingEsmondSourceFunction[
-          EsmondConnectionForeground,
-          EsmondStreamDiscovery[EsmondConnectionForeground]
-        ]]
+        built shouldBe a[PollingEsmondSourceFunction[_, _]]
         an[UnsupportedOperationException] should be thrownBy srcInstance.buildFileInputFormat
         built.configWithOverride(ParameterTool.fromArgs(Array())).toMap.asScala should contain(s"source.${built.configKeyGroup}.extraKey" -> "true")
       }

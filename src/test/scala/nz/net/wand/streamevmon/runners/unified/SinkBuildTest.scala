@@ -1,7 +1,6 @@
 package nz.net.wand.streamevmon.runners.unified
 
 import nz.net.wand.streamevmon.TestBase
-import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction
 import nz.net.wand.streamevmon.runners.unified.schema.{SinkInstance, SinkType}
 
@@ -31,7 +30,7 @@ class SinkBuildTest extends TestBase {
         )
         val built = srcInstance.build
 
-        built shouldBe a[PrintSinkFunction[Event]]
+        built shouldBe a[PrintSinkFunction[_]]
         built.configWithOverride(ParameterTool.fromArgs(Array())).toMap.asScala should contain(s"sink.${built.configKeyGroup}.extraKey" -> "true")
       }
     }
