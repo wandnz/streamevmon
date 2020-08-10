@@ -13,11 +13,11 @@ import org.squeryl.annotations.Column
 /** @see [[nz.net.wand.streamevmon.measurements.bigdata package object]] for description.
   */
 case class Flow(
-  capture_application                                                                               : String,
-  capture_host                                                                                      : String,
+  capture_application: String,
+  capture_host: String,
 
   @Column("flow_id")
-  stream: Int,
+  stream: String,
   @Column("type")
   flow_type: FlowType,
   category: String,
@@ -27,7 +27,7 @@ case class Flow(
   @Column("start_ts")
   start_time: Instant,
   @Column("end_ts")
-  end_time                                                                                          : Option[Instant],
+  end_time: Option[Instant],
   duration                                                                                          : Double,
 
   in_bytes                                                                                          : Int,
@@ -176,7 +176,7 @@ object Flow extends InfluxMeasurementFactory {
         Flow(
           getNamedField(data, "capture_application").get,
           getNamedField(data, "capture_host").get,
-          getNamedField(data, "flow_id").get.dropRight(1).toInt,
+          getNamedField(data, "flow_id").get.dropRight(1),
           FlowType.withName(getNamedField(data, "type").get),
           getNamedField(data, "category").get,
           getNamedField(data, "protocol").get,

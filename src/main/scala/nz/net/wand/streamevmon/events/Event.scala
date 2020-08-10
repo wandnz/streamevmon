@@ -31,13 +31,13 @@ import com.github.fsanaulla.chronicler.core.model.InfluxWriter
   *                         liable to be lost.
   */
 case class Event(
-  eventType: String,
-  stream: Int,
-  severity: Int,
-  time: Instant,
+  eventType       : String,
+  stream          : String,
+  severity        : Int,
+  time            : Instant,
   detectionLatency: Duration,
-  description: String,
-  tags: Map[String, String]
+  description     : String,
+  tags            : Map[String, String]
 ) extends Serializable {
 
   /** Converts a Map of tags into the relevant portion of a Line Protocol Format
@@ -55,7 +55,7 @@ case class Event(
     * @see [[https://docs.influxdata.com/influxdb/v1.7/write_protocols/line_protocol_reference/]]
     */
   def toLineProtocol: String = {
-    s"${getTagString(tags + ("stream" -> stream.toString))} " +
+    s"${getTagString(tags + ("stream" -> stream))} " +
       s"severity=${severity}i,detection_latency=${detectionLatency.toNanos}i," +
       s"""description="$description" """ +
       TimeUnit.MILLISECONDS.toNanos(time.toEpochMilli)

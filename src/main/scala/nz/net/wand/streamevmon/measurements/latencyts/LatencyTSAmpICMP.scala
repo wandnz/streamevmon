@@ -14,7 +14,7 @@ import java.time.Instant
   * @see [[https://wand.net.nz/wits/latency/1/]]
   */
 case class LatencyTSAmpICMP(
-  stream  : Int,
+  stream: String,
   source  : String,
   destination: String,
   family: String,
@@ -36,7 +36,7 @@ case class LatencyTSAmpICMP(
 object LatencyTSAmpICMP {
   val packet_size = 84
 
-  def create(line: String, streamId: Int): LatencyTSAmpICMP = {
+  def create(line: String, streamId: String): LatencyTSAmpICMP = {
     val fields = line.split(',')
     val meta = fields(0).split('-')
 

@@ -8,7 +8,7 @@ import java.time.Instant
   * @see [[RichEsmondMeasurement]]
   */
 case class RichSubinterval(
-  stream       : Int,
+  stream: String,
   value        : Iterable[SubintervalValue],
   metadataKey  : String,
   eventType    : String,
@@ -19,7 +19,7 @@ case class RichSubinterval(
 
 object RichSubinterval {
   def apply(
-    stream       : Int,
+    stream: String,
     entry        : SubintervalTimeSeriesEntry,
     metadataKey  : String,
     eventType    : String,

@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-icmp]]
   */
 final case class ICMP(
-  stream     : Int,
+  stream     : String,
   loss       : Option[Int],
   lossrate   : Option[Double],
   median     : Option[Int],
@@ -47,7 +47,7 @@ object ICMP extends InfluxMeasurementFactory {
   override def columnNames: Seq[String] = getColumnNames[ICMP]
 
   def apply(
-    stream     : Int,
+    stream     : String,
     loss       : Option[Int],
     lossrate   : Option[Double],
     median     : Option[Int],
@@ -75,7 +75,7 @@ object ICMP extends InfluxMeasurementFactory {
     else {
       Some(
         ICMP(
-          getNamedField(data, "stream").get.toInt,
+          getNamedField(data, "stream").get,
           getNamedField(data, "loss").map(_.dropRight(1).toInt),
           getNamedField(data, "lossrate").map(_.toDouble),
           getNamedField(data, "median").map(_.dropRight(1).toInt),

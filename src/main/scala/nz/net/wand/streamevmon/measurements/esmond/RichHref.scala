@@ -9,7 +9,7 @@ import java.time.Instant
   * @see [[RichEsmondMeasurement]]
   */
 case class RichHref(
-  stream       : Int,
+  stream: String,
   hrefLocation : Option[String],
   metadataKey  : String,
   eventType    : String,
@@ -23,7 +23,7 @@ case class RichHref(
 
 object RichHref {
   def apply(
-    stream       : Int,
+    stream: String,
     entry        : HrefTimeSeriesEntry,
     metadataKey  : String,
     eventType    : String,

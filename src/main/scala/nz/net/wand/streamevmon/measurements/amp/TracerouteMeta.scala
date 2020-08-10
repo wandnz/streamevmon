@@ -10,11 +10,11 @@ import org.squeryl.annotations.Column
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-trace]]
   */
 case class TracerouteMeta(
-    @Column("stream_id")
-    stream: Int,
-    source: String,
-    destination: String,
-    family: String,
-    @Column("packet_size")
-    packet_size_selection: String
-) extends MeasurementMeta
+  @Column("stream_id")
+  stream: Int,
+  source  : String,
+  destination: String,
+  family: String,
+  @Column("packet_size")
+  packet_size_selection: String
+) extends PostgresMeasurementMeta

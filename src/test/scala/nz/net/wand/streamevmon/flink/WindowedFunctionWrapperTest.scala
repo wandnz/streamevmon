@@ -20,7 +20,7 @@ class MyReallyFunOutOfOrderSourceFunction extends SourceFunction[InfluxMeasureme
   def collect(ctx: SourceFunction.SourceContext[InfluxMeasurement], id: Int): Unit = {
     ctx.collectWithTimestamp(
       Traceroute(
-        0,
+        ":)",
         Some(1),
         Instant.ofEpochMilli(1000000000000L + TimeUnit.SECONDS.toMillis(id))
       ),

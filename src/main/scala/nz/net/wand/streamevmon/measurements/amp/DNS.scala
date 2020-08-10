@@ -12,17 +12,17 @@ import java.util.concurrent.TimeUnit
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-dns]]
   */
 final case class DNS(
-  stream: Int,
-  flag_aa: Option[Boolean],
-  flag_ad: Option[Boolean],
-  flag_cd: Option[Boolean],
-  flag_qr: Option[Boolean],
-  flag_ra: Option[Boolean],
-  flag_rd: Option[Boolean],
-  flag_tc: Option[Boolean],
-  lossrate: Option[Double],
-  opcode: Option[Int],
-  query_len: Int,
+  stream          : String,
+  flag_aa         : Option[Boolean],
+  flag_ad         : Option[Boolean],
+  flag_cd         : Option[Boolean],
+  flag_qr         : Option[Boolean],
+  flag_ra         : Option[Boolean],
+  flag_rd         : Option[Boolean],
+  flag_tc         : Option[Boolean],
+  lossrate        : Option[Double],
+  opcode          : Option[Int],
+  query_len       : Int,
   rcode: Option[Int],
   requests: Int,
   response_size: Option[Int],
@@ -78,7 +78,7 @@ object DNS extends InfluxMeasurementFactory {
     else {
       Some(
         DNS(
-          getNamedField(data, "stream").get.toInt,
+          getNamedField(data, "stream").get,
           getNamedField(data, "flag_aa").map(_.toBoolean),
           getNamedField(data, "flag_ad").map(_.toBoolean),
           getNamedField(data, "flag_cd").map(_.toBoolean),

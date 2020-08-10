@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-tcpping]]
   */
 final case class TCPPing(
-  stream     : Int,
+  stream: String,
   icmperrors : Option[Int],
   loss       : Option[Int],
   lossrate   : Option[Double],
@@ -48,7 +48,7 @@ object TCPPing extends InfluxMeasurementFactory {
   override def columnNames: Seq[String] = getColumnNames[TCPPing]
 
   def apply(
-    stream     : Int,
+    stream: String,
     icmperrors : Option[Int],
     loss       : Option[Int],
     lossrate   : Option[Double],
@@ -78,7 +78,7 @@ object TCPPing extends InfluxMeasurementFactory {
     else {
       Some(
         TCPPing(
-          getNamedField(data, "stream").get.toInt,
+          getNamedField(data, "stream").get,
           getNamedField(data, "icmperrors").map(_.dropRight(1).toInt),
           getNamedField(data, "loss").map(_.dropRight(1).toInt),
           getNamedField(data, "lossrate").map(_.toDouble),

@@ -8,7 +8,7 @@ import java.time.Instant
   * @see [[RichEsmondMeasurement]]
   */
 case class RichHistogram(
-  stream       : Int,
+  stream: String,
   value        : Map[Double, Int],
   metadataKey  : String,
   eventType    : String,
@@ -19,7 +19,7 @@ case class RichHistogram(
 
 object RichHistogram {
   def apply(
-    stream       : Int,
+    stream: String,
     entry        : HistogramTimeSeriesEntry,
     metadataKey  : String,
     eventType    : String,

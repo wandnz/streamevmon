@@ -8,14 +8,14 @@ import java.time.Instant
   * host to another.
   */
 case class PacketTrace(
-  stream: Int,
+  stream: String,
   value : Iterable[PacketTraceEntry],
   time  : Instant
 ) extends EsmondMeasurement {}
 
 object PacketTrace {
   def apply(
-    stream: Int,
+    stream: String,
     entry : PacketTraceTimeSeriesEntry
   ): PacketTrace = new PacketTrace(
     stream,

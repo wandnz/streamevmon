@@ -8,14 +8,14 @@ import java.time.Instant
   * measurement shows a distribution of several more specific measurements.
   */
 case class Histogram(
-  stream: Int,
+  stream: String,
   value : Map[Double, Int],
   time  : Instant
 ) extends EsmondMeasurement {}
 
 object Histogram {
   def apply(
-    stream: Int,
+    stream: String,
     entry : HistogramTimeSeriesEntry
   ): Histogram = new Histogram(
     stream,

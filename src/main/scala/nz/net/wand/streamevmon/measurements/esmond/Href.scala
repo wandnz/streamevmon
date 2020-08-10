@@ -7,7 +7,7 @@ import java.time.Instant
 
 /** Just a link to another API endpoint. */
 case class Href(
-  stream      : Int,
+  stream: String,
   hrefLocation: Option[String],
   time        : Instant
 ) extends EsmondMeasurement
@@ -17,7 +17,7 @@ case class Href(
 
 object Href {
   def apply(
-    stream: Int,
+    stream: String,
     entry : HrefTimeSeriesEntry
   ): Href = new Href(
     stream,

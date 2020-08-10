@@ -9,7 +9,7 @@ import java.time.Instant
   * include a time and a description.
   */
 case class Failure(
-  stream     : Int,
+  stream: String,
   failureText: Option[String],
   time       : Instant
 ) extends EsmondMeasurement
@@ -19,7 +19,7 @@ case class Failure(
 
 object Failure {
   def apply(
-    stream: Int,
+    stream: String,
     entry : FailureTimeSeriesEntry
   ): Failure = new Failure(
     stream,

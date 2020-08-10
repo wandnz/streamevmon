@@ -9,7 +9,7 @@ import java.time.Instant
   * series data.
   */
 case class Simple(
-  stream: Int,
+  stream: String,
   value : Double,
   time  : Instant
 ) extends EsmondMeasurement
@@ -22,7 +22,7 @@ case class Simple(
 
 object Simple {
   def apply(
-    stream: Int,
+    stream: String,
     entry : SimpleTimeSeriesEntry
   ): Simple = new Simple(
     stream,

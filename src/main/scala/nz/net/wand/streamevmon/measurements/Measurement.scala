@@ -10,7 +10,7 @@ trait Measurement extends Serializable {
     * separate time series. For example, amp measurements have a stream ID which
     * corresponds to a particular test schedule.
     */
-  val stream: Int
+  val stream: String
 
   /** The time at which the measurement occurred. */
   val time: Instant

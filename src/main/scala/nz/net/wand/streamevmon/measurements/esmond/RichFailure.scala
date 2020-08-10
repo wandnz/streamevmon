@@ -9,7 +9,7 @@ import java.time.Instant
   * @see [[RichEsmondMeasurement]]
   */
 case class RichFailure(
-  stream       : Int,
+  stream: String,
   failureText  : Option[String],
   metadataKey  : String,
   eventType    : String,
@@ -24,7 +24,7 @@ case class RichFailure(
 
 object RichFailure {
   def apply(
-    stream       : Int,
+    stream: String,
     entry        : FailureTimeSeriesEntry,
     metadataKey  : String,
     eventType    : String,

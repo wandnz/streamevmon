@@ -18,7 +18,7 @@ class WindowedFunctionCheckpointingTest extends NoHarnessCheckpointingTestBase {
       "wrapping a KeyedProcessFunction" in {
         val expected = Event(
           "distdiff_events",
-          3,
+          "3",
           100,
           Instant.ofEpochMilli(1000000001002L),
           Duration.ofNanos(182000000L),
@@ -44,7 +44,7 @@ class WindowedFunctionCheckpointingTest extends NoHarnessCheckpointingTestBase {
 
         val expected = Event(
           "distdiff_events",
-          3,
+          "3",
           100,
           Instant.ofEpochMilli(1000000000630L),
           Duration.ofNanos(200000000L),

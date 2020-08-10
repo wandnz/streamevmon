@@ -38,7 +38,7 @@ class InfluxSinkTest extends InfluxContainerSpec {
 
             Event(
               eventType = SeedData.event.withoutTags.eventType,
-              stream = arr.get(1).toString.drop(1).dropRight(1).toInt,
+              stream = arr.get(1).toString.drop(1).dropRight(1),
               severity = arr.get(2).asInt,
               time = Instant.parse(arr.get(0).toString.drop(1).dropRight(1)),
               detectionLatency = JavaDuration.ofNanos(arr.get(3).asInt),
@@ -60,7 +60,7 @@ class InfluxSinkTest extends InfluxContainerSpec {
 
             Event(
               eventType = SeedData.event.withTags.eventType,
-              stream = arr.get(3).toString.drop(1).dropRight(1).toInt,
+              stream = arr.get(3).toString.drop(1).dropRight(1),
               severity = arr.get(4).asInt,
               time = Instant.parse(arr.get(0).toString.drop(1).dropRight(1)),
               detectionLatency = JavaDuration.ofNanos(arr.get(5).asInt),

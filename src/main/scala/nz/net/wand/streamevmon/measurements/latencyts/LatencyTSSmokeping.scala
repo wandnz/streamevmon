@@ -15,7 +15,7 @@ import scala.math.round
   * @see [[https://wand.net.nz/wits/latency/1/]]
   */
 case class LatencyTSSmokeping(
-  stream  : Int,
+  stream: String,
   destination: String,
   family: String,
   time: Instant,
@@ -86,7 +86,7 @@ object LatencyTSSmokeping {
     20 - in.length
   }
 
-  def create(line: String, streamId: Int): LatencyTSSmokeping = {
+  def create(line: String, streamId: String): LatencyTSSmokeping = {
     val fields = line.split(",", -1)
 
     val measurements = fields.drop(4).map(x => x.toDouble)

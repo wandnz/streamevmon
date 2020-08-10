@@ -40,6 +40,6 @@ class LatencyTSSmokepingFileInputFormat extends GenericCsvInputFormat[LatencyTSS
     val key = line.split(",")(0)
     val stream = recordToStream.getOrElseUpdate(key, recordToStream.size)
 
-    LatencyTSSmokeping.create(line, stream)
+    LatencyTSSmokeping.create(line, stream.toString)
   }
 }

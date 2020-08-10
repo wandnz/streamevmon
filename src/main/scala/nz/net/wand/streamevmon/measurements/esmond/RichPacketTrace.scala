@@ -8,7 +8,7 @@ import java.time.Instant
   * @see [[RichEsmondMeasurement]]
   */
 case class RichPacketTrace(
-  stream       : Int,
+  stream: String,
   value        : Iterable[PacketTraceEntry],
   metadataKey  : String,
   eventType    : String,
@@ -19,7 +19,7 @@ case class RichPacketTrace(
 
 object RichPacketTrace {
   def apply(
-    stream       : Int,
+    stream: String,
     entry        : PacketTraceTimeSeriesEntry,
     metadataKey  : String,
     eventType    : String,

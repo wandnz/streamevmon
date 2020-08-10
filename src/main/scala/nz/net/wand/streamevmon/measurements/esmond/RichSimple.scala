@@ -9,7 +9,7 @@ import java.time.Instant
   * @see [[RichEsmondMeasurement]]
   */
 case class RichSimple(
-  stream       : Int,
+  stream: String,
   value        : Double,
   metadataKey  : String,
   eventType    : String,
@@ -27,7 +27,7 @@ case class RichSimple(
 
 object RichSimple {
   def apply(
-    stream       : Int,
+    stream: String,
     entry        : SimpleTimeSeriesEntry,
     metadataKey  : String,
     eventType    : String,

@@ -17,16 +17,16 @@ trait EsmondMeasurement extends Measurement {
 object EsmondMeasurement {
 
   /** Stream IDs are derived directly from the test schedule's unique ID. */
-  def calculateStreamId(eventType: EventType): Int = eventType.baseUri.hashCode
+  def calculateStreamId(eventType: EventType): String = eventType.baseUri
 
   /** Stream IDs are derived directly from the test schedule's unique ID. */
-  def calculateStreamId(summary: Summary): Int = summary.uri.hashCode
+  def calculateStreamId(summary: Summary): String = summary.uri
 
   /** The apply methods of this obejct will return the correct type of
     * measurement according to the entry passed to it.
     */
   def apply(
-    stream: Int,
+    stream: String,
     entry : AbstractTimeSeriesEntry
   ): EsmondMeasurement = {
     entry match {

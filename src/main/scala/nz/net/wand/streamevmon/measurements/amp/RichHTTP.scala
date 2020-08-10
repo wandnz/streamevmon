@@ -12,7 +12,7 @@ import java.time.{Instant, ZoneId}
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-http]]
   */
 case class RichHTTP(
-  stream                               : Int,
+  stream: String,
   source                               : String,
   destination                          : String,
   max_connections                      : Int,
@@ -55,14 +55,14 @@ case class RichHTTP(
 }
 
 object RichHTTP extends RichInfluxMeasurementFactory {
-  override def create(base: InfluxMeasurement, meta: MeasurementMeta): Option[RichInfluxMeasurement] = {
+  override def create(base: InfluxMeasurement, meta: PostgresMeasurementMeta): Option[RichInfluxMeasurement] = {
     base match {
       case b: HTTP =>
         meta match {
           case m: HTTPMeta =>
             Some(
               RichHTTP(
-                m.stream,
+                m.stream.toString,
                 m.source,
                 m.destination,
                 m.max_connections,

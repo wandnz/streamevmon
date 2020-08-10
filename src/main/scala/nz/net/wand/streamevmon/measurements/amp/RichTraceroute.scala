@@ -12,7 +12,7 @@ import java.time.{Instant, ZoneId}
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-trace]]
   */
 case class RichTraceroute(
-  stream               : Int,
+  stream: String,
   source               : String,
   destination          : String,
   family               : String,
@@ -41,14 +41,14 @@ case class RichTraceroute(
 
 object RichTraceroute extends RichInfluxMeasurementFactory {
 
-  override def create(base: InfluxMeasurement, meta: MeasurementMeta): Option[RichInfluxMeasurement] = {
+  override def create(base: InfluxMeasurement, meta: PostgresMeasurementMeta): Option[RichInfluxMeasurement] = {
     base match {
       case b: Traceroute =>
         meta match {
           case m: TracerouteMeta =>
             Some(
               RichTraceroute(
-                m.stream,
+                m.stream.toString,
                 m.source,
                 m.destination,
                 m.family,

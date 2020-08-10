@@ -40,7 +40,7 @@ object InfluxSchema {
 
       Try(
         ICMP(
-          js.get(cols.indexOf("stream")).asString.toInt,
+          js.get(cols.indexOf("stream")).asString,
           nullToOption(js.get(cols.indexOf("loss"))).map(_.asInt),
           nullToOption(js.get(cols.indexOf("lossrate"))).map(_.asDouble),
           nullToOption(js.get(cols.indexOf("median"))).map(_.asInt),
@@ -61,7 +61,7 @@ object InfluxSchema {
 
       Try(
         DNS(
-          js.get(cols.indexOf("stream")).asString.toInt,
+          js.get(cols.indexOf("stream")).asString,
           nullToOption(js.get(cols.indexOf("flag_aa"))).map(_.asBoolean),
           nullToOption(js.get(cols.indexOf("flag_ad"))).map(_.asBoolean),
           nullToOption(js.get(cols.indexOf("flag_cd"))).map(_.asBoolean),
@@ -94,7 +94,7 @@ object InfluxSchema {
 
       Try(
         HTTP(
-          js.get(cols.indexOf("stream")).asString.toInt,
+          js.get(cols.indexOf("stream")).asString,
           js.get(cols.indexOf("bytes")).asInt,
           js.get(cols.indexOf("duration")).asInt,
           js.get(cols.indexOf("object_count")).asInt,
@@ -113,7 +113,7 @@ object InfluxSchema {
 
       Try(
         TCPPing(
-          js.get(cols.indexOf("stream")).asString.toInt,
+          js.get(cols.indexOf("stream")).asString,
           nullToOption(js.get(cols.indexOf("icmperrors"))).map(_.asInt),
           nullToOption(js.get(cols.indexOf("loss"))).map(_.asInt),
           nullToOption(js.get(cols.indexOf("lossrate"))).map(_.asDouble),
@@ -135,7 +135,7 @@ object InfluxSchema {
 
       Try(
         Traceroute(
-          js.get(cols.indexOf("stream")).asString.toInt,
+          js.get(cols.indexOf("stream")).asString,
           nullToOption(js.get(cols.indexOf("path_length"))).map(_.asInt),
           Instant.parse(js.get(cols.indexOf("time")).asString)
         )
@@ -153,7 +153,7 @@ object InfluxSchema {
         Flow(
           js.get(cols.indexOf("capture_application")).asString,
           js.get(cols.indexOf("capture_host")).asString,
-          js.get(cols.indexOf("flow_id")).asInt,
+          js.get(cols.indexOf("flow_id")).asInt.toString,
           FlowType.withName(js.get(cols.indexOf("type")).asString),
           js.get(cols.indexOf("category")).asString,
           js.get(cols.indexOf("protocol")).asString,

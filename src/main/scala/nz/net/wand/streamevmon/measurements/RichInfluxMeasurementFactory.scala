@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.measurements
 
-import nz.net.wand.streamevmon.measurements.amp.MeasurementMeta
+import nz.net.wand.streamevmon.measurements.amp.PostgresMeasurementMeta
 
 /** Mixed into companion objects of concrete [[RichInfluxMeasurement]] classes.
   *
@@ -18,6 +18,6 @@ trait RichInfluxMeasurementFactory {
     */
   def create(
     base: InfluxMeasurement,
-    meta: MeasurementMeta
+    meta: PostgresMeasurementMeta
   ): Option[RichInfluxMeasurement]
 }

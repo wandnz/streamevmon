@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.measurements
 import nz.net.wand.streamevmon.{PostgresContainerSpec, SeedData}
 import nz.net.wand.streamevmon.measurements.amp._
 
-class MeasurementMetaCreateTest extends PostgresContainerSpec {
+class PostgresMeasurementMetaCreateTest extends PostgresContainerSpec {
   "PostgresConnection" should {
     lazy val pg = getPostgres
 

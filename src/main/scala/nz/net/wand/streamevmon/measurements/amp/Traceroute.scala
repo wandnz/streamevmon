@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-trace]]
   */
 final case class Traceroute(
-  stream     : Int,
+  stream: String,
   path_length: Option[Double],
   time       : Instant
 ) extends InfluxMeasurement {
@@ -44,7 +44,7 @@ object Traceroute extends InfluxMeasurementFactory {
     else {
       Some(
         Traceroute(
-          getNamedField(data, "stream").get.toInt,
+          getNamedField(data, "stream").get,
           getNamedField(data, "path_length").map(_.toDouble),
           Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(data.last.toLong))
         ))

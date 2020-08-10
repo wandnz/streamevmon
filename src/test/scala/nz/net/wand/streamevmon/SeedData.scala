@@ -33,7 +33,7 @@ object SeedData {
       "data_amp_icmp,stream=3 loss=1i,lossrate=1.0,packet_size=520i,results=1i,rtts=\"[None]\" 1574696840000000000"
 
     val lossyExpected = ICMP(
-      stream = 3,
+      stream = "3",
       loss = Some(1),
       lossrate = Some(1.0),
       median = None,
@@ -44,7 +44,7 @@ object SeedData {
     )
 
     val expected = ICMP(
-      stream = 3,
+      stream = "3",
       loss = Some(0),
       lossrate = Some(0.0),
       median = Some(225),
@@ -63,7 +63,7 @@ object SeedData {
     )
 
     val expectedRich = RichICMP(
-      stream = 3,
+      stream = "3",
       source = "amplet",
       destination = "wand.net.nz",
       family = "ipv4",
@@ -145,7 +145,7 @@ object SeedData {
       "data_amp_dns,stream=1 lossrate=1.0,query_len=40i,requests=1i 1573020910000000000"
 
     val lossyExpected = DNS(
-      stream = 1,
+      stream = "1",
       flag_aa = None,
       flag_ad = None,
       flag_cd = None,
@@ -168,7 +168,7 @@ object SeedData {
     )
 
     val expected = DNS(
-      stream = 1,
+      stream = "1",
       flag_aa = Some(false),
       flag_ad = Some(false),
       flag_cd = Some(false),
@@ -206,7 +206,7 @@ object SeedData {
     )
 
     val expectedRich = RichDNS(
-      stream = 1,
+      stream = "1",
       source = "amplet",
       destination = "8.8.8.8",
       instance = "8.8.8.8",
@@ -253,7 +253,7 @@ object SeedData {
       "data_amp_traceroute_pathlen,stream=5 path_length=12.0 1563761842000000000"
 
     val expected = Traceroute(
-      stream = 5,
+      stream = "5",
       path_length = Some(12.0),
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1563761842000000000L))
     )
@@ -267,7 +267,7 @@ object SeedData {
     )
 
     val expectedRich = RichTraceroute(
-      stream = 5,
+      stream = "5",
       source = "amplet",
       destination = "google.com",
       family = "ipv4",
@@ -283,7 +283,7 @@ object SeedData {
       "data_amp_tcpping,stream=9 icmperrors=0i,loss=0i,lossrate=0.0,median=189i,packet_size=64i,results=1i,rtts=\"[189]\" 1564713040000000000"
 
     val expected = TCPPing(
-      stream = 9,
+      stream = "9",
       icmperrors = Some(0),
       loss = Some(0),
       lossrate = Some(0.0),
@@ -304,7 +304,7 @@ object SeedData {
     )
 
     val expectedRich = RichTCPPing(
-      stream = 9,
+      stream = "9",
       source = "amplet",
       destination = "wand.net.nz",
       port = 443,
@@ -327,7 +327,7 @@ object SeedData {
       "data_amp_http,stream=17 bytes=62210i,duration=77i,object_count=8i,server_count=1i 1564713045000000000"
 
     val expected = HTTP(
-      stream = 17,
+      stream = "17",
       bytes = 62210,
       duration = 77,
       object_count = 8,
@@ -349,7 +349,7 @@ object SeedData {
     )
 
     val expectedRich = RichHTTP(
-      stream = 17,
+      stream = "17",
       source = "amplet",
       destination = "https://wand.net.nz/",
       max_connections = 24,
@@ -372,7 +372,7 @@ object SeedData {
     val ampLine = "callplus-afrinic-ipv6,1391079600,462691,0.000"
 
     val amp = LatencyTSAmpICMP(
-      stream = 0,
+      stream = "0",
       source = "callplus",
       destination = "afrinic",
       family = "ipv6",
@@ -385,7 +385,7 @@ object SeedData {
       "afrinic.net,1380538800,452.753,0.000,451.013,451.634,451.649,451.876,451.976,452.218,452.268,452.388,452.446,452.752,452.753,453.010,453.095,453.379,453.545,453.747,454.080,456.494,456.496,456.526"
 
     val smokepingNoLoss = LatencyTSSmokeping(
-      stream = 1,
+      stream = "1",
       destination = "afrinic.net",
       family = "ipv4",
       time = Instant.ofEpochSecond(1380538800.toLong),
@@ -400,7 +400,7 @@ object SeedData {
       "afrinic.net,1385108700,462.624,10,462.022,462.132,462.248,462.318,462.361,462.624,463.236,463.273,464.07,464.38"
 
     val smokepingSomeLoss = LatencyTSSmokeping(
-      stream = 2,
+      stream = "2",
       destination = "afrinic.net",
       family = "ipv4",
       time = Instant.ofEpochSecond(1385108700.toLong),
@@ -413,7 +413,7 @@ object SeedData {
     val smokepingLineAllLoss = "afrinic.net,1381975500,,20"
 
     val smokepingAllLoss = LatencyTSSmokeping(
-      stream = 3,
+      stream = "3",
       destination = "afrinic.net",
       family = "ipv4",
       time = Instant.ofEpochSecond(1381975500.toLong),
@@ -425,7 +425,7 @@ object SeedData {
     val smokepingLineNoEntry = "afrinic.net,1385428200,,"
 
     val smokepingNoEntry = LatencyTSSmokeping(
-      stream = 4,
+      stream = "4",
       destination = "afrinic.net",
       family = "ipv4",
       time = Instant.ofEpochSecond(1385428200.toLong),
@@ -438,7 +438,7 @@ object SeedData {
       "afrinic.net,1384488300,435.381,7.000,434.960,434.970,435.090,435.099,435.100,435.110,435.122,435.130,435.274,435.366,435.381,435.444,435.800,435.802,436.056,436.230,436.240,436.400,436.410,588.667"
 
     val smokepingMismatchedLoss = LatencyTSSmokeping(
-      stream = 5,
+      stream = "5",
       destination = "afrinic.net",
       family = "ipv4",
       time = Instant.ofEpochSecond(1384488300.toLong),
@@ -453,7 +453,7 @@ object SeedData {
   object event {
     val withTags: Event = Event(
       eventType = "threshold_events",
-      stream = 1,
+      stream = "1",
       severity = 10,
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
       detectionLatency = Duration.ofNanos(12345),
@@ -470,7 +470,7 @@ object SeedData {
 
     val withoutTags: Event = Event(
       eventType = "changepoint_events",
-      stream = 1,
+      stream = "1",
       severity = 10,
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
       detectionLatency = Duration.ofNanos(12345),
@@ -493,7 +493,7 @@ object SeedData {
       Flow(
         capture_application = "libtrace-bigdata",
         capture_host = "libtrace-bigdata",
-        stream = 3,
+        stream = "3",
         flow_type = Flow.FlowType.Interval,
         category = "ICMP",
         protocol = "ICMP",
@@ -524,7 +524,7 @@ object SeedData {
       Flow(
         capture_application = "libtrace-bigdata",
         capture_host = "libtrace-bigdata",
-        stream = 39,
+        stream = "39",
         flow_type = Flow.FlowType.Start,
         category = "Web",
         protocol = "HTTP",

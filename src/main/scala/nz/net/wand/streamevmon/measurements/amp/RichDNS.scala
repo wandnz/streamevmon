@@ -12,7 +12,7 @@ import java.time.{Instant, ZoneId}
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-dns]]
   */
 case class RichDNS(
-  stream          : Int,
+  stream          : String,
   source          : String,
   destination     : String,
   instance        : String,
@@ -85,7 +85,7 @@ case class RichDNS(
   // Case classes don't generate unapply methods for more than 22 fields, since
   // the biggest Tuple is 22 items.
   override def toCsvFormat: Seq[String] = Seq(
-    stream: Int,
+    stream: String,
     source: String,
     destination: String,
     instance: String,
@@ -123,14 +123,14 @@ case class RichDNS(
 
 object RichDNS extends RichInfluxMeasurementFactory {
 
-  override def create(base: InfluxMeasurement, meta: MeasurementMeta): Option[RichInfluxMeasurement] = {
+  override def create(base: InfluxMeasurement, meta: PostgresMeasurementMeta): Option[RichInfluxMeasurement] = {
     base match {
       case b: DNS =>
         meta match {
           case m: DNSMeta =>
             Some(
               RichDNS(
-                m.stream,
+                m.stream.toString,
                 m.source,
                 m.destination,
                 m.instance,

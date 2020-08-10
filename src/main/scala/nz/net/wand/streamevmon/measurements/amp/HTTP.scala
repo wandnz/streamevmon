@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-http]]
   */
 final case class HTTP(
-  stream      : Int,
+  stream      : String,
   bytes       : Int,
   duration    : Int,
   object_count: Int,
@@ -50,7 +50,7 @@ object HTTP extends InfluxMeasurementFactory {
     else {
       Some(
         HTTP(
-          getNamedField(data, "stream").get.toInt,
+          getNamedField(data, "stream").get,
           getNamedField(data, "bytes").get.dropRight(1).toInt,
           getNamedField(data, "duration").get.dropRight(1).toInt,
           getNamedField(data, "object_count").get.dropRight(1).toInt,

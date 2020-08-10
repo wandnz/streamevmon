@@ -12,6 +12,7 @@ import org.squeryl.{Session, SessionFactory}
 import org.squeryl.adapters.PostgreSqlAdapter
 
 import scala.concurrent.duration.{FiniteDuration, _}
+import scala.util.Try
 
 /** Contains additional apply methods for the companion class.
   */
@@ -66,7 +67,7 @@ object PostgresConnection extends Caching {
 }
 
 /** PostgreSQL interface which produces
-  * [[nz.net.wand.streamevmon.measurements.amp.MeasurementMeta MeasurementMeta]]
+  * [[nz.net.wand.streamevmon.measurements.amp.PostgresMeasurementMeta MeasurementMeta]]
   * objects. See the package description for configuration details for normal
   * usage.
   */
@@ -124,9 +125,9 @@ case class PostgresConnection(
     *
     * @return The metadata if successful, otherwise None.
     */
-  def getMeta(base: Measurement): Option[MeasurementMeta] = {
+  def getMeta(base: Measurement): Option[PostgresMeasurementMeta] = {
     val cacheKey = s"${base.getClass.getSimpleName}.${base.stream}"
-    val result: Option[MeasurementMeta] = getWithCache(
+    val result: Option[PostgresMeasurementMeta] = getWithCache(
       cacheKey,
       ttl, {
         if (!getOrInitSession()) {
@@ -137,13 +138,16 @@ case class PostgresConnection(
           import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
 
           base match {
-            case _: ICMP => transaction(icmpMeta.where(m => m.stream === base.stream).headOption)
-            case _: DNS => transaction(dnsMeta.where(m => m.stream === base.stream).headOption)
+            // It looks like we can't perform m.stream.toString, since Squeryl starts complaining about not knowing
+            // how to cast integers to strings in a PostgreSQL context. Instead, we'll cast our stream ID to an int,
+            // which of course might fail. If it does fail, we'll return a known false expression instead.
+            case _: ICMP => transaction(icmpMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
+            case _: DNS => transaction(dnsMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
             case _: Traceroute =>
-              transaction(tracerouteMeta.where(m => m.stream === base.stream).headOption)
+              transaction(tracerouteMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
             case _: TCPPing =>
-              transaction(tcppingMeta.where(m => m.stream === base.stream).headOption)
-            case _: HTTP => transaction(httpMeta.where(m => m.stream === base.stream).headOption)
+              transaction(tcppingMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
+            case _: HTTP => transaction(httpMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
             case _ => None
           }
         }

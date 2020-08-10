@@ -39,6 +39,6 @@ class LatencyTSAmpFileInputFormat extends GenericCsvInputFormat[LatencyTSAmpICMP
     val key = line.split(",")(0)
     val stream = recordToStream.getOrElseUpdate(key, recordToStream.size)
 
-    LatencyTSAmpICMP.create(line, stream)
+    LatencyTSAmpICMP.create(line, stream.toString)
   }
 }

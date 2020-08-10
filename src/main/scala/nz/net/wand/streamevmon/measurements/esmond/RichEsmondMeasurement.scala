@@ -30,7 +30,7 @@ object RichEsmondMeasurement {
     * measurement according to the entry passed to it.
     */
   def apply(
-    stream       : Int,
+    stream       : String,
     entry        : AbstractTimeSeriesEntry,
     metadataKey  : String,
     eventType    : String,

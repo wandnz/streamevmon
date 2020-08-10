@@ -12,7 +12,7 @@ import java.time.{Instant, ZoneId}
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-icmp]]
   */
 case class RichICMP(
-  stream               : Int,
+  stream: String,
   source               : String,
   destination          : String,
   family               : String,
@@ -50,14 +50,14 @@ case class RichICMP(
 
 object RichICMP extends RichInfluxMeasurementFactory {
 
-  override def create(base: InfluxMeasurement, meta: MeasurementMeta): Option[RichInfluxMeasurement] = {
+  override def create(base: InfluxMeasurement, meta: PostgresMeasurementMeta): Option[RichInfluxMeasurement] = {
     base match {
       case b: ICMP =>
         meta match {
           case m: ICMPMeta =>
             Some(
               RichICMP(
-                m.stream,
+                m.stream.toString,
                 m.source,
                 m.destination,
                 m.family,

@@ -12,7 +12,7 @@ import java.time.{Instant, ZoneId}
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-tcpping]]
   */
 case class RichTCPPing(
-  stream               : Int,
+  stream: String,
   source               : String,
   destination          : String,
   port                 : Int,
@@ -53,14 +53,14 @@ case class RichTCPPing(
 }
 
 object RichTCPPing extends RichInfluxMeasurementFactory {
-  override def create(base: InfluxMeasurement, meta: MeasurementMeta): Option[RichInfluxMeasurement] = {
+  override def create(base: InfluxMeasurement, meta: PostgresMeasurementMeta): Option[RichInfluxMeasurement] = {
     base match {
       case b: TCPPing =>
         meta match {
           case m: TCPPingMeta =>
             Some(
               RichTCPPing(
-                m.stream,
+                m.stream.toString,
                 m.source,
                 m.destination,
                 m.port,

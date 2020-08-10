@@ -11,7 +11,7 @@ package nz.net.wand.streamevmon.measurements
   * The metadata used to enrich a measurement is obtained from PostgreSQL (see
   * [[nz.net.wand.streamevmon.connectors.postgres Postgres connector package]]),
   * and can be obtained separately as a
-  * [[nz.net.wand.streamevmon.measurements.amp.MeasurementMeta MeasurementMeta]].
+  * [[nz.net.wand.streamevmon.measurements.amp.PostgresMeasurementMeta MeasurementMeta]].
   * The metadata is information about the test schedule which produced the
   * measurement.
   *

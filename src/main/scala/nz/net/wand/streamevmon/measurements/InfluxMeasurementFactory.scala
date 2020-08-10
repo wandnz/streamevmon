@@ -28,9 +28,9 @@ trait InfluxMeasurementFactory {
     * @tparam T The type to determine the overrides for.
     */
   private def getColumnNameOverrides[T <: InfluxMeasurement : TypeTag]: Seq[(String, String)] =
-    symbolOf[T].toType.members.map { m =>
+    symbolOf[T].toType.members.flatMap { m =>
       if (m.annotations.exists(a => a.tree.tpe <:< typeOf[Column])) {
-        (
+        Seq((
           m.name.toString.trim,
           m
             .annotations
@@ -39,12 +39,12 @@ trait InfluxMeasurementFactory {
             .tree.children.tail.head
             .collect { case Literal(Constant(value: String)) => value }
             .head
-        )
+        ))
       }
       else {
-        Nil
+        Seq()
       }
-    }.filterNot(_ == Nil).asInstanceOf[Seq[(String, String)]]
+    }.asInstanceOf[Seq[(String, String)]]
 
   /** Returns a collection containing the database column names associated with
     * a type, in the same order as the case class declares them.

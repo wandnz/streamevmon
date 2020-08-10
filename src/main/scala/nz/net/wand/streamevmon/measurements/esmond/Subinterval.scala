@@ -8,14 +8,14 @@ import java.time.Instant
   * time intervals.
   */
 case class Subinterval(
-  stream: Int,
+  stream: String,
   value : Iterable[SubintervalValue],
   time  : Instant
 ) extends EsmondMeasurement
 
 object Subinterval {
   def apply(
-    stream: Int,
+    stream: String,
     entry : SubintervalTimeSeriesEntry
   ): Subinterval = new Subinterval(
     stream,

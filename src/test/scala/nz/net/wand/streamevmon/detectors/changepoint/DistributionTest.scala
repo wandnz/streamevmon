@@ -17,7 +17,7 @@ class DistributionTest extends TestBase {
   "NormalDistribution" should {
     "generate the correct values" in {
       case class JustADouble(d: Double) extends Measurement with HasDefault {
-        override val stream: Int = -1
+        override val stream: String = ""
         override val time: Instant = Instant.EPOCH
 
         override def isLossy: Boolean = false
