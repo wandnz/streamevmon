@@ -75,6 +75,19 @@ class SourceBuildTest extends TestBase {
         an[UnsupportedOperationException] should be thrownBy srcInstance.buildSourceFunction
         built.configWithOverride(ParameterTool.fromArgs(Array())).toMap.asScala should contain(s"source.${built.configKeyGroup}.smokeping.extraKey" -> "true")
       }
+
+      "source type is NAB" in {
+        val srcInstance = SourceInstance(
+          SourceType.NAB,
+          None,
+          config = Map("extraKey" -> "true")
+        )
+        val built = srcInstance.buildFileInputFormat
+
+        built shouldBe a[NabFileInputFormat]
+        an[UnsupportedOperationException] should be thrownBy srcInstance.buildSourceFunction
+        built.configWithOverride(ParameterTool.fromArgs(Array())).toMap.asScala should contain(s"source.${built.configKeyGroup}.extraKey" -> "true")
+      }
     }
   }
 
