@@ -190,6 +190,8 @@ must be unique within the enum.
   construct a source should be placed in SourceSubtype if subtypes are 
   supported, or SourceType otherwise. In either case, add new values of type 
   `ValueBuilder` to the relevant class.
+  * Note that a FileInputFormat should also return a FilePathFilter to determine
+    which files it should read.
 * Sinks are even simpler. Just add a new `ValueBuilder` and some construction
   logic to `SinkType`.
 * Measurement types should be added to `SourceDatatype`. These new values should

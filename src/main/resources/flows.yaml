@@ -53,7 +53,7 @@ detectors:
     type: distdiff
     instances:
       - source:
-          - name: latencyts
+          - name: amp
             datatype: dns
             filterLossy: true
         sink:

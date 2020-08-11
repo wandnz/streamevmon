@@ -55,6 +55,9 @@ source:
       location: ./data/latency-ts-i/smokeping/series
       files: "*"
 
+  nab:
+    location: ./data/NAB/data
+
 sink:
   influx:
     databaseName: streamevmon

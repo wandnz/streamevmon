@@ -10,16 +10,13 @@ import java.time.Duration
 import java.util.concurrent.TimeUnit
 
 import org.apache.flink.api.common.eventtime.WatermarkStrategy
-import org.apache.flink.api.common.io.GlobFilePathFilter
 import org.apache.flink.api.common.restartstrategy.RestartStrategies
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
-import org.apache.flink.streaming.api.functions.source.FileProcessingMode
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.windowing.time.Time
 
 import scala.collection.mutable
-import scala.collection.JavaConverters._
 import scala.util.Try
 
 /** Reads a flow configuration from a YAML file, and constructs and executes
@@ -70,7 +67,7 @@ object YamlDagRunner {
       case (name, sourceInstance) =>
         val lazyBuilt = new Lazy({
           Try(sourceInstance.buildSourceFunction).toOption.fold {
-            val format = sourceInstance.buildFileInputFormat
+            val (format, filter) = sourceInstance.buildFileInputFormat
             val formatConf = format.configWithOverride(config)
 
             val configPrefixNoSubtype = s"source.${sourceInstance.sourceType}"
@@ -78,22 +75,14 @@ object YamlDagRunner {
               .map(s => s"$configPrefixNoSubtype.$s")
               .getOrElse(configPrefixNoSubtype)
 
-            format.setFilesFilter(
-              new GlobFilePathFilter(
-                Seq(formatConf.get(s"$configPrefix.files"))
-                  .map(f => s"**/$f.series")
-                  .asJava,
-                Seq().asJava
-              ))
+            format.setFilesFilter(filter(formatConf))
 
             val timestampAssigner = new MeasurementTimestampAssigner
 
             env
               .readFile(
                 format,
-                formatConf.get(s"$configPrefix.location"),
-                FileProcessingMode.PROCESS_ONCE,
-                0L
+                formatConf.get(s"$configPrefix.location")
               )
               .setParallelism(1)
               .name(s"$name (${format.flinkName})")

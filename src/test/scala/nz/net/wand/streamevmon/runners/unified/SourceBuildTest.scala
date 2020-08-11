@@ -56,7 +56,7 @@ class SourceBuildTest extends TestBase {
           Some(SourceSubtype.LatencyTSAmp),
           config = Map("extraKey" -> "true")
         )
-        val built = srcInstance.buildFileInputFormat
+        val built = srcInstance.buildFileInputFormat._1
 
         built shouldBe a[LatencyTSAmpFileInputFormat]
         an[UnsupportedOperationException] should be thrownBy srcInstance.buildSourceFunction
@@ -69,7 +69,7 @@ class SourceBuildTest extends TestBase {
           Some(SourceSubtype.LatencyTSSmokeping),
           config = Map("extraKey" -> "true")
         )
-        val built = srcInstance.buildFileInputFormat
+        val built = srcInstance.buildFileInputFormat._1
 
         built shouldBe a[LatencyTSSmokepingFileInputFormat]
         an[UnsupportedOperationException] should be thrownBy srcInstance.buildSourceFunction
@@ -82,7 +82,7 @@ class SourceBuildTest extends TestBase {
           None,
           config = Map("extraKey" -> "true")
         )
-        val built = srcInstance.buildFileInputFormat
+        val built = srcInstance.buildFileInputFormat._1
 
         built shouldBe a[NabFileInputFormat]
         an[UnsupportedOperationException] should be thrownBy srcInstance.buildSourceFunction
