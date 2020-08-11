@@ -8,6 +8,7 @@ import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.esmond._
 import nz.net.wand.streamevmon.measurements.latencyts.{LatencyTSAmpICMP, LatencyTSSmokeping}
 import nz.net.wand.streamevmon.Perhaps._
+import nz.net.wand.streamevmon.measurements.nab.NabMeasurement
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
@@ -57,6 +58,7 @@ case class DetectorInstance(
       case SourceDatatype.Subinterval => detType.buildKeyed[Subinterval]
       case SourceDatatype.LatencyTSAmp => detType.buildKeyed[LatencyTSAmpICMP]
       case SourceDatatype.LatencyTSSmokeping => detType.buildKeyed[LatencyTSSmokeping]
+      case SourceDatatype.NAB => detType.buildKeyed[NabMeasurement]
       case d => throw new IllegalArgumentException(s"Unknown datatype $d!")
     }
 
@@ -85,6 +87,7 @@ case class DetectorInstance(
       case SourceDatatype.Subinterval => detType.buildWindowed[Subinterval]
       case SourceDatatype.LatencyTSAmp => detType.buildWindowed[LatencyTSAmpICMP]
       case SourceDatatype.LatencyTSSmokeping => detType.buildWindowed[LatencyTSSmokeping]
+      case SourceDatatype.NAB => detType.buildWindowed[NabMeasurement]
       case d => throw new IllegalArgumentException(s"Unknown datatype $d!")
     }
 

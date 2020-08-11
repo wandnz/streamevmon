@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.runners.unified.schema
 
 import nz.net.wand.streamevmon.connectors.esmond.{EsmondConnectionForeground, EsmondStreamDiscovery}
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
-import nz.net.wand.streamevmon.flink.sources.PollingEsmondSourceFunction
+import nz.net.wand.streamevmon.flink.sources.{NabFileInputFormat, PollingEsmondSourceFunction}
 import nz.net.wand.streamevmon.measurements.Measurement
 
 import org.apache.flink.api.common.io.FileInputFormat
@@ -16,6 +16,7 @@ object SourceType extends Enumeration {
   val Influx: ValueBuilder = new ValueBuilder("influx")
   val Esmond: ValueBuilder = new ValueBuilder("esmond")
   val LatencyTS: ValueBuilder = new ValueBuilder("latencyts")
+  val NAB: ValueBuilder = new ValueBuilder("nab")
 
   class ValueBuilder(name: String) extends Val(name) {
 
@@ -56,6 +57,7 @@ object SourceType extends Enumeration {
             case None => throw new IllegalArgumentException(
               s"Cannot build $this type source with ${subtype.getOrElse("no")} subtype!")
           }
+        case NAB => new NabFileInputFormat
         case _ => throw new UnsupportedOperationException(s"Source type $this is not a FileInputFormat")
       }
       result.asInstanceOf[FileInputFormat[Measurement] with HasFlinkConfig]

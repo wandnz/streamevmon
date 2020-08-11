@@ -20,4 +20,6 @@ object SourceDatatype extends Enumeration {
   // Latency TS
   val LatencyTSAmp: Value = Value("ampicmp")
   val LatencyTSSmokeping: Value = Value("smokeping")
+  // NAB
+  val NAB: Value = Value("nab")
 }

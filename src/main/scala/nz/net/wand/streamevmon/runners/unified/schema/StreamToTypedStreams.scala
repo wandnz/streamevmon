@@ -6,6 +6,7 @@ import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow
 import nz.net.wand.streamevmon.measurements.esmond._
 import nz.net.wand.streamevmon.measurements.latencyts._
+import nz.net.wand.streamevmon.measurements.nab.NabMeasurement
 
 import java.util.NoSuchElementException
 
@@ -64,6 +65,10 @@ case class StreamToTypedStreams(
       case SourceType.LatencyTS => SourceDatatype.values.flatMap {
         case d@SourceDatatype.LatencyTSAmp => Some((d, getTypedAs[LatencyTSAmpICMP]))
         case d@SourceDatatype.LatencyTSSmokeping => Some((d, getTypedAs[LatencyTSSmokeping]))
+        case _ => None
+      }.toMap
+      case SourceType.NAB => SourceDatatype.values.flatMap {
+        case d@SourceDatatype.NAB => Some((d, getTypedAs[NabMeasurement]))
         case _ => None
       }.toMap
       case _ => Map()
