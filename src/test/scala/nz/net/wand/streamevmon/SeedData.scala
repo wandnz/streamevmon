@@ -7,6 +7,7 @@ import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow
 import nz.net.wand.streamevmon.measurements.esmond._
 import nz.net.wand.streamevmon.measurements.latencyts._
+import nz.net.wand.streamevmon.measurements.nab.NabMeasurement
 import nz.net.wand.streamevmon.runners.unified.schema._
 
 import java.time.{Duration, Instant}
@@ -975,6 +976,15 @@ object SeedData {
           sharedIcmpToSinks
         ),
       )
+    )
+  }
+
+  object nab {
+    val exampleLine = "2014-04-01 00:00:00,20.0"
+    val expected = NabMeasurement(
+      "",
+      20.0,
+      Instant.ofEpochSecond(1396310400L)
     )
   }
 
