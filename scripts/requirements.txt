@@ -1,5 +1,16 @@
 matplotlib
-pandas
 DateTime
 python-dateutil
 pathlib
+
+# From NAB
+# Pandas 0.23.3 didn't install properly, probably since I'm running on a newer
+# version of Python (3.8 vs 3.6). We're only running the scorer, so this isn't
+# a big deal since it seems to work.
+#pandas==0.23.3
+pandas
+Cython==0.29.14
+simplejson==3.11.1
+boto3==1.9.134
+scikit-learn==0.21.1
+plotly==2.0.0
