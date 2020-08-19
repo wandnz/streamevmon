@@ -35,8 +35,8 @@
 .idea/modules.xml
 .idea/*.iml
 .idea/modules
-*.iml
-*.ipr
+#*.iml
+#*.ipr
 
 # CMake
 cmake-build-*/
@@ -97,3 +97,8 @@ fabric.properties
 # Our datasets are quite large, and some consist of thousands of files.
 # They should be distributed some other way.
 data/*
+
+# It's recommended to use a virtualenv to put the dependencies for any python
+# scripts in scripts/
+venv/
+.venv/

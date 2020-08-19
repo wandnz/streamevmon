@@ -10,7 +10,9 @@ sinks have been created to support input and output from files, InfluxDB
 instances, and other locations. 
 
 The project is written in Scala, and uses IntelliJ as a development environment,
-with sbt as a build tool.
+with sbt as a build tool. There are some helper scripts that are usually in
+Python. With IntelliJ Ultimate (which can be obtained with an educational
+account), these can be run from within the editor.
 
 ## Building and Testing
 
@@ -27,6 +29,12 @@ folder in the Project toolbar and select "Run ScalaTests in 'streamevmon'". You
 need the ability to run Docker containers for many of these tests to work.
 
 To generate documentation, use the menu item "Tools > Generate Scaladoc".
+
+If using IntelliJ Ultimate with the Python plugin, you should see a few prompts
+encouraging you to import the `Streamevmon-scripts` Python module. Following the
+prompts is generally the best course of action here. It's highly recommended to
+set up a new Virtualenv environment, and set it as the Python interpreter
+wherever possible.
 
 ## Packaging
 
