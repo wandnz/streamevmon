@@ -30,11 +30,40 @@ need the ability to run Docker containers for many of these tests to work.
 
 To generate documentation, use the menu item "Tools > Generate Scaladoc".
 
-If using IntelliJ Ultimate with the Python plugin, you should see a few prompts
-encouraging you to import the `Streamevmon-scripts` Python module. Following the
-prompts is generally the best course of action here. It's highly recommended to
-set up a new Virtualenv environment, and set it as the Python interpreter
-wherever possible.
+### Configuring Python scripts
+
+If using IntelliJ Ultimate with the Python plugin, you have the option of
+running the Python scripts in the editor rather than externally. This needs some
+setup to work properly. This section walks you through how to set up a 
+virtualenv environment specific to this project.
+
+If you see a popup saying Frameworks Detected, you can choose whether to use
+the Configure option. This will add a Python "facet" to the main Streamevmon
+module, which allows indexing of Python source files found outside the scripts/ 
+path. This change does not appear to affect functionality in any way.
+
+To start setting up the Python environment, browse to any Python file in the
+scripts/ folder, and click `Configure Python Interpreter` in the top bar which
+appears. Alternatively, browse to `File` > `Project Structure`.
+
+Go to `SDKs`, click the `+` icon, and select `Add Python SDK...`
+
+Select `Virtualenv Environment` -> `New Environment`, and input your favourite 
+location and interpreter. The code has only been tested with Python 3.8. venv/ 
+and .venv/ are currently in the .gitignore, so are good choices. Regardless of
+the location, it should not be checked into Git.
+
+Go back to `Modules` -> `+` icon -> `Import Module` -> Select the .iml file in 
+`scripts/`.
+
+If there are errors, select the `Streamevmon-scripts` module, go to the 
+`Dependencies` tab, and select the `Module SDK` corresponding to your virtualenv.
+
+Hit OK and go back to the Python source file. The bar at the top will change to
+one asking you to install the package's required dependencies. Install all of
+them. Since you're in a virtualenv, this will be isolated from the rest of your
+system. It might take a while, since we install packages like `pandas` and 
+`scikit-learn`.
 
 ## Packaging
 
