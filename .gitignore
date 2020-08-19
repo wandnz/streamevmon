@@ -93,6 +93,7 @@ fabric.properties
 # This isn't a VS Code project, so any persistent settings that might show up
 # here don't matter.
 .vscode
+.devcontainer
 
 # Our datasets are quite large, and some consist of thousands of files.
 # They should be distributed some other way.
