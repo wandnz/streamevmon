@@ -37,11 +37,6 @@ running the Python scripts in the editor rather than externally. This needs some
 setup to work properly. This section walks you through how to set up a 
 virtualenv environment specific to this project.
 
-If you see a popup saying Frameworks Detected, you can choose whether to use
-the Configure option. This will add a Python "facet" to the main Streamevmon
-module, which allows indexing of Python source files found outside the scripts/ 
-path. This change does not appear to affect functionality in any way.
-
 To start setting up the Python environment, browse to any Python file in the
 scripts/ folder, and click `Configure Python Interpreter` in the top bar which
 appears. Alternatively, browse to `File` > `Project Structure`.
