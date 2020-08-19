@@ -15,4 +15,9 @@ class EventTest extends TestBase {
       SeedData.event.withoutTags.toLineProtocol shouldBe SeedData.event.withoutTagsAsLineProtocol
     }
   }
+
+  "Events should become CSVs properly" in {
+    SeedData.event.withTags.toCsvFormat shouldBe SeedData.event.withTagsAsCsv
+    SeedData.event.withoutTags.toCsvFormat shouldBe SeedData.event.withoutTagsAsCsv
+  }
 }

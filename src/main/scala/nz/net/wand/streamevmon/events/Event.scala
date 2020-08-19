@@ -1,5 +1,7 @@
 package nz.net.wand.streamevmon.events
 
+import nz.net.wand.streamevmon.measurements.CsvOutputable
+
 import java.time.{Duration, Instant}
 import java.util.concurrent.TimeUnit
 
@@ -31,14 +33,14 @@ import com.github.fsanaulla.chronicler.core.model.InfluxWriter
   *                         liable to be lost.
   */
 case class Event(
-  eventType       : String,
+  eventType: String,
   stream          : String,
   severity        : Int,
   time            : Instant,
   detectionLatency: Duration,
   description     : String,
   tags            : Map[String, String]
-) extends Serializable {
+) extends Serializable with CsvOutputable {
 
   /** Converts a Map of tags into the relevant portion of a Line Protocol Format
     * string.
@@ -64,6 +66,8 @@ case class Event(
   override def toString: String = {
     s"$eventType,$toLineProtocol"
   }
+
+  override def toCsvFormat: Seq[String] = Event.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 }
 
 object Event {

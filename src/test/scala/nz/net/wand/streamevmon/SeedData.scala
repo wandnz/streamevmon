@@ -457,7 +457,7 @@ object SeedData {
       stream = "1",
       severity = 10,
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
-      detectionLatency = Duration.ofNanos(12345),
+      detectionLatency = Duration.ofNanos(123456789),
       description = "A test event :)",
       tags = Map(
         "type" -> "test",
@@ -466,22 +466,24 @@ object SeedData {
     )
 
     val withTagsAsString: String =
-      s"""threshold_events,type=test,secondTag=alsoTest,stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
-    val withTagsAsLineProtocol: String = """type=test,secondTag=alsoTest,stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
+      s"""threshold_events,type=test,secondTag=alsoTest,stream=1 severity=10i,detection_latency=123456789i,description="A test event :)" 1564713045000000000"""
+    val withTagsAsLineProtocol: String = """type=test,secondTag=alsoTest,stream=1 severity=10i,detection_latency=123456789i,description="A test event :)" 1564713045000000000"""
+    val withTagsAsCsv: Seq[String] = Seq("threshold_events", "1", "10", "1564713045000", "0:00:00.123", "A test event :)", "Map(type -> test, secondTag -> alsoTest)")
 
     val withoutTags: Event = Event(
       eventType = "changepoint_events",
       stream = "1",
       severity = 10,
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L)),
-      detectionLatency = Duration.ofNanos(12345),
+      detectionLatency = Duration.ofNanos(123456789),
       description = "A test event :)",
       tags = Map(),
     )
 
     val withoutTagsAsString: String =
-      s"""changepoint_events,stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
-    val withoutTagsAsLineProtocol: String = """stream=1 severity=10i,detection_latency=12345i,description="A test event :)" 1564713045000000000"""
+      s"""changepoint_events,stream=1 severity=10i,detection_latency=123456789i,description="A test event :)" 1564713045000000000"""
+    val withoutTagsAsLineProtocol: String = """stream=1 severity=10i,detection_latency=123456789i,description="A test event :)" 1564713045000000000"""
+    val withoutTagsAsCsv: Seq[String] = Seq("changepoint_events", "1", "10", "1564713045000", "0:00:00.123", "A test event :)", "Map()")
   }
 
   object bigdata {
