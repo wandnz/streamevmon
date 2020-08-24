@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.runners
+package nz.net.wand.streamevmon.runners.tuner.nab
 
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.baseline.BaselineDetector
@@ -35,11 +35,18 @@ import scala.reflect.io.Directory
   */
 object NabAllDetectors {
 
-  def runTest(file: File): Unit = {
+  def main(args: Array[String]): Unit = {
+    new NabAllDetectors().runOnAllNabFiles(args, "./out/nab-allDetectors")
+  }
+}
+
+class NabAllDetectors {
+
+  def runTest(args: Array[String], file: File, outputDir: String): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
-    val config = Configuration.get()
+    val config = Configuration.get(args)
     env.getConfig.setGlobalJobParameters(config)
 
     env.disableOperatorChaining
@@ -93,7 +100,7 @@ object NabAllDetectors {
     // We can happily use the ScalaCsvOutputFormat in cases where the input
     // type is identical, including the width.
     val outputFormat = new ScalaCsvOutputFormat[(String, Double, Long, String)](
-      new Path(s"./out/nab-allDetectors/${file.getParentFile.getName}/${file.getName}")
+      new Path(s"$outputDir/${file.getParentFile.getName}/${file.getName}")
     )
 
     // Let's write it to file and print it at the same time.
@@ -107,9 +114,9 @@ object NabAllDetectors {
     env.execute()
   }
 
-  def main(args: Array[String]): Unit = {
+  def runOnAllNabFiles(args: Array[String], outputDir: String): Unit = {
     // Delete the existing outputs so it doesn't append when we don't want it to.
-    new Directory(new File("./out/nab-allDetectors")).deleteRecursively()
+    new Directory(new File(outputDir)).deleteRecursively()
 
     // Use all the series files, making sure we don't get anything else like
     // .events files or READMEs.
@@ -118,7 +125,7 @@ object NabAllDetectors {
       .filter(_.toFile.getName.endsWith(".csv"))
       .forEach { f =>
         println(f)
-        runTest(f.toFile)
+        runTest(args, f.toFile, outputDir)
       }
   }
 }

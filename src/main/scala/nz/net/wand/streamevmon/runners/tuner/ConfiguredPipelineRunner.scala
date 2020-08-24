@@ -1,5 +1,7 @@
 package nz.net.wand.streamevmon.runners.tuner
 
+import nz.net.wand.streamevmon.runners.tuner.jobs.{Job, JobResult}
+
 import akka.actor._
 
 object ConfiguredPipelineRunner {

@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.runners.tuner
 
 import nz.net.wand.streamevmon.Logging
+import nz.net.wand.streamevmon.runners.tuner.jobs.{Job, JobActor, JobResult}
 
 import akka.actor._
 
