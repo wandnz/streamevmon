@@ -4,9 +4,13 @@ import nz.net.wand.streamevmon.Logging
 
 import akka.actor._
 
+import scala.collection.mutable
+
 /** Shutdown logic at https://stackoverflow.com/a/48766551
   */
 class ActorManager extends Actor with Logging {
+
+  val jobResultHooks: mutable.Buffer[JobResult => Unit] = mutable.Buffer()
 
   override def receive: Receive = {
     case j: Job =>
@@ -14,6 +18,12 @@ class ActorManager extends Actor with Logging {
       val child = context.actorOf(Props[JobActor], j.toString)
       child ! j
 
-    case jr: JobResult => logger.info(s"Got job result $jr")
+    case jr: JobResult =>
+      logger.info(s"Got job result $jr")
+      jobResultHooks.foreach(_ (jr))
+
+    case func: (JobResult => Unit) =>
+      logger.info(s"Adding job result hook")
+      jobResultHooks.append(func)
   }
 }

@@ -11,5 +11,9 @@ object ConfiguredPipelineRunner {
     jobs.foreach(j => manager ! j)
   }
 
+  def addJobResultHook(func: JobResult => Unit): Unit = {
+    manager ! func
+  }
+
   def shutdownImmediately(): Unit = actorSystem.terminate()
 }
