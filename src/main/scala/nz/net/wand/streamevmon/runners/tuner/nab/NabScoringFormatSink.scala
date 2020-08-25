@@ -18,11 +18,13 @@ import scala.collection.JavaConverters._
   * @param outputLocation The folder to put the results for this instance.
   * @param inputFile      The input NAB data file that this test is being run from.
   */
-class NabScoringFormatSink(outputLocation: String, inputFile: File) extends RichSinkFunction[Event] {
+class NabScoringFormatSink(outputLocation: String, inputFile: File, detectorName: String) extends RichSinkFunction[Event] {
 
   type FormattedType = (String, String, String, String)
 
   var stream: String = s"${inputFile.getParentFile.getName}/${inputFile.getName}"
+  val outputSubdir: String = inputFile.getParentFile.getName
+  val outputFilename = s"${detectorName}_${inputFile.getName}"
 
   var unprocessedMeasurements: Option[mutable.Queue[FormattedType]] = None
 
@@ -35,8 +37,7 @@ class NabScoringFormatSink(outputLocation: String, inputFile: File) extends Rich
     unprocessedMeasurements match {
       case Some(_) =>
       case None =>
-        val streamSplit = stream.split("/")
-        val examplesFile = s"./data/NAB/results/null/${streamSplit(0)}/null_${streamSplit(1)}"
+        val examplesFile = s"./data/NAB/results/null/$outputSubdir/null_${inputFile.getName}"
 
         val allLines = Files.readAllLines(Paths.get(examplesFile))
 
@@ -112,9 +113,10 @@ class NabScoringFormatSink(outputLocation: String, inputFile: File) extends Rich
       case Some(_) =>
       case None =>
         writer = Some {
-          new File(s"$outputLocation/$stream").getParentFile.mkdirs()
-          new File(s"$outputLocation/$stream").delete()
-          new BufferedWriter(new FileWriter(s"$outputLocation/$stream"))
+          val filename = s"$outputLocation/$outputSubdir/$outputFilename"
+          new File(filename).getParentFile.mkdirs()
+          new File(filename).delete()
+          new BufferedWriter(new FileWriter(filename))
         }
     }
 

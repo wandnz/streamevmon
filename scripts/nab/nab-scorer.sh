@@ -1,8 +1,13 @@
 #!/bin/bash
 
-cd ../../ || (echo "Failed to cd" && exit)
 source venv/bin/activate
 
 cd data/NAB/ || (echo "Failed to cd" && exit)
 
-python run.py -d baseline,changepoint,distdiff,mode,spike --skipConfirmation --optimize --score --normalize
+python run.py \
+  -d baseline,changepoint,distdiff,mode,spike \
+  --resultsDir "${1-results}" \
+  --skipConfirmation \
+  --optimize \
+  --score \
+  --normalize

@@ -82,7 +82,13 @@ class NabAllDetectors {
 
     // And we write their results out to file in the NAB scoring format.
     detectors.zip(detectorsWithSource).map {
-      case (det, stream) => stream.addSink(new NabScoringFormatSink(s"$outputDir/${det.configKeyGroup}", file))
+      case (det, stream) => stream.addSink(
+        new NabScoringFormatSink(
+          s"$outputDir/${det.configKeyGroup}",
+          file,
+          det.configKeyGroup
+        )
+      )
     }
 
     env.execute()
