@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.runners.tuner
 
-import nz.net.wand.streamevmon.runners.tuner.jobs.{Job, JobResult}
+import nz.net.wand.streamevmon.runners.tuner.jobs.Job
+import nz.net.wand.streamevmon.runners.tuner.ActorManager.JobResultHook
 
 import akka.actor._
 
@@ -13,7 +14,7 @@ object ConfiguredPipelineRunner {
     jobs.foreach(j => manager ! j)
   }
 
-  def addJobResultHook(func: JobResult => Unit): Unit = {
+  def addJobResultHook(func: JobResultHook): Unit = {
     manager ! func
   }
 

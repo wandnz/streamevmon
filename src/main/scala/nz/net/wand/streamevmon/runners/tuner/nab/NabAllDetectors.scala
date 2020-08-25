@@ -1,20 +1,17 @@
 package nz.net.wand.streamevmon.runners.tuner.nab
 
 import nz.net.wand.streamevmon.Configuration
-import nz.net.wand.streamevmon.detectors.baseline.BaselineDetector
-import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, NormalDistribution}
-import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
-import nz.net.wand.streamevmon.detectors.mode.ModeDetector
-import nz.net.wand.streamevmon.detectors.spike.SpikeDetector
-import nz.net.wand.streamevmon.flink.MeasurementKeySelector
+import nz.net.wand.streamevmon.events.Event
+import nz.net.wand.streamevmon.flink.{HasFlinkConfig, MeasurementKeySelector}
 import nz.net.wand.streamevmon.flink.sources.NabFileInputFormat
 import nz.net.wand.streamevmon.measurements.nab.NabMeasurement
+import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
 
 import java.io.File
 import java.nio.file.{Files, Paths}
 
-import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.streaming.api.TimeCharacteristic
+import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.streaming.api.scala._
 
 import scala.reflect.io.Directory
@@ -33,11 +30,17 @@ import scala.reflect.io.Directory
 object NabAllDetectors {
 
   def main(args: Array[String]): Unit = {
-    new NabAllDetectors().runOnAllNabFiles(args, "./out/nab-allDetectors")
+    new NabAllDetectors(Seq(
+      DetectorType.Baseline,
+      DetectorType.Changepoint,
+      DetectorType.DistDiff,
+      DetectorType.Mode,
+      DetectorType.Spike
+    )).runOnAllNabFiles(args, "./out/nab-allDetectors")
   }
 }
 
-class NabAllDetectors {
+class NabAllDetectors(detectorsToUse: Iterable[DetectorType.ValueBuilder]) {
 
   def runTest(args: Array[String], file: File, outputDir: String): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
@@ -61,19 +64,10 @@ class NabAllDetectors {
       .setParallelism(1)
       .keyBy(keySelector)
 
-    implicit val normalDistributionTypeInformation: TypeInformation[NormalDistribution[MeasT]] =
-      TypeInformation.of(classOf[NormalDistribution[MeasT]])
-
     // List all the detectors we want to use.
-    val detectors = Seq(
-      new BaselineDetector[MeasT],
-      new ChangepointDetector[MeasT, NormalDistribution[MeasT]](
-        new NormalDistribution[MeasT](mean = 0)
-      ),
-      new DistDiffDetector[MeasT],
-      new ModeDetector[MeasT],
-      new SpikeDetector[MeasT],
-    )
+    val detectors = detectorsToUse
+      .map(_.buildKeyed[NabMeasurement])
+      .asInstanceOf[Iterable[KeyedProcessFunction[String, NabMeasurement, Event] with HasFlinkConfig]]
 
     // We use every detector as a ProcessFunction
     val detectorsWithSource = detectors.map { det =>

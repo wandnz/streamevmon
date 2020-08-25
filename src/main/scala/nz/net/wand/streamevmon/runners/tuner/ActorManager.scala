@@ -2,6 +2,7 @@ package nz.net.wand.streamevmon.runners.tuner
 
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.runners.tuner.jobs.{Job, JobActor, JobResult}
+import nz.net.wand.streamevmon.runners.tuner.ActorManager.JobResultHook
 
 import akka.actor._
 
@@ -11,7 +12,7 @@ import scala.collection.mutable
   */
 class ActorManager extends Actor with Logging {
 
-  val jobResultHooks: mutable.Buffer[JobResult => Unit] = mutable.Buffer()
+  val jobResultHooks: mutable.Buffer[JobResultHook] = mutable.Buffer()
 
   override def receive: Receive = {
     case j: Job =>
@@ -23,8 +24,16 @@ class ActorManager extends Actor with Logging {
       logger.info(s"Got job result $jr")
       jobResultHooks.foreach(_ (jr))
 
-    case func: (JobResult => Unit) =>
+    case func: JobResultHook =>
       logger.info(s"Adding job result hook")
       jobResultHooks.append(func)
   }
+}
+
+object ActorManager {
+
+  abstract class JobResultHook {
+    def apply(jr: JobResult): Unit
+  }
+
 }
