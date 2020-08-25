@@ -6,7 +6,6 @@ import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, Norma
 import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.detectors.spike.SpikeDetector
-import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.MeasurementKeySelector
 import nz.net.wand.streamevmon.flink.sources.NabFileInputFormat
 import nz.net.wand.streamevmon.measurements.nab.NabMeasurement
@@ -15,8 +14,6 @@ import java.io.File
 import java.nio.file.{Files, Paths}
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
-import org.apache.flink.api.scala.operators.ScalaCsvOutputFormat
-import org.apache.flink.core.fs.Path
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
 
@@ -78,38 +75,15 @@ class NabAllDetectors {
       new SpikeDetector[MeasT],
     )
 
-    // Every detector should be used as a ProcessFunction...
+    // We use every detector as a ProcessFunction
     val detectorsWithSource = detectors.map { det =>
       input.process(det)
     }
-    // ... then we merge their outputs so they can go to a single sink.
-    val detectorsAsOne = detectorsWithSource.head.union(detectorsWithSource.drop(1): _*)
 
-    // Event doesn't support CsvOutputable, so we just do it manually here.
-    val eventsAsTuple = detectorsAsOne
-      .map { e =>
-        val tuple = Event.unapply(e).get
-        (
-          tuple._1,
-          tuple._3.toDouble / 100,
-          tuple._4.toEpochMilli,
-          tuple._6
-        )
-      }
-
-    // We can happily use the ScalaCsvOutputFormat in cases where the input
-    // type is identical, including the width.
-    val outputFormat = new ScalaCsvOutputFormat[(String, Double, Long, String)](
-      new Path(s"$outputDir/${file.getParentFile.getName}/${file.getName}")
-    )
-
-    // Let's write it to file and print it at the same time.
-    eventsAsTuple
-      .writeUsingOutputFormat(outputFormat)
-      .setParallelism(1)
-    eventsAsTuple
-      .print()
-      .setParallelism(1)
+    // And we write their results out to file in the NAB scoring format.
+    detectors.zip(detectorsWithSource).map {
+      case (det, stream) => stream.addSink(new NabScoringFormatSink(s"$outputDir/${det.configKeyGroup}", file))
+    }
 
     env.execute()
   }
