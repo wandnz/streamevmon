@@ -3,6 +3,7 @@ package nz.net.wand.streamevmon.detectors.distdiff
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
+import nz.net.wand.streamevmon.runners.tuner.parameters.ParameterSpec
 
 import java.time.{Duration, Instant}
 
@@ -216,4 +217,39 @@ class DistDiffDetector[MeasT <: Measurement with HasDefault : TypeInformation]
       inEvent.update(false)
     }
   }
+}
+
+object DistDiffDetector {
+  val parameterSpecs: Seq[ParameterSpec[Any]] = Seq(
+    ParameterSpec(
+      "detector.distdiff.recentsCount",
+      20,
+      Some(0),
+      Some(600)
+    ),
+    ParameterSpec(
+      "detector.distdiff.minimumChange",
+      1.05,
+      Some(1.0 + Double.MinPositiveValue),
+      Some(10.0) // arbitrary
+    ),
+    ParameterSpec(
+      "detector.distdiff.zThreshold",
+      5.0,
+      Some(0.0),
+      Some(50.0) // very arbitrary
+    ),
+    ParameterSpec(
+      "detector.distdiff.dropExtremeN",
+      2,
+      Some(0),
+      Some(300) // max half of recentsCount
+    ),
+    ParameterSpec(
+      "detector.distdiff.inactivityPurgeTime",
+      600,
+      Some(0),
+      Some(Int.MaxValue)
+    )
+  ).asInstanceOf[Seq[ParameterSpec[Any]]]
 }

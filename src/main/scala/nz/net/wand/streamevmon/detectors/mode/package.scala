@@ -29,7 +29,7 @@ package nz.net.wand.streamevmon.detectors
   * and takes the minimum of the two values.
   * Default 7.5.
   *
-  * - `inactivityPurgeTime`: The amount of time between events, in seconds,
+  * - `inactivityPurgeTime`: The amount of time between measurements, in seconds,
   * before history is purged.
   * Default 60.
   *

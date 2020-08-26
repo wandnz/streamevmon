@@ -20,7 +20,7 @@ package nz.net.wand.streamevmon.detectors
   * event to be emitted. This value should be between 0 and 100.
   * Default 25.
   *
-  * - `inactivityPurgeTime`: If the gap between two concurrent measurements is
+  * - `inactivityPurgeTime`: If the gap between two successive measurements is
   * this many seconds or more, we should drop all our history and start fresh.
   * Default 600.
   *

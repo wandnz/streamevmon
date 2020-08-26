@@ -17,6 +17,8 @@ case class ParameterSpec[T](
     case _ =>
   }
 
+  def getDefault: ParameterInstance[T] = ParameterInstance(this, default)
+
   def generateRandomInRange(rand: RandomDataGenerator = new RandomDataGenerator()): ParameterInstance[T] = {
     val result = default match {
       case _: Int => rand.nextInt(min.get.asInstanceOf[Int], max.get.asInstanceOf[Int])

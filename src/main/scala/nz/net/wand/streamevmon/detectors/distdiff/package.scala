@@ -34,7 +34,7 @@ package nz.net.wand.streamevmon.detectors
   * order to ignore outliers.
   * Default 2.
   *
-  * - `inactivityPurgeTime`: The amount of time between events, in seconds,
+  * - `inactivityPurgeTime`: The amount of time between measurements, in seconds,
   * before history is purged.
   * Default 1200s.
   *

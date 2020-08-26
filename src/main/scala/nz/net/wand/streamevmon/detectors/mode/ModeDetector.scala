@@ -4,6 +4,7 @@ import nz.net.wand.streamevmon.detectors.mode.ModeDetector._
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
+import nz.net.wand.streamevmon.runners.tuner.parameters.ParameterSpec
 
 import java.math.{MathContext, RoundingMode}
 import java.time.{Duration, Instant}
@@ -377,7 +378,7 @@ class ModeDetector[MeasT <: Measurement with HasDefault]
 // These case classes just made the code look a bit nicer than using tuples
 // everywhere. Kryo doesn't like to serialise them if they're inner classes
 // of the detector class, so they're here instead.
-private object ModeDetector {
+object ModeDetector {
 
   case class Mode(value: Int, count: Int)
 
@@ -389,4 +390,36 @@ private object ModeDetector {
 
   case class ModeTuple(primary: Mode, secondary: Mode, lastEvent: Mode)
 
+  val parameterSpecs: Seq[ParameterSpec[Any]] = Seq(
+    ParameterSpec(
+      "detector.mode.maxHistory",
+      30,
+      Some(0),
+      Some(600)
+    ),
+    ParameterSpec(
+      "detector.mode.minFrequency",
+      6,
+      Some(1),
+      Some(600) // max == maxHistory current value
+    ),
+    ParameterSpec(
+      "detector.mode.minProminence",
+      3,
+      Some(1),
+      Some(600) // max == maxHistory value
+    ),
+    ParameterSpec(
+      "detector.mode.threshold",
+      7.5,
+      Some(0.0),
+      Some(100.0) // arbitrary
+    ),
+    ParameterSpec(
+      "detector.mode.inactivityPurgeTime",
+      60,
+      Some(0),
+      Some(Int.MaxValue)
+    )
+  ).asInstanceOf[Seq[ParameterSpec[Any]]]
 }

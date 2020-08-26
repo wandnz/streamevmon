@@ -3,6 +3,7 @@ package nz.net.wand.streamevmon.detectors.spike
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
+import nz.net.wand.streamevmon.runners.tuner.parameters.ParameterSpec
 
 import java.time.{Duration, Instant}
 
@@ -169,4 +170,33 @@ class SpikeDetector[MeasT <: Measurement with HasDefault]
     // breaks queues.
     justInitialised = true
   }
+}
+
+object SpikeDetector {
+  val parameterSpecs: Seq[ParameterSpec[Any]] = Seq(
+    ParameterSpec(
+      "detector.spike.inactivityPurgeTime",
+      60,
+      Some(0),
+      Some(Int.MaxValue)
+    ),
+    ParameterSpec(
+      "detector.spike.lag",
+      500,
+      Some(0),
+      Some(600)
+    ),
+    ParameterSpec(
+      "detector.spike.threshold",
+      30.0,
+      Some(Double.MinPositiveValue),
+      Some(1000.0) // arbitrary
+    ),
+    ParameterSpec(
+      "detector.spike.influence",
+      0.01,
+      Some(0.0),
+      Some(1.0)
+    )
+  ).asInstanceOf[Seq[ParameterSpec[Any]]]
 }

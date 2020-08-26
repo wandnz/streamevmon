@@ -34,7 +34,7 @@ package nz.net.wand.streamevmon.detectors
   * to the state of the detector before those outliers occurred.
   * Default 1.
   *
-  * - `inactivityPurgeTime`: If the gap between two concurrent measurements is
+  * - `inactivityPurgeTime`: If the gap between two successive measurements is
   * this many seconds or more, we should drop all our history and start fresh.
   * If this value is set to 0, the behaviour is disabled.
   * Default 60.

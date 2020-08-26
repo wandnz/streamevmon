@@ -4,6 +4,7 @@ import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
+import nz.net.wand.streamevmon.runners.tuner.parameters.ParameterSpec
 
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.api.common.typeinfo.TypeInformation
@@ -63,4 +64,47 @@ class ChangepointDetector[
     }
     processor.value.processElement(value, out)
   }
+}
+
+object ChangepointDetector {
+  val parameterSpecs: Seq[ParameterSpec[Int]] = Seq(
+    ParameterSpec(
+      "detector.changepoint.maxHistory",
+      60,
+      Some(1),
+      Some(600)
+    ),
+    ParameterSpec(
+      "detector.changepoint.triggerCount",
+      40,
+      Some(1),
+      Some(600) // should be the same as maxHistory's max value
+    ),
+    ParameterSpec(
+      "detector.changepoint.ignoreOutlierNormalCount",
+      1,
+      Some(0),
+      Some(600)
+    ),
+    ParameterSpec(
+      "detector.changepoint.inactivityPurgeTime",
+      60,
+      Some(0),
+      Some(Int.MaxValue),
+    ),
+    ParameterSpec(
+      "detector.changepoint.minimumEventInterval",
+      10,
+      Some(0),
+      // max should be the same as inactivityPurgeTime's value, but we have no
+      // way to specify that
+      Some(Int.MaxValue)
+    ),
+    ParameterSpec(
+      "detector.changepoint.severityThreshold",
+      30,
+      Some(0),
+      Some(100)
+    )
+  )
 }
