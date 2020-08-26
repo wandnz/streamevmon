@@ -103,7 +103,7 @@ class NabAllDetectors(detectorsToUse: Iterable[DetectorType.ValueBuilder]) exten
     files
       .zipWithIndex
       .foreach { case (f, i) =>
-        logger.info(s"Processing file #${i + 1}/${files.size} - $f")
+        logger.debug(s"Processing file #${i + 1}/${files.size} - $f")
         runTest(args, f.toFile, outputDir)
       }
   }

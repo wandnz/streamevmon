@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.runners.tuner.nab
 
 import nz.net.wand.streamevmon.runners.tuner.jobs.{Job, JobResult}
+import nz.net.wand.streamevmon.runners.tuner.parameters.Parameters
 import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
 
 import java.io.File
@@ -13,25 +14,26 @@ import org.apache.commons.io.{FilenameUtils, FileUtils}
 import scala.sys.process._
 
 case class NabJob(
-  uid: String,
-  args: Array[String],
-  outputDir: String,
-  detectors: Iterable[DetectorType.ValueBuilder] = Seq(
-    DetectorType.Baseline,
-    DetectorType.Changepoint,
-    DetectorType.DistDiff,
-    DetectorType.Mode,
-    DetectorType.Spike
-  ),
+  uid          : String,
+  args         : Array[String],
+  outputDir    : String,
+  detectors    : Iterable[DetectorType.ValueBuilder] = NabJob.allDetectors,
   skipDetectors: Boolean = false,
   skipScoring  : Boolean = false
 ) extends Job(uid) {
+
+  override def toString: String = s"NabJob-$uid"
+
   override def run(): JobResult = {
 
     val startTime = System.currentTimeMillis()
 
     if (!skipDetectors) {
       logger.info(s"Starting detectors...")
+      logger.debug(s"Using parameters: ")
+      args.grouped(2).foreach {
+        arg => logger.debug(arg.mkString(" "))
+      }
       val runner = new NabAllDetectors(detectors)
       runner.runOnAllNabFiles(args, outputDir)
     }
@@ -68,4 +70,29 @@ case class NabJob(
 
     NabJobResult(this, results)
   }
+}
+
+object NabJob {
+  val allDetectors = Seq(
+    DetectorType.Baseline,
+    DetectorType.Changepoint,
+    DetectorType.DistDiff,
+    DetectorType.Mode,
+    DetectorType.Spike
+  )
+
+  def apply(
+    params       : Parameters,
+    outputDir    : String,
+    detectors    : Iterable[DetectorType.ValueBuilder],
+    skipDetectors: Boolean,
+    skipScoring  : Boolean
+  ): NabJob = new NabJob(
+    params.hashCode.toString,
+    params.getAsArgs.toArray,
+    outputDir,
+    detectors,
+    skipDetectors,
+    skipScoring
+  )
 }
