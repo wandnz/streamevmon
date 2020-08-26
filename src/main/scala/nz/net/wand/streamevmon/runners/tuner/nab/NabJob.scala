@@ -28,6 +28,8 @@ case class NabJob(
 ) extends Job(uid) {
   override def run(): JobResult = {
 
+    val startTime = System.currentTimeMillis()
+
     if (!skipDetectors) {
       logger.info(s"Starting detectors...")
       val runner = new NabAllDetectors(detectors)
@@ -59,6 +61,10 @@ case class NabJob(
       new File(s"$outputDir/final_results.json"),
       new TypeReference[Map[String, Map[String, String]]] {}
     )
+
+    val endTime = System.currentTimeMillis()
+
+    logger.error(s"Time taken: ${endTime - startTime}ms")
 
     NabJobResult(this, results)
   }

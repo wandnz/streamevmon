@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.runners.tuner.nab
 
-import nz.net.wand.streamevmon.Configuration
+import nz.net.wand.streamevmon.{Configuration, Logging}
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.{HasFlinkConfig, MeasurementKeySelector}
 import nz.net.wand.streamevmon.flink.sources.NabFileInputFormat
@@ -14,6 +14,7 @@ import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.streaming.api.scala._
 
+import scala.compat.java8.StreamConverters._
 import scala.reflect.io.Directory
 
 /** Runs all detectors against each series in the Latency TS I dataset.
@@ -40,7 +41,7 @@ object NabAllDetectors {
   }
 }
 
-class NabAllDetectors(detectorsToUse: Iterable[DetectorType.ValueBuilder]) {
+class NabAllDetectors(detectorsToUse: Iterable[DetectorType.ValueBuilder]) extends Logging {
 
   def runTest(args: Array[String], file: File, outputDir: String): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
@@ -94,11 +95,15 @@ class NabAllDetectors(detectorsToUse: Iterable[DetectorType.ValueBuilder]) {
 
     // Use all the series files, making sure we don't get anything else like
     // .events files or READMEs.
-    Files.walk(Paths.get("./data/NAB/data"))
+    val files = Files.walk(Paths.get("./data/NAB/data"))
       .filter(_.toFile.isFile)
       .filter(_.toFile.getName.endsWith(".csv"))
-      .forEach { f =>
-        println(f)
+      .toScala[Stream]
+
+    files
+      .zipWithIndex
+      .foreach { case (f, i) =>
+        logger.info(s"Processing file #${i + 1}/${files.size} - $f")
         runTest(args, f.toFile, outputDir)
       }
   }

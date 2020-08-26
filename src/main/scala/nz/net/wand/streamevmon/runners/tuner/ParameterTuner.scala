@@ -2,10 +2,14 @@ package nz.net.wand.streamevmon.runners.tuner
 
 import nz.net.wand.streamevmon.runners.tuner.jobs.{JobResult, SimpleJob}
 import nz.net.wand.streamevmon.runners.tuner.nab.{NabJob, NabJobResult}
-import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
+import nz.net.wand.streamevmon.Logging
 
-object ParameterTuner {
+object ParameterTuner extends Logging {
   def main(args: Array[String]): Unit = {
+
+    // Squash all the logs from Flink to tidy up our output.
+    System.setProperty("org.slf4j.simpleLogger.log.org.apache.flink", "error")
+
     ConfiguredPipelineRunner.addJobResultHook {
       jr: JobResult => {
         println(s"Got job result! $jr")
@@ -24,9 +28,7 @@ object ParameterTuner {
         "--detector.baseline.threshold", "50.0"
       ),
       "./out/parameterTuner/base",
-      detectors = Seq(
-        DetectorType.Baseline
-      ),
+      //detectors = Seq(DetectorType.Baseline),
       skipDetectors = false,
       skipScoring = false
     ))
