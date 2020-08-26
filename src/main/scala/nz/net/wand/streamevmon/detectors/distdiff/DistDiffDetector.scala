@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.detectors.distdiff
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
-import nz.net.wand.streamevmon.runners.tuner.parameters.ParameterSpec
+import nz.net.wand.streamevmon.runners.tuner.parameters.{ParameterInstance, ParameterSpec}
 
 import java.time.{Duration, Instant}
 
@@ -252,4 +252,13 @@ object DistDiffDetector {
       Some(Int.MaxValue)
     )
   ).asInstanceOf[Seq[ParameterSpec[Any]]]
+
+  def parametersAreValid(params: Seq[ParameterInstance[Any]]): Boolean = {
+    val dropExtremeN = params.find(_.name == "detector.distdiff.dropExtremeN")
+    val recentsCount = params.find(_.name == "detector.distdiff.recentsCount")
+    (dropExtremeN, recentsCount) match {
+      case (Some(n), Some(c)) => n.value.asInstanceOf[Int] < (c.value.asInstanceOf[Int] / 2) - 1
+      case t => throw new IllegalArgumentException(s"Couldn't check parameters for DistDiff! $t, $params")
+    }
+  }
 }

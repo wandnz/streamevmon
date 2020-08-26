@@ -4,7 +4,7 @@ import nz.net.wand.streamevmon.detectors.mode.ModeDetector._
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
-import nz.net.wand.streamevmon.runners.tuner.parameters.ParameterSpec
+import nz.net.wand.streamevmon.runners.tuner.parameters.{ParameterInstance, ParameterSpec}
 
 import java.math.{MathContext, RoundingMode}
 import java.time.{Duration, Instant}
@@ -422,4 +422,17 @@ object ModeDetector {
       Some(Int.MaxValue)
     )
   ).asInstanceOf[Seq[ParameterSpec[Any]]]
+
+  def parametersAreValid(params: Seq[ParameterInstance[Any]]): Boolean = {
+    val maxHistory = params.find(_.name == "detector.mode.maxHistory")
+    val minFrequency = params.find(_.name == "detector.mode.minFrequency")
+    val minProminence = params.find(_.name == "detector.mode.minProminence")
+    (maxHistory, minFrequency, minProminence) match {
+      case (Some(h), Some(f), Some(p)) =>
+        val freqValid = f.value.asInstanceOf[Int] < h.value.asInstanceOf[Int]
+        val promValid = p.value.asInstanceOf[Int] < h.value.asInstanceOf[Int]
+        freqValid && promValid
+      case t => throw new IllegalArgumentException(s"Couldn't check parameters for Mode! $t, $params")
+    }
+  }
 }

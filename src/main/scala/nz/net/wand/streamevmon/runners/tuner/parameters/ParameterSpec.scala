@@ -3,11 +3,11 @@ package nz.net.wand.streamevmon.runners.tuner.parameters
 import org.apache.commons.math3.random.RandomDataGenerator
 
 case class ParameterSpec[T](
-  name: String,
+  name   : String,
   default: T,
   min    : Option[T],
   max    : Option[T]
-) {
+) extends Serializable {
 
   default match {
     case _: Int | _: Long | _: Double =>

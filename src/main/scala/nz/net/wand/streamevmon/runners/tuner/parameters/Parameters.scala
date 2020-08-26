@@ -1,8 +1,8 @@
 package nz.net.wand.streamevmon.runners.tuner.parameters
 
 class Parameters(
-  elems: ParameterInstance[Any]*
-) {
+  val elems: ParameterInstance[Any]*
+) extends Serializable {
 
   /** Returns the parameters as though they were passed as arguments to main. */
   def getAsArgs: Iterable[String] = elems.flatMap(_.asArg)

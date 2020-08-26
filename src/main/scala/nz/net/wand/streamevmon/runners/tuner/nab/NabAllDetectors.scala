@@ -37,7 +37,7 @@ object NabAllDetectors {
       DetectorType.DistDiff,
       DetectorType.Mode,
       DetectorType.Spike
-    )).runOnAllNabFiles(args, "./out/nab-allDetectors")
+    )).runOnAllNabFiles(args, "./out/nab-allDetectors", deleteOutputDirectory = true)
   }
 }
 
@@ -89,9 +89,11 @@ class NabAllDetectors(detectorsToUse: Iterable[DetectorType.ValueBuilder]) exten
     env.execute()
   }
 
-  def runOnAllNabFiles(args: Array[String], outputDir: String): Unit = {
-    // Delete the existing outputs so it doesn't append when we don't want it to.
-    new Directory(new File(outputDir)).deleteRecursively()
+  def runOnAllNabFiles(args: Array[String], outputDir: String, deleteOutputDirectory: Boolean): Unit = {
+    if (deleteOutputDirectory) {
+      // Delete the existing outputs so it doesn't append when we don't want it to.
+      new Directory(new File(outputDir)).deleteRecursively()
+    }
 
     // Use all the series files, making sure we don't get anything else like
     // .events files or READMEs.

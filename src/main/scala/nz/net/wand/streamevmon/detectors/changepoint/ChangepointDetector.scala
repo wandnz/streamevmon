@@ -4,7 +4,7 @@ import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
-import nz.net.wand.streamevmon.runners.tuner.parameters.ParameterSpec
+import nz.net.wand.streamevmon.runners.tuner.parameters.{ParameterInstance, ParameterSpec}
 
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.api.common.typeinfo.TypeInformation
@@ -107,4 +107,18 @@ object ChangepointDetector {
       Some(100)
     )
   )
+
+  def parametersAreValid(params: Seq[ParameterInstance[Any]]): Boolean = {
+    val maxHistory = params.find(_.name == "detector.changepoint.maxHistory")
+    val triggerCount = params.find(_.name == "detector.changepoint.triggerCount")
+    val inactivityPurgeTime = params.find(_.name == "detector.changepoint.inactivityPurgeTime")
+    val minimumEventInterval = params.find(_.name == "detector.changepoint.minimumEventInterval")
+    (maxHistory, triggerCount, inactivityPurgeTime, minimumEventInterval) match {
+      case (Some(h), Some(t), Some(p), Some(i)) =>
+        val triggerCountValid = t.value.asInstanceOf[Int] < h.value.asInstanceOf[Int]
+        val minimumEventIntervalValid = i.value.asInstanceOf[Int] < p.value.asInstanceOf[Int]
+        triggerCountValid && minimumEventIntervalValid
+      case t => throw new IllegalArgumentException(s"Couldn't check parameters for Changepoint! $t, $params")
+    }
+  }
 }

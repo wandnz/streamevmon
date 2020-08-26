@@ -24,4 +24,10 @@ object DetectorParameterSpecs {
     "detectors.mode.inactivityPurgeTime" -> Int.MaxValue,
     "detectors.spike.inactivityPurgeTime" -> Int.MaxValue,
   )
+
+  def parametersAreValid(params: Seq[ParameterInstance[Any]]): Boolean = {
+    ChangepointDetector.parametersAreValid(params) &&
+      DistDiffDetector.parametersAreValid(params) &&
+      ModeDetector.parametersAreValid(params)
+  }
 }
