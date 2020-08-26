@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.runners.tuner.parameters
 
 case class ParameterInstance[T](
-  parameter: Parameter[T],
+  parameter: ParameterSpec[T],
   value    : T
 ) {
   val name: String = parameter.name

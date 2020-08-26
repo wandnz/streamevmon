@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.runners.tuner
 import nz.net.wand.streamevmon.runners.tuner.jobs.{JobResult, SimpleJob}
 import nz.net.wand.streamevmon.runners.tuner.nab.{NabJob, NabJobResult}
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.runners.tuner.parameters.Parameter
+import nz.net.wand.streamevmon.runners.tuner.parameters.ParameterSpec
 import nz.net.wand.streamevmon.runners.tuner.strategies.RandomSearch
 import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
 
@@ -15,15 +15,14 @@ object ParameterTuner extends Logging {
 
     val searchStrategy = RandomSearch(
       Seq(
-        Parameter[Double](
+        ParameterSpec[Double](
           "detector.baseline.percentile",
           0.1,
           Some(0.0),
           Some(1.0)
         )
-      ).asInstanceOf[Seq[Parameter[Any]]]
+      ).asInstanceOf[Seq[ParameterSpec[Any]]]
     )
-
 
     ConfiguredPipelineRunner.addJobResultHook {
       jr: JobResult => {

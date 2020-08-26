@@ -2,8 +2,8 @@ package nz.net.wand.streamevmon.runners.tuner.parameters
 
 import org.apache.commons.math3.random.RandomDataGenerator
 
-case class Parameter[T](
-  name   : String,
+case class ParameterSpec[T](
+  name: String,
   default: T,
   min    : Option[T],
   max    : Option[T]
