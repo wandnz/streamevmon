@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.runners.tuner
 
-import nz.net.wand.streamevmon.runners.tuner.jobs.{JobResult, SimpleJob}
+import nz.net.wand.streamevmon.runners.tuner.jobs.{FailedJob, JobResult, SimpleJob}
 import nz.net.wand.streamevmon.runners.tuner.nab.{NabJob, NabJobResult}
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.runners.tuner.parameters.{DetectorParameterSpecs, Parameters}
@@ -72,12 +72,15 @@ object ParameterTuner extends Logging {
     // document and queue up a new job with new parameters.
     ConfiguredPipelineRunner.addJobResultHook {
       jr: JobResult => {
-        println(s"Got job result! $jr")
+        logger.info(s"Got job result! $jr")
         jr match {
           case NabJobResult(_, results) =>
-            println(results)
+            logger.debug(results.toString)
             queueNewJob(searchStrategy)
-          case _ =>
+          case FailedJob(_, e) =>
+            logger.error(s"Job failed with $e")
+            queueNewJob(searchStrategy)
+          case _ => logger.info("Ending job loop.")
         }
       }
     }

@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.runners.tuner.nab
 
-import nz.net.wand.streamevmon.runners.tuner.jobs.{Job, JobResult}
+import nz.net.wand.streamevmon.runners.tuner.jobs.{FailedJob, Job, JobResult}
 import nz.net.wand.streamevmon.runners.tuner.parameters.Parameters
 import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
 
@@ -24,8 +24,17 @@ case class NabJob(
 
   override def toString: String = s"NabJob-$uid"
 
+  private val shutdownHookThread: Thread = new Thread() {
+    override def run(): Unit = {
+      logger.error("Job interrupted.")
+      new File(s"$outputDir/INTERRUPTED").createNewFile()
+    }
+  }
+
   override def run(): JobResult = {
     try {
+      Runtime.getRuntime.addShutdownHook(shutdownHookThread)
+
       val startTime = System.currentTimeMillis()
 
       if (!skipDetectors) {
@@ -66,12 +75,14 @@ case class NabJob(
 
       val endTime = System.currentTimeMillis()
 
-      logger.error(s"Time taken: ${endTime - startTime}ms")
+      logger.info(s"Time taken: ${endTime - startTime}ms")
       val writer = new BufferedWriter(new FileWriter(s"$outputDir/runtime.log"))
       writer.write(s"${endTime - startTime}")
       writer.newLine()
       writer.flush()
       writer.close()
+
+      Runtime.getRuntime.removeShutdownHook(shutdownHookThread)
 
       NabJobResult(this, results)
     }
@@ -81,7 +92,7 @@ case class NabJob(
         e.printStackTrace(writer)
         writer.flush()
         writer.close()
-        throw e
+        FailedJob(this, e)
     }
   }
 }
