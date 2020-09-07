@@ -103,3 +103,6 @@ data/*
 # scripts in scripts/
 venv/
 .venv/
+
+# Smac makes a lot of files we don't care about.
+/smac-output/

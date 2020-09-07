@@ -5,7 +5,7 @@
     <option name="explainTypeErrors" value="true" />
     <option name="incrementalityType" value="SBT" />
     <profile name="sbt 1" modules="mainRunner" />
-    <profile name="sbt 2" modules="Streamevmon">
+    <profile name="sbt 2" modules="parameterTuner,streamevmon">
       <option name="deprecationWarnings" value="true" />
       <option name="featureWarnings" value="true" />
     </profile>

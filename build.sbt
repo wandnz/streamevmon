@@ -3,108 +3,66 @@ ThisBuild / resolvers ++= Seq(
   Resolver.mavenLocal
 )
 
-name := "Streamevmon"
-
-version := "0.1-SNAPSHOT"
-
-organization := "nz.net.wand"
-
 ThisBuild / scalaVersion := "2.12.12"
 
-val flinkVersion = "1.11.1"
-val flinkDependencies = Seq(
-  "org.apache.flink" %% "flink-scala" % flinkVersion % Provided,
-  "org.apache.flink" %% "flink-clients" % flinkVersion % Provided,
-  "org.apache.flink" %% "flink-streaming-scala" % flinkVersion % Provided
+import Dependencies._
+
+// These are settings that are shared between all submodules in this project.
+lazy val sharedSettings = Seq(
+  // Set up simple metadata and compiler options
+  organization := "nz.net.wand",
+  version := "0.1-SNAPSHOT",
+  scalacOptions ++= Seq("-deprecation", "-feature"),
+
+  // Make run command from sbt console include Provided dependencies
+  Compile / run := Defaults.runTask(Compile / run / fullClasspath,
+    Compile / run / mainClass,
+    Compile / run / runner
+  ).evaluated,
+
+  // Stay inside the sbt console when we press "ctrl-c" while a Flink programme executes with "run" or "runMain"
+  Compile / run / fork := true,
+  Global / cancelable := true,
+
+  // Make tests in sbt shell more reliable
+  fork := true,
+
+  // Stop JAR packaging from running tests first
+  test in assembly := {},
+
+  // exclude META-INF from packaged JAR and use correct behaviour for duplicate library files
+  assemblyMergeStrategy in assembly := {
+    case PathList("META-INF", _@_*) => MergeStrategy.discard
+    case PathList("module-info.class") => MergeStrategy.discard
+    case other => (assemblyMergeStrategy in assembly).value(other)
+  },
 )
 
-val chroniclerVersion = "0.6.4"
-val influxDependencies = Seq(
-  "com.github.fsanaulla" %% "chronicler-ahc-io" % chroniclerVersion,
-  "com.github.fsanaulla" %% "chronicler-ahc-management" % chroniclerVersion,
-  "com.github.fsanaulla" %% "chronicler-macros" % chroniclerVersion
-)
-
-val postgresDependencies = Seq(
-  "org.postgresql" % "postgresql" % "42.2.14",
-  "org.squeryl" %% "squeryl" % "0.9.15"
-)
-
-val scalaCacheVersion = "0.28.0"
-val cacheDependencies = Seq(
-  "com.github.cb372" %% "scalacache-core" % scalaCacheVersion,
-  "com.github.cb372" %% "scalacache-caffeine" % scalaCacheVersion,
-  "com.github.cb372" %% "scalacache-memcached" % scalaCacheVersion
-)
-
-val serialisationDependencies = Seq(
-  // Used for REST APIs
-  "com.squareup.retrofit2" % "retrofit" % "2.9.0",
-  "com.squareup.retrofit2" % "converter-jackson" % "2.9.0",
-  // Used for YAML v1.2 configuration parsing
-  "org.snakeyaml" % "snakeyaml-engine" % "2.1",
-  // Type conversion supporting scala
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.11.1"
-)
-
-val logDependencies = Seq(
-  "org.slf4j" % "slf4j-simple" % "1.7.30" % Provided
-)
-
-val testcontainersScalaVersion = "0.38.1"
-val testDependencies = Seq(
-  "org.scalatest" %% "scalatest" % "3.2.0" % Test,
-  "com.dimafeng" %% "testcontainers-scala" % testcontainersScalaVersion % Test,
-  "com.dimafeng" %% "testcontainers-scala-scalatest" % testcontainersScalaVersion % Test,
-  "com.dimafeng" %% "testcontainers-scala-postgresql" % testcontainersScalaVersion % Test,
-  "com.dimafeng" %% "testcontainers-scala-influxdb" % testcontainersScalaVersion % Test,
-  "org.apache.flink" %% "flink-test-utils" % flinkVersion % Test,
-  "org.apache.flink" %% "flink-runtime" % flinkVersion % Test classifier "tests",
-  "org.apache.flink" %% "flink-streaming-java" % flinkVersion % Test classifier "tests"
-)
-
+// Core project does not depend on tunerDependencies, but does on everything else
 lazy val root = (project in file(".")).
   settings(
-    libraryDependencies ++=
-      flinkDependencies ++
-      influxDependencies ++
-      postgresDependencies ++
-      cacheDependencies ++
-      serialisationDependencies ++
-      logDependencies ++
-      testDependencies
+    Seq(
+      name := "streamevmon",
+      libraryDependencies ++= providedDependencies ++ coreDependencies ++ testDependencies,
+      mainClass in assembly := Some("nz.net.wand.streamevmon.runners.unified.YamlDagRunner"),
+    ) ++ sharedSettings
   )
 
-// make run command include the provided dependencies
-Compile / run := Defaults.runTask(Compile / run / fullClasspath,
-                                   Compile / run / mainClass,
-                                   Compile / run / runner
-).evaluated
+// Parameter tuner module depends on core project + SMAC dependencies
+// We need to manually specify providedDependencies since % Provided modules
+// are not inherited via dependsOn.
+lazy val parameterTuner = (project in file("parameterTuner"))
+  .dependsOn(root)
+  .settings(
+    Seq(
+      name := "parameterTuner",
+      libraryDependencies ++= providedDependencies ++ tunerDependencies,
+      unmanagedBase := baseDirectory.value / "lib",
+      mainClass in assembly := Some("nz.net.wand.streamevmon.tuner.ParameterTuner")
+    ) ++ sharedSettings
+  )
 
-// stays inside the sbt console when we press "ctrl-c" while a Flink programme executes with "run" or "runMain"
-Compile / run / fork := true
-Global / cancelable := true
-
-mainClass in assembly := Some("nz.net.wand.streamevmon.runners.unified.YamlDagRunner")
-assemblyExcludedJars in assembly := {
-  (fullClasspath in assembly).value.filter(_.data.getName.contains("scalatest"))
-}
-
-scalacOptions ++= Seq("-deprecation", "-feature")
-
-// Make tests in sbt shell more reliable
-fork := true
-
-// Stop assembly from running tests first
-test in assembly := {}
-
-// exclude Scala library from assembly
-//assembly / assemblyOption := (assembly / assemblyOption).value.copy(includeScala = false, includeDependency = false)
-assembly / assemblyOption := (assembly / assemblyOption).value.copy(includeScala = false, includeDependency = true)
-assemblyPackageDependency / assemblyOption := (assemblyPackageDependency / assemblyOption).value.copy(includeScala = false)
-
-// exclude META-INF and use correct behaviour for duplicate library files
-assemblyMergeStrategy in assembly := {
-  case PathList("META-INF", _@_*) => MergeStrategy.discard
-  case _ => MergeStrategy.first
-}
+// Declare a few variants of the assembly command.
+commands ++= AssemblyCommands.allCommands
+commands ++= AssemblyCommands.WithScala.allCommands
+AssemblyCommands.addAlias("assemble", AssemblyCommands.allCommands: _*)

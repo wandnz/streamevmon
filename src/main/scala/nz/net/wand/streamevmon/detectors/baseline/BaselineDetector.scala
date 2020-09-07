@@ -4,7 +4,7 @@ import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
-import nz.net.wand.streamevmon.runners.tuner.parameters.ParameterSpec
+import nz.net.wand.streamevmon.parameters.ParameterSpec
 
 import java.time.{Duration, Instant}
 

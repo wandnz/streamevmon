@@ -4,7 +4,7 @@ import nz.net.wand.streamevmon.detectors.mode.ModeDetector._
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
-import nz.net.wand.streamevmon.runners.tuner.parameters.{ParameterInstance, ParameterSpec}
+import nz.net.wand.streamevmon.parameters.{ParameterInstance, ParameterSpec}
 
 import java.math.{MathContext, RoundingMode}
 import java.time.{Duration, Instant}

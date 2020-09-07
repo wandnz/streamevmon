@@ -3,7 +3,6 @@
     <option name="myName" value="Project Default" />
     <inspection_tool class="DuplicatedCode" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="InconsistentLineSeparators" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="InstalledPackageInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="LegacyStringFormatting" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="NotImplementedCode" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PostfixMethodCall" enabled="true" level="WARNING" enabled_by_default="true" />

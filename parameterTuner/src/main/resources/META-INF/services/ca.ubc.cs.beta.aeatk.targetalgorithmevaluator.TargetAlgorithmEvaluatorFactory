@@ -1,0 +1,4 @@
+# Java ServiceLoader can't automatically infer implementations
+# of interfaces, so we've got to do it manually. None of the
+# annotation-based systems to generate this file work.
+nz.net.wand.streamevmon.tuner.nab.NabTAEFactory
