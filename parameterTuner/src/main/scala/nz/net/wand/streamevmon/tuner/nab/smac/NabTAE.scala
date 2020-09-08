@@ -1,9 +1,10 @@
-package nz.net.wand.streamevmon.tuner.nab
+package nz.net.wand.streamevmon.tuner.nab.smac
 
 import nz.net.wand.streamevmon.tuner.jobs.{FailedJob, JobResult}
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
 import nz.net.wand.streamevmon.tuner.ConfiguredPipelineRunner
+import nz.net.wand.streamevmon.tuner.nab.ScoreTarget
 
 import java.util
 

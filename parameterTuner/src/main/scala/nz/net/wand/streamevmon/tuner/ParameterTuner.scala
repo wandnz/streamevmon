@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.tuner
 
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.parameters.Parameters
-import nz.net.wand.streamevmon.tuner.nab.NabTAEFactory
+import nz.net.wand.streamevmon.tuner.nab.smac.NabTAEFactory
 
 import java.io.{File, FileInputStream, ObjectInputStream}
 

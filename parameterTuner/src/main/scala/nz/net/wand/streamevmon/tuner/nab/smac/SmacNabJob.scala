@@ -1,7 +1,8 @@
-package nz.net.wand.streamevmon.tuner.nab
+package nz.net.wand.streamevmon.tuner.nab.smac
 
 import nz.net.wand.streamevmon.parameters.{DetectorParameterSpecs, ParameterInstance, Parameters}
 import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
+import nz.net.wand.streamevmon.tuner.nab.{NabJob, ScoreTarget}
 
 import ca.ubc.cs.beta.aeatk.algorithmrunconfiguration.AlgorithmRunConfiguration
 import ca.ubc.cs.beta.aeatk.algorithmrunresult.RunStatus
