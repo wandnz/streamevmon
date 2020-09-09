@@ -12,6 +12,7 @@ import ca.ubc.cs.beta.smac.executors.SMACExecutor
 import com.fasterxml.jackson.core.`type`.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import org.apache.commons.io.FileUtils
 
 import scala.util.{Random, Try}
 
@@ -54,6 +55,7 @@ object ParameterTuner extends Logging {
     val allParameterSpecs = detectors.flatMap(DetectorParameterSpecs.parametersFromDetectorType)
     val fixedParameters = DetectorParameterSpecs.fixedParameters
 
+    FileUtils.forceMkdir(new File(parameterSpecFile).getParentFile)
     val writer = new BufferedWriter(new FileWriter(parameterSpecFile))
 
     allParameterSpecs.foreach { spec =>
@@ -70,7 +72,7 @@ object ParameterTuner extends Logging {
     // Squash all the logs from Flink to tidy up our output.
     System.setProperty("org.slf4j.simpleLogger.log.org.apache.flink", "error")
     System.setProperty(
-      "org.slf4j.simpleLogger.log.nz.net.wand.streamevmon.runners.tuner.nab.NabAllDetectors",
+      "org.slf4j.simpleLogger.log.nz.net.wand.streamevmon.tuner.nab.NabAllDetectors",
       "error"
     )
 
@@ -102,6 +104,8 @@ object ParameterTuner extends Logging {
         "--wallclock-limit", opts.wallclockLimit.toString,
         "--runcount-limit", opts.runcountLimit.toString
       ))
+
+    ConfiguredPipelineRunner.shutdownImmediately()
   }
 
   var detectorsToUse: Seq[DetectorType.ValueBuilder] = Seq()

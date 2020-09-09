@@ -81,7 +81,7 @@ case class NabJob(
       val timeAfterDetectors = System.currentTimeMillis()
 
       if (!skipScoring) {
-        logger.info("Making output directory sane for scorer...")
+        logger.info("Adding reference folder for scorer...")
         FileUtils.copyDirectory(new File("data/NAB/results/null"), new File(s"$outputDir/null"))
 
         logger.info(s"Scoring tests from job $this...")
@@ -120,6 +120,12 @@ case class NabJob(
       writer.newLine()
       writer.flush()
       writer.close()
+
+      logger.info("Tidying up output folder...")
+      (DetectorType.values.map(det => s"$outputDir/${det.toString}") ++ Seq(s"$outputDir/null"))
+        .foreach { folder =>
+          FileUtils.deleteQuietly(new File(folder))
+        }
 
       Runtime.getRuntime.removeShutdownHook(shutdownHookThread)
 

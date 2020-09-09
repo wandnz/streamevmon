@@ -36,13 +36,9 @@ class NabTAE(
     * @return list of the exact same size as input containing the <code>AlgorithmRun</code> objects in the same order as runConfigs
     */
   override def evaluateRun(
-    runConfigs: util.List[AlgorithmRunConfiguration],
+    runConfigs       : util.List[AlgorithmRunConfiguration],
     runStatusObserver: TargetAlgorithmEvaluatorRunObserver
-  ): util.List[AlgorithmRunResult] = {
-    val runs = runConfigs.asScala
-    runs.foreach(r => println("One sync call"))
-    new util.ArrayList()
-  }
+  ): util.List[AlgorithmRunResult] = ???
 
   /**
     * Evaluates the given configuration, and when complete the handler is invoked
@@ -68,9 +64,7 @@ class NabTAE(
       val job = SmacNabJob(
         ru,
         detectors,
-        scoreTargets,
-        skipDetectors = false,
-        skipScoring = false
+        scoreTargets
       )
 
       ConfiguredPipelineRunner.addJobResultHook {
