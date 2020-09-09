@@ -55,9 +55,7 @@ object RandomSearchTuner extends Logging {
       NabJob(
         params,
         outputPath,
-        detectors = Seq(DetectorType.Baseline), //NabJob.allDetectors,
-        skipDetectors = false,
-        skipScoring = false
+        detectors = Seq(DetectorType.Baseline)
       ))
   }
 

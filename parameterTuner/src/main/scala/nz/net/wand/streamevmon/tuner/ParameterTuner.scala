@@ -7,6 +7,7 @@ import nz.net.wand.streamevmon.tuner.nab.ScoreTarget
 import nz.net.wand.streamevmon.tuner.nab.smac.NabTAEFactory
 
 import java.io._
+import java.time.Instant
 
 import ca.ubc.cs.beta.smac.executors.SMACExecutor
 import com.fasterxml.jackson.core.`type`.TypeReference
@@ -49,9 +50,16 @@ object ParameterTuner extends Logging {
     results
   }
 
-  val parameterSpecFile = "out/parameterTuner/smac/parameterspec.smac"
+  val baseOutputDir = "out/parameterTuner"
+  val smacdir = "smac"
+  var detectorsToUse: Seq[DetectorType.ValueBuilder] = Seq()
+  var scoreTargets: Iterable[ScoreTarget.Value] = Seq(ScoreTarget.Standard)
+  var runOutputDir: String = baseOutputDir
 
-  def populateSmacParameterSpec(detectors: DetectorType.ValueBuilder*): Unit = {
+  def populateSmacParameterSpec(
+    parameterSpecFile: String,
+    detectors        : DetectorType.ValueBuilder*
+  ): Unit = {
     val allParameterSpecs = detectors.flatMap(DetectorParameterSpecs.parametersFromDetectorType)
     val fixedParameters = DetectorParameterSpecs.fixedParameters
 
@@ -88,7 +96,15 @@ object ParameterTuner extends Logging {
       throw new IllegalArgumentException("Can't start without any score targets")
     }
 
-    populateSmacParameterSpec(detectorsToUse: _*)
+    val rungroup =
+      s"${detectorsToUse.mkString(",")}-" +
+        s"${scoreTargets.mkString(",")}-" +
+        s"${Instant.ofEpochMilli(System.currentTimeMillis())}"
+
+    runOutputDir = s"$baseOutputDir/$smacdir/$rungroup/run-outputs"
+    val parameterSpecFile = s"$baseOutputDir/$smacdir/$rungroup/parameterspec.smac"
+
+    populateSmacParameterSpec(parameterSpecFile, detectorsToUse: _*)
 
     SMACExecutor.oldMain(
       Array(
@@ -97,8 +113,9 @@ object ParameterTuner extends Logging {
         "--run-obj", "QUALITY",
         "--pcs-file", parameterSpecFile,
         "--use-instances", "false",
-        "--experiment-dir", "out/parameterTuner/smac",
-        "--output-dir", "smac-output",
+        "--experiment-dir", baseOutputDir,
+        "--output-dir", smacdir,
+        "--rungroup", rungroup,
         "--cputime-limit", opts.cputimeLimit.toString,
         "--iteration-limit", opts.iterationLimit.toString,
         "--wallclock-limit", opts.wallclockLimit.toString,
@@ -107,7 +124,4 @@ object ParameterTuner extends Logging {
 
     ConfiguredPipelineRunner.shutdownImmediately()
   }
-
-  var detectorsToUse: Seq[DetectorType.ValueBuilder] = Seq()
-  var scoreTargets: Iterable[ScoreTarget.Value] = Seq(ScoreTarget.Standard)
 }

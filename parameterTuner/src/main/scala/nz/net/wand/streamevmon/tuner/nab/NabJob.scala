@@ -17,9 +17,7 @@ import scala.sys.process._
 case class NabJob(
   params: Parameters,
   outputDir    : String,
-  detectors    : Iterable[DetectorType.ValueBuilder] = NabJob.allDetectors,
-  skipDetectors: Boolean = false,
-  skipScoring  : Boolean = false
+  detectors: Iterable[DetectorType.ValueBuilder] = NabJob.allDetectors
 ) extends Job(params.hashCode.toString) {
 
   override val toString: String = s"NabJob-${params.hashCode.toString}"
@@ -65,41 +63,31 @@ case class NabJob(
 
       val timeBeforeDetectors = System.currentTimeMillis()
 
-      if (!skipDetectors) {
-        logger.info(s"Starting detectors...")
-        logger.debug(s"Using parameters: ")
-        params.getAsArgs.grouped(2).foreach {
-          arg => logger.debug(arg.mkString(" "))
-        }
-        val runner = new NabAllDetectors(detectors)
-        runner.runOnAllNabFiles(params.getAsArgs.toArray, outputDir, deleteOutputDirectory = false)
+      logger.info(s"Starting detectors...")
+      logger.debug(s"Using parameters: ")
+      params.getAsArgs.grouped(2).foreach {
+        arg => logger.debug(arg.mkString(" "))
       }
-      else {
-        logger.info(s"Skipping detectors...")
-      }
+      val runner = new NabAllDetectors(detectors)
+      runner.runOnAllNabFiles(params.getAsArgs.toArray, outputDir, deleteOutputDirectory = false)
 
       val timeAfterDetectors = System.currentTimeMillis()
 
-      if (!skipScoring) {
-        logger.info("Adding reference folder for scorer...")
-        FileUtils.copyDirectory(new File("data/NAB/results/null"), new File(s"$outputDir/null"))
+      logger.info("Adding reference folder for scorer...")
+      FileUtils.copyDirectory(new File("data/NAB/results/null"), new File(s"$outputDir/null"))
 
-        logger.info(s"Scoring tests from job $this...")
-        val output = Seq(
-          "./scripts/nab/nab-scorer.sh",
-          detectors.mkString(","),
-          FilenameUtils.normalize(new File(outputDir).getAbsolutePath)
-        ).!!
+      logger.info(s"Scoring tests from job $this...")
+      val output = Seq(
+        "./scripts/nab/nab-scorer.sh",
+        detectors.mkString(","),
+        FilenameUtils.normalize(new File(outputDir).getAbsolutePath)
+      ).!!
 
-        val writer = new BufferedWriter(new FileWriter(s"$outputDir/scorer.log"))
-        writer.write(output)
-        writer.newLine()
-        writer.flush()
-        writer.close()
-      }
-      else {
-        logger.info("Skipping scoring...")
-      }
+      val scoreLogWriter = new BufferedWriter(new FileWriter(s"$outputDir/scorer.log"))
+      scoreLogWriter.write(output)
+      scoreLogWriter.newLine()
+      scoreLogWriter.flush()
+      scoreLogWriter.close()
 
       logger.info("Parsing results...")
       val mapper = new ObjectMapper()
@@ -115,11 +103,11 @@ case class NabJob(
 
       logger.info(s"Algorithm time taken: ${timeAfterDetectors - timeBeforeDetectors}ms")
       logger.info(s"Wallclock time taken: ${endTime - startTime}ms")
-      val writer = new BufferedWriter(new FileWriter(s"$outputDir/runtime.log"))
-      writer.write(s"${endTime - startTime}")
-      writer.newLine()
-      writer.flush()
-      writer.close()
+      val runtimeWriter = new BufferedWriter(new FileWriter(s"$outputDir/runtime.log"))
+      runtimeWriter.write(s"${endTime - startTime}")
+      runtimeWriter.newLine()
+      runtimeWriter.flush()
+      runtimeWriter.close()
 
       logger.info("Tidying up output folder...")
       (DetectorType.values.map(det => s"$outputDir/${det.toString}") ++ Seq(s"$outputDir/null"))

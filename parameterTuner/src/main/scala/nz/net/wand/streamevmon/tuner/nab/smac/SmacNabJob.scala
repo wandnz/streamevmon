@@ -14,14 +14,11 @@ class SmacNabJob(
   params: Parameters,
   detectors: Iterable[DetectorType.ValueBuilder],
   optimiseFor: Iterable[ScoreTarget.Value],
-  skipDetectors: Boolean = false,
-  skipScoring: Boolean = false
+  baseOutputDir: String
 ) extends NabJob(
   params,
-  s"./out/parameterTuner/smac/${params.hashCode.toString}",
-  detectors,
-  skipDetectors,
-  skipScoring
+  s"$baseOutputDir/${params.hashCode.toString}",
+  detectors
 ) {
   override protected def getResult(
     results: Map[String, Map[String, Double]],
@@ -59,8 +56,7 @@ object SmacNabJob {
     runConfig: AlgorithmRunConfiguration,
     detectors    : Iterable[DetectorType.ValueBuilder],
     optimiseFor  : Iterable[ScoreTarget.Value],
-    skipDetectors: Boolean = false,
-    skipScoring  : Boolean = false
+    baseOutputDir: String
   ): SmacNabJob = {
 
     val params = runConfig.getParameterConfiguration
@@ -84,8 +80,7 @@ object SmacNabJob {
       parameters,
       detectors,
       optimiseFor,
-      skipDetectors,
-      skipScoring
+      baseOutputDir
     )
   }
 }
