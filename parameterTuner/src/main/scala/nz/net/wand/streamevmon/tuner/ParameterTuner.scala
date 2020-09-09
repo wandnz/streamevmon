@@ -66,13 +66,6 @@ object ParameterTuner extends Logging {
     writer.close()
   }
 
-  def parseArgs(args: Array[String]): Unit = {
-    detectorsToUse = args.flatMap {
-      arg => Try(DetectorType.withName(arg)).toOption.asInstanceOf[Option[DetectorType.ValueBuilder]]
-    }.toSeq
-    logger.info(s"Using detectors ${detectorsToUse.mkString("(", ", ", ")")} and score targets ${scoreTargets.mkString("(", ", ", ")")}")
-  }
-
   def main(args: Array[String]): Unit = {
     // Squash all the logs from Flink to tidy up our output.
     System.setProperty("org.slf4j.simpleLogger.log.org.apache.flink", "error")
@@ -81,7 +74,10 @@ object ParameterTuner extends Logging {
       "error"
     )
 
-    parseArgs(args)
+    val opts = ProgramOptions(args)
+    detectorsToUse = opts.getDetectors
+    scoreTargets = opts.getScoreTargets
+    logger.info(s"Using detectors ${detectorsToUse.mkString("(", ", ", ")")} and score targets ${scoreTargets.mkString("(", ", ", ")")}")
 
     if (detectorsToUse.isEmpty) {
       throw new IllegalArgumentException("Can't start without any detectors")
@@ -100,10 +96,14 @@ object ParameterTuner extends Logging {
         "--pcs-file", parameterSpecFile,
         "--use-instances", "false",
         "--experiment-dir", "out/parameterTuner/smac",
-        "--output-dir", "smac-output"
+        "--output-dir", "smac-output",
+        "--cputime-limit", opts.cputimeLimit.toString,
+        "--iteration-limit", opts.iterationLimit.toString,
+        "--wallclock-limit", opts.wallclockLimit.toString,
+        "--runcount-limit", opts.runcountLimit.toString
       ))
   }
 
-  var detectorsToUse: Seq[DetectorType.ValueBuilder] = Seq(DetectorType.Baseline)
+  var detectorsToUse: Seq[DetectorType.ValueBuilder] = Seq()
   var scoreTargets: Iterable[ScoreTarget.Value] = Seq(ScoreTarget.Standard)
 }
