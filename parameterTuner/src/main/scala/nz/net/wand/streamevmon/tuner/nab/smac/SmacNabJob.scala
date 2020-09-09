@@ -12,14 +12,14 @@ import scala.collection.JavaConverters._
 class SmacNabJob(
   runConfig: AlgorithmRunConfiguration,
   params: Parameters,
-  detector: DetectorType.ValueBuilder,
+  detectors: Iterable[DetectorType.ValueBuilder],
   optimiseFor: ScoreTarget.Value,
   skipDetectors: Boolean = false,
   skipScoring: Boolean = false
 ) extends NabJob(
   params,
   s"./out/parameterTuner/smac/${params.hashCode.toString}",
-  Seq(detector),
+  detectors,
   skipDetectors,
   skipScoring
 ) {
@@ -28,6 +28,13 @@ class SmacNabJob(
     runtime      : Double,
     wallClockTime: Double
   ): SmacNabJobResult = {
+
+    val detector = detectors.size match {
+      case 0 => throw new IllegalArgumentException("At least one detector must be specified!")
+      case 1 => detectors.head
+      case _ => throw new NotImplementedError("Multiple detectors not yet supported!")
+    }
+
     val score = results(detector.toString)(optimiseFor.toString)
     val quality = 100.0 - score
     new SmacNabJobResult(this, results, NabAlgorithmRunResult(
@@ -46,7 +53,7 @@ class SmacNabJob(
 object SmacNabJob {
   def apply(
     runConfig    : AlgorithmRunConfiguration,
-    detector     : DetectorType.ValueBuilder,
+    detectors    : Iterable[DetectorType.ValueBuilder],
     optimiseFor  : ScoreTarget.Value,
     skipDetectors: Boolean = false,
     skipScoring  : Boolean = false
@@ -71,7 +78,7 @@ object SmacNabJob {
     new SmacNabJob(
       runConfig,
       parameters,
-      detector,
+      detectors,
       optimiseFor,
       skipDetectors,
       skipScoring

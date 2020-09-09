@@ -1,7 +1,6 @@
 package nz.net.wand.streamevmon.tuner.nab.smac
 
-import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
-import nz.net.wand.streamevmon.tuner.nab.ScoreTarget
+import nz.net.wand.streamevmon.tuner.ParameterTuner
 
 import java.util
 
@@ -10,16 +9,16 @@ import ca.ubc.cs.beta.aeatk.targetalgorithmevaluator.{TargetAlgorithmEvaluator, 
 
 class NabTAEFactory extends TargetAlgorithmEvaluatorFactory {
 
-  private val detector = DetectorType.Baseline
-  private val scoreTarget = ScoreTarget.Standard
+  private lazy val detectors = ParameterTuner.detectorsToUse
+  private lazy val scoreTarget = ParameterTuner.scoreTarget
 
   override def getName: String = "NAB"
 
-  override def getTargetAlgorithmEvaluator: TargetAlgorithmEvaluator = new NabTAE(detector, scoreTarget)
+  override def getTargetAlgorithmEvaluator: TargetAlgorithmEvaluator = new NabTAE(detectors, scoreTarget)
 
-  override def getTargetAlgorithmEvaluator(options: AbstractOptions): TargetAlgorithmEvaluator = new NabTAE(detector, scoreTarget)
+  override def getTargetAlgorithmEvaluator(options: AbstractOptions): TargetAlgorithmEvaluator = new NabTAE(detectors, scoreTarget)
 
-  override def getTargetAlgorithmEvaluator(optionsMap: util.Map[String, AbstractOptions]): TargetAlgorithmEvaluator = new NabTAE(detector, scoreTarget)
+  override def getTargetAlgorithmEvaluator(optionsMap: util.Map[String, AbstractOptions]): TargetAlgorithmEvaluator = new NabTAE(detectors, scoreTarget)
 
   override def getOptionObject: AbstractOptions = new AbstractOptions {}
 }

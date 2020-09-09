@@ -15,7 +15,7 @@ import ca.ubc.cs.beta.aeatk.targetalgorithmevaluator.{AbstractTargetAlgorithmEva
 import scala.collection.JavaConverters._
 
 class NabTAE(
-  detector: DetectorType.ValueBuilder,
+  detectors: Iterable[DetectorType.ValueBuilder],
   scoreTarget: ScoreTarget.Value
 ) extends AbstractTargetAlgorithmEvaluator with Logging {
 
@@ -67,7 +67,7 @@ class NabTAE(
     runs.foreach { ru =>
       val job = SmacNabJob(
         ru,
-        detector,
+        detectors,
         scoreTarget,
         skipDetectors = false,
         skipScoring = false

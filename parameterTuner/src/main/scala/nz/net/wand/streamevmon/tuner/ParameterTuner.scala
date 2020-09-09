@@ -1,10 +1,12 @@
 package nz.net.wand.streamevmon.tuner
 
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.parameters.Parameters
+import nz.net.wand.streamevmon.parameters.{DetectorParameterSpecs, Parameters}
+import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
+import nz.net.wand.streamevmon.tuner.nab.ScoreTarget
 import nz.net.wand.streamevmon.tuner.nab.smac.NabTAEFactory
 
-import java.io.{File, FileInputStream, ObjectInputStream}
+import java.io._
 
 import ca.ubc.cs.beta.smac.executors.SMACExecutor
 import com.fasterxml.jackson.core.`type`.TypeReference
@@ -15,13 +17,7 @@ import scala.util.{Random, Try}
 
 object ParameterTuner extends Logging {
 
-  def main(args: Array[String]): Unit = {
-    // Squash all the logs from Flink to tidy up our output.
-    System.setProperty("org.slf4j.simpleLogger.log.org.apache.flink", "error")
-    System.setProperty(
-      "org.slf4j.simpleLogger.log.nz.net.wand.streamevmon.runners.tuner.nab.NabAllDetectors",
-      "error")
-
+  def getHistoricalResults: Seq[(Map[String, Map[String, Double]], Parameters)] = {
     val mapper = new ObjectMapper()
     mapper.registerModule(DefaultScalaModule)
 
@@ -49,14 +45,46 @@ object ParameterTuner extends Logging {
 
     logger.info(s"Got results for ${results.length} tests from ${folders.length} folders")
 
+    results
+  }
+
+  val parameterSpecFile = "out/parameterTuner/parameterspec.smac"
+
+  def populateSmacParameterSpec(detectors: DetectorType.ValueBuilder*): Unit = {
+    val allParameterSpecs = detectors.flatten(DetectorParameterSpecs.parametersFromDetectorType)
+    val fixedParameters = DetectorParameterSpecs.fixedParameters
+
+    val writer = new BufferedWriter(new FileWriter(parameterSpecFile))
+
+    allParameterSpecs.foreach { spec =>
+      writer.write(spec.toSmacString(fixedParameters.get(spec.name)))
+      writer.newLine()
+    }
+    writer.flush()
+    writer.close()
+  }
+
+  def main(args: Array[String]): Unit = {
+    // Squash all the logs from Flink to tidy up our output.
+    System.setProperty("org.slf4j.simpleLogger.log.org.apache.flink", "error")
+    System.setProperty(
+      "org.slf4j.simpleLogger.log.nz.net.wand.streamevmon.runners.tuner.nab.NabAllDetectors",
+      "error"
+    )
+
+    populateSmacParameterSpec(DetectorType.Baseline)
+
     SMACExecutor.oldMain(
       Array(
         "--tae", new NabTAEFactory().getName,
         "--algo-exec", "",
         "--run-obj", "QUALITY",
-        "--pcs-file", "out/parameterspec.smac",
+        "--pcs-file", parameterSpecFile,
         "--use-instances", "false",
         //"--scenario-file", "out/smac.scenario"
       ))
   }
+
+  var detectorsToUse: Seq[DetectorType.ValueBuilder] = Seq(DetectorType.Baseline)
+  var scoreTarget: ScoreTarget.Value = ScoreTarget.Standard
 }

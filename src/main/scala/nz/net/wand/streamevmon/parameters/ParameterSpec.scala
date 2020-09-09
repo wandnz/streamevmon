@@ -1,6 +1,5 @@
 package nz.net.wand.streamevmon.parameters
 
-import akka.actor.ActorSystem
 import org.apache.commons.math3.random.RandomDataGenerator
 
 case class ParameterSpec[T](
@@ -9,8 +8,6 @@ case class ParameterSpec[T](
   min    : Option[T],
   max    : Option[T]
 ) extends Serializable {
-
-  ActorSystem
 
   default match {
     case _: Int | _: Long | _: Double =>
@@ -30,5 +27,27 @@ case class ParameterSpec[T](
       case _ => throw new UnsupportedOperationException(s"Can't generate random parameter of type ${default.getClass.getSimpleName}")
     }
     ParameterInstance(this, result.asInstanceOf[T])
+  }
+
+  /** Converts this spec into the format expected by SMAC's PCS file. If the
+    * fixedValue parameter is not None, the output is a categorical variable
+    * with a single class of that value. Otherwise, this spec is replicated,
+    * allowing for a range of variable values.
+    */
+  def toSmacString(fixedValue: Option[T]): String = {
+    fixedValue match {
+      case Some(value) => s"$name categorical {$value} [$value]"
+      case None =>
+        val specType = default match {
+          case _: Int | _: Long => "integer"
+          case _: Float | _: Double => "real"
+          case _ => throw new UnsupportedOperationException(s"Can't create SMAC spec for spec with type ${default.getClass.getCanonicalName}")
+        }
+        (min, max) match {
+          case (Some(_), Some(_)) =>
+          case _ => throw new UnsupportedOperationException(s"Must specify min and max for SMAC spec")
+        }
+        s"$name $specType [${min.get},${max.get}] [$default]"
+    }
   }
 }
