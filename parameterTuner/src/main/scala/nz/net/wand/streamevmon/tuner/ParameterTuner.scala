@@ -48,7 +48,7 @@ object ParameterTuner extends Logging {
     results
   }
 
-  val parameterSpecFile = "out/parameterTuner/parameterspec.smac"
+  val parameterSpecFile = "out/parameterTuner/smac/parameterspec.smac"
 
   def populateSmacParameterSpec(detectors: DetectorType.ValueBuilder*): Unit = {
     val allParameterSpecs = detectors.flatMap(DetectorParameterSpecs.parametersFromDetectorType)
@@ -57,6 +57,8 @@ object ParameterTuner extends Logging {
     val writer = new BufferedWriter(new FileWriter(parameterSpecFile))
 
     allParameterSpecs.foreach { spec =>
+      // Note that this makes no use of forbidden parameter clauses, so some
+      // generated values may violate DetectorParameterSpec.parametersAreValid.
       writer.write(spec.toSmacString(fixedParameters.get(spec.name)))
       writer.newLine()
     }
@@ -81,6 +83,13 @@ object ParameterTuner extends Logging {
 
     parseArgs(args)
 
+    if (detectorsToUse.isEmpty) {
+      throw new IllegalArgumentException("Can't start without any detectors")
+    }
+    if (scoreTargets.isEmpty) {
+      throw new IllegalArgumentException("Can't start without any score targets")
+    }
+
     populateSmacParameterSpec(detectorsToUse: _*)
 
     SMACExecutor.oldMain(
@@ -90,7 +99,8 @@ object ParameterTuner extends Logging {
         "--run-obj", "QUALITY",
         "--pcs-file", parameterSpecFile,
         "--use-instances", "false",
-        //"--scenario-file", "out/smac.scenario"
+        "--experiment-dir", "out/parameterTuner/smac",
+        "--output-dir", "smac-output"
       ))
   }
 

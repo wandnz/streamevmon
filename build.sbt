@@ -58,7 +58,9 @@ lazy val parameterTuner = (project in file("parameterTuner"))
       name := "parameterTuner",
       libraryDependencies ++= providedDependencies ++ tunerDependencies,
       unmanagedBase := baseDirectory.value / "lib",
-      mainClass in assembly := Some("nz.net.wand.streamevmon.tuner.ParameterTuner")
+      mainClass in assembly := Some("nz.net.wand.streamevmon.tuner.ParameterTuner"),
+      assembly / fullClasspath := (Compile / fullClasspath).value,
+      assembly / assemblyOption := (assembly / assemblyOption).value.copy(includeScala = true, includeDependency = true)
     ) ++ sharedSettings
   )
 
