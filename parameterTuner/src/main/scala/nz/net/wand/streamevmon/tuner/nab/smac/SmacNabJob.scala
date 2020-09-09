@@ -13,7 +13,7 @@ class SmacNabJob(
   runConfig: AlgorithmRunConfiguration,
   params: Parameters,
   detectors: Iterable[DetectorType.ValueBuilder],
-  optimiseFor: ScoreTarget.Value,
+  optimiseFor: Iterable[ScoreTarget.Value],
   skipDetectors: Boolean = false,
   skipScoring: Boolean = false
 ) extends NabJob(
@@ -29,13 +29,17 @@ class SmacNabJob(
     wallClockTime: Double
   ): SmacNabJobResult = {
 
-    val detector = detectors.size match {
-      case 0 => throw new IllegalArgumentException("At least one detector must be specified!")
-      case 1 => detectors.head
-      case _ => throw new NotImplementedError("Multiple detectors not yet supported!")
+    val scores = detectors.flatMap { det =>
+      optimiseFor.map { target =>
+        results(det.toString)(target.toString)
+      }
     }
 
-    val score = results(detector.toString)(optimiseFor.toString)
+    if (scores.isEmpty) {
+      throw new UnsupportedOperationException("Can't get score for zero results!")
+    }
+
+    val score = scores.sum / scores.size
     val quality = 100.0 - score
     new SmacNabJobResult(this, results, NabAlgorithmRunResult(
       runConfig,
@@ -52,9 +56,9 @@ class SmacNabJob(
 
 object SmacNabJob {
   def apply(
-    runConfig    : AlgorithmRunConfiguration,
+    runConfig: AlgorithmRunConfiguration,
     detectors    : Iterable[DetectorType.ValueBuilder],
-    optimiseFor  : ScoreTarget.Value,
+    optimiseFor  : Iterable[ScoreTarget.Value],
     skipDetectors: Boolean = false,
     skipScoring  : Boolean = false
   ): SmacNabJob = {

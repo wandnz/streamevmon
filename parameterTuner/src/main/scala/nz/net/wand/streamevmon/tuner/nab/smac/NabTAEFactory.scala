@@ -10,15 +10,15 @@ import ca.ubc.cs.beta.aeatk.targetalgorithmevaluator.{TargetAlgorithmEvaluator, 
 class NabTAEFactory extends TargetAlgorithmEvaluatorFactory {
 
   private lazy val detectors = ParameterTuner.detectorsToUse
-  private lazy val scoreTarget = ParameterTuner.scoreTarget
+  private lazy val scoreTargets = ParameterTuner.scoreTargets
 
   override def getName: String = "NAB"
 
-  override def getTargetAlgorithmEvaluator: TargetAlgorithmEvaluator = new NabTAE(detectors, scoreTarget)
+  override def getTargetAlgorithmEvaluator: TargetAlgorithmEvaluator = new NabTAE(detectors, scoreTargets)
 
-  override def getTargetAlgorithmEvaluator(options: AbstractOptions): TargetAlgorithmEvaluator = new NabTAE(detectors, scoreTarget)
+  override def getTargetAlgorithmEvaluator(options: AbstractOptions): TargetAlgorithmEvaluator = new NabTAE(detectors, scoreTargets)
 
-  override def getTargetAlgorithmEvaluator(optionsMap: util.Map[String, AbstractOptions]): TargetAlgorithmEvaluator = new NabTAE(detectors, scoreTarget)
+  override def getTargetAlgorithmEvaluator(optionsMap: util.Map[String, AbstractOptions]): TargetAlgorithmEvaluator = new NabTAE(detectors, scoreTargets)
 
   override def getOptionObject: AbstractOptions = new AbstractOptions {}
 }

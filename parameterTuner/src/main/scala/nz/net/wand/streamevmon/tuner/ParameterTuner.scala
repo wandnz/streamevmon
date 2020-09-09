@@ -51,7 +51,7 @@ object ParameterTuner extends Logging {
   val parameterSpecFile = "out/parameterTuner/parameterspec.smac"
 
   def populateSmacParameterSpec(detectors: DetectorType.ValueBuilder*): Unit = {
-    val allParameterSpecs = detectors.flatten(DetectorParameterSpecs.parametersFromDetectorType)
+    val allParameterSpecs = detectors.flatMap(DetectorParameterSpecs.parametersFromDetectorType)
     val fixedParameters = DetectorParameterSpecs.fixedParameters
 
     val writer = new BufferedWriter(new FileWriter(parameterSpecFile))
@@ -64,6 +64,13 @@ object ParameterTuner extends Logging {
     writer.close()
   }
 
+  def parseArgs(args: Array[String]): Unit = {
+    detectorsToUse = args.flatMap {
+      arg => Try(DetectorType.withName(arg)).toOption.asInstanceOf[Option[DetectorType.ValueBuilder]]
+    }.toSeq
+    logger.info(s"Using detectors ${detectorsToUse.mkString("(", ", ", ")")} and score targets ${scoreTargets.mkString("(", ", ", ")")}")
+  }
+
   def main(args: Array[String]): Unit = {
     // Squash all the logs from Flink to tidy up our output.
     System.setProperty("org.slf4j.simpleLogger.log.org.apache.flink", "error")
@@ -72,7 +79,9 @@ object ParameterTuner extends Logging {
       "error"
     )
 
-    populateSmacParameterSpec(DetectorType.Baseline)
+    parseArgs(args)
+
+    populateSmacParameterSpec(detectorsToUse: _*)
 
     SMACExecutor.oldMain(
       Array(
@@ -86,5 +95,5 @@ object ParameterTuner extends Logging {
   }
 
   var detectorsToUse: Seq[DetectorType.ValueBuilder] = Seq(DetectorType.Baseline)
-  var scoreTarget: ScoreTarget.Value = ScoreTarget.Standard
+  var scoreTargets: Iterable[ScoreTarget.Value] = Seq(ScoreTarget.Standard)
 }

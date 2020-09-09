@@ -16,7 +16,7 @@ import scala.collection.JavaConverters._
 
 class NabTAE(
   detectors: Iterable[DetectorType.ValueBuilder],
-  scoreTarget: ScoreTarget.Value
+  scoreTargets: Iterable[ScoreTarget.Value]
 ) extends AbstractTargetAlgorithmEvaluator with Logging {
 
   def jobResultToRunResult(jr: JobResult): AlgorithmRunResult = {
@@ -68,7 +68,7 @@ class NabTAE(
       val job = SmacNabJob(
         ru,
         detectors,
-        scoreTarget,
+        scoreTargets,
         skipDetectors = false,
         skipScoring = false
       )
