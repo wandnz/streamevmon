@@ -32,6 +32,7 @@ lazy val sharedSettings = Seq(
 
   // exclude META-INF from packaged JAR and use correct behaviour for duplicate library files
   assemblyMergeStrategy in assembly := {
+    case PathList("META-INF", "services", _@_*) => MergeStrategy.filterDistinctLines
     case PathList("META-INF", _@_*) => MergeStrategy.discard
     case PathList("module-info.class") => MergeStrategy.discard
     case other => (assemblyMergeStrategy in assembly).value(other)
