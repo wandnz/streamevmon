@@ -3,7 +3,6 @@ package nz.net.wand.streamevmon.tuner
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.parameters.{DetectorParameterSpecs, Parameters}
 import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
-import nz.net.wand.streamevmon.tuner.nab.ScoreTarget
 import nz.net.wand.streamevmon.tuner.nab.smac.NabTAEFactory
 
 import java.io._
@@ -52,9 +51,6 @@ object ParameterTuner extends Logging {
 
   val baseOutputDir = "out/parameterTuner"
   val smacdir = "smac"
-  var detectorsToUse: Seq[DetectorType.ValueBuilder] = Seq()
-  var scoreTargets: Iterable[ScoreTarget.Value] = Seq(ScoreTarget.Standard)
-  var runOutputDir: String = baseOutputDir
 
   def populateSmacParameterSpec(
     parameterSpecFile: String,
@@ -85,8 +81,8 @@ object ParameterTuner extends Logging {
     )
 
     val opts = ProgramOptions(args)
-    detectorsToUse = opts.getDetectors
-    scoreTargets = opts.getScoreTargets
+    val detectorsToUse = opts.getDetectors
+    val scoreTargets = opts.getScoreTargets
     logger.info(s"Using detectors ${detectorsToUse.mkString("(", ", ", ")")} and score targets ${scoreTargets.mkString("(", ", ", ")")}")
 
     if (detectorsToUse.isEmpty) {
@@ -101,8 +97,11 @@ object ParameterTuner extends Logging {
         s"${scoreTargets.mkString(",")}-" +
         s"${Instant.ofEpochMilli(System.currentTimeMillis())}"
 
-    runOutputDir = s"$baseOutputDir/$smacdir/$rungroup/run-outputs"
     val parameterSpecFile = s"$baseOutputDir/$smacdir/$rungroup/parameterspec.smac"
+
+    System.setProperty("nz.net.wand.streamevmon.tuner.detectors", detectorsToUse.mkString(","))
+    System.setProperty("nz.net.wand.streamevmon.tuner.scoreTargets", scoreTargets.mkString(","))
+    System.setProperty("nz.net.wand.streamevmon.tuner.runOutputDir", s"$baseOutputDir/$smacdir/$rungroup/run-outputs")
 
     populateSmacParameterSpec(parameterSpecFile, detectorsToUse: _*)
 

@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.tuner.nab.smac
 
-import nz.net.wand.streamevmon.tuner.ParameterTuner
+import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
+import nz.net.wand.streamevmon.tuner.nab.ScoreTarget
 
 import java.util
 
@@ -9,9 +10,18 @@ import ca.ubc.cs.beta.aeatk.targetalgorithmevaluator.{TargetAlgorithmEvaluator, 
 
 class NabTAEFactory extends TargetAlgorithmEvaluatorFactory {
 
-  private lazy val detectors = ParameterTuner.detectorsToUse
-  private lazy val scoreTargets = ParameterTuner.scoreTargets
-  private lazy val baseOutputDir = ParameterTuner.runOutputDir
+  private lazy val detectors = System
+    .getProperty("nz.net.wand.streamevmon.tuner.detectors")
+    .split(",")
+    .map(DetectorType.withName)
+    .map(_.asInstanceOf[DetectorType.ValueBuilder])
+
+  private lazy val scoreTargets = System
+    .getProperty("nz.net.wand.streamevmon.tuner.scoreTargets")
+    .split(",")
+    .map(ScoreTarget.withName)
+
+  private lazy val baseOutputDir = System.getProperty("nz.net.wand.streamevmon.tuner.runOutputDir")
 
   override def getName: String = "NAB"
 
