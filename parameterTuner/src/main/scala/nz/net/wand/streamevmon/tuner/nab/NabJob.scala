@@ -77,17 +77,17 @@ case class NabJob(
       FileUtils.copyDirectory(new File("data/NAB/results/null"), new File(s"$outputDir/null"))
 
       logger.info(s"Scoring tests from job $this...")
+      val outBuf = new FileProcessLogger(new File(s"$outputDir/scorer.log"))
       val output = Seq(
         "./scripts/nab/nab-scorer.sh",
         detectors.mkString(","),
         FilenameUtils.normalize(new File(outputDir).getAbsolutePath)
-      ).!!
-
-      val scoreLogWriter = new BufferedWriter(new FileWriter(s"$outputDir/scorer.log"))
-      scoreLogWriter.write(output)
-      scoreLogWriter.newLine()
-      scoreLogWriter.flush()
-      scoreLogWriter.close()
+      ).!(outBuf)
+      if (output != 0) {
+        outBuf.flush()
+        outBuf.close()
+        throw new RuntimeException(s"NAB scorer exited with return code $output. Check $outputDir/scorer.log for details.")
+      }
 
       logger.info("Parsing results...")
       val mapper = new ObjectMapper()
