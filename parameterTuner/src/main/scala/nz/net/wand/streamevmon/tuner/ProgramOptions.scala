@@ -43,6 +43,13 @@ class ProgramOptions {
   )
 
   @Parameter(
+    names = Array("--doValidation"),
+    description = "If true, SMAC will perform a validation run on the best-scoring parameter set when finishing up",
+    arity = 1
+  )
+  val doValidation: Boolean = true
+
+  @Parameter(
     names = Array("--cputime-limit"),
     description = "limits the total cpu time allowed between SMAC and the target algorithm runs during the automatic configuration phase",
     validateWith = classOf[NonNegativeInteger]

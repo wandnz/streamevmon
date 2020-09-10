@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.`type`.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.commons.io.FileUtils
+import org.apache.commons.io.output.TeeOutputStream
 
 import scala.util.{Random, Try}
 
@@ -79,11 +80,11 @@ object ParameterTuner extends Logging {
       "org.slf4j.simpleLogger.log.nz.net.wand.streamevmon.tuner.nab.NabAllDetectors",
       "error"
     )
+    System.setProperty("org.slf4j.simpleLogger.log.nz.net.wand.streamevmon.tuner.nab.smac", "info")
 
     val opts = ProgramOptions(args)
     val detectorsToUse = opts.getDetectors
     val scoreTargets = opts.getScoreTargets
-    logger.info(s"Using detectors ${detectorsToUse.mkString("(", ", ", ")")} and score targets ${scoreTargets.mkString("(", ", ", ")")}")
 
     if (detectorsToUse.isEmpty) {
       throw new IllegalArgumentException("Can't start without any detectors")
@@ -105,6 +106,10 @@ object ParameterTuner extends Logging {
 
     populateSmacParameterSpec(parameterSpecFile, detectorsToUse: _*)
 
+    System.setOut(new PrintStream(new TeeOutputStream(new FileOutputStream(s"$baseOutputDir/$smacdir/$rungroup/stdout.log"), new FileOutputStream(FileDescriptor.out))))
+
+    logger.info(s"Using detectors ${detectorsToUse.mkString("(", ", ", ")")} and score targets ${scoreTargets.mkString("(", ", ", ")")}")
+
     SMACExecutor.oldMain(
       Array(
         "--tae", new NabTAEFactory().getName,
@@ -118,7 +123,8 @@ object ParameterTuner extends Logging {
         "--cputime-limit", opts.cputimeLimit.toString,
         "--iteration-limit", opts.iterationLimit.toString,
         "--wallclock-limit", opts.wallclockLimit.toString,
-        "--runcount-limit", opts.runcountLimit.toString
+        "--runcount-limit", opts.runcountLimit.toString,
+        "--doValidation", opts.doValidation.toString
       ))
 
     ConfiguredPipelineRunner.shutdownImmediately()
