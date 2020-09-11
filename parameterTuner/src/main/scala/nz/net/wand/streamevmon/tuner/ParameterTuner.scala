@@ -81,6 +81,8 @@ object ParameterTuner extends Logging {
       "error"
     )
     System.setProperty("org.slf4j.simpleLogger.log.nz.net.wand.streamevmon.tuner.nab.smac", "info")
+    System.setProperty("org.slf4j.simpleLogger.showDateTime", "true")
+    System.setProperty("org.slf4j.simpleLogger.dateTimeFormat", "HH:mm:ss")
 
     val opts = ProgramOptions(args)
     val detectorsToUse = opts.getDetectors

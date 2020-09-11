@@ -77,16 +77,29 @@ case class NabJob(
       FileUtils.copyDirectory(new File("data/NAB/results/null"), new File(s"$outputDir/null"))
 
       logger.info(s"Scoring tests from job $this...")
+
+      val errBuf = new FileProcessLogger(new File(s"$outputDir/scorer.error.log"))
       val outBuf = new FileProcessLogger(new File(s"$outputDir/scorer.log"))
-      val output = Seq(
-        "./scripts/nab/nab-scorer.sh",
-        detectors.mkString(","),
-        FilenameUtils.normalize(new File(outputDir).getAbsolutePath)
-      ).!(outBuf)
-      if (output != 0) {
-        outBuf.flush()
-        outBuf.close()
-        throw new RuntimeException(s"NAB scorer exited with return code $output. Check $outputDir/scorer.log for details.")
+      try {
+        val output = Seq(
+          "./scripts/nab/nab-scorer.sh",
+          detectors.mkString(","),
+          FilenameUtils.normalize(new File(outputDir).getAbsolutePath),
+          "please-do-profiling"
+        ).lineStream(errBuf)
+
+        output.foreach { line =>
+          outBuf.out(line)
+          outBuf.flush()
+        }
+      }
+      catch {
+        case e: Exception =>
+          outBuf.flush()
+          errBuf.flush()
+          outBuf.close()
+          errBuf.close()
+          throw new RuntimeException(s"NAB scorer exited with non-zero return code. Check $outputDir/scorer.log for details.", e)
       }
 
       logger.info("Parsing results...")
@@ -112,7 +125,7 @@ case class NabJob(
       logger.info("Tidying up output folder...")
       (DetectorType.values.map(det => s"$outputDir/${det.toString}") ++ Seq(s"$outputDir/null"))
         .foreach { folder =>
-          FileUtils.deleteQuietly(new File(folder))
+          //FileUtils.deleteQuietly(new File(folder))
         }
 
       Runtime.getRuntime.removeShutdownHook(shutdownHookThread)
