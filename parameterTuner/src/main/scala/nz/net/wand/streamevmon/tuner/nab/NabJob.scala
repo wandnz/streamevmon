@@ -12,11 +12,14 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.commons.io.{FilenameUtils, FileUtils}
 
+import scala.concurrent.{Await, Future, TimeoutException}
+import scala.concurrent.duration.{Duration, MINUTES}
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.sys.process._
 
 case class NabJob(
-  params: Parameters,
-  outputDir    : String,
+  params   : Parameters,
+  outputDir: String,
   detectors: Iterable[DetectorType.ValueBuilder] = NabJob.allDetectors
 ) extends Job(params.hashCode.toString) {
 
@@ -80,26 +83,56 @@ case class NabJob(
 
       val errBuf = new FileProcessLogger(new File(s"$outputDir/scorer.error.log"))
       val outBuf = new FileProcessLogger(new File(s"$outputDir/scorer.log"))
-      try {
-        val output = Seq(
-          "./scripts/nab/nab-scorer.sh",
-          detectors.mkString(","),
-          FilenameUtils.normalize(new File(outputDir).getAbsolutePath),
-          "please-do-profiling"
-        ).lineStream(errBuf)
 
-        output.foreach { line =>
-          outBuf.out(line)
-          outBuf.flush()
-        }
+      def flushAndClose(): Unit = {
+        outBuf.flush()
+        errBuf.flush()
+        outBuf.close()
+        errBuf.close()
+      }
+
+      try {
+        Await.result(Future(
+          try {
+            val output = Seq(
+              "./scripts/nab/nab-scorer.sh",
+              detectors.mkString(","),
+              FilenameUtils.normalize(new File(outputDir).getAbsolutePath),
+              System.getProperty("nz.net.wand.streamevmon.tuner.pythonProfileParameter")
+            ).lineStream(errBuf)
+
+            output.foreach { line =>
+              outBuf.out(line)
+              outBuf.flush()
+            }
+          }
+          catch {
+            case e: Exception =>
+              if (new File(s"$outputDir/final_results.json").exists()) {
+                logger.info("Scorer exited with non-zero return code, but it appeared to have finished. Continuing.")
+              }
+              else {
+                throw new RuntimeException(s"NAB scorer exited with non-zero return code. Check $outputDir/scorer.log for details.", e)
+              }
+          }
+          // We managed to get the scorer to take up to 40 seconds, so a minute should be fine here.
+          // It usually exits just fine, but sometimes it decides to hang after the output file has been created.
+        ), Duration(1, MINUTES))
       }
       catch {
+        case e: TimeoutException =>
+          flushAndClose()
+          new File(s"$outputDir/TIMEOUT").createNewFile()
+          if (new File(s"$outputDir/final_results.json").exists()) {
+            logger.info("Scorer timed out, but it appeared to have finished. Continuing.")
+          }
+          else {
+            logger.error("Scorer timed out.")
+            throw e
+          }
         case e: Exception =>
-          outBuf.flush()
-          errBuf.flush()
-          outBuf.close()
-          errBuf.close()
-          throw new RuntimeException(s"NAB scorer exited with non-zero return code. Check $outputDir/scorer.log for details.", e)
+          flushAndClose()
+          throw e
       }
 
       logger.info("Parsing results...")
@@ -122,18 +155,23 @@ case class NabJob(
       runtimeWriter.flush()
       runtimeWriter.close()
 
-      logger.info("Tidying up output folder...")
-      (DetectorType.values.map(det => s"$outputDir/${det.toString}") ++ Seq(s"$outputDir/null"))
-        .foreach { folder =>
-          //FileUtils.deleteQuietly(new File(folder))
-        }
+      if (System.getProperty("nz.net.wand.streamevmon.tuner.cleanupNabOutputs").toBoolean) {
+        logger.info("Tidying up output folder...")
+        (DetectorType.values.map(det => s"$outputDir/${det.toString}") ++ Seq(s"$outputDir/null"))
+          .foreach { folder =>
+            FileUtils.deleteQuietly(new File(folder))
+          }
+      }
+      else {
+        logger.info("Not tidying output folder. Beware of disk space!")
+      }
 
       Runtime.getRuntime.removeShutdownHook(shutdownHookThread)
 
       getResult(results, timeAfterDetectors - timeBeforeDetectors, endTime - startTime)
     }
     catch {
-      case e: RuntimeException =>
+      case e: Exception =>
         val writer = new PrintWriter(new File(s"$outputDir/fail.log"))
         e.printStackTrace(writer)
         writer.flush()

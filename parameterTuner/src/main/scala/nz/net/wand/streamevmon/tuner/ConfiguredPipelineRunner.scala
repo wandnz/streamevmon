@@ -5,6 +5,9 @@ import nz.net.wand.streamevmon.tuner.ActorManager.{JobResultHook, RemoveJobResul
 
 import akka.actor.{ActorRef, ActorSystem, Props}
 
+import scala.concurrent.duration.Duration
+import scala.concurrent.Await
+
 object ConfiguredPipelineRunner {
 
   lazy val actorSystem: ActorSystem = ActorSystem("Top-Actor-System")
@@ -22,5 +25,5 @@ object ConfiguredPipelineRunner {
     manager ! hook
   }
 
-  def shutdownImmediately(): Unit = actorSystem.terminate()
+  def shutdownImmediately(): Unit = Await.result(actorSystem.terminate(), Duration.Inf)
 }

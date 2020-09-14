@@ -80,7 +80,7 @@ object ParameterTuner extends Logging {
       "org.slf4j.simpleLogger.log.nz.net.wand.streamevmon.tuner.nab.NabAllDetectors",
       "error"
     )
-    System.setProperty("org.slf4j.simpleLogger.log.nz.net.wand.streamevmon.tuner.nab.smac", "info")
+    //System.setProperty("org.slf4j.simpleLogger.log.nz.net.wand.streamevmon.tuner.nab.smac", "info")
     System.setProperty("org.slf4j.simpleLogger.showDateTime", "true")
     System.setProperty("org.slf4j.simpleLogger.dateTimeFormat", "HH:mm:ss")
 
@@ -105,6 +105,8 @@ object ParameterTuner extends Logging {
     System.setProperty("nz.net.wand.streamevmon.tuner.detectors", detectorsToUse.mkString(","))
     System.setProperty("nz.net.wand.streamevmon.tuner.scoreTargets", scoreTargets.mkString(","))
     System.setProperty("nz.net.wand.streamevmon.tuner.runOutputDir", s"$baseOutputDir/$smacdir/$rungroup/run-outputs")
+    System.setProperty("nz.net.wand.streamevmon.tuner.pythonProfileParameter", "profile") // Set to "profile" if you want that behaviour
+    System.setProperty("nz.net.wand.streamevmon.tuner.cleanupNabOutputs", "true")
 
     populateSmacParameterSpec(parameterSpecFile, detectorsToUse: _*)
 
@@ -129,6 +131,7 @@ object ParameterTuner extends Logging {
         "--doValidation", opts.doValidation.toString
       ))
 
+    logger.info("SMAC finished. Shutting down ActorSystem.")
     ConfiguredPipelineRunner.shutdownImmediately()
   }
 }

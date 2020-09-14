@@ -7,7 +7,7 @@ echo "Using python at $(which python)"
 echo "Moving to NAB directory..."
 cd data/NAB/ || (echo "Failed to cd" && exit)
 
-if [ -n "${3+x}" ]; then
+if [ "${3-noProfile}" == "profile" ]; then
   echo "Running NAB scorer with profiler..."
   py-spy record --format speedscope \
     -o "${2-results}/scorer-speedscope.json" \

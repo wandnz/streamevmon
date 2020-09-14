@@ -73,7 +73,7 @@ class NabTAE(
         jr: JobResult => {
           jr match {
             case FailedJob(_, exception) =>
-              taeCallback.onFailure(exception)
+              taeCallback.onFailure(new RuntimeException(exception))
             case jr: SmacNabJobResult if jr.job.params.hashCode() == job.params.hashCode() =>
               val results = new util.ArrayList[AlgorithmRunResult](
                 Seq(jobResultToRunResult(jr)).asJava
