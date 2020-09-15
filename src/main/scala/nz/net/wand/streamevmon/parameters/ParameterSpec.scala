@@ -51,3 +51,14 @@ case class ParameterSpec[T](
     }
   }
 }
+
+object ParameterSpec {
+
+  class Constant[T](value: T) extends ParameterSpec[T](
+    s"constant.$value",
+    value,
+    Some(value),
+    Some(value)
+  )
+
+}

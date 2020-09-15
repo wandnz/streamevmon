@@ -19,3 +19,12 @@ case class ParameterInstance[T](
 
   override def toString: String = asArg.mkString(" ")
 }
+
+object ParameterInstance {
+
+  class Constant[T](override val value: T) extends ParameterInstance[T](
+    new ParameterSpec.Constant(value),
+    value
+  )
+
+}
