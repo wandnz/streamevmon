@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.tuner
 
 import nz.net.wand.streamevmon.Logging
+import nz.net.wand.streamevmon.detectors.changepoint.ChangepointDetector
 import nz.net.wand.streamevmon.parameters.{DetectorParameterSpecs, Parameters}
 import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
 import nz.net.wand.streamevmon.tuner.nab.smac.NabTAEFactory
@@ -57,6 +58,8 @@ object ParameterTuner extends Logging {
     parameterSpecFile: String,
     detectors        : DetectorType.ValueBuilder*
   ): Unit = {
+    import nz.net.wand.streamevmon.tuner.ParameterSpecToSmac._
+
     val allParameterSpecs = detectors.flatMap(DetectorParameterSpecs.parametersFromDetectorType)
     val fixedParameters = DetectorParameterSpecs.fixedParameters
 
@@ -69,6 +72,15 @@ object ParameterTuner extends Logging {
       writer.write(spec.toSmacString(fixedParameters.get(spec.name)))
       writer.newLine()
     }
+
+    writer.newLine()
+
+    val restrictions = ChangepointDetector.parameterRestrictions
+    restrictions.foreach { rest =>
+      writer.write(rest.toSmacString)
+      writer.newLine()
+    }
+
     writer.flush()
     writer.close()
   }
@@ -105,7 +117,7 @@ object ParameterTuner extends Logging {
     System.setProperty("nz.net.wand.streamevmon.tuner.detectors", detectorsToUse.mkString(","))
     System.setProperty("nz.net.wand.streamevmon.tuner.scoreTargets", scoreTargets.mkString(","))
     System.setProperty("nz.net.wand.streamevmon.tuner.runOutputDir", s"$baseOutputDir/$smacdir/$rungroup/run-outputs")
-    System.setProperty("nz.net.wand.streamevmon.tuner.pythonProfileParameter", "profile") // Set to "profile" if you want that behaviour
+    System.setProperty("nz.net.wand.streamevmon.tuner.pythonProfileParameter", "noProfile") // Set to "profile" if you want that behaviour
     System.setProperty("nz.net.wand.streamevmon.tuner.cleanupNabOutputs", "true")
 
     populateSmacParameterSpec(parameterSpecFile, detectorsToUse: _*)

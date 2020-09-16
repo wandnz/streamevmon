@@ -5,6 +5,7 @@ import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.parameters.{ParameterInstance, ParameterSpec}
+import nz.net.wand.streamevmon.parameters.constraints.ParameterConstraint
 
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
 import org.apache.flink.api.common.typeinfo.TypeInformation
@@ -105,6 +106,17 @@ object ChangepointDetector {
       30,
       Some(0),
       Some(100)
+    )
+  )
+
+  val parameterRestrictions = Seq(
+    ParameterConstraint.LessThan(
+      parameterSpecs.find(_.name == "detector.changepoint.triggerCount").get,
+      parameterSpecs.find(_.name == "detector.changepoint.maxHistory").get
+    ),
+    ParameterConstraint.LessThan(
+      parameterSpecs.find(_.name == "detector.changepoint.minimumEventInterval").get,
+      parameterSpecs.find(_.name == "detector.changepoint.inactivityPurgeTime").get
     )
   )
 

@@ -19,9 +19,9 @@ object ParameterConstraint {
   }
 
   abstract class ComparableConstraint[T: Ordering](
-    val name: String,
-    val leftItem: ParameterSpec[T],
-    val rightItem: ParameterSpec[T]
+    val operatorName: String,
+    val leftItem    : ParameterSpec[T],
+    val rightItem   : ParameterSpec[T]
   ) {
     def apply(a: T, b: T): Boolean
 
