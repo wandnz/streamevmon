@@ -83,9 +83,10 @@ object Dependencies {
   val tunerDependencies: Seq[ModuleID] = Seq(
     "commons-collections" % "commons-collections" % "3.2.1",
     "commons-io" % "commons-io" % "2.1",
-    "org.apache.commons" % "commons-math3" % "3.2",
+    "org.apache.commons" % "commons-math3" % "3.3",
     "org.apache.commons" % "commons-math" % "2.2",
     "de.congrace" % "exp4j" % "0.3.10",
+    "net.objecthunter" % "exp4j" % "0.4.3.BETA-3",
     "com.google.guava" % "guava" % "14.0.1",
     "com.fasterxml.jackson.core" % "jackson-annotations" % "2.3.1",
     "com.fasterxml.jackson.core" % "jackson-core" % "2.3.1",

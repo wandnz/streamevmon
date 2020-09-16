@@ -60,6 +60,8 @@ lazy val parameterTuner = (project in file("parameterTuner"))
       libraryDependencies ++= providedDependencies ++ tunerDependencies,
       unmanagedBase := baseDirectory.value / "lib",
       mainClass in assembly := Some("nz.net.wand.streamevmon.tuner.ParameterTuner"),
+      // This module inherits the AGPL from SMAC 2.10.x. The core module is not affected.
+      licenses := Seq("AGPL-3.0-or-later" -> url("https://www.gnu.org/licenses/agpl.html")),
       assembly / fullClasspath := (Compile / fullClasspath).value,
       assembly / assemblyOption := (assembly / assemblyOption).value.copy(includeScala = true, includeDependency = true)
     ) ++ sharedSettings

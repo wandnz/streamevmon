@@ -65,7 +65,7 @@ object SmacNabJob {
 
     val paramsWithSpecs = params.asScala.map {
       case (k, v) =>
-        paramSpecs.find(_.name == k).map { spec =>
+        paramSpecs.find(_.name.replace(".", "_") == k).map { spec =>
           new ParameterInstance[Any](spec, v)
         } match {
           case Some(value) => value
