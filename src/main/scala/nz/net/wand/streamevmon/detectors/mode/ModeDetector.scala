@@ -198,7 +198,7 @@ class ModeDetector[MeasT <: Measurement with HasDefault]
         0
       }
       else {
-        1 + Math.floor(Math.log10(i)).toInt
+        1 + Math.floor(Math.log10(Math.abs(i))).toInt
       }
     }
 
@@ -212,7 +212,7 @@ class ModeDetector[MeasT <: Measurement with HasDefault]
         oldM - 1
       }
       else {
-        Math.min(oldM, currM)
+        Math.max(Math.min(oldM, currM), 1)
       }
     }
 
