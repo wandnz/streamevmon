@@ -1,7 +1,6 @@
 package nz.net.wand.streamevmon.tuner
 
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.detectors.changepoint.ChangepointDetector
 import nz.net.wand.streamevmon.parameters.{DetectorParameterSpecs, Parameters}
 import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
 import nz.net.wand.streamevmon.tuner.nab.smac.NabTAEFactory
@@ -75,7 +74,7 @@ object ParameterTuner extends Logging {
 
     writer.newLine()
 
-    val restrictions = ChangepointDetector.parameterRestrictions
+    val restrictions = detectors.flatMap(DetectorParameterSpecs.parameterRestrictionsFromDetectorType)
     restrictions.foreach { rest =>
       writer.write(rest.toSmacString)
       writer.newLine()

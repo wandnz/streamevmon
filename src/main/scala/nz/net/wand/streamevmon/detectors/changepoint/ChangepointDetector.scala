@@ -79,7 +79,7 @@ object ChangepointDetector {
       "detector.changepoint.triggerCount",
       40,
       Some(1),
-      Some(600) // should be the same as maxHistory's max value
+      Some(600)
     ),
     ParameterSpec(
       "detector.changepoint.ignoreOutlierNormalCount",
@@ -97,9 +97,7 @@ object ChangepointDetector {
       "detector.changepoint.minimumEventInterval",
       10,
       Some(0),
-      // max should be the same as inactivityPurgeTime's value, but we have no
-      // way to specify that
-      Some(Int.MaxValue)
+      Some(600)
     ),
     ParameterSpec(
       "detector.changepoint.severityThreshold",

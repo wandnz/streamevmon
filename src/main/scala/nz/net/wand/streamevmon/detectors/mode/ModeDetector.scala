@@ -5,6 +5,7 @@ import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 import nz.net.wand.streamevmon.parameters.{ParameterInstance, ParameterSpec}
+import nz.net.wand.streamevmon.parameters.constraints.ParameterConstraint
 
 import java.math.{MathContext, RoundingMode}
 import java.time.{Duration, Instant}
@@ -390,38 +391,49 @@ object ModeDetector {
 
   case class ModeTuple(primary: Mode, secondary: Mode, lastEvent: Mode)
 
+  private val maxHistorySpec = ParameterSpec(
+    "detector.mode.maxHistory",
+    30,
+    Some(0),
+    Some(600)
+  )
+  private val minFrequencySpec = ParameterSpec(
+    "detector.mode.minFrequency",
+    6,
+    Some(1),
+    Some(600) // max == maxHistory current value
+  )
+  private val minProminenceSpec = ParameterSpec(
+    "detector.mode.minProminence",
+    3,
+    Some(1),
+    Some(600) // max == maxHistory value
+  )
+  private val thresholdSpec = ParameterSpec(
+    "detector.mode.threshold",
+    7.5,
+    Some(0.0),
+    Some(100.0) // arbitrary
+  )
+  private val inactivityPurgeTimeSpec = ParameterSpec(
+    "detector.mode.inactivityPurgeTime",
+    60,
+    Some(0),
+    Some(Int.MaxValue)
+  )
+
   val parameterSpecs: Seq[ParameterSpec[Any]] = Seq(
-    ParameterSpec(
-      "detector.mode.maxHistory",
-      30,
-      Some(0),
-      Some(600)
-    ),
-    ParameterSpec(
-      "detector.mode.minFrequency",
-      6,
-      Some(1),
-      Some(600) // max == maxHistory current value
-    ),
-    ParameterSpec(
-      "detector.mode.minProminence",
-      3,
-      Some(1),
-      Some(600) // max == maxHistory value
-    ),
-    ParameterSpec(
-      "detector.mode.threshold",
-      7.5,
-      Some(0.0),
-      Some(100.0) // arbitrary
-    ),
-    ParameterSpec(
-      "detector.mode.inactivityPurgeTime",
-      60,
-      Some(0),
-      Some(Int.MaxValue)
-    )
+    maxHistorySpec,
+    minFrequencySpec,
+    minProminenceSpec,
+    thresholdSpec,
+    inactivityPurgeTimeSpec
   ).asInstanceOf[Seq[ParameterSpec[Any]]]
+
+  val parameterRestrictions = Seq(
+    ParameterConstraint.LessThan(minFrequencySpec, maxHistorySpec),
+    ParameterConstraint.LessThan(minProminenceSpec, maxHistorySpec)
+  )
 
   def parametersAreValid(params: Seq[ParameterInstance[Any]]): Boolean = {
     val maxHistory = params.find(_.name == "detector.mode.maxHistory")

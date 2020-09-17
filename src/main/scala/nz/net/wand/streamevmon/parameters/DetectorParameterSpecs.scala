@@ -5,6 +5,7 @@ import nz.net.wand.streamevmon.detectors.changepoint.ChangepointDetector
 import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.detectors.spike.SpikeDetector
+import nz.net.wand.streamevmon.parameters.constraints.ParameterConstraint.ComparableConstraint
 import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
 
 object DetectorParameterSpecs {
@@ -39,5 +40,21 @@ object DetectorParameterSpecs {
       case DetectorType.Spike => SpikeDetector.parameterSpecs
       case _ => throw new UnsupportedOperationException(s"Can't get parameters for $t")
     }
+  }
+
+  // We can specify Int as the return type here, but if we need any more generic
+  // restrictions (like if we add a Double-typed restriction), the type annotation
+  // gets ugly quickly. We would need to find a way to return the implicit
+  // evidence of Ordering.
+  def parameterRestrictionsFromDetectorType(t: DetectorType.ValueBuilder): Seq[ComparableConstraint[Int]] = {
+    val result = t match {
+      case DetectorType.Baseline => Seq()
+      case DetectorType.Changepoint => ChangepointDetector.parameterRestrictions
+      case DetectorType.DistDiff => DistDiffDetector.parameterRestrictions
+      case DetectorType.Mode => ModeDetector.parameterRestrictions
+      case DetectorType.Spike => Seq()
+      case _ => throw new UnsupportedOperationException(s"Can't get parameter constraints for $t")
+    }
+    result
   }
 }

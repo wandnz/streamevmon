@@ -4,6 +4,8 @@ import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 import nz.net.wand.streamevmon.parameters.{ParameterInstance, ParameterSpec}
+import nz.net.wand.streamevmon.parameters.constraints.{ParameterConstraint, ParameterSpecModifier}
+import nz.net.wand.streamevmon.parameters.constraints.ParameterSpecModifier.ModifiedSpec
 
 import java.time.{Duration, Instant}
 
@@ -220,38 +222,59 @@ class DistDiffDetector[MeasT <: Measurement with HasDefault : TypeInformation]
 }
 
 object DistDiffDetector {
+  private val recentsCountSpec = ParameterSpec(
+    "detector.distdiff.recentsCount",
+    20,
+    Some(0),
+    Some(600)
+  )
+
+  private val minimumChangeSpec = ParameterSpec(
+    "detector.distdiff.minimumChange",
+    1.05,
+    Some(1.0 + Double.MinPositiveValue),
+    Some(10.0) // arbitrary
+  )
+
+  private val zThresholdSpec = ParameterSpec(
+    "detector.distdiff.zThreshold",
+    5.0,
+    Some(0.0),
+    Some(50.0) // very arbitrary
+  )
+
+  private val dropExtremeNSpec = ParameterSpec(
+    "detector.distdiff.dropExtremeN",
+    2,
+    Some(0),
+    Some(300) // max half of recentsCount
+  )
+
+  private val inactivityPurgeTimeSpec = ParameterSpec(
+    "detector.distdiff.inactivityPurgeTime",
+    600,
+    Some(0),
+    Some(Int.MaxValue)
+  )
+
   val parameterSpecs: Seq[ParameterSpec[Any]] = Seq(
-    ParameterSpec(
-      "detector.distdiff.recentsCount",
-      20,
-      Some(0),
-      Some(600)
-    ),
-    ParameterSpec(
-      "detector.distdiff.minimumChange",
-      1.05,
-      Some(1.0 + Double.MinPositiveValue),
-      Some(10.0) // arbitrary
-    ),
-    ParameterSpec(
-      "detector.distdiff.zThreshold",
-      5.0,
-      Some(0.0),
-      Some(50.0) // very arbitrary
-    ),
-    ParameterSpec(
-      "detector.distdiff.dropExtremeN",
-      2,
-      Some(0),
-      Some(300) // max half of recentsCount
-    ),
-    ParameterSpec(
-      "detector.distdiff.inactivityPurgeTime",
-      600,
-      Some(0),
-      Some(Int.MaxValue)
-    )
+    recentsCountSpec,
+    minimumChangeSpec,
+    zThresholdSpec,
+    dropExtremeNSpec,
+    inactivityPurgeTimeSpec
   ).asInstanceOf[Seq[ParameterSpec[Any]]]
+
+  val parameterRestrictions = Seq(
+    ParameterConstraint.LessThan(
+      dropExtremeNSpec,
+      new ModifiedSpec(
+        recentsCountSpec,
+        ParameterSpecModifier.IntegralDivision(2),
+        ParameterSpecModifier.Addition(-1)
+      )
+    )
+  )
 
   def parametersAreValid(params: Seq[ParameterInstance[Any]]): Boolean = {
     val dropExtremeN = params.find(_.name == "detector.distdiff.dropExtremeN")
