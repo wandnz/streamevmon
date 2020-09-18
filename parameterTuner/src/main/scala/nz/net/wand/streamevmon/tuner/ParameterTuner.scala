@@ -116,8 +116,8 @@ object ParameterTuner extends Logging {
     System.setProperty("nz.net.wand.streamevmon.tuner.detectors", detectorsToUse.mkString(","))
     System.setProperty("nz.net.wand.streamevmon.tuner.scoreTargets", scoreTargets.mkString(","))
     System.setProperty("nz.net.wand.streamevmon.tuner.runOutputDir", s"$baseOutputDir/$smacdir/$rungroup/run-outputs")
-    System.setProperty("nz.net.wand.streamevmon.tuner.pythonProfileParameter", "noProfile") // Set to "profile" if you want that behaviour
-    System.setProperty("nz.net.wand.streamevmon.tuner.cleanupNabOutputs", "true")
+    System.setProperty("nz.net.wand.streamevmon.tuner.pythonProfileParameter", opts.doPythonProfilingKeyword)
+    System.setProperty("nz.net.wand.streamevmon.tuner.cleanupNabOutputs", opts.cleanupNabScorerOutputs.toString)
 
     populateSmacParameterSpec(parameterSpecFile, detectorsToUse: _*)
 

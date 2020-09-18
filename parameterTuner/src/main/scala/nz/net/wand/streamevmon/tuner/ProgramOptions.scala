@@ -50,6 +50,26 @@ class ProgramOptions {
   val doValidation: Boolean = true
 
   @Parameter(
+    names = Array("--doPythonProfiling"),
+    description = "If true, the NAB scorer will be profiled by py-spy. You can upload the resulting scorer-speedscope.json file to https://speedscope.app to view the flamegraph.",
+    arity = 1
+  )
+  private val doPythonProfiling: Boolean = false
+  lazy val doPythonProfilingKeyword: String = if (doPythonProfiling) {
+    "profile"
+  }
+  else {
+    "no-profile"
+  }
+
+  @Parameter(
+    names = Array("--cleanupNabScorerOutputs"),
+    description = "If true, the outputs produced by the NAB scorer will be tidied after every algorithm run. This is NOT destructive of results, but it IS destructive of the raw outputs from the algorithm run.",
+    arity = 1
+  )
+  val cleanupNabScorerOutputs: Boolean = true
+
+  @Parameter(
     names = Array("--cputime-limit"),
     description = "limits the total cpu time allowed between SMAC and the target algorithm runs during the automatic configuration phase",
     validateWith = classOf[NonNegativeInteger]
