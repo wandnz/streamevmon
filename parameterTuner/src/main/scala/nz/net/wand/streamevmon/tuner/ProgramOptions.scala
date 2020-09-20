@@ -77,6 +77,13 @@ class ProgramOptions {
   val cputimeLimit: Int = Int.MaxValue
 
   @Parameter(
+    names = Array("--retry-crashed-count"),
+    description = "number of times to retry an algorithm before reporting it crashed if it returns the CRASHED status",
+    validateWith = classOf[FixedPositiveInteger]
+  )
+  val retryCrashedCount: Int = 2
+
+  @Parameter(
     names = Array("--iteration-limit"),
     description = "limits the number of iterations allowed during automatic configuration phase",
     validateWith = classOf[FixedPositiveInteger]

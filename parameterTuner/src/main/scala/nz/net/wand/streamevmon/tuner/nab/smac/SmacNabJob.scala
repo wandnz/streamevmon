@@ -2,6 +2,7 @@ package nz.net.wand.streamevmon.tuner.nab.smac
 
 import nz.net.wand.streamevmon.parameters.{DetectorParameterSpecs, ParameterInstance, Parameters}
 import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
+import nz.net.wand.streamevmon.tuner.jobs.JobResult
 import nz.net.wand.streamevmon.tuner.nab.{NabJob, ScoreTarget}
 
 import ca.ubc.cs.beta.aeatk.algorithmrunconfiguration.AlgorithmRunConfiguration
@@ -43,6 +44,21 @@ class SmacNabJob(
       RunStatus.SAT,
       runtime,
       quality,
+      outputDir,
+      wallClockTime
+    ))
+  }
+
+  override protected def onFailure(
+    e                               : Exception,
+    runtime                         : Double,
+    wallClockTime                   : Double
+  ): JobResult = {
+    new SmacNabJobResult(this, Map(), NabAlgorithmRunResult(
+      runConfig,
+      RunStatus.CRASHED,
+      runtime,
+      10E6,
       outputDir,
       wallClockTime
     ))

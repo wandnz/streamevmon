@@ -33,18 +33,30 @@ case class NabJob(
   }
 
   protected def getResult(
-    results: Map[String, Map[String, Double]],
-    runtime: Double,
+    results      : Map[String, Map[String, Double]],
+    runtime      : Double,
     wallClockTime: Double
   ): NabJobResult = {
     NabJobResult(this, results)
   }
 
+  protected def onFailure(
+    e: Exception,
+    runtime: Double,
+    wallClockTime: Double
+  ): JobResult = {
+    FailedJob(this, e)
+  }
+
   override def run(): JobResult = {
+    var startTime = -1L
+    var endTime = -1L
+    var timeBeforeDetectors = -1L
+    var timeAfterDetectors = -1L
     try {
       Runtime.getRuntime.addShutdownHook(shutdownHookThread)
 
-      val startTime = System.currentTimeMillis()
+      startTime = System.currentTimeMillis()
 
       // We'll write down the parameters in a new directory. When the job
       // finishes, we'll also write the results in this directory.
@@ -64,7 +76,7 @@ case class NabJob(
       oos.writeObject(params)
       oos.close()
 
-      val timeBeforeDetectors = System.currentTimeMillis()
+      timeBeforeDetectors = System.currentTimeMillis()
 
       logger.info(s"Starting detectors...")
       logger.debug(s"Using parameters: ")
@@ -74,7 +86,7 @@ case class NabJob(
       val runner = new NabAllDetectors(detectors)
       runner.runOnAllNabFiles(params.getAsArgs.toArray, outputDir, deleteOutputDirectory = false)
 
-      val timeAfterDetectors = System.currentTimeMillis()
+      timeAfterDetectors = System.currentTimeMillis()
 
       logger.info("Adding reference folder for scorer...")
       FileUtils.copyDirectory(new File("data/NAB/results/null"), new File(s"$outputDir/null"))
@@ -128,10 +140,12 @@ case class NabJob(
           }
           else {
             logger.error("Scorer timed out.")
+            endTime = System.currentTimeMillis()
             throw e
           }
         case e: Exception =>
           flushAndClose()
+          endTime = System.currentTimeMillis()
           throw e
       }
 
@@ -143,7 +157,7 @@ case class NabJob(
         new TypeReference[Map[String, Map[String, Double]]] {}
       )
 
-      val endTime = System.currentTimeMillis()
+      endTime = System.currentTimeMillis()
 
       logger.info(s"Scores: $results")
 
@@ -176,7 +190,8 @@ case class NabJob(
         e.printStackTrace(writer)
         writer.flush()
         writer.close()
-        FailedJob(this, e)
+        Runtime.getRuntime.removeShutdownHook(shutdownHookThread)
+        onFailure(e, timeAfterDetectors - timeBeforeDetectors, endTime - startTime)
     }
   }
 }

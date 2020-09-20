@@ -139,7 +139,8 @@ object ParameterTuner extends Logging {
         "--iteration-limit", opts.iterationLimit.toString,
         "--wallclock-limit", opts.wallclockLimit.toString,
         "--runcount-limit", opts.runcountLimit.toString,
-        "--doValidation", opts.doValidation.toString
+        "--doValidation", opts.doValidation.toString,
+        "--retry-crashed-count", opts.retryCrashedCount.toString
       ))
 
     logger.info("SMAC finished. Shutting down ActorSystem.")
