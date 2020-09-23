@@ -35,7 +35,8 @@ class NabScoringFormatSink(outputLocation: String, inputFile: File, detectorName
   var writer: Option[BufferedWriter] = None
 
   /** Reads the file from `./data/NAB/results` to get the correct labels and
-    * values and such. Idempotent.
+    * values and such. Only reads from disk if the results are not cached in
+    * memory.
     */
   def readExampleResults(): Unit = {
     unprocessedMeasurements match {
@@ -64,8 +65,8 @@ class NabScoringFormatSink(outputLocation: String, inputFile: File, detectorName
 
   override def close(): Unit = {
     readExampleResults()
-    // Here we need to empty the unprocessedMeasurements queue and close the
-    // writer.
+    // Here we need to empty the unprocessedMeasurements queue to get every
+    // input measurement on disk, and then close the writer.
     outputMeasurements(formatMeasurements(None))
     writer match {
       case Some(value) =>
@@ -97,7 +98,8 @@ class NabScoringFormatSink(outputLocation: String, inputFile: File, detectorName
             scoreScalingMode.scale(value.severity).toString,
             measurement._4
           ))
-        // Otherwise, just keep on going.
+        // Otherwise, just keep on going. Measurements that we don't have events
+        // for have 0 severity.
         case _ => formatted.enqueue((
           measurement._1,
           measurement._2,
@@ -110,7 +112,8 @@ class NabScoringFormatSink(outputLocation: String, inputFile: File, detectorName
     formatted
   }
 
-  /** Writes formatted measurements to the file. Idempotently makes the writer.
+  /** Writes formatted measurements to the file. The writer is created if it
+    * doesn't already exist.
     */
   def outputMeasurements(formatted: Iterable[FormattedType]): Unit = {
     writer match {

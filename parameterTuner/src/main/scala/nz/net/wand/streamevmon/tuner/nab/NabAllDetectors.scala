@@ -17,7 +17,22 @@ import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import scala.compat.java8.StreamConverters._
 import scala.reflect.io.Directory
 
-/** Runs all detectors against each series in the Latency TS I dataset.
+object NabAllDetectors {
+
+  /** Simple entrypoing to run all detectors against NAB.
+    */
+  def main(args: Array[String]): Unit = {
+    new NabAllDetectors(Seq(
+      DetectorType.Baseline,
+      DetectorType.Changepoint,
+      DetectorType.DistDiff,
+      DetectorType.Mode,
+      DetectorType.Spike
+    )).runOnAllNabFiles(args, "./out/nab-allDetectors", deleteOutputDirectoryBeforeStart = true)
+  }
+}
+
+/** Runs all detectors against each series in the NAB dataset.
   *
   * Each file is run separately so that we can more explicitly put the results
   * in the correct files. This could be done with a single Flink pipeline, but
@@ -26,37 +41,26 @@ import scala.reflect.io.Directory
   * solution that just adds a bit of extra overhead to create the pipeline for
   * each file.
   *
-  * These results are later processed in Python to get proper NAB results.
+  * These results should be later processed in Python to get proper NAB results.
   */
-object NabAllDetectors {
-
-  def main(args: Array[String]): Unit = {
-    new NabAllDetectors(Seq(
-      DetectorType.Baseline,
-      DetectorType.Changepoint,
-      DetectorType.DistDiff,
-      DetectorType.Mode,
-      DetectorType.Spike
-    )).runOnAllNabFiles(args, "./out/nab-allDetectors", deleteOutputDirectory = true)
-  }
-}
-
 class NabAllDetectors(detectorsToUse: Iterable[DetectorType.ValueBuilder]) extends Logging {
 
+  /** Runs the detectors against a single NAB file with a fresh Flink pipeline.
+    */
   def runTest(args: Array[String], file: File, outputDir: String): Unit = {
+
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
+    // Configuration is overridden by parameters passed as though through the
+    // command line.
     val config = Configuration.get(args)
     env.getConfig.setGlobalJobParameters(config)
 
-    env.disableOperatorChaining
-
-    type MeasT = NabMeasurement
-
     // Our detectors are all keyed so that data goes to the right place in
-    // environments where there's multiple streams.
-    val keySelector = new MeasurementKeySelector[MeasT]
+    // environments where there's multiple streams. In this case there's not,
+    // but we need to select keys anyway.
+    val keySelector = new MeasurementKeySelector[NabMeasurement]
 
     // We do single parallelism just to make sure everything goes in the same
     // order. This is probably not needed, but that's fine.
@@ -70,12 +74,12 @@ class NabAllDetectors(detectorsToUse: Iterable[DetectorType.ValueBuilder]) exten
       .map(_.buildKeyed[NabMeasurement])
       .asInstanceOf[Iterable[KeyedProcessFunction[String, NabMeasurement, Event] with HasFlinkConfig]]
 
-    // We use every detector as a ProcessFunction
+    // Apply them all to the input measurement stream.
     val detectorsWithSource = detectors.map { det =>
       input.process(det)
     }
 
-    // And we write their results out to file in the NAB scoring format.
+    // Write their results out to file in the NAB scoring format.
     detectors.zip(detectorsWithSource).map {
       case (det, stream) => stream.addSink(
         new NabScoringFormatSink(
@@ -89,14 +93,16 @@ class NabAllDetectors(detectorsToUse: Iterable[DetectorType.ValueBuilder]) exten
     env.execute()
   }
 
-  def runOnAllNabFiles(args: Array[String], outputDir: String, deleteOutputDirectory: Boolean): Unit = {
-    if (deleteOutputDirectory) {
+  /** Runs the specified detectors against the entire NAB dataset. This will
+    * make a separate Flink pipeline for every file.
+    */
+  def runOnAllNabFiles(args: Array[String], outputDir: String, deleteOutputDirectoryBeforeStart: Boolean): Unit = {
+    if (deleteOutputDirectoryBeforeStart) {
       // Delete the existing outputs so it doesn't append when we don't want it to.
       new Directory(new File(outputDir)).deleteRecursively()
     }
 
-    // Use all the series files, making sure we don't get anything else like
-    // .events files or READMEs.
+    // Use all the data files, making sure we don't get anything else like READMEs.
     val files = Files.walk(Paths.get("./data/NAB/data"))
       .filter(_.toFile.isFile)
       .filter(_.toFile.getName.endsWith(".csv"))

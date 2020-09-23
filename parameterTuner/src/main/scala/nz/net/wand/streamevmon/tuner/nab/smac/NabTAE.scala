@@ -14,12 +14,16 @@ import ca.ubc.cs.beta.aeatk.targetalgorithmevaluator.{AbstractTargetAlgorithmEva
 
 import scala.collection.JavaConverters._
 
+/** Creates and evaluates runs with particular parameters. Acts as the glue
+  * logic between our systems and SMAC.
+  */
 class NabTAE(
   detectors: Iterable[DetectorType.ValueBuilder],
   scoreTargets: Iterable[ScoreTarget.Value],
   baseOutputDir: String
 ) extends AbstractTargetAlgorithmEvaluator with Logging {
 
+  /** Extracts a SMAC RunResult from our JobResult. */
   def jobResultToRunResult(jr: JobResult): AlgorithmRunResult = {
     jr match {
       case njr: SmacNabJobResult => njr.smacResult
@@ -29,7 +33,8 @@ class NabTAE(
   }
 
   /**
-    * Evaluate a sequence of run configurations
+    * Evaluate a sequence of run configurations. This function has never been
+    * called. See evaluateRunsAsync instead.
     *
     * @param runConfigs        a list containing zero or more run configurations to evaluate
     * @param runStatusObserver observer that will be notified of the current run status
@@ -61,6 +66,7 @@ class NabTAE(
   ): Unit = {
     val runs = runConfigs.asScala
 
+    // Generate Jobs for our ActorSystem to run.
     runs.foreach { ru =>
       val job = SmacNabJob(
         ru,
@@ -69,6 +75,10 @@ class NabTAE(
         baseOutputDir
       )
 
+      // Add a JobResultHook that will parse results from one specific job, so
+      // we can marry up the callbacks correctly. (This could be done with a
+      // single hook and storing the callbacks in the SmacNabJob, but this is
+      // fine)
       ConfiguredPipelineRunner.addJobResultHook {
         jr: JobResult => {
           jr match {
@@ -86,11 +96,13 @@ class NabTAE(
         }
       }
 
+      // Set the job running.
       ConfiguredPipelineRunner.submit(job)
     }
-
-    new util.ArrayList()
   }
+
+  // We ignore the lifecycle functions and have static settings for the rest of
+  // the options.
 
   /**
     * Notifies the TargetAlgorithmEvaluator that we are shutting down

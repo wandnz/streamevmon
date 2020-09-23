@@ -8,6 +8,9 @@ import java.util
 import ca.ubc.cs.beta.aeatk.options.AbstractOptions
 import ca.ubc.cs.beta.aeatk.targetalgorithmevaluator.{TargetAlgorithmEvaluator, TargetAlgorithmEvaluatorFactory}
 
+/** Creates NabTAE instances, which are in charge of creating and evaluating
+  * runs.
+  */
 class NabTAEFactory extends TargetAlgorithmEvaluatorFactory {
 
   private lazy val detectors = System

@@ -3,6 +3,8 @@ package nz.net.wand.streamevmon.tuner.nab.smac
 import ca.ubc.cs.beta.aeatk.algorithmrunconfiguration.AlgorithmRunConfiguration
 import ca.ubc.cs.beta.aeatk.algorithmrunresult.{AbstractAlgorithmRunResult, RunStatus}
 
+/** NAB takes a lot of data for a run result. We'll provide as much as possible.
+  */
 case class NabAlgorithmRunResult(
   runConfiguration: AlgorithmRunConfiguration,
   acResult: RunStatus,
