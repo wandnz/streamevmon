@@ -12,6 +12,11 @@ import com.beust.jcommander.{JCommander, Parameter}
 import scala.collection.JavaConverters._
 import scala.util.{Failure, Try}
 
+/** This class declares the command line parameters that can be passed to the
+  * parameterTuner program. Calling `ProgramOptions(args)` will either return
+  * a valid, configured ProgramObjects instance, or print a help message and
+  * exit with code 1.
+  */
 class ProgramOptions {
   @Parameter(
     names = Array("--help", "-h"),

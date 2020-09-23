@@ -13,7 +13,7 @@ import org.apache.flink.api.java.utils.ParameterTool
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
-import scala.concurrent.Await
+import scala.concurrent.{Await, Future}
 import scala.reflect._
 
 /** Additional constructors for the companion class. */
@@ -124,8 +124,8 @@ case class InfluxHistoryConnection(
         val future = measurement.read(query)(reader, classTag[T])
 
         Await.result(future.flatMap {
-          case Left(value)  => throw value
-          case Right(value) => concurrent.Future(value)
+          case Left(value) => throw value
+          case Right(value) => Future(value)
         }, Duration.Inf)
 
       case None => throw new IllegalStateException("No InfluxDB connection!")

@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.tuner
 
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.parameters.{DetectorParameterSpecs, ParameterInstance, Parameters}
+import nz.net.wand.streamevmon.parameters.{DetectorParameterSpecs, Parameters}
 import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
 import nz.net.wand.streamevmon.tuner.jobs.{FailedJob, JobResult, SimpleJob}
 import nz.net.wand.streamevmon.tuner.nab.{NabJob, NabJobResult}
@@ -9,8 +9,13 @@ import nz.net.wand.streamevmon.tuner.strategies.{RandomSearch, SearchStrategy}
 
 import java.nio.file.{Files, Paths}
 
+/** This is an entrypoint that performs parameter tuning by random search.
+  */
 object RandomSearchTuner extends Logging {
 
+  /** Generate new parameters until we find a valid set, then start a job for
+    * those parameters.
+    */
   def queueNewJob(
     strategy: SearchStrategy
   ): Unit = {
@@ -27,28 +32,6 @@ object RandomSearchTuner extends Logging {
       paramsAreValid = DetectorParameterSpecs.parametersAreValid(params.elems)
       outputPath = s"./out/parameterTuner/random/${params.hashCode.toString}"
     }
-
-    params = new Parameters(
-      ParameterInstance(
-        DetectorParameterSpecs.getAllDetectorParameters
-          .find(_.name == "detector.baseline.maxHistory")
-          .get,
-        10
-      ),
-      ParameterInstance(
-        DetectorParameterSpecs.getAllDetectorParameters
-          .find(_.name == "detector.baseline.percentile")
-          .get,
-        0.0768485816479999
-      ),
-      ParameterInstance(
-        DetectorParameterSpecs.getAllDetectorParameters
-          .find(_.name == "detector.baseline.threshold")
-          .get,
-        68
-      )
-    )
-    outputPath = s"./out/parameterTuner/random/${params.hashCode.toString}"
 
     // Spin the job off. It'll come back eventually.
     ConfiguredPipelineRunner.submit(
@@ -87,7 +70,10 @@ object RandomSearchTuner extends Logging {
     }
     }
 
+    // We'll send a hello world job to make sure everything's working right...
     ConfiguredPipelineRunner.submit(SimpleJob("HelloWorld"))
+    // and then queue our first random job. This process will never exit, and
+    // the logs must be inspected manually to find the best-performing result.
     queueNewJob(searchStrategy)
   }
 }
