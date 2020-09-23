@@ -5,7 +5,7 @@ import nz.net.wand.streamevmon.tuner.ActorManager.{JobResultHook, RemoveJobResul
 
 import akka.actor.{ActorRef, ActorSystem, Props}
 
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration.{Duration, MINUTES}
 import scala.concurrent.Await
 
 object ConfiguredPipelineRunner {
@@ -25,5 +25,5 @@ object ConfiguredPipelineRunner {
     manager ! hook
   }
 
-  def shutdownImmediately(): Unit = Await.result(actorSystem.terminate(), Duration.Inf)
+  def shutdownImmediately(): Unit = Await.result(actorSystem.terminate(), Duration(1, MINUTES))
 }

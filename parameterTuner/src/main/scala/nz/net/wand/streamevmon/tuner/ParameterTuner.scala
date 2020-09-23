@@ -145,5 +145,6 @@ object ParameterTuner extends Logging {
 
     logger.info("SMAC finished. Shutting down ActorSystem.")
     ConfiguredPipelineRunner.shutdownImmediately()
+    System.exit(0)
   }
 }
