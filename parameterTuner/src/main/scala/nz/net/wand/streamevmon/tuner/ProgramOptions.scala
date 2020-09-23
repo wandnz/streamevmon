@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.tuner
 
 import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
-import nz.net.wand.streamevmon.tuner.nab.ScoreTarget
+import nz.net.wand.streamevmon.tuner.nab.{NabScoreScalingMode, ScoreTarget}
 import nz.net.wand.streamevmon.Logging
 
 import java.util
@@ -61,6 +61,14 @@ class ProgramOptions {
   else {
     "no-profile"
   }
+
+  @Parameter(
+    names = Array("--nabScoreScalingMode"),
+    description = "The scaling mode to use when converting event severity from 0-100 to the 0-1 range NAB takes. Accepted values are `binary' (0 or 1) and `continuous' (decimal values).",
+    arity = 1,
+    converter = classOf[NabScoreScalingMode.Converter]
+  )
+  val nabScoreScalingMode: NabScoreScalingMode.ScalingValue = NabScoreScalingMode.Continuous
 
   @Parameter(
     names = Array("--cleanupNabScorerOutputs"),

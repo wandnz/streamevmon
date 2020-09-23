@@ -118,6 +118,7 @@ object ParameterTuner extends Logging {
     System.setProperty("nz.net.wand.streamevmon.tuner.runOutputDir", s"$baseOutputDir/$smacdir/$rungroup/run-outputs")
     System.setProperty("nz.net.wand.streamevmon.tuner.pythonProfileParameter", opts.doPythonProfilingKeyword)
     System.setProperty("nz.net.wand.streamevmon.tuner.cleanupNabOutputs", opts.cleanupNabScorerOutputs.toString)
+    System.setProperty("nz.net.wand.streamevmon.tuner.nabScoreScalingMode", opts.nabScoreScalingMode.toString)
 
     populateSmacParameterSpec(parameterSpecFile, detectorsToUse: _*)
 

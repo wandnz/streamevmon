@@ -22,7 +22,11 @@ class NabScoringFormatSink(outputLocation: String, inputFile: File, detectorName
 
   type FormattedType = (String, String, String, String)
 
-  var stream: String = s"${inputFile.getParentFile.getName}/${inputFile.getName}"
+  private val scoreScalingMode = NabScoreScalingMode.withName(
+    System.getProperty("nz.net.wand.streamevmon.tuner.nabScoreScalingMode")
+  )
+    .asInstanceOf[NabScoreScalingMode.ScalingValue]
+
   val outputSubdir: String = inputFile.getParentFile.getName
   val outputFilename = s"${detectorName}_${inputFile.getName}"
 
@@ -90,7 +94,7 @@ class NabScoringFormatSink(outputLocation: String, inputFile: File, detectorName
           formatted.enqueue((
             measurement._1,
             measurement._2,
-            (value.severity / 100).toString,
+            scoreScalingMode.scale(value.severity).toString,
             measurement._4
           ))
         // Otherwise, just keep on going.
