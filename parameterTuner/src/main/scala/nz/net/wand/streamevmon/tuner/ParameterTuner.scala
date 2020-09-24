@@ -1,21 +1,13 @@
 package nz.net.wand.streamevmon.tuner
 
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.parameters.{DetectorParameterSpecs, Parameters}
-import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
 import nz.net.wand.streamevmon.tuner.nab.smac.NabTAEFactory
 
 import java.io._
 import java.time.Instant
 
 import ca.ubc.cs.beta.smac.executors.SMACExecutor
-import com.fasterxml.jackson.core.`type`.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import org.apache.commons.io.FileUtils
 import org.apache.commons.io.output.TeeOutputStream
-
-import scala.util.{Random, Try}
 
 /** Main entrypoint for parameterTuner module. Optimises detector algorithms
   * for quality on the NAB dataset and its associated scorer, using SMAC as an
@@ -27,84 +19,6 @@ object ParameterTuner extends Logging {
   // outputs, including the NAB scoring artifacts in the run-outputs/ subfolder.
   val baseOutputDir = "out/parameterTuner"
   val smacdir = "smac"
-
-  /** Unused method to get scores from previous runs that are still on disk.
-    * This could potentially be used in the future to warm-start SMAC, though
-    * it does keep its own records of checkpoints and such.
-    */
-  def getHistoricalResults: Seq[(Map[String, Map[String, Double]], Parameters)] = {
-    val mapper = new ObjectMapper()
-    mapper.registerModule(DefaultScalaModule)
-
-    val folders = new File("out/parameterTuner/random").listFiles() ++
-      new File("out/parameterTuner/random-cauldron").listFiles()
-
-    val shuffledFolders = Random.shuffle(folders.toSeq)
-
-    val results = shuffledFolders.flatMap { folder =>
-      Try {
-        val paramsFile = new File(s"${folder.getAbsolutePath}/params.spkl")
-        val oos = new ObjectInputStream(new FileInputStream(paramsFile))
-        val params = oos.readObject().asInstanceOf[Parameters]
-        oos.close()
-
-        val resultsFile = new File(s"${folder.getAbsolutePath}/final_results.json")
-        val results = mapper.readValue(
-          resultsFile,
-          new TypeReference[Map[String, Map[String, Double]]] {}
-        )
-
-        (results, params)
-      }.toOption
-    }
-
-    logger.info(s"Got results for ${results.length} tests from ${folders.length} folders")
-
-    results
-  }
-
-  /** Creates a SMAC PCS file that specifies the bounds and restrictions of
-    * available parameters.
-    */
-  def populateSmacParameterSpec(
-    parameterSpecFile: String,
-    detectors        : DetectorType.ValueBuilder*
-  ): Unit = {
-    import nz.net.wand.streamevmon.tuner.ParameterSpecToSmac._
-
-    // We only write the parameters for detectors we'll be using
-    val allParameterSpecs = detectors.flatMap(DetectorParameterSpecs.parametersFromDetectorType)
-    // We handle fixed parameters as single-field categorical variables to
-    // ensure they don't have other values generated.
-    val fixedParameters = DetectorParameterSpecs.fixedParameters
-
-    FileUtils.forceMkdir(new File(parameterSpecFile).getParentFile)
-    val writer = new BufferedWriter(new FileWriter(parameterSpecFile))
-
-    // First we write down the simple specifications of parameter bounds.
-    // toSmacString() takes an optional fixed parameter specification.
-    allParameterSpecs.foreach { spec =>
-      writer.write(spec.toSmacString(fixedParameters.get(spec.name)))
-      writer.newLine()
-    }
-
-    // Throw a newline in so it's a little more readable.
-    writer.newLine()
-
-    // Let's now get the parameter restrictions for the detectors we're using.
-    // Not all detectors even have restrictions, so this could well end out
-    // being an empty list.
-    // toSmacString() handles all the heavy lifting.
-    val restrictions = detectors.flatMap(DetectorParameterSpecs.parameterRestrictionsFromDetectorType)
-    restrictions.foreach { rest =>
-      writer.write(rest.toSmacString)
-      writer.newLine()
-    }
-
-    // Flush it to make sure it's all written properly.
-    writer.flush()
-    writer.close()
-  }
 
   def main(args: Array[String]): Unit = {
     // If we squash a lot of the logs, the output is a lot tidier. We don't need
@@ -151,7 +65,7 @@ object ParameterTuner extends Logging {
 
     // SMAC needs to know about valid parameters and parameter restrictions.
     val parameterSpecFile = s"$baseOutputDir/$smacdir/$rungroup/parameterspec.smac"
-    populateSmacParameterSpec(parameterSpecFile, detectorsToUse: _*)
+    ParameterSpecToSmac.populateSmacParameterSpec(parameterSpecFile, detectorsToUse: _*)
 
     // We'll tee our stdout to a file, so we can review it later as well as
     // seeing it in the terminal as usual.

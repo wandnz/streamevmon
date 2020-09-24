@@ -1,7 +1,12 @@
 package nz.net.wand.streamevmon.tuner
 
+import nz.net.wand.streamevmon.parameters.{DetectorParameterSpecs, ParameterSpec}
 import nz.net.wand.streamevmon.parameters.constraints.{ParameterConstraint, ParameterSpecModifier}
-import nz.net.wand.streamevmon.parameters.ParameterSpec
+import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
+
+import java.io.{BufferedWriter, File, FileWriter}
+
+import org.apache.commons.io.FileUtils
 
 /** This object includes some implicit methods to convert ParameterSpecs and
   * ParameterConstraints into strings compatible with SMAC's PCS file format.
@@ -99,4 +104,44 @@ object ParameterSpecToSmac {
     }
   }
 
+  /** Creates a SMAC PCS file that specifies the bounds and restrictions of
+    * available parameters.
+    */
+  def populateSmacParameterSpec(
+    parameterSpecFile: String,
+    detectors        : DetectorType.ValueBuilder*
+  ): Unit = {
+    // We only write the parameters for detectors we'll be using
+    val allParameterSpecs = detectors.flatMap(DetectorParameterSpecs.parametersFromDetectorType)
+    // We handle fixed parameters as single-field categorical variables to
+    // ensure they don't have other values generated.
+    val fixedParameters = DetectorParameterSpecs.fixedParameters
+
+    FileUtils.forceMkdir(new File(parameterSpecFile).getParentFile)
+    val writer = new BufferedWriter(new FileWriter(parameterSpecFile))
+
+    // First we write down the simple specifications of parameter bounds.
+    // toSmacString() takes an optional fixed parameter specification.
+    allParameterSpecs.foreach { spec =>
+      writer.write(spec.toSmacString(fixedParameters.get(spec.name)))
+      writer.newLine()
+    }
+
+    // Throw a newline in so it's a little more readable.
+    writer.newLine()
+
+    // Let's now get the parameter restrictions for the detectors we're using.
+    // Not all detectors even have restrictions, so this could well end out
+    // being an empty list.
+    // toSmacString() handles all the heavy lifting.
+    val restrictions = detectors.flatMap(DetectorParameterSpecs.parameterRestrictionsFromDetectorType)
+    restrictions.foreach { rest =>
+      writer.write(rest.toSmacString)
+      writer.newLine()
+    }
+
+    // Flush it to make sure it's all written properly.
+    writer.flush()
+    writer.close()
+  }
 }
