@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.tuner
 
 import nz.net.wand.streamevmon.parameters.{DetectorParameterSpecs, ParameterSpec}
-import nz.net.wand.streamevmon.parameters.constraints.{ParameterConstraint, ParameterSpecModifier}
+import nz.net.wand.streamevmon.parameters.constraints.ParameterConstraint
 import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
 
 import java.io.{BufferedWriter, File, FileWriter}
@@ -45,37 +45,6 @@ object ParameterSpecToSmac {
 
   implicit class RestrictionToSmac[T: Ordering](constraint : ParameterConstraint.ComparableConstraint[T]) {
 
-    /** This method can convert a constraint specification with several stacked
-      * modifiers into a string that can be understood by SMAC with the correct
-      * order of operations. For example, a constraint that first divides its
-      * left element by two, then subtracts one should be converted to
-      * `(x / 2) - 1`.
-      */
-    private def termToString(term: ParameterSpec[T]): String = {
-      term match {
-        // A constant numeric term just needs to be written down.
-        case constant: ParameterSpec.Constant[_] => constant.default.toString
-        case modified: ParameterSpecModifier.ModifiedSpec[_] =>
-          // We iteratively stack modifiers here. Order of operations is
-          // enforced by a liberal usage of brackets.
-          val nameWithModifiers = modified.modifiers.foldLeft(modified.name) { (name, mod) =>
-            s"($name ${mod.name})"
-          }
-          // Once we've applied all our modifiers, we can remove the last set
-          // of brackets so it reads a little nicer. For example, `(x-1)` turns
-          // into `x-1`.
-          if (nameWithModifiers.startsWith("(")) {
-            nameWithModifiers.drop(1).dropRight(1)
-          }
-          else {
-            // This isn't needed if there are no brackets.
-            nameWithModifiers
-          }
-        // If it's not a modified spec, just write down its name.
-        case spec => spec.name
-      }
-    }
-
     /** SMAC inverts truth values for forbidden parameters. We represent
       * parameter restrictions like `x < 3` such that x must be less than 3 for
       * a parameter to be valid. SMAC's PCS file interprets that as "If x is
@@ -96,9 +65,9 @@ object ParameterSpecToSmac {
     def toSmacString: String = {
       (
         s"{ " +
-          s"${termToString(constraint.leftItem)} " +
+          s"${constraint.leftItem.toMathString} " +
           s"${getSmacOperator(constraint.operatorName)} " +
-          s"${termToString(constraint.rightItem)} " +
+          s"${constraint.rightItem.toMathString} " +
           s"}"
         ).replace(".", "_")
     }

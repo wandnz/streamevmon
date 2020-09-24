@@ -8,6 +8,11 @@ import nz.net.wand.streamevmon.detectors.spike.SpikeDetector
 import nz.net.wand.streamevmon.parameters.constraints.ParameterConstraint.ComparableConstraint
 import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
 
+/** A collection of helper methods to extract the parameters from all supported
+  * detectors.
+  *
+  * Does not currently support the Loss detector.
+  */
 object DetectorParameterSpecs {
   val getAllDetectorParameters: Seq[ParameterSpec[Any]] = Seq(
     BaselineDetector.parameterSpecs,
@@ -25,6 +30,11 @@ object DetectorParameterSpecs {
     "detector.spike.inactivityPurgeTime" -> Int.MaxValue,
   )
 
+  /** Checks if all passed parameters are valid according to the individual
+    * detectors' opinions of validity.
+    *
+    * TODO: Make detectors use their constraints for validity checking.
+    */
   def parametersAreValid(params: Seq[ParameterInstance[Any]]): Boolean = {
     ChangepointDetector.parametersAreValid(params) &&
       DistDiffDetector.parametersAreValid(params) &&

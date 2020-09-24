@@ -1,5 +1,14 @@
 package nz.net.wand.streamevmon.parameters
 
+/** A particular value for a parameter specified by a ParameterSpec.
+  *
+  * @param spec  The ParameterSpec for this instance.
+  * @param value The particular value of the parameter. Note that for ordered
+  *              types, this should be between `spec.min` and `spec.max`. This
+  *              is not enforced in this class, so it is possible to create an
+  *              invalid ParameterInstance.
+  * @tparam T See [[ParameterSpec]] for details.
+  */
 case class ParameterInstance[T](
   spec: ParameterSpec[T],
   value: T
@@ -12,6 +21,7 @@ case class ParameterInstance[T](
     case v: String if spec.default.getClass == classOf[java.lang.Integer] || spec.default.getClass == classOf[Int] => v.toDouble.toInt
     case v: String if spec.default.getClass == classOf[java.lang.Long] || spec.default.getClass == classOf[Long] => v.toDouble.toLong
     case v: String if spec.default.getClass == classOf[java.lang.Double] || spec.default.getClass == classOf[Double] => v.toDouble
+    case v: String if spec.default.getClass == classOf[java.lang.Float] || spec.default.getClass == classOf[Float] => v.toFloat
     case _ => value
   }
 
@@ -22,6 +32,8 @@ case class ParameterInstance[T](
 
 object ParameterInstance {
 
+  /** A ParameterInstance with a corresponding Spec that only allows one value.
+    */
   class Constant[T](override val value: T) extends ParameterInstance[T](
     new ParameterSpec.Constant(value),
     value
