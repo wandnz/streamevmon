@@ -53,7 +53,7 @@ lazy val root = (project in file(".")).
 // We need to manually specify providedDependencies since % Provided modules
 // are not inherited via dependsOn.
 lazy val parameterTuner = (project in file("parameterTuner"))
-  .dependsOn(root)
+  .dependsOn(root % "compile->compile;test->test")
   .settings(
     Seq(
       name := "parameterTuner",
