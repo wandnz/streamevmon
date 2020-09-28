@@ -4,7 +4,8 @@ import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
-import nz.net.wand.streamevmon.parameters.ParameterSpec
+import nz.net.wand.streamevmon.parameters.{HasParameterSpecs, ParameterSpec}
+import nz.net.wand.streamevmon.parameters.constraints.ParameterConstraint
 
 import java.time.{Duration, Instant}
 
@@ -135,31 +136,38 @@ class BaselineDetector[MeasT <: Measurement with HasDefault]
   }
 }
 
-object BaselineDetector {
-  val parameterSpecs: Seq[ParameterSpec[Any]] = Seq(
-    ParameterSpec(
-      "detector.baseline.maxHistory",
-      50,
-      Some(1),
-      Some(300)
-    ),
-    ParameterSpec(
-      "detector.baseline.percentile",
-      0.1,
-      Some(0.0),
-      Some(1.0)
-    ),
-    ParameterSpec(
-      "detector.baseline.threshold",
-      25,
-      Some(0),
-      Some(100)
-    ),
-    ParameterSpec(
-      "detector.baseline.inactivityPurgeTime",
-      600,
-      Some(0),
-      Some(Int.MaxValue)
-    )
+object BaselineDetector extends HasParameterSpecs {
+  private val maxHistorySpec = ParameterSpec(
+    "detector.baseline.maxHistory",
+    50,
+    Some(1),
+    Some(300)
   )
+  private val percentileSpec = ParameterSpec(
+    "detector.baseline.percentile",
+    0.1,
+    Some(0.0),
+    Some(1.0)
+  )
+  private val thresholdSpec = ParameterSpec(
+    "detector.baseline.threshold",
+    25,
+    Some(0),
+    Some(100)
+  )
+  private val inactivityPurgeTimeSpec = ParameterSpec(
+    "detector.baseline.inactivityPurgeTime",
+    600,
+    Some(0),
+    Some(Int.MaxValue)
+  )
+
+  override val parameterSpecs: Seq[ParameterSpec[Any]] = Seq(
+    maxHistorySpec,
+    percentileSpec,
+    thresholdSpec,
+    inactivityPurgeTimeSpec
+  ).asInstanceOf[Seq[ParameterSpec[Any]]]
+
+  override val parameterRestrictions: Seq[ParameterConstraint.ComparableConstraint[Any]] = Seq()
 }

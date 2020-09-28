@@ -106,7 +106,7 @@ object ChangepointDetector extends HasParameterSpecs {
     Some(100)
   )
 
-  val parameterSpecs: Seq[ParameterSpec[Any]] = Seq(
+  override val parameterSpecs: Seq[ParameterSpec[Any]] = Seq(
     maxHistorySpec,
     triggerCountSpec,
     ignoreOutlierNormalCountSpec,
@@ -115,7 +115,7 @@ object ChangepointDetector extends HasParameterSpecs {
     severityThresholdSpec
   ).asInstanceOf[Seq[ParameterSpec[Any]]]
 
-  val parameterRestrictions: Seq[ParameterConstraint.ComparableConstraint[Any]] = Seq(
+  override val parameterRestrictions: Seq[ParameterConstraint.ComparableConstraint[Any]] = Seq(
     ParameterConstraint.LessThan(
       triggerCountSpec,
       maxHistorySpec

@@ -7,6 +7,10 @@ package nz.net.wand.streamevmon.detectors
   * Written by Daniel Oosterwijk, and is a close parallel to the mode detector
   * included in netevmon, which was written by Shane Alcock and Brendon Jones.
   *
+  * There are a few classes which are private to this package. They were
+  * originally inner classes of ModeDetector, but Kryo does not like serialising
+  * inner classes, which was causing issues.
+  *
   * ==Configuration==
   *
   * This package is configured by the `detector.mode` config key group.

@@ -3,7 +3,8 @@ package nz.net.wand.streamevmon.detectors.spike
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
-import nz.net.wand.streamevmon.parameters.ParameterSpec
+import nz.net.wand.streamevmon.parameters.{HasParameterSpecs, ParameterSpec}
+import nz.net.wand.streamevmon.parameters.constraints.ParameterConstraint
 
 import java.time.{Duration, Instant}
 
@@ -172,31 +173,39 @@ class SpikeDetector[MeasT <: Measurement with HasDefault]
   }
 }
 
-object SpikeDetector {
-  val parameterSpecs: Seq[ParameterSpec[Any]] = Seq(
-    ParameterSpec(
-      "detector.spike.inactivityPurgeTime",
-      60,
-      Some(0),
-      Some(Int.MaxValue)
-    ),
-    ParameterSpec(
-      "detector.spike.lag",
-      500,
-      Some(0),
-      Some(600)
-    ),
-    ParameterSpec(
-      "detector.spike.threshold",
-      30.0,
-      Some(Double.MinPositiveValue),
-      Some(1000.0) // arbitrary
-    ),
-    ParameterSpec(
-      "detector.spike.influence",
-      0.01,
-      Some(0.0),
-      Some(1.0)
-    )
+object SpikeDetector extends HasParameterSpecs {
+
+  private val inactivityPurgeTimeSpec = ParameterSpec(
+    "detector.spike.inactivityPurgeTime",
+    60,
+    Some(0),
+    Some(Int.MaxValue)
+  )
+  private val lagSpec = ParameterSpec(
+    "detector.spike.lag",
+    500,
+    Some(0),
+    Some(600)
+  )
+  private val thresholdSpec = ParameterSpec(
+    "detector.spike.threshold",
+    30.0,
+    Some(Double.MinPositiveValue),
+    Some(1000.0) // arbitrary
+  )
+  private val influenceSpec = ParameterSpec(
+    "detector.spike.influence",
+    0.01,
+    Some(0.0),
+    Some(1.0)
+  )
+
+  override val parameterSpecs: Seq[ParameterSpec[Any]] = Seq(
+    inactivityPurgeTimeSpec,
+    lagSpec,
+    thresholdSpec,
+    influenceSpec
   ).asInstanceOf[Seq[ParameterSpec[Any]]]
+
+  override val parameterRestrictions: Seq[ParameterConstraint.ComparableConstraint[Any]] = Seq()
 }

@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.detectors.distdiff
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
-import nz.net.wand.streamevmon.parameters.{ParameterInstance, ParameterSpec}
+import nz.net.wand.streamevmon.parameters.{HasParameterSpecs, ParameterSpec}
 import nz.net.wand.streamevmon.parameters.constraints.{ParameterConstraint, ParameterSpecModifier}
 import nz.net.wand.streamevmon.parameters.constraints.ParameterSpecModifier.ModifiedSpec
 
@@ -221,7 +221,7 @@ class DistDiffDetector[MeasT <: Measurement with HasDefault : TypeInformation]
   }
 }
 
-object DistDiffDetector {
+object DistDiffDetector extends HasParameterSpecs {
   private val recentsCountSpec = ParameterSpec(
     "detector.distdiff.recentsCount",
     20,
@@ -257,7 +257,7 @@ object DistDiffDetector {
     Some(Int.MaxValue)
   )
 
-  val parameterSpecs: Seq[ParameterSpec[Any]] = Seq(
+  override val parameterSpecs: Seq[ParameterSpec[Any]] = Seq(
     recentsCountSpec,
     minimumChangeSpec,
     zThresholdSpec,
@@ -265,7 +265,7 @@ object DistDiffDetector {
     inactivityPurgeTimeSpec
   ).asInstanceOf[Seq[ParameterSpec[Any]]]
 
-  val parameterRestrictions = Seq(
+  override val parameterRestrictions: Seq[ParameterConstraint.ComparableConstraint[Any]] = Seq(
     ParameterConstraint.LessThan(
       dropExtremeNSpec,
       new ModifiedSpec(
@@ -274,14 +274,5 @@ object DistDiffDetector {
         ParameterSpecModifier.Addition(-1)
       )
     )
-  )
-
-  def parametersAreValid(params: Seq[ParameterInstance[Any]]): Boolean = {
-    val dropExtremeN = params.find(_.name == "detector.distdiff.dropExtremeN")
-    val recentsCount = params.find(_.name == "detector.distdiff.recentsCount")
-    (dropExtremeN, recentsCount) match {
-      case (Some(n), Some(c)) => n.value.asInstanceOf[Int] < (c.value.asInstanceOf[Int] / 2) - 1
-      case t => throw new IllegalArgumentException(s"Couldn't check parameters for DistDiff! $t, $params")
-    }
-  }
+  ).asInstanceOf[Seq[ParameterConstraint.ComparableConstraint[Any]]]
 }

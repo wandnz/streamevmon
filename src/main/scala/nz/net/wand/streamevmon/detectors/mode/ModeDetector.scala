@@ -1,10 +1,9 @@
 package nz.net.wand.streamevmon.detectors.mode
 
-import nz.net.wand.streamevmon.detectors.mode.ModeDetector._
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
-import nz.net.wand.streamevmon.parameters.{ParameterInstance, ParameterSpec}
+import nz.net.wand.streamevmon.parameters.{HasParameterSpecs, ParameterSpec}
 import nz.net.wand.streamevmon.parameters.constraints.ParameterConstraint
 
 import java.math.{MathContext, RoundingMode}
@@ -376,21 +375,7 @@ class ModeDetector[MeasT <: Measurement with HasDefault]
   }
 }
 
-// These case classes just made the code look a bit nicer than using tuples
-// everywhere. Kryo doesn't like to serialise them if they're inner classes
-// of the detector class, so they're here instead.
-object ModeDetector {
-
-  case class Mode(value: Int, count: Int)
-
-  object Mode {
-    def apply(input: (Int, Int)): Mode = Mode(input._1, input._2)
-  }
-
-  case class HistoryItem(id: Int, value: Int)
-
-  case class ModeTuple(primary: Mode, secondary: Mode, lastEvent: Mode)
-
+object ModeDetector extends HasParameterSpecs {
   private val maxHistorySpec = ParameterSpec(
     "detector.mode.maxHistory",
     30,
@@ -401,13 +386,13 @@ object ModeDetector {
     "detector.mode.minFrequency",
     6,
     Some(1),
-    Some(600) // max == maxHistory current value
+    Some(600)
   )
   private val minProminenceSpec = ParameterSpec(
     "detector.mode.minProminence",
     3,
     Some(1),
-    Some(600) // max == maxHistory value
+    Some(600)
   )
   private val thresholdSpec = ParameterSpec(
     "detector.mode.threshold",
@@ -422,7 +407,7 @@ object ModeDetector {
     Some(Int.MaxValue)
   )
 
-  val parameterSpecs: Seq[ParameterSpec[Any]] = Seq(
+  override val parameterSpecs: Seq[ParameterSpec[Any]] = Seq(
     maxHistorySpec,
     minFrequencySpec,
     minProminenceSpec,
@@ -430,21 +415,8 @@ object ModeDetector {
     inactivityPurgeTimeSpec
   ).asInstanceOf[Seq[ParameterSpec[Any]]]
 
-  val parameterRestrictions = Seq(
+  override val parameterRestrictions: Seq[ParameterConstraint.ComparableConstraint[Any]] = Seq(
     ParameterConstraint.LessThan(minFrequencySpec, maxHistorySpec),
     ParameterConstraint.LessThan(minProminenceSpec, maxHistorySpec)
-  )
-
-  def parametersAreValid(params: Seq[ParameterInstance[Any]]): Boolean = {
-    val maxHistory = params.find(_.name == "detector.mode.maxHistory")
-    val minFrequency = params.find(_.name == "detector.mode.minFrequency")
-    val minProminence = params.find(_.name == "detector.mode.minProminence")
-    (maxHistory, minFrequency, minProminence) match {
-      case (Some(h), Some(f), Some(p)) =>
-        val freqValid = f.value.asInstanceOf[Int] < h.value.asInstanceOf[Int]
-        val promValid = p.value.asInstanceOf[Int] < h.value.asInstanceOf[Int]
-        freqValid && promValid
-      case t => throw new IllegalArgumentException(s"Couldn't check parameters for Mode! $t, $params")
-    }
-  }
+  ).asInstanceOf[Seq[ParameterConstraint.ComparableConstraint[Any]]]
 }

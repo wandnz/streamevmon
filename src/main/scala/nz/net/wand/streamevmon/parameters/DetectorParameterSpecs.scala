@@ -44,7 +44,7 @@ object DetectorParameterSpecs {
   def parametersFromDetectorType(t: DetectorType.ValueBuilder): Seq[ParameterSpec[Any]] = {
     t match {
       case DetectorType.Baseline => BaselineDetector.parameterSpecs
-      case DetectorType.Changepoint => ChangepointDetector.parameterSpecs.asInstanceOf[Seq[ParameterSpec[Any]]]
+      case DetectorType.Changepoint => ChangepointDetector.parameterSpecs
       case DetectorType.DistDiff => DistDiffDetector.parameterSpecs
       case DetectorType.Mode => ModeDetector.parameterSpecs
       case DetectorType.Spike => SpikeDetector.parameterSpecs
@@ -58,11 +58,11 @@ object DetectorParameterSpecs {
   // evidence of Ordering.
   def parameterRestrictionsFromDetectorType(t: DetectorType.ValueBuilder): Seq[ComparableConstraint[Any]] = {
     val result = t match {
-      case DetectorType.Baseline => Seq()
+      case DetectorType.Baseline => BaselineDetector.parameterRestrictions
       case DetectorType.Changepoint => ChangepointDetector.parameterRestrictions
       case DetectorType.DistDiff => DistDiffDetector.parameterRestrictions
       case DetectorType.Mode => ModeDetector.parameterRestrictions
-      case DetectorType.Spike => Seq()
+      case DetectorType.Spike => SpikeDetector.parameterRestrictions
       case _ => throw new UnsupportedOperationException(s"Can't get parameter constraints for $t")
     }
     result.asInstanceOf[Seq[ComparableConstraint[Any]]]
