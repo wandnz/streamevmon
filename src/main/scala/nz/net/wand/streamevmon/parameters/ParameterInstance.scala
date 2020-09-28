@@ -25,6 +25,10 @@ case class ParameterInstance[T](
     case _ => value
   }
 
+  // We need to go via typedValue here in order to correctly format integer
+  // values - it's possible to be given a value of type String that doesn't
+  // conform to the format required of a particular type, like an Int that has
+  // a decimal point.
   lazy val asArg: Iterable[String] = Seq(s"--$name", typedValue.toString)
 
   override def toString: String = asArg.mkString(" ")

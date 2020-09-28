@@ -4,6 +4,7 @@ import nz.net.wand.streamevmon.{Configuration, Lazy}
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.{HasFlinkConfig, MeasurementTimestampAssigner}
 import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.parameters.HasParameterSpecs
 import nz.net.wand.streamevmon.runners.unified.schema.{StreamToTypedStreams, StreamWindowType}
 
 import java.time.Duration
@@ -124,6 +125,8 @@ object YamlDagRunner {
                 // like HasDefault.
                 val keyedDetector = detInstance.buildKeyed(detSchema.detType)
                 val detConf = keyedDetector.configWithOverride(config)
+
+                HasParameterSpecs.parameterToolIsValid(detConf, throwException = true)
 
                 // If we end out only needing the windowed version of the
                 // detector, the keyed one will just get garbage collected. That's fine.

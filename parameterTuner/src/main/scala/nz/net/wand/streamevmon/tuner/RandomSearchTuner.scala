@@ -29,7 +29,7 @@ object RandomSearchTuner extends Logging {
     // We also need to check that the parameters are actually valid.
     while (!paramsAreValid || Files.exists(Paths.get(outputPath))) {
       params = strategy.nextParameters()
-      paramsAreValid = HasParameterSpecs.parametersAreValid(params.elems)
+      paramsAreValid = HasParameterSpecs.parameterInstancesAreValid(params.elems)
       outputPath = s"./out/parameterTuner/random/${params.hashCode.toString}"
     }
 

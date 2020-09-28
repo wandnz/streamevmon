@@ -43,5 +43,7 @@ object ParameterConstraint {
 
       this (a.value, b.value)
     }
+
+    override def toString: String = s"${leftItem.toMathString} $operatorName ${rightItem.toMathString}"
   }
 }
