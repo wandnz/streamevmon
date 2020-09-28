@@ -23,7 +23,7 @@ class ParameterSpecToSmacTest extends TestBase {
     }
     catch {
       case e: IllegalArgumentException => fail(s"PCS parsing failed! ${System.lineSeparator} $pcsFileText ${System.lineSeparator} $e")
-      case e => fail(s"Unknown exception during PCS parsing! $e")
+      case e: Throwable => fail(s"Unknown exception during PCS parsing! $e")
     }
   }
 

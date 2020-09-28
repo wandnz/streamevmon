@@ -105,6 +105,7 @@ object ParameterSpecToSmac {
     // toSmacString() handles all the heavy lifting.
     val restrictions = detectors.flatMap(DetectorParameterSpecs.parameterRestrictionsFromDetectorType)
     restrictions.foreach { rest =>
+      implicit val ev: Ordering[Any] = rest.ev
       writer.write(rest.toSmacString)
       writer.newLine()
     }

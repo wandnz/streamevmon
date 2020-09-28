@@ -29,11 +29,11 @@ object ParameterConstraint {
   }
 
   /** We only support constraints based on ordered comparisons at this point. */
-  abstract class ComparableConstraint[T: Ordering](
+  abstract class ComparableConstraint[T](
     val operatorName: String,
     val leftItem    : ParameterSpec[T],
     val rightItem   : ParameterSpec[T]
-  ) {
+  )(implicit val ev: Ordering[T]) {
     def apply(a: T, b: T): Boolean
 
     def apply(a: ParameterInstance[T], b: ParameterInstance[T]): Boolean = {
@@ -44,5 +44,4 @@ object ParameterConstraint {
       this (a.value, b.value)
     }
   }
-
 }

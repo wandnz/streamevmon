@@ -4,7 +4,7 @@ import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
-import nz.net.wand.streamevmon.parameters.{ParameterInstance, ParameterSpec}
+import nz.net.wand.streamevmon.parameters.{HasParameterSpecs, ParameterSpec}
 import nz.net.wand.streamevmon.parameters.constraints.ParameterConstraint
 
 import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
@@ -67,68 +67,62 @@ class ChangepointDetector[
   }
 }
 
-object ChangepointDetector {
-  val parameterSpecs: Seq[ParameterSpec[Int]] = Seq(
-    ParameterSpec(
-      "detector.changepoint.maxHistory",
-      60,
-      Some(1),
-      Some(600)
-    ),
-    ParameterSpec(
-      "detector.changepoint.triggerCount",
-      40,
-      Some(1),
-      Some(600)
-    ),
-    ParameterSpec(
-      "detector.changepoint.ignoreOutlierNormalCount",
-      1,
-      Some(0),
-      Some(600)
-    ),
-    ParameterSpec(
-      "detector.changepoint.inactivityPurgeTime",
-      60,
-      Some(0),
-      Some(Int.MaxValue),
-    ),
-    ParameterSpec(
-      "detector.changepoint.minimumEventInterval",
-      10,
-      Some(0),
-      Some(600)
-    ),
-    ParameterSpec(
-      "detector.changepoint.severityThreshold",
-      30,
-      Some(0),
-      Some(100)
-    )
+object ChangepointDetector extends HasParameterSpecs {
+
+  private val maxHistorySpec = ParameterSpec(
+    "detector.changepoint.maxHistory",
+    60,
+    Some(1),
+    Some(600)
+  )
+  private val triggerCountSpec = ParameterSpec(
+    "detector.changepoint.triggerCount",
+    40,
+    Some(1),
+    Some(600)
+  )
+  private val ignoreOutlierNormalCountSpec = ParameterSpec(
+    "detector.changepoint.ignoreOutlierNormalCount",
+    1,
+    Some(0),
+    Some(600)
+  )
+  private val inactivityPurgeTimeSpec = ParameterSpec(
+    "detector.changepoint.inactivityPurgeTime",
+    60,
+    Some(0),
+    Some(Int.MaxValue),
+  )
+  private val minimumEventIntervalSpec = ParameterSpec(
+    "detector.changepoint.minimumEventInterval",
+    10,
+    Some(0),
+    Some(600)
+  )
+  private val severityThresholdSpec = ParameterSpec(
+    "detector.changepoint.severityThreshold",
+    30,
+    Some(0),
+    Some(100)
   )
 
-  val parameterRestrictions = Seq(
+  val parameterSpecs: Seq[ParameterSpec[Any]] = Seq(
+    maxHistorySpec,
+    triggerCountSpec,
+    ignoreOutlierNormalCountSpec,
+    inactivityPurgeTimeSpec,
+    minimumEventIntervalSpec,
+    severityThresholdSpec
+  ).asInstanceOf[Seq[ParameterSpec[Any]]]
+
+  val parameterRestrictions: Seq[ParameterConstraint.ComparableConstraint[Any]] = Seq(
     ParameterConstraint.LessThan(
-      parameterSpecs.find(_.name == "detector.changepoint.triggerCount").get,
-      parameterSpecs.find(_.name == "detector.changepoint.maxHistory").get
+      triggerCountSpec,
+      maxHistorySpec
     ),
     ParameterConstraint.LessThan(
-      parameterSpecs.find(_.name == "detector.changepoint.minimumEventInterval").get,
-      parameterSpecs.find(_.name == "detector.changepoint.inactivityPurgeTime").get
+      minimumEventIntervalSpec,
+      inactivityPurgeTimeSpec
     )
-  )
-
-  def parametersAreValid(params: Seq[ParameterInstance[Any]]): Boolean = {
-    val maxHistory = params.find(_.name == "detector.changepoint.maxHistory")
-    val triggerCount = params.find(_.name == "detector.changepoint.triggerCount")
-    val inactivityPurgeTime = params.find(_.name == "detector.changepoint.inactivityPurgeTime")
-    val minimumEventInterval = params.find(_.name == "detector.changepoint.minimumEventInterval")
-    (maxHistory, triggerCount, inactivityPurgeTime, minimumEventInterval) match {
-      case (Some(h), Some(t), Some(p), Some(i)) =>
-        val triggerCountValid = t.value.asInstanceOf[Int] < h.value.asInstanceOf[Int]
-        val minimumEventIntervalValid = i.value.asInstanceOf[Int] < p.value.asInstanceOf[Int]
-        triggerCountValid && minimumEventIntervalValid
-      case t => throw new IllegalArgumentException(s"Couldn't check parameters for Changepoint! $t, $params")
-    }
-  }
+  ).asInstanceOf[Seq[ParameterConstraint.ComparableConstraint[Any]]]
 }

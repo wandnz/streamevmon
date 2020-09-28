@@ -56,7 +56,7 @@ object DetectorParameterSpecs {
   // restrictions (like if we add a Double-typed restriction), the type annotation
   // gets ugly quickly. We would need to find a way to return the implicit
   // evidence of Ordering.
-  def parameterRestrictionsFromDetectorType(t: DetectorType.ValueBuilder): Seq[ComparableConstraint[Int]] = {
+  def parameterRestrictionsFromDetectorType(t: DetectorType.ValueBuilder): Seq[ComparableConstraint[Any]] = {
     val result = t match {
       case DetectorType.Baseline => Seq()
       case DetectorType.Changepoint => ChangepointDetector.parameterRestrictions
@@ -65,6 +65,6 @@ object DetectorParameterSpecs {
       case DetectorType.Spike => Seq()
       case _ => throw new UnsupportedOperationException(s"Can't get parameter constraints for $t")
     }
-    result
+    result.asInstanceOf[Seq[ComparableConstraint[Any]]]
   }
 }
