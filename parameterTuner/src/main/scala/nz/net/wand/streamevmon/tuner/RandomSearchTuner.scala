@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.tuner
 
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.parameters.{DetectorParameterSpecs, Parameters}
+import nz.net.wand.streamevmon.parameters.{HasParameterSpecs, Parameters}
 import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
 import nz.net.wand.streamevmon.tuner.jobs.{FailedJob, JobResult, SimpleJob}
 import nz.net.wand.streamevmon.tuner.nab.{NabJob, NabJobResult}
@@ -29,7 +29,7 @@ object RandomSearchTuner extends Logging {
     // We also need to check that the parameters are actually valid.
     while (!paramsAreValid || Files.exists(Paths.get(outputPath))) {
       params = strategy.nextParameters()
-      paramsAreValid = DetectorParameterSpecs.parametersAreValid(params.elems)
+      paramsAreValid = HasParameterSpecs.parametersAreValid(params.elems)
       outputPath = s"./out/parameterTuner/random/${params.hashCode.toString}"
     }
 
@@ -50,8 +50,8 @@ object RandomSearchTuner extends Logging {
     // Let's make a random search strategy. Some parameters are fixed, like the
     // inactivityPurgeTimes.
     val searchStrategy = RandomSearch(
-      DetectorParameterSpecs.getAllDetectorParameters,
-      DetectorParameterSpecs.fixedParameters
+      HasParameterSpecs.getAllDetectorParameters,
+      HasParameterSpecs.fixedParameters
     )
 
     // When we get a job result, we should write the scores into a results

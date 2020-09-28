@@ -1,6 +1,12 @@
 package nz.net.wand.streamevmon.parameters
 
+import nz.net.wand.streamevmon.detectors.baseline.BaselineDetector
+import nz.net.wand.streamevmon.detectors.changepoint.ChangepointDetector
+import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
+import nz.net.wand.streamevmon.detectors.mode.ModeDetector
+import nz.net.wand.streamevmon.detectors.spike.SpikeDetector
 import nz.net.wand.streamevmon.parameters.constraints.ParameterConstraint.ComparableConstraint
+import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
 
 /** Allows a configurable class to expose its parameters in the form of a list
   * of [[ParameterSpec ParameterSpecs]], as well as a list of associated
@@ -48,4 +54,36 @@ trait HasParameterSpecs {
     }
       .forall(_ == true)
   }
+}
+
+object HasParameterSpecs {
+  val supportedTypesMap: Map[DetectorType.ValueBuilder, HasParameterSpecs] = Map(
+    DetectorType.Baseline -> BaselineDetector,
+    DetectorType.Changepoint -> ChangepointDetector,
+    DetectorType.DistDiff -> DistDiffDetector,
+    DetectorType.Mode -> ModeDetector,
+    DetectorType.Spike -> SpikeDetector,
+  )
+
+  val supportedTypes: Seq[HasParameterSpecs] = supportedTypesMap.values.toSeq
+
+  def parametersFromDetectorType(t: DetectorType.ValueBuilder): Iterable[ParameterSpec[Any]] =
+    supportedTypesMap(t).parameterSpecs
+
+  def parameterRestrictionsFromDetectorType(t: DetectorType.ValueBuilder): Iterable[ComparableConstraint[Any]] =
+    supportedTypesMap(t).parameterRestrictions
+
+  val getAllDetectorParameters: Seq[ParameterSpec[Any]] =
+    supportedTypes.flatMap(_.parameterSpecs)
+
+  def parametersAreValid(params: Seq[ParameterInstance[Any]]): Boolean =
+    supportedTypes.forall(_.parametersAreValid(params))
+
+  val fixedParameters: Map[String, Any] = Map(
+    "detector.baseline.inactivityPurgeTime" -> Int.MaxValue,
+    "detector.changepoint.inactivityPurgeTime" -> Int.MaxValue,
+    "detector.distdiff.inactivityPurgeTime" -> Int.MaxValue,
+    "detector.mode.inactivityPurgeTime" -> Int.MaxValue,
+    "detector.spike.inactivityPurgeTime" -> Int.MaxValue,
+  )
 }

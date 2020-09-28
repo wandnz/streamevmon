@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.tuner
 
-import nz.net.wand.streamevmon.parameters.{DetectorParameterSpecs, ParameterSpec}
+import nz.net.wand.streamevmon.parameters.{HasParameterSpecs, ParameterSpec}
 import nz.net.wand.streamevmon.parameters.constraints.ParameterConstraint
 import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
 
@@ -81,10 +81,10 @@ object ParameterSpecToSmac {
     detectors        : DetectorType.ValueBuilder*
   ): Unit = {
     // We only write the parameters for detectors we'll be using
-    val allParameterSpecs = detectors.flatMap(DetectorParameterSpecs.parametersFromDetectorType)
+    val allParameterSpecs = detectors.flatMap(HasParameterSpecs.parametersFromDetectorType)
     // We handle fixed parameters as single-field categorical variables to
     // ensure they don't have other values generated.
-    val fixedParameters = DetectorParameterSpecs.fixedParameters
+    val fixedParameters = HasParameterSpecs.fixedParameters
 
     FileUtils.forceMkdir(new File(parameterSpecFile).getParentFile)
     val writer = new BufferedWriter(new FileWriter(parameterSpecFile))
@@ -103,7 +103,7 @@ object ParameterSpecToSmac {
     // Not all detectors even have restrictions, so this could well end out
     // being an empty list.
     // toSmacString() handles all the heavy lifting.
-    val restrictions = detectors.flatMap(DetectorParameterSpecs.parameterRestrictionsFromDetectorType)
+    val restrictions = detectors.flatMap(HasParameterSpecs.parameterRestrictionsFromDetectorType)
     restrictions.foreach { rest =>
       implicit val ev: Ordering[Any] = rest.ev
       writer.write(rest.toSmacString)
