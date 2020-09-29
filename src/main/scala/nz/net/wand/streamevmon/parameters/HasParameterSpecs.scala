@@ -31,10 +31,15 @@ trait HasParameterSpecs {
     * this class - this should return true!
     */
   def parameterInstancesAreValid(params: Seq[ParameterInstance[Any]], throwException: Boolean = false): Boolean = {
+    val invalidParameters = params.filterNot(_.isValid)
+    if (invalidParameters.nonEmpty) {
+      throw new IllegalArgumentException(s"Invalid parameters! " +
+        s"${invalidParameters.map(p => s"$p (min ${p.spec.min.getOrElse("none")}, max ${p.spec.max.getOrElse("none")})").mkString(", ")}")
+    }
+
     // For a set of parameters to be valid, none of our restrictions must be
     // violated.
     // If a parameter is not provided, we take the default.
-
     parameterRestrictions.map { restriction =>
       val lhs: ParameterInstance[Any] = params.find(_.name == restriction.leftItem.name) match {
         case Some(providedInstance) => providedInstance

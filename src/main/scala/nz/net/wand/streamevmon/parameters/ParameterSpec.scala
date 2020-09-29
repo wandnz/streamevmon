@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.parameters
 
 import nz.net.wand.streamevmon.parameters.constraints.ParameterSpecModifier
+import nz.net.wand.streamevmon.Perhaps
 
 import org.apache.commons.math3.random.RandomDataGenerator
 
@@ -17,10 +18,12 @@ import org.apache.commons.math3.random.RandomDataGenerator
   *           handling that is not yet implemented.
   */
 case class ParameterSpec[T](
-  name: String,
+  name   : String,
   default: T,
   min    : Option[T],
   max    : Option[T]
+)(
+  implicit val ordering: Perhaps[Ordering[T]]
 ) extends Serializable {
 
   default match {

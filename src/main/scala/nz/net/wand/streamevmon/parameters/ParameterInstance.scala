@@ -1,5 +1,7 @@
 package nz.net.wand.streamevmon.parameters
 
+import nz.net.wand.streamevmon.{Logging, Perhaps}
+
 /** A particular value for a parameter specified by a ParameterSpec.
   *
   * @param spec  The ParameterSpec for this instance.
@@ -12,7 +14,9 @@ package nz.net.wand.streamevmon.parameters
 case class ParameterInstance[T](
   spec: ParameterSpec[T],
   value: T
-) extends Serializable {
+)(
+  implicit val ordering: Perhaps[Ordering[T]]
+) extends Serializable with Logging {
   val name: String = spec.name
 
   // No type annotation here because there's no way to guarantee typing... :(
@@ -32,6 +36,26 @@ case class ParameterInstance[T](
   lazy val asArg: Iterable[String] = Seq(s"--$name", typedValue.toString)
 
   override def toString: String = asArg.mkString(" ")
+
+  def isValid: Boolean = {
+    if (ordering.isDefined) {
+      implicit val myOrdering: Ordering[T] = ordering.value.get
+      import myOrdering.mkOrderingOps
+
+      val minValid = spec.min match {
+        case Some(min) => value >= min
+        case None => true
+      }
+      val maxValid = spec.max match {
+        case Some(max) => value <= max
+        case None => true
+      }
+      minValid && maxValid
+    }
+    else {
+      true
+    }
+  }
 }
 
 object ParameterInstance {
@@ -41,5 +65,4 @@ object ParameterInstance {
     new ParameterSpec.Constant(value),
     value
   )
-
 }
