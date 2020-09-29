@@ -56,9 +56,9 @@ trait HasParameterSpecs {
       if (!result && throwException) {
         throw new IllegalArgumentException(
           s"Parameter constraint was violated! " +
-            s"$restriction" +
-            s"${lhs.name} = ${lhs.value}," +
-            s"${rhs.name} = ${rhs.value}"
+            s"{ $restriction } (Got values " +
+            s"${lhs.name} = ${lhs.value}, " +
+            s"${rhs.name} = ${rhs.value})"
         )
       }
       else {

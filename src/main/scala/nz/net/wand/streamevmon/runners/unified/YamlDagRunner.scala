@@ -126,6 +126,8 @@ object YamlDagRunner {
                 val keyedDetector = detInstance.buildKeyed(detSchema.detType)
                 val detConf = keyedDetector.configWithOverride(config)
 
+                // Now that we have the config for this detector, we should
+                // check that the parameters it was given are valid.
                 HasParameterSpecs.parameterToolIsValid(detConf, throwException = true)
 
                 // If we end out only needing the windowed version of the

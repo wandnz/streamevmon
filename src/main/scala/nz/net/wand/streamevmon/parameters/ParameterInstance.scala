@@ -35,7 +35,6 @@ case class ParameterInstance[T](
 }
 
 object ParameterInstance {
-
   /** A ParameterInstance with a corresponding Spec that only allows one value.
     */
   class Constant[T](override val value: T) extends ParameterInstance[T](
