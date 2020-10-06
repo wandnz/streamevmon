@@ -2,14 +2,17 @@ package nz.net.wand.streamevmon.tuner.nab
 
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.nab.NabMeasurement
+import nz.net.wand.streamevmon.Logging
 
-import java.io.{BufferedWriter, File, FileWriter}
+import java.io._
 import java.nio.file.{Files, Paths}
 
+import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.functions.sink.{RichSinkFunction, SinkFunction}
 
 import scala.collection.mutable
 import scala.collection.JavaConverters._
+import scala.compat.Platform.EOL
 
 /** Writes detector results to file in the format required by the NAB scorer.
   *
@@ -18,7 +21,8 @@ import scala.collection.JavaConverters._
   * @param outputLocation The folder to put the results for this instance.
   * @param inputFile      The input NAB data file that this test is being run from.
   */
-class NabScoringFormatSink(outputLocation: String, inputFile: File, detectorName: String) extends RichSinkFunction[Event] {
+class NabScoringFormatSink(outputLocation: String, inputFile: File, detectorName: String) extends RichSinkFunction[Event] with
+                                                                                                  Logging {
 
   type FormattedType = (String, String, String, String)
 
@@ -32,7 +36,7 @@ class NabScoringFormatSink(outputLocation: String, inputFile: File, detectorName
 
   var unprocessedMeasurements: Option[mutable.Queue[FormattedType]] = None
 
-  var writer: Option[BufferedWriter] = None
+  val filename = s"$outputLocation/$outputSubdir/$outputFilename"
 
   /** Reads the file from `./data/NAB/results` to get the correct labels and
     * values and such. Only reads from disk if the results are not cached in
@@ -55,24 +59,43 @@ class NabScoringFormatSink(outputLocation: String, inputFile: File, detectorName
     }
   }
 
+  var invocationCount = 0
+
   override def invoke(value: Event, context: SinkFunction.Context[_]): Unit = {
     readExampleResults()
     // Whenever we receive an event, we'll output all the input measurements up
     // until that time. The one corresponding to the new event will have its
     // severity copied over.
     outputMeasurements(formatMeasurements(Some(value)))
+
+    // Certain conditions might cause us to overwrite the file instead of
+    // appending in invocations after the first, which loses most of our data.
+    // This incurs a cost on the filesystem, but that's an acceptable tradeoff
+    // for the security of knowing that the output file is (more likely to be)
+    // valid.
+    invocationCount += 1
+    val reader = new BufferedReader(new FileReader(new File(filename)))
+    val line = reader.readLine
+    if (!line.contains("timestamp")) {
+      throw new Throwable(s"After $invocationCount invocations, the first line of our output file became invalid! $filename $line")
+    }
+  }
+
+  override def open(parameters: Configuration): Unit = {
+    new File(filename).getParentFile.mkdirs()
+    new File(filename).delete()
   }
 
   override def close(): Unit = {
     readExampleResults()
     // Here we need to empty the unprocessedMeasurements queue to get every
-    // input measurement on disk, and then close the writer.
+    // input measurement on disk.
     outputMeasurements(formatMeasurements(None))
-    writer match {
-      case Some(value) =>
-        value.flush()
-        value.close()
-      case None =>
+
+    val reader = new BufferedReader(new FileReader(new File(filename)))
+    val line = reader.readLine
+    if (!line.contains("timestamp")) {
+      throw new Throwable(s"Invalid first line of finished output file $filename! $line")
     }
   }
 
@@ -116,20 +139,15 @@ class NabScoringFormatSink(outputLocation: String, inputFile: File, detectorName
     * doesn't already exist.
     */
   def outputMeasurements(formatted: Iterable[FormattedType]): Unit = {
-    writer match {
-      case Some(_) =>
-      case None =>
-        writer = Some {
-          val filename = s"$outputLocation/$outputSubdir/$outputFilename"
-          new File(filename).getParentFile.mkdirs()
-          new File(filename).delete()
-          new BufferedWriter(new FileWriter(filename))
-        }
-    }
+    val fStream = new FileOutputStream(new File(filename), true)
+    val oStream = new OutputStreamWriter(fStream)
 
     formatted.foreach { f =>
-      writer.get.write(f.productIterator.mkString(","))
-      writer.get.newLine()
+      oStream.write(f.productIterator.mkString(","))
+      oStream.write(EOL)
     }
+
+    oStream.flush()
+    oStream.close()
   }
 }

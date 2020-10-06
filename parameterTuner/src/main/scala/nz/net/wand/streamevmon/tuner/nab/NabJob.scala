@@ -241,7 +241,7 @@ case class NabJob(
         writer.close()
         // We didn't get killed, so we don't need this anymore.
         Runtime.getRuntime.removeShutdownHook(shutdownHookThread)
-        onFailure(e, timeAfterDetectors - timeBeforeDetectors, endTime - startTime)
+        onFailure(e, Math.max(timeAfterDetectors - timeBeforeDetectors, 0), Math.max(endTime - startTime, 0))
     }
   }
 }

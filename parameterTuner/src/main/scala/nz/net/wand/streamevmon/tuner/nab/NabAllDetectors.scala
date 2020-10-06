@@ -52,6 +52,8 @@ class NabAllDetectors(detectorsToUse: Iterable[DetectorType.ValueBuilder]) exten
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
+    env.setParallelism(1)
+
     // Configuration is overridden by parameters passed as though through the
     // command line.
     val config = Configuration.get(args)
@@ -66,7 +68,6 @@ class NabAllDetectors(detectorsToUse: Iterable[DetectorType.ValueBuilder]) exten
     // order. This is probably not needed, but that's fine.
     val input = env
       .readFile(new NabFileInputFormat, file.getCanonicalPath)
-      .setParallelism(1)
       .keyBy(keySelector)
 
     // List all the detectors we want to use.

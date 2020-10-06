@@ -46,6 +46,7 @@ object RandomSearchTuner extends Logging {
 
     // Squash all the logs from Flink to tidy up our output.
     System.setProperty("org.slf4j.simpleLogger.log.org.apache.flink", "error")
+    System.setProperty("nz.net.wand.streamevmon.tuner.nabScoreScalingMode", "continuous")
 
     // Let's make a random search strategy. Some parameters are fixed, like the
     // inactivityPurgeTimes.
