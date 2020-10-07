@@ -44,7 +44,7 @@ case class StreamToTypedStreams(
           case d@SourceDatatype.HTTP => Some((d, getTypedAs[HTTP]))
           case d@SourceDatatype.ICMP => Some((d, getTypedAs[ICMP]))
           case d@SourceDatatype.TCPPing => Some((d, getTypedAs[TCPPing]))
-          case d@SourceDatatype.Traceroute => Some((d, getTypedAs[Traceroute]))
+          case d@SourceDatatype.TraceroutePathlen => Some((d, getTypedAs[TraceroutePathlen]))
           case _ => None
         }.toMap
         case _@Some(SourceSubtype.Bigdata) => SourceDatatype.values.flatMap {

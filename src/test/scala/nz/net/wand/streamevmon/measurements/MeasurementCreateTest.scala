@@ -14,8 +14,8 @@ class MeasurementCreateTest extends TestBase {
       DNS.create(SeedData.dns.subscriptionLine) shouldBe Some(SeedData.dns.expected)
     }
 
-    "convert an entry from a subscription into a Traceroute object" in {
-      Traceroute.create(SeedData.traceroute.subscriptionLine) shouldBe Some(SeedData.traceroute.expected)
+    "convert an entry from a subscription into a TraceroutePathlen object" in {
+      TraceroutePathlen.create(SeedData.traceroutePathlen.subscriptionLine) shouldBe Some(SeedData.traceroutePathlen.expected)
     }
 
     "convert an entry from a subscription into a TCPPing object" in {
@@ -36,7 +36,7 @@ class MeasurementCreateTest extends TestBase {
       Seq(
         InfluxMeasurementFactory.createMeasurement(SeedData.icmp.subscriptionLine),
         InfluxMeasurementFactory.createMeasurement(SeedData.dns.subscriptionLine),
-        InfluxMeasurementFactory.createMeasurement(SeedData.traceroute.subscriptionLine),
+        InfluxMeasurementFactory.createMeasurement(SeedData.traceroutePathlen.subscriptionLine),
         InfluxMeasurementFactory.createMeasurement(SeedData.tcpping.subscriptionLine),
         InfluxMeasurementFactory.createMeasurement(SeedData.http.subscriptionLine)
       ).foreach {
@@ -44,7 +44,7 @@ class MeasurementCreateTest extends TestBase {
           x match {
             case _: ICMP => x shouldBe SeedData.icmp.expected
             case _: DNS => x shouldBe SeedData.dns.expected
-            case _: Traceroute => x shouldBe SeedData.traceroute.expected
+            case _: TraceroutePathlen => x shouldBe SeedData.traceroutePathlen.expected
             case _: TCPPing => x shouldBe SeedData.tcpping.expected
             case _: HTTP => x shouldBe SeedData.http.expected
             case _             => fail("Created a type we didn't recognise")

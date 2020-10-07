@@ -15,8 +15,8 @@ class MeasurementEnrichTest extends PostgresContainerSpec {
       InfluxMeasurementFactory.enrichMeasurement(pg, SeedData.dns.expected) shouldBe Some(SeedData.dns.expectedRich)
     }
 
-    "obtain the correct RichTraceroute object" in {
-      InfluxMeasurementFactory.enrichMeasurement(pg, SeedData.traceroute.expected) shouldBe Some(SeedData.traceroute.expectedRich)
+    "obtain the correct RichTraceroutePathlen object" in {
+      InfluxMeasurementFactory.enrichMeasurement(pg, SeedData.traceroutePathlen.expected) shouldBe Some(SeedData.traceroutePathlen.expectedRich)
     }
 
     "obtain the correct RichTcpping object" in {

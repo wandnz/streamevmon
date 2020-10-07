@@ -196,7 +196,7 @@ class InfluxConnectionTest extends InfluxContainerSpec {
         Thread.sleep(20)
         Await.result(db.writeNative(SeedData.dns.subscriptionLine), Duration.Inf)
         Thread.sleep(20)
-        Await.result(db.writeNative(SeedData.traceroute.subscriptionLine), Duration.Inf)
+        Await.result(db.writeNative(SeedData.traceroutePathlen.subscriptionLine), Duration.Inf)
         println("Data sent.")
         andThen()
       }

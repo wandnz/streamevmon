@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.flink
 import nz.net.wand.streamevmon.{Configuration, TestBase}
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.InfluxMeasurement
-import nz.net.wand.streamevmon.measurements.amp.Traceroute
+import nz.net.wand.streamevmon.measurements.amp.TraceroutePathlen
 
 import java.time.Instant
 import java.util.concurrent.TimeUnit
@@ -19,7 +19,7 @@ import org.apache.flink.util.Collector
 class MyReallyFunOutOfOrderSourceFunction extends SourceFunction[InfluxMeasurement] with Serializable {
   def collect(ctx: SourceFunction.SourceContext[InfluxMeasurement], id: Int): Unit = {
     ctx.collectWithTimestamp(
-      Traceroute(
+      TraceroutePathlen(
         ":)",
         Some(1),
         Instant.ofEpochMilli(1000000000000L + TimeUnit.SECONDS.toMillis(id))

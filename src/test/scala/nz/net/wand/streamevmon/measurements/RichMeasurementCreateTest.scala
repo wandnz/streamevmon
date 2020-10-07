@@ -13,8 +13,8 @@ class RichMeasurementCreateTest extends TestBase {
       RichDNS.create(SeedData.dns.expected, SeedData.dns.expectedMeta) shouldBe Some(SeedData.dns.expectedRich)
     }
 
-    "merge a Traceroute and TracerouteMeta object" in {
-      RichTraceroute.create(SeedData.traceroute.expected, SeedData.traceroute.expectedMeta) shouldBe Some(SeedData.traceroute.expectedRich)
+    "merge a TraceroutePathlen and TracerouteMeta object" in {
+      RichTraceroutePathlen.create(SeedData.traceroutePathlen.expected, SeedData.traceroutePathlen.expectedMeta) shouldBe Some(SeedData.traceroutePathlen.expectedRich)
     }
 
     "merge a TCPPing and TCPPingMeta object" in {

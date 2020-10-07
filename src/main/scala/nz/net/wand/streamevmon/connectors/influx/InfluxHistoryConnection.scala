@@ -11,9 +11,9 @@ import com.github.fsanaulla.chronicler.ahc.io.{AhcIOClient, InfluxIO}
 import com.github.fsanaulla.chronicler.core.model.{InfluxCredentials, InfluxReader}
 import org.apache.flink.api.java.utils.ParameterTool
 
+import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
 import scala.reflect._
 
 /** Additional constructors for the companion class. */
@@ -222,11 +222,11 @@ case class InfluxHistoryConnection(
   def getTracerouteData(
     start: Instant = Instant.EPOCH,
     end  : Instant = Instant.now()
-  ): Seq[Traceroute] = {
-    getData[Traceroute](
-      Traceroute.table_name,
-      Traceroute.columnNames,
-      InfluxSchema.tracerouteReader,
+  ): Seq[TraceroutePathlen] = {
+    getData[TraceroutePathlen](
+      TraceroutePathlen.table_name,
+      TraceroutePathlen.columnNames,
+      InfluxSchema.traceroutePathlenReader,
       start,
       end
     )

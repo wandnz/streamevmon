@@ -2,11 +2,11 @@ package nz.net.wand.streamevmon.measurements.amp
 
 import org.squeryl.annotations.Column
 
-/** Represents the metadata associated with the scheduled test that an AMP DNS
-  * measurement is produced from.
+/** Represents the metadata associated with the scheduled test that an AMP
+  * Traceroute or Traceroute-Pathlen measurement is produced from.
   *
-  * @see [[Traceroute]]
-  * @see [[RichTraceroute]]
+  * @see [[TraceroutePathlen]]
+  * @see [[RichTraceroutePathlen]]
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-trace]]
   */
 case class TracerouteMeta(

@@ -31,7 +31,7 @@ class InfluxHistoryConnectionTest extends InfluxContainerSpec {
             Seq(
               SeedData.icmp.subscriptionLine,
               SeedData.dns.subscriptionLine,
-              SeedData.traceroute.subscriptionLine,
+              SeedData.traceroutePathlen.subscriptionLine,
               SeedData.http.subscriptionLine,
               SeedData.tcpping.subscriptionLine
             ) ++ SeedData.bigdata.flowsAsLineProtocol
@@ -57,7 +57,7 @@ class InfluxHistoryConnectionTest extends InfluxContainerSpec {
     }
 
     "get Traceroute data" in {
-      getInfluxHistory.getTracerouteData().head shouldBe SeedData.traceroute.expected
+      getInfluxHistory.getTracerouteData().head shouldBe SeedData.traceroutePathlen.expected
     }
 
     "get Flow data" in {
@@ -82,7 +82,7 @@ class InfluxHistoryConnectionTest extends InfluxContainerSpec {
         SeedData.dns.expected,
         SeedData.http.expected,
         SeedData.tcpping.expected,
-        SeedData.traceroute.expected
+        SeedData.traceroutePathlen.expected
       )
     }
   }

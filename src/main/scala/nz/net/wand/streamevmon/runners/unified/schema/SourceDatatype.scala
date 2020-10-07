@@ -7,7 +7,7 @@ object SourceDatatype extends Enumeration {
   val HTTP: Value = Value("http")
   val ICMP: Value = Value("icmp")
   val TCPPing: Value = Value("tcpping")
-  val Traceroute: Value = Value("traceroute")
+  val TraceroutePathlen: Value = Value("traceroutepathlen")
   // Bigdata
   val Flow: Value = Value("flow")
   // Esmond

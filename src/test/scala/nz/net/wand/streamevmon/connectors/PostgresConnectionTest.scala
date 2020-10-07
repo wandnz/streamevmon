@@ -19,7 +19,7 @@ class PostgresConnectionTest extends PostgresContainerSpec {
 
       transaction(icmpMeta.allRows.toList) shouldBe SeedData.icmp.allExpectedMeta
       transaction(dnsMeta.allRows.toList) shouldBe SeedData.dns.allExpectedMeta
-      transaction(tracerouteMeta.allRows.toList) shouldBe SeedData.traceroute.allExpectedMeta
+      transaction(tracerouteMeta.allRows.toList) shouldBe SeedData.traceroutePathlen.allExpectedMeta
     }
   }
 }

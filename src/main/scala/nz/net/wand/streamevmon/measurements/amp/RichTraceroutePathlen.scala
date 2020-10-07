@@ -4,25 +4,25 @@ import nz.net.wand.streamevmon.measurements._
 
 import java.time.{Instant, ZoneId}
 
-/** Represents an AMP Traceroute measurement, as well as the metadata associated
-  * with the scheduled test that generated it.
+/** Represents an AMP Traceroute-Pathlen measurement, as well as the metadata
+  * associated with the scheduled test that generated it.
   *
-  * @see [[Traceroute]]
+  * @see [[TraceroutePathlen]]
   * @see [[TracerouteMeta]]
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-trace]]
   */
-case class RichTraceroute(
+case class RichTraceroutePathlen(
   stream: String,
-  source               : String,
-  destination          : String,
-  family               : String,
+  source: String,
+  destination: String,
+  family: String,
   packet_size_selection: String,
-  path_length          : Option[Double],
-  time                 : Instant
+  path_length: Option[Double],
+  time  : Instant
 ) extends RichInfluxMeasurement {
 
   override def toString: String = {
-    s"${Traceroute.table_name}," +
+    s"${TraceroutePathlen.table_name}," +
       s"stream=$stream " +
       s"source=$source," +
       s"destination=$destination," +
@@ -34,20 +34,20 @@ case class RichTraceroute(
 
   override def isLossy: Boolean = false
 
-  override def toCsvFormat: Seq[String] = RichTraceroute.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
+  override def toCsvFormat: Seq[String] = RichTraceroutePathlen.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 
   var defaultValue: Option[Double] = path_length
 }
 
-object RichTraceroute extends RichInfluxMeasurementFactory {
+object RichTraceroutePathlen extends RichInfluxMeasurementFactory {
 
   override def create(base: InfluxMeasurement, meta: PostgresMeasurementMeta): Option[RichInfluxMeasurement] = {
     base match {
-      case b: Traceroute =>
+      case b: TraceroutePathlen =>
         meta match {
           case m: TracerouteMeta =>
             Some(
-              RichTraceroute(
+              RichTraceroutePathlen(
                 m.stream.toString,
                 m.source,
                 m.destination,

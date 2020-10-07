@@ -175,7 +175,7 @@ object InfluxMeasurementFactory {
     line match {
       case x if x.startsWith(ICMP.table_name) => ICMP.create(x)
       case x if x.startsWith(DNS.table_name) => DNS.create(x)
-      case x if x.startsWith(Traceroute.table_name) => Traceroute.create(x)
+      case x if x.startsWith(TraceroutePathlen.table_name) => TraceroutePathlen.create(x)
       case x if x.startsWith(TCPPing.table_name) => TCPPing.create(x)
       case x if x.startsWith(HTTP.table_name) => HTTP.create(x)
       case x if x.startsWith(Flow.table_name) => Flow.create(x)
@@ -200,7 +200,7 @@ object InfluxMeasurementFactory {
         x match {
           case y: ICMPMeta => RichICMP.create(base, y)
           case y: DNSMeta => RichDNS.create(base, y)
-          case y: TracerouteMeta => RichTraceroute.create(base, y)
+          case y: TracerouteMeta => RichTraceroutePathlen.create(base, y)
           case y: TCPPingMeta => RichTCPPing.create(base, y)
           case y: HTTPMeta => RichHTTP.create(base, y)
           case _ => None

@@ -143,7 +143,7 @@ case class PostgresConnection(
             // which of course might fail. If it does fail, we'll return a known false expression instead.
             case _: ICMP => transaction(icmpMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
             case _: DNS => transaction(dnsMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
-            case _: Traceroute =>
+            case _: TraceroutePathlen =>
               transaction(tracerouteMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
             case _: TCPPing =>
               transaction(tcppingMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)

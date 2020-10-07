@@ -16,7 +16,7 @@ class PostgresMeasurementMetaCreateTest extends PostgresContainerSpec {
     }
 
     "obtain correct TracerouteMeta" in {
-      pg.getMeta(SeedData.traceroute.expected) shouldBe Some(SeedData.traceroute.expectedMeta)
+      pg.getMeta(SeedData.traceroutePathlen.expected) shouldBe Some(SeedData.traceroutePathlen.expectedMeta)
     }
 
     "obtain correct TCPPingMeta" in {
@@ -31,7 +31,7 @@ class PostgresMeasurementMetaCreateTest extends PostgresContainerSpec {
       Seq(
         pg.getMeta(SeedData.icmp.expected),
         pg.getMeta(SeedData.dns.expected),
-        pg.getMeta(SeedData.traceroute.expected),
+        pg.getMeta(SeedData.traceroutePathlen.expected),
         pg.getMeta(SeedData.tcpping.expected),
         pg.getMeta(SeedData.http.expected)
       ).foreach {
@@ -39,7 +39,7 @@ class PostgresMeasurementMetaCreateTest extends PostgresContainerSpec {
           x match {
             case _: ICMPMeta => x shouldBe SeedData.icmp.expectedMeta
             case _: DNSMeta => x shouldBe SeedData.dns.expectedMeta
-            case _: TracerouteMeta => x shouldBe SeedData.traceroute.expectedMeta
+            case _: TracerouteMeta => x shouldBe SeedData.traceroutePathlen.expectedMeta
             case _: TCPPingMeta => x shouldBe SeedData.tcpping.expectedMeta
             case _: HTTPMeta => x shouldBe SeedData.http.expectedMeta
             case _                 => fail("Created a type we didn't recognise")

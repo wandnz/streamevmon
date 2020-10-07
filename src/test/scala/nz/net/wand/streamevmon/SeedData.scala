@@ -241,7 +241,7 @@ object SeedData {
     )
   }
 
-  object traceroute {
+  object traceroutePathlen {
 
     val allExpectedMeta: Seq[TracerouteMeta] = Seq(
       TracerouteMeta(5, "amplet", "google.com", "ipv4", "60"),
@@ -253,7 +253,7 @@ object SeedData {
     val subscriptionLine =
       "data_amp_traceroute_pathlen,stream=5 path_length=12.0 1563761842000000000"
 
-    val expected = Traceroute(
+    val expected = TraceroutePathlen(
       stream = "5",
       path_length = Some(12.0),
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1563761842000000000L))
@@ -267,7 +267,7 @@ object SeedData {
       packet_size_selection = "60"
     )
 
-    val expectedRich = RichTraceroute(
+    val expectedRich = RichTraceroutePathlen(
       stream = "5",
       source = "amplet",
       destination = "google.com",

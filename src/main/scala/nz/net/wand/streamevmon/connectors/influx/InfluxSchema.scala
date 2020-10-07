@@ -129,12 +129,12 @@ object InfluxSchema {
     override def readUnsafe(js: JArray): TCPPing = ???
   }
 
-  val tracerouteReader: InfluxReader[Traceroute] = new InfluxReader[Traceroute] {
-    override def read(js: JArray): ErrorOr[Traceroute] = {
-      val cols = Traceroute.columnNames
+  val traceroutePathlenReader: InfluxReader[TraceroutePathlen] = new InfluxReader[TraceroutePathlen] {
+    override def read(js: JArray): ErrorOr[TraceroutePathlen] = {
+      val cols = TraceroutePathlen.columnNames
 
       Try(
-        Traceroute(
+        TraceroutePathlen(
           js.get(cols.indexOf("stream")).asString,
           nullToOption(js.get(cols.indexOf("path_length"))).map(_.asInt),
           Instant.parse(js.get(cols.indexOf("time")).asString)
@@ -142,7 +142,7 @@ object InfluxSchema {
       ).toEither
     }
 
-    override def readUnsafe(js: JArray): Traceroute = ???
+    override def readUnsafe(js: JArray): TraceroutePathlen = ???
   }
 
   val flowStatisticsReader: InfluxReader[Flow] = new InfluxReader[Flow] {
