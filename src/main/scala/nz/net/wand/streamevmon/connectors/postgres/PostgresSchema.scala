@@ -14,4 +14,10 @@ object PostgresSchema extends Schema {
   val tracerouteMeta: Table[TracerouteMeta] = table("streams_amp_traceroute")
   val tcppingMeta: Table[TCPPingMeta] = table("streams_amp_tcpping")
   val httpMeta: Table[HTTPMeta] = table("streams_amp_http")
+
+  def traceroute(stream: Int): Table[Traceroute] = table(s"data_amp_traceroute_$stream")
+
+  def traceroutePath(path_id: Int): Table[TraceroutePath] = table(s"data_amp_traceroute_paths_$path_id")
+
+  def tracerouteAsPath(aspath_id: Int): Table[TracerouteAsPath] = table(s"data_amp_traceroute_aspaths_$aspath_id")
 }

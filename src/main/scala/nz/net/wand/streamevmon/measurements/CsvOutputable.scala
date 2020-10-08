@@ -18,7 +18,7 @@ trait CsvOutputable {
   protected def toCsvEntry(e: Any): String =
     e match {
       case o: Option[Any] => o.map(toCsvEntry).getOrElse("")
-      case s: Seq[Any] => s.map(toCsvEntry).mkString("\"", ";", "\"")
+      case s: Iterable[Any] => s.map(toCsvEntry).mkString("\"", ";", "\"")
       case i: Instant => i.toEpochMilli.toString
       case d: Duration => DurationFormatUtils.formatDuration(d.toMillis, "H:mm:ss.S")
       case _ => e.toString

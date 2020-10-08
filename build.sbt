@@ -71,3 +71,4 @@ lazy val parameterTuner = (project in file("parameterTuner"))
 commands ++= AssemblyCommands.allCommands
 commands ++= AssemblyCommands.WithScala.allCommands
 AssemblyCommands.addAlias("assemble", AssemblyCommands.allCommands: _*)
+AssemblyCommands.addAlias("assembleScala", AssemblyCommands.WithScala.allCommands: _*)

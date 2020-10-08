@@ -11,7 +11,7 @@ import org.postgresql.util.PSQLException
 import org.squeryl.{Session, SessionFactory}
 import org.squeryl.adapters.PostgreSqlAdapter
 
-import scala.concurrent.duration.{FiniteDuration, _}
+import scala.concurrent.duration._
 import scala.util.Try
 
 /** Contains additional apply methods for the companion class.
