@@ -1,5 +1,9 @@
 package nz.net.wand.streamevmon.connectors.postgres
 
+/** An Autonomous System Number. Supports the special cases of
+  * AS "numbers" that amp might report, such as private IPs or
+  * missing AS numbers.
+  */
 case class AsNumber(private val num: Int) {
   // We could use AsNumberCategory(num), but this would throw
   // an exception for all valid ASes except ID 1. We want to

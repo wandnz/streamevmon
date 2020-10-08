@@ -7,15 +7,21 @@ import java.time.Instant
 
 import org.squeryl.annotations.Column
 
-case class Traceroute(
+/** Represents an AMP Traceroute measurement.
+  *
+  * @see [[TracerouteMeta]]
+  * @see [[RichTraceroute]]
+  * @see [[https://github.com/wanduow/amplet2/wiki/amp-trace]]
+  */
+final case class Traceroute(
   @Column("stream_id")
-  stream               : String,
-  path_id              : Int,
-  aspath_id            : Option[Int],
-  packet_size          : Int,
-  error_type           : Option[Int],
-  error_code           : Option[Int],
-  hop_rtt              : Array[Int],
+  stream       : String,
+  path_id      : Int,
+  aspath_id    : Option[Int],
+  packet_size  : Int,
+  error_type   : Option[Int],
+  error_code   : Option[Int],
+  hop_rtt      : Array[Int],
   private val timestamp: Int
 ) extends Measurement
           with CsvOutputable
@@ -38,6 +44,4 @@ case class Traceroute(
   override def toCsvFormat: Seq[String] =
     Seq(stream, path_id, aspath_id, packet_size, error_type, error_code, hop_rtt)
       .map(toCsvEntry)
-
-
 }

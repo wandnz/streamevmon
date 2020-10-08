@@ -2,6 +2,10 @@ package nz.net.wand.streamevmon.connectors.postgres
 
 import org.squeryl.customtypes.StringField
 
+/** A Traceroute test reports a path taken in terms of IPs and ASes.
+  * This class represents the AS path, in which a new entry represents
+  * a transition into a new AS.
+  */
 case class AsPath(rawInput: String)
   extends StringField(rawInput)
           with Iterable[AsPathEntry] {
@@ -12,16 +16,4 @@ case class AsPath(rawInput: String)
     .map(AsPathEntry(_))
 
   override def iterator: Iterator[AsPathEntry] = path.iterator
-
-  override def canEqual(other: Any): Boolean = other.isInstanceOf[AsPath]
-
-  override def equals(other: Any): Boolean = other match {
-    case that: AsPath => (that canEqual this) && rawInput == that.rawInput
-    case _ => false
-  }
-
-  override def hashCode(): Int = {
-    val state = Seq(rawInput)
-    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
-  }
 }
