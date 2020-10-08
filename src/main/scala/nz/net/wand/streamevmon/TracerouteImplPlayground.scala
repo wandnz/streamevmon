@@ -1,12 +1,15 @@
 package nz.net.wand.streamevmon
 
-import nz.net.wand.streamevmon.measurements.amp.{Traceroute, TracerouteAsPath, TraceroutePath}
+import nz.net.wand.streamevmon.measurements.amp._
 
 import java.sql.DriverManager
+import java.time.Instant
 
 import org.postgresql.util.PSQLException
 import org.squeryl.{Session, SessionFactory}
 import org.squeryl.adapters.PostgreSqlAdapter
+
+import scala.util.Try
 
 object TracerouteImplPlayground extends Logging {
   val jdbcUrl = s"jdbc:postgresql://localhost:5432/nntsc?loggerLevel=OFF"
@@ -79,18 +82,63 @@ object TracerouteImplPlayground extends Logging {
     trace.aspath_id.map(asPathId => getTracerouteAsPath(trace.stream.toInt, asPathId))
   }
 
+
+  def getTracerouteData(
+    stream: Int,
+    start: Instant = Instant.EPOCH,
+    end   : Instant = Instant.now()
+  ): Option[Iterable[Traceroute]] = {
+    if (!getOrInitSession()) {
+      None
+    }
+    else {
+      import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
+      import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
+
+      Try(
+        transaction(
+          from(traceroute(stream))(t =>
+            where(
+              t.timestamp between(start.getEpochSecond, end.getEpochSecond)
+            ).select(t)
+          ).toList
+        )
+      ).fold(
+        e => {
+          logger.error(s"Failed Postgres transaction! $e")
+          throw e
+          None
+        },
+        tr => Some(tr)
+      )
+    }
+  }
+
+
+  def getAllTracerouteMeta: Option[Iterable[TracerouteMeta]] = {
+    if (!getOrInitSession()) {
+      None
+    }
+    else {
+      import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
+      import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
+
+      Try(
+        transaction(from(tracerouteMeta)(m => select(m)).toList)
+      ).fold(
+        e => {
+          logger.error(s"Failed Postgres transaction! $e")
+          None
+        },
+        tr => Some(tr)
+      )
+    }
+  }
+
   def main(args: Array[String]): Unit = {
     assert(getOrInitSession())
-    import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
-    import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
 
-    val result = transaction(traceroute(9).allRows.head)
-
-    println(result)
-
-    val aspath = getTracerouteAsPath(result)
-
-    println(aspath)
+    getAllTracerouteMeta.foreach(_.foreach(println))
 
     val breakpoint = 1
   }

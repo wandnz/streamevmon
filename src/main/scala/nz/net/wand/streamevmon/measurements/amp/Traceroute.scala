@@ -13,16 +13,16 @@ import org.squeryl.annotations.Column
   * @see [[RichTraceroute]]
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-trace]]
   */
-final case class Traceroute(
+case class Traceroute(
   @Column("stream_id")
-  stream       : String,
-  path_id      : Int,
-  aspath_id    : Option[Int],
-  packet_size  : Int,
-  error_type   : Option[Int],
-  error_code   : Option[Int],
-  hop_rtt      : Array[Int],
-  private val timestamp: Int
+  stream     : String,
+  path_id    : Int,
+  aspath_id  : Option[Int],
+  packet_size: Int,
+  error_type : Option[Int],
+  error_code : Option[Int],
+  hop_rtt    : Array[Int],
+  timestamp  : Int
 ) extends Measurement
           with CsvOutputable
           with Logging {

@@ -5,6 +5,7 @@ import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.measurements.amp._
 
 import java.sql.DriverManager
+import java.time.Instant
 
 import org.apache.flink.api.java.utils.ParameterTool
 import org.postgresql.util.PSQLException
@@ -119,6 +120,25 @@ case class PostgresConnection(
     }
   }
 
+  /** AMP measurements require integer stream IDs. Currently this class only
+    * supports AMP measurements, so we just check this for all inputs.
+    */
+  private def validateStreamIsInteger(meas: Measurement): Unit = {
+    try {
+      meas.stream.toInt
+    }
+    catch {
+      case _: NumberFormatException => throw new NumberFormatException(
+        s"Measurement of type ${meas.getClass.getCanonicalName} had non-integer " +
+          s"stream ID ${meas.stream} of type ${meas.stream.getClass.getCanonicalName}!"
+      )
+      case e: Throwable => throw e
+    }
+  }
+
+  // There's a fair bit of duplicated code in these getX functions, but it's
+  // not really worth the effort to extract it into a function at this point.
+
   /** Gets the metadata associated with a given measurement. Uses caching.
     *
     * @param base The measurement to gather metadata for.
@@ -137,13 +157,15 @@ case class PostgresConnection(
           import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
           import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
 
+          validateStreamIsInteger(base)
+
           base match {
             // It looks like we can't perform m.stream.toString, since Squeryl starts complaining about not knowing
             // how to cast integers to strings in a PostgreSQL context. Instead, we'll cast our stream ID to an int,
             // which of course might fail. If it does fail, we'll return a known false expression instead.
             case _: ICMP => transaction(icmpMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
             case _: DNS => transaction(dnsMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
-            case _: TraceroutePathlen =>
+            case _: Traceroute | _: TraceroutePathlen =>
               transaction(tracerouteMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
             case _: TCPPing =>
               transaction(tcppingMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
@@ -157,6 +179,135 @@ case class PostgresConnection(
       invalidate(cacheKey)
     }
     result
+  }
+
+  /** Gets all the TracerouteMeta entries in the database. This can be used
+    * to discover all the Traceroute streams stored, so you can then query them.
+    *
+    * Unlike `getMeta`, this method does not use caching.
+    *
+    * @return A collection of TracerouteMeta, or None if the query failed.
+    */
+  def getAllTracerouteMeta: Option[Iterable[TracerouteMeta]] = {
+    if (!getOrInitSession()) {
+      None
+    }
+    else {
+      import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
+      import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
+
+      Try(
+        transaction(from(tracerouteMeta)(m => select(m)).toList)
+      ).fold(
+        e => {
+          logger.error(s"Failed Postgres transaction! $e")
+          None
+        },
+        tr => Some(tr)
+      )
+    }
+  }
+
+  /** Gets some AMP Traceroute measurements from PostgreSQL. Most other AMP
+    * measurements are in InfluxDB, so this one is a little unusual.
+    *
+    * @param stream The stream ID of the desired measurements. Currently only
+    *               supports querying a single stream at a time.
+    * @param start  The oldest measurement should be no older than this.
+    * @param end    The newest measurement should be no newer than this.
+    *
+    * @return A collection of Traceroute measurements, or None if an error
+    *         occurred. The error is logged.
+    */
+  def getTracerouteData(
+    stream: Int,
+    start : Instant = Instant.EPOCH,
+    end   : Instant = Instant.now()
+  ): Option[Iterable[Traceroute]] = {
+    if (!getOrInitSession()) {
+      None
+    }
+    else {
+      import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
+      import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
+
+      Try(
+        transaction(
+          from(traceroute(stream))(t =>
+            where(
+              t.timestamp between(start.getEpochSecond, end.getEpochSecond)
+            ).select(t)
+          ).toList
+        )
+      ).fold(
+        e => {
+          logger.error(s"Failed Postgres transaction! $e")
+          None
+        },
+        tr => Some(tr)
+      )
+    }
+  }
+
+  /** Gets a traceroute path from Postgres. The TracerouteMeta associated with
+    * the provided stream ID will contain the relevant metadata about the source
+    * and destination of this path.
+    */
+  def getTraceroutePath(stream: Int, pathId: Int): Option[TraceroutePath] = {
+    val cacheKey = s"traceroute_path.$stream.$pathId"
+    val result: Option[TraceroutePath] = getWithCache(
+      cacheKey,
+      ttl, {
+        if (!getOrInitSession()) {
+          None
+        }
+        else {
+          import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
+          import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
+          transaction(traceroutePath(stream).where(_.path_id === pathId).headOption)
+        }
+      }
+    )
+    if (result.isEmpty) {
+      invalidate(cacheKey)
+    }
+    result
+  }
+
+  def getTraceroutePath(trace: Traceroute): Option[TraceroutePath] = {
+    validateStreamIsInteger(trace)
+    getTraceroutePath(trace.stream.toInt, trace.path_id)
+  }
+
+  /** Gets a traceroute AS-path from Postgres, detailing the autonomous systems
+    * that each of the hops along the way were in. The TracerouteMeta associated
+    * with the provided stream ID will contain the relevant metadata about the
+    * source and destination of this path.
+    */
+  def getTracerouteAsPath(stream: Int, asPathId: Int): Option[TracerouteAsPath] = {
+    val cacheKey = s"traceroute_aspath.$stream.$asPathId"
+    val result: Option[TracerouteAsPath] = getWithCache(
+      cacheKey,
+      ttl, {
+        if (!getOrInitSession()) {
+          None
+        }
+        else {
+          import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
+          import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
+          transaction(tracerouteAsPath(stream).where(_.aspath_id === asPathId).headOption)
+        }
+      }
+    )
+    if (result.isEmpty) {
+      invalidate(cacheKey)
+    }
+    result
+  }
+
+  def getTracerouteAsPath(trace: Traceroute): Option[TracerouteAsPath] = {
+    validateStreamIsInteger(trace)
+    trace.aspath_id.flatMap(asPathId => getTracerouteAsPath(trace.stream.toInt, asPathId))
   }
 
   /** Enables Memcached caching if required by the specified configuration.
