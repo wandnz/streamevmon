@@ -2,6 +2,7 @@ package nz.net.wand.streamevmon
 
 import nz.net.wand.streamevmon.connectors.esmond.schema._
 import nz.net.wand.streamevmon.connectors.esmond.ResponseType
+import nz.net.wand.streamevmon.connectors.postgres.{AsPath, InetPath}
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow
@@ -241,6 +242,51 @@ object SeedData {
     )
   }
 
+  object traceroute {
+    val allExpectedMeta = traceroutePathlen.allExpectedMeta
+
+    val expected = Traceroute(
+      "18",
+      40,
+      Some(1),
+      60,
+      None,
+      None,
+      // NULL values come out of squeryl as 0, unfortunately. This isn't guaranteed to be unique, but the rtt would have to be 0.
+      Array(31, 200, 146, 337, 513, 2341, 3690, 2989, 0, 4254, 7724, 6246, 6851, 130456, 129620, 190165, 196003, 0, 0, 0, 0, 0),
+      1564373430
+    )
+
+    val expectedRich = RichTraceroute(
+      "18",
+      "amplet",
+      "a.root-servers.net",
+      "ipv4",
+      "60",
+      40,
+      Some(1),
+      60,
+      None,
+      None,
+      Array(Some(31), Some(200), Some(146), Some(337), Some(513), Some(2341), Some(3690), Some(2989), None, Some(4254), Some(7724), Some(6246), Some(6851), Some(130456), Some(129620), Some(190165), Some(196003), None, None, None, None, None),
+      Instant.ofEpochSecond(1564373430)
+    )
+
+    val expectedPath = TraceroutePath(
+      40,
+      22,
+      InetPath("{172.17.0.1,130.217.248.251,10.5.5.1,130.217.2.4,210.7.39.9,210.7.33.254,210.7.33.255,203.109.152.33,NULL,203.118.150.21,134.159.174.37,202.84.223.42,202.84.219.126,202.84.138.82,202.40.149.177,206.126.236.170,217.30.84.127,NULL,NULL,NULL,NULL,NULL}")
+    )
+
+    val expectedAsPath = TracerouteAsPath(
+      1,
+      22,
+      6,
+      17,
+      AsPath("{1.-2,1.681,1.-2,1.681,3.38022,1.9500,1.-1,1.9500,5.4637,1.0,1.397212,5.-1}")
+    )
+  }
+
   object traceroutePathlen {
 
     val allExpectedMeta: Seq[TracerouteMeta] = Seq(
@@ -468,7 +514,7 @@ object SeedData {
     val withTagsAsString: String =
       s"""threshold_events,type=test,secondTag=alsoTest,stream=1 severity=10i,detection_latency=123456789i,description="A test event :)" 1564713045000000000"""
     val withTagsAsLineProtocol: String = """type=test,secondTag=alsoTest,stream=1 severity=10i,detection_latency=123456789i,description="A test event :)" 1564713045000000000"""
-    val withTagsAsCsv: Seq[String] = Seq("threshold_events", "1", "10", "1564713045000", "0:00:00.123", "A test event :)", "Map(type -> test, secondTag -> alsoTest)")
+    val withTagsAsCsv: Seq[String] = Seq("threshold_events", "1", "10", "1564713045000", "0:00:00.123", "A test event :)", "\"(type,test);(secondTag,alsoTest)\"")
 
     val withoutTags: Event = Event(
       eventType = "changepoint_events",
@@ -483,7 +529,7 @@ object SeedData {
     val withoutTagsAsString: String =
       s"""changepoint_events,stream=1 severity=10i,detection_latency=123456789i,description="A test event :)" 1564713045000000000"""
     val withoutTagsAsLineProtocol: String = """stream=1 severity=10i,detection_latency=123456789i,description="A test event :)" 1564713045000000000"""
-    val withoutTagsAsCsv: Seq[String] = Seq("changepoint_events", "1", "10", "1564713045000", "0:00:00.123", "A test event :)", "Map()")
+    val withoutTagsAsCsv: Seq[String] = Seq("changepoint_events", "1", "10", "1564713045000", "0:00:00.123", "A test event :)", "\"\"")
   }
 
   object bigdata {

@@ -13,18 +13,18 @@ import java.time.Instant
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-trace]]
   */
 final case class RichTraceroute(
-  stream: String,
-  source: String,
-  destination: String,
-  family: String,
+  stream               : String,
+  source               : String,
+  destination          : String,
+  family               : String,
   packet_size_selection: String,
-  path_id: Int,
-  aspath_id: Option[Int],
-  packet_size: Int,
-  error_type: Option[Int],
-  error_code: Option[Int],
-  hop_rtt: Array[Int],
-  time: Instant
+  path_id              : Int,
+  aspath_id            : Option[Int],
+  packet_size          : Int,
+  error_type           : Option[Int],
+  error_code           : Option[Int],
+  rtts                 : Array[Option[Int]],
+  time                 : Instant
 ) extends RichMeasurement
           with CsvOutputable
           with Logging {
@@ -42,7 +42,7 @@ final case class RichTraceroute(
   }
 
   override def toCsvFormat: Seq[String] =
-    Seq(stream, path_id, aspath_id, packet_size, error_type, error_code, hop_rtt)
+    Seq(stream, source, destination, family, packet_size_selection, path_id, aspath_id, packet_size, error_type, error_code, rtts, time)
       .map(toCsvEntry)
 }
 
@@ -59,7 +59,7 @@ object RichTraceroute {
       base.packet_size,
       base.error_type,
       base.error_code,
-      base.hop_rtt,
+      base.rtts,
       base.time
     )
   }
