@@ -9,11 +9,16 @@ import org.squeryl.customtypes.StringField
 case class AsPath(rawInput: String)
   extends StringField(rawInput)
           with Iterable[AsPathEntry] {
-  private lazy val path: Array[AsPathEntry] = rawInput
+
+  private lazy val path: Iterable[AsPathEntry] = rawInput
     .drop(1)
     .dropRight(1)
     .split(",")
     .map(AsPathEntry(_))
 
   override def iterator: Iterator[AsPathEntry] = path.iterator
+
+  lazy val expandedPath: Iterable[AsNumber] = path.flatMap { entry =>
+    Seq.fill(entry.hopsInAs)(entry.asNumber)
+  }
 }

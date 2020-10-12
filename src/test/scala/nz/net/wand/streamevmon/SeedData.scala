@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon
 
 import nz.net.wand.streamevmon.connectors.esmond.schema._
 import nz.net.wand.streamevmon.connectors.esmond.ResponseType
-import nz.net.wand.streamevmon.connectors.postgres.{AsPath, InetPath}
+import nz.net.wand.streamevmon.connectors.postgres._
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow
@@ -11,6 +11,7 @@ import nz.net.wand.streamevmon.measurements.latencyts._
 import nz.net.wand.streamevmon.measurements.nab.NabMeasurement
 import nz.net.wand.streamevmon.runners.unified.schema._
 
+import java.net.InetAddress
 import java.time.{Duration, Instant}
 import java.util.concurrent.TimeUnit
 
@@ -284,6 +285,33 @@ object SeedData {
       6,
       17,
       AsPath("{1.-2,1.681,1.-2,1.681,3.38022,1.9500,1.-1,1.9500,5.4637,1.0,1.397212,5.-1}")
+    )
+
+    val expectedAsInetPath = AsInetPath(
+      Seq(
+        AsInetPathEntry(Some(InetAddress.getByName("172.17.0.1")), AsNumber(-2)),
+        AsInetPathEntry(Some(InetAddress.getByName("130.217.248.251")), AsNumber(681)),
+        AsInetPathEntry(Some(InetAddress.getByName("10.5.5.1")), AsNumber(-2)),
+        AsInetPathEntry(Some(InetAddress.getByName("130.217.2.4")), AsNumber(681)),
+        AsInetPathEntry(Some(InetAddress.getByName("210.7.39.9")), AsNumber(38022)),
+        AsInetPathEntry(Some(InetAddress.getByName("210.7.33.254")), AsNumber(38022)),
+        AsInetPathEntry(Some(InetAddress.getByName("210.7.33.255")), AsNumber(38022)),
+        AsInetPathEntry(Some(InetAddress.getByName("203.109.152.33")), AsNumber(9500)),
+        AsInetPathEntry(None, AsNumber(-1)),
+        AsInetPathEntry(Some(InetAddress.getByName("203.118.150.21")), AsNumber(9500)),
+        AsInetPathEntry(Some(InetAddress.getByName("134.159.174.37")), AsNumber(4637)),
+        AsInetPathEntry(Some(InetAddress.getByName("202.84.223.42")), AsNumber(4637)),
+        AsInetPathEntry(Some(InetAddress.getByName("202.84.219.126")), AsNumber(4637)),
+        AsInetPathEntry(Some(InetAddress.getByName("202.84.138.82")), AsNumber(4637)),
+        AsInetPathEntry(Some(InetAddress.getByName("202.40.149.177")), AsNumber(4637)),
+        AsInetPathEntry(Some(InetAddress.getByName("206.126.236.170")), AsNumber(0)),
+        AsInetPathEntry(Some(InetAddress.getByName("217.30.84.127")), AsNumber(397212)),
+        AsInetPathEntry(None, AsNumber(-1)),
+        AsInetPathEntry(None, AsNumber(-1)),
+        AsInetPathEntry(None, AsNumber(-1)),
+        AsInetPathEntry(None, AsNumber(-1)),
+        AsInetPathEntry(None, AsNumber(-1)),
+      )
     )
   }
 

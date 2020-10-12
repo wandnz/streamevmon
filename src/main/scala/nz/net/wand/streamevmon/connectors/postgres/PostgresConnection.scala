@@ -208,6 +208,46 @@ case class PostgresConnection(
     }
   }
 
+  def getAllTraceroutePaths(stream: Int): Option[Iterable[TraceroutePath]] = {
+    if (!getOrInitSession()) {
+      None
+    }
+    else {
+      import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
+      import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
+
+      Try(
+        transaction(from(traceroutePath(stream))(m => select(m)).toList)
+      ).fold(
+        e => {
+          logger.error(s"Failed Postgres transaction! $e")
+          None
+        },
+        tr => Some(tr)
+      )
+    }
+  }
+
+  def getAllTracerouteAsPaths(stream: Int): Option[Iterable[TracerouteAsPath]] = {
+    if (!getOrInitSession()) {
+      None
+    }
+    else {
+      import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
+      import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
+
+      Try(
+        transaction(from(tracerouteAsPath(stream))(m => select(m)).toList)
+      ).fold(
+        e => {
+          logger.error(s"Failed Postgres transaction! $e")
+          None
+        },
+        tr => Some(tr)
+      )
+    }
+  }
+
   /** Gets some AMP Traceroute measurements from PostgreSQL. Most other AMP
     * measurements are in InfluxDB, so this one is a little unusual.
     *

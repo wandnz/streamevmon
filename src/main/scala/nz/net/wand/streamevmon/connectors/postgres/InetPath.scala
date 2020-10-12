@@ -10,7 +10,8 @@ import scala.util.Try
 case class InetPath(rawInput: String)
   extends StringField(rawInput)
           with Iterable[Option[InetAddress]] {
-  private val path: Array[Option[InetAddress]] = rawInput
+
+  private val path: Iterable[Option[InetAddress]] = rawInput
     .drop(1)
     .dropRight(1)
     .split(",")

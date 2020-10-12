@@ -31,16 +31,32 @@ class PostgresConnectionTest extends PostgresContainerSpec {
       getConn.getAllTracerouteMeta shouldBe Some(SeedData.traceroute.allExpectedMeta)
     }
 
+    "retrieve all TraceroutePath entries" in {
+      val data = getConn.getAllTraceroutePaths(18).get
+      data should contain(SeedData.traceroute.expectedPath)
+      data should have size 21
+    }
+
+    "retrieve all TracerouteAsPath entries" in {
+      val data = getConn.getAllTracerouteAsPaths(18).get
+      data should contain(SeedData.traceroute.expectedAsPath)
+      data should have size 6
+    }
+
     "retrieve an expected Traceroute entry" in {
-      getConn.getTracerouteData(18).get should contain(SeedData.traceroute.expected)
+      val data = getConn.getTracerouteData(18).get
+      data should contain(SeedData.traceroute.expected)
+      data should have size 405
     }
 
     "retrieve the expected TraceroutePath entry" in {
-      getConn.getTraceroutePath(getConn.getTracerouteData(18).get.head) shouldBe Some(SeedData.traceroute.expectedPath)
+      getConn.getTraceroutePath(getConn.getTracerouteData(18).get.head) shouldBe Some(
+        SeedData.traceroute.expectedPath)
     }
 
     "retrieve the expected TracerouteAsPath entry" in {
-      getConn.getTracerouteAsPath(getConn.getTracerouteData(18).get.head) shouldBe Some(SeedData.traceroute.expectedAsPath)
+      getConn.getTracerouteAsPath(getConn.getTracerouteData(18).get.head) shouldBe Some(
+        SeedData.traceroute.expectedAsPath)
     }
   }
 }
