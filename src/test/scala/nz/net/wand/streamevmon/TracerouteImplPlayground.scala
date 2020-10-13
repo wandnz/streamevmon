@@ -1,16 +1,17 @@
 package nz.net.wand.streamevmon
 
-import nz.net.wand.streamevmon.connectors.postgres.{AsInetPath, AsInetPathEntry, AsNumberCategory}
+import nz.net.wand.streamevmon.connectors.postgres._
 
+import java.awt.Color
 import java.io.File
 
 import org.jgrapht.graph.{DefaultDirectedWeightedGraph, DefaultWeightedEdge}
 import org.jgrapht.nio.dot.DOTExporter
+import org.jgrapht.nio.DefaultAttribute
 
-import scala.collection.convert.ImplicitConversions.`collection AsScalaIterable`
+import scala.collection.JavaConverters._
 
 class TracerouteImplPlayground extends PostgresContainerSpec {
-
   "Traceroute" should {
     "work" in {
 
@@ -36,13 +37,21 @@ class TracerouteImplPlayground extends PostgresContainerSpec {
           }.toSet
 
           paths.foreach { path =>
-            // For every path, we add every hop as a vertex
+            // For every path, we add every hop as a vertex. We don't care about
+            // hops without addresses attached here, since we're just building
+            // a graph of address connections.
             path.foreach { hop =>
-              graph.addVertex(hop)
+              hop.address match {
+                case Some(_) => graph.addVertex(hop); hop
+                case None =>
+              }
             }
             // And we add every edge between hops as an edge
             path.sliding(2).foreach { pairs =>
-              graph.addEdge(pairs.head, pairs.last)
+              (pairs.head.address, pairs.last.address) match {
+                case (Some(_), Some(_)) => graph.addEdge(pairs.head, pairs.last)
+                case _ =>
+              }
             }
           }
         }
@@ -50,13 +59,13 @@ class TracerouteImplPlayground extends PostgresContainerSpec {
 
       // Now that we have a big graph, we might have some duplicate vertices.
       // We want to merge these in such a way that we retain AS information.
-      graph.vertexSet.toList.flatMap { node =>
+      graph.vertexSet.asScala.toList.flatMap { node =>
         // If a node has an AS number attached...
         if (node.as.category != AsNumberCategory.Missing) {
           // Find any other nodes with the same inet address but missing ASNs.
           // We'll output all of our nodes-to-be-replaced as a new list of
           // tuples with what they should be replaced with.
-          graph.vertexSet.filter { n =>
+          graph.vertexSet.asScala.filter { n =>
             n.address == node.address && n.as.category == AsNumberCategory.Missing
           }.map((_, node))
         }
@@ -69,8 +78,8 @@ class TracerouteImplPlayground extends PostgresContainerSpec {
         // Let's go ahead and replace all the nodes we wrote about earlier.
         // We need to keep track of the edges in and out of the node we're
         // about to remove, so we can add them back later.
-        val inEdges = graph.incomingEdgesOf(toBeReplaced).toList
-        val outEdges = graph.outgoingEdgesOf(toBeReplaced).toList
+        val inEdges = graph.incomingEdgesOf(toBeReplaced).asScala.toList
+        val outEdges = graph.outgoingEdgesOf(toBeReplaced).asScala.toList
 
         // Swap the nodes out.
         graph.removeVertex(toBeReplaced)
@@ -83,7 +92,34 @@ class TracerouteImplPlayground extends PostgresContainerSpec {
       // Let's print this graph to a .dot file so we can draw it later.
       val exporter = new DOTExporter[AsInetPathEntry, DefaultWeightedEdge]()
 
+      // We want to make sure that nodes have their addresses printed as their
+      // names.
       exporter.setVertexIdProvider(entry => s""" "${entry.toString}" """.trim)
+
+      // We also want to give them a colour defined by AS.
+      val asNumberIndex: Map[Int, Int] = graph
+        .vertexSet
+        .asScala
+        .toList
+        .flatMap(_.as.number)
+        .toSet
+        .zipWithIndex
+        .toMap
+
+      def getAsColor(asn: AsNumber): String = asn.number match {
+        case None => "#FFFFFF"
+        case Some(num) =>
+          val hue = (1.0 * (asNumberIndex(num).toDouble / asNumberIndex.size.toDouble)) % 1
+          val color = Color.getHSBColor(hue.toFloat, 0.5f, 0.95f)
+          f"#${color.getRed}%02X${color.getGreen}%02X${color.getBlue}%02X"
+      }
+
+      exporter.setVertexAttributeProvider { entry =>
+        Map(
+          "style" -> DefaultAttribute.createAttribute("filled"),
+          "fillcolor" -> DefaultAttribute.createAttribute(s"${getAsColor(entry.as)}")
+        ).asJava
+      }
 
       exporter.exportGraph(graph, new File("out/traceroute.dot"))
 
