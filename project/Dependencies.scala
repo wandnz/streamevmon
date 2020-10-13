@@ -18,6 +18,7 @@ object Dependencies {
   val squerylVersion = "0.9.15"
   val snakeyamlVersion = "2.1"
   val jacksonVersion = "2.11.3"
+  val jgraphtVersion = "1.5.0"
 
   // Used in tests - scalactic in coreDependencies shares a version with scalatest
   val scalatestVersion = "3.2.2"
@@ -52,7 +53,10 @@ object Dependencies {
     // Type conversion supporting scala
     "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonVersion,
     // Tolerant double equality
-    "org.scalactic" %% "scalactic" % scalatestVersion
+    "org.scalactic" %% "scalactic" % scalatestVersion,
+    // Directed graph logic
+    "org.jgrapht" % "jgrapht-core" % jgraphtVersion,
+    "org.jgrapht" % "jgrapht-io" % jgraphtVersion
   )
     // chronicler-ahc-shared depends on scalatest for some reason, despite not
     // actually needing it for production code.

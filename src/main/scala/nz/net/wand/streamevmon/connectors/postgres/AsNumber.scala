@@ -21,9 +21,23 @@ case class AsNumber(private val num: Int) {
   }
 
   override def toString: String = category match {
-    case AsNumberCategory.Unknown => "Unknown"
-    case AsNumberCategory.Missing => "Missing"
-    case AsNumberCategory.PrivateAddress => "Private"
+    case AsNumberCategory.Unknown => "AS Unknown"
+    case AsNumberCategory.Missing => "AS Missing"
+    case AsNumberCategory.PrivateAddress => "Private Address"
     case AsNumberCategory.Valid => s"AS $num"
+  }
+
+  /** Tests equality, but the Missing category is equal to any other category.
+    *
+    * This can't be the normal definition of equals() because there's no way to
+    * implement a hashCode() that behaves the same.
+    */
+  def equalsWithMissing(that: AsNumber): Boolean = {
+    if (category == AsNumberCategory.Missing || that.category == AsNumberCategory.Missing) {
+      true
+    }
+    else {
+      this == that
+    }
   }
 }
