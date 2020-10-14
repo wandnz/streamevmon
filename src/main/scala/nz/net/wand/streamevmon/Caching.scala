@@ -1,5 +1,7 @@
 package nz.net.wand.streamevmon
 
+import java.time.Instant
+
 import net.spy.memcached.compat.log.SLF4JLogger
 import org.apache.flink.api.java.utils.ParameterTool
 import scalacache.{sync, Cache}
@@ -8,6 +10,7 @@ import scalacache.memcached._
 import scalacache.modes.sync._
 import scalacache.serialization.binary._
 
+import scala.collection.mutable
 import scala.concurrent.duration.FiniteDuration
 
 /** Companion object storing the common in-memory cache.
@@ -100,6 +103,20 @@ trait Caching {
     case CacheMode.Memcached => memcachedCache
   }
 
+  private val internalUsedCacheKeys: mutable.Map[String, (Instant, Option[FiniteDuration])] = mutable.Map()
+
+  protected def usedCacheKeys: mutable.Map[String, (Instant, Option[FiniteDuration])] = {
+    internalUsedCacheKeys
+      .filter(_._2._2.isDefined)
+      .filter { case (_, value) =>
+        value._1.plusNanos(value._2.get.toNanos).isBefore(Instant.now)
+      }
+      .foreach { case (key, _) =>
+        internalUsedCacheKeys.remove(key)
+      }
+    internalUsedCacheKeys
+  }
+
   /** Adds caching to a given method, according to the previously set up
     * configuration.
     *
@@ -117,10 +134,19 @@ trait Caching {
     ttl   : Option[FiniteDuration],
     method: => Option[Any]
   ): Option[T] = {
+    usedCacheKeys += key -> (Instant.now, ttl)
     sync.caching(key)(ttl)(method).asInstanceOf[Option[T]]
   }
 
   protected def invalidate(key: String): Unit = {
     sync.remove(key)
+    usedCacheKeys.remove(key)
+  }
+
+  protected def invalidateAll(): Unit = {
+    internalUsedCacheKeys.foreach { case (key, _) =>
+      sync.remove(key)
+      internalUsedCacheKeys.remove(key)
+    }
   }
 }

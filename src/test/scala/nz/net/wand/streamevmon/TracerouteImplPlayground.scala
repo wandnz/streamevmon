@@ -11,6 +11,7 @@ import org.jgrapht.nio.dot.DOTExporter
 import org.jgrapht.nio.DefaultAttribute
 
 import scala.collection.JavaConverters._
+import scala.concurrent.duration.DurationInt
 
 class TracerouteImplPlayground extends PostgresContainerSpec {
   "Traceroute" should {
@@ -128,9 +129,10 @@ class TracerouteImplPlayground extends PostgresContainerSpec {
     }
 
     "work from class" in {
-      val builder = new AmpletGraphBuilder(getPostgres)
+      val builder = new AmpletGraphBuilder(getPostgres, ttl = Some(10.seconds))
       builder.rebuildGraph()
       AmpletGraphDotExporter.exportGraph(builder.graph.get, new File("out/traceroute.dot"))
+      builder.invalidateCaches()
     }
   }
 }

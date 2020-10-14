@@ -208,7 +208,7 @@ class AmpletGraphBuilder(
     * the database instead of the cache.
     */
   def invalidateCaches(): Unit = {
-    // TODO
+    invalidateAll()
   }
 }
 
