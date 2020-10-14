@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon
 
 import nz.net.wand.streamevmon.connectors.postgres._
+import nz.net.wand.streamevmon.events.{AmpletGraphBuilder, AmpletGraphDotExporter}
 
 import java.awt.Color
 import java.io.File
@@ -124,6 +125,12 @@ class TracerouteImplPlayground extends PostgresContainerSpec {
       exporter.exportGraph(graph, new File("out/traceroute.dot"))
 
       println(graph)
+    }
+
+    "work from class" in {
+      val builder = new AmpletGraphBuilder(getPostgres)
+      builder.rebuildGraph()
+      AmpletGraphDotExporter.exportGraph(builder.graph.get, new File("out/traceroute.dot"))
     }
   }
 }
