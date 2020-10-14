@@ -6,7 +6,11 @@ import java.net.InetAddress
   * hop may be unknown. AsNumber can be part of any of its categories, including
   * Unknown or Missing.
   */
-case class AsInetPathEntry(address: Option[InetAddress], as: AsNumber) {
+case class AsInetPathEntry(
+  address: Option[InetAddress],
+  as   : AsNumber,
+  ampletHostname: Option[String] = None
+) {
   override def toString: String = {
     s"${
       address match {
@@ -14,6 +18,7 @@ case class AsInetPathEntry(address: Option[InetAddress], as: AsNumber) {
         case None => "?.?.?.?"
       }
     }" +
+      s"${ampletHostname.map(n => s" ($n)").getOrElse("")}" +
       s" (${as.toString})"
   }
 
@@ -23,12 +28,13 @@ case class AsInetPathEntry(address: Option[InetAddress], as: AsNumber) {
     case that: AsInetPathEntry =>
       (that canEqual this) &&
         address == that.address &&
-        as.equals(that.as)
+        as == that.as &&
+        ampletHostname == that.ampletHostname
     case _ => false
   }
 
   override def hashCode(): Int = {
-    val state = Seq(address)
+    val state = Seq(address, as, ampletHostname)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 }

@@ -273,6 +273,8 @@ object SeedData {
       Instant.ofEpochSecond(1564373430)
     )
 
+    val expectedMeta = allExpectedMeta.find(_.stream == expected.stream.toInt).get
+
     val expectedPath = TraceroutePath(
       40,
       22,
@@ -289,7 +291,7 @@ object SeedData {
 
     val expectedAsInetPath = AsInetPath(
       Seq(
-        AsInetPathEntry(Some(InetAddress.getByName("172.17.0.1")), AsNumber(-2)),
+        AsInetPathEntry(Some(InetAddress.getByName("172.17.0.1")), AsNumber(-2), Some("amplet")),
         AsInetPathEntry(Some(InetAddress.getByName("130.217.248.251")), AsNumber(681)),
         AsInetPathEntry(Some(InetAddress.getByName("10.5.5.1")), AsNumber(-2)),
         AsInetPathEntry(Some(InetAddress.getByName("130.217.2.4")), AsNumber(681)),
@@ -311,7 +313,8 @@ object SeedData {
         AsInetPathEntry(None, AsNumber(-1)),
         AsInetPathEntry(None, AsNumber(-1)),
         AsInetPathEntry(None, AsNumber(-1)),
-      )
+      ),
+      expectedMeta
     )
   }
 

@@ -64,17 +64,20 @@ class AmpletGraphBuilder(
     metas: Iterable[TracerouteMeta],
     start: Instant = Instant.EPOCH,
     end  : Instant = Instant.now()
-  ): Iterable[Traceroute] = {
+  ): Map[TracerouteMeta, Iterable[Traceroute]] = {
     getWithCache(
       s"AmpletGraph.Measurements.$start.$end",
       ttl,
       {
         logger.info(s"Getting Traceroute measurements from ${metas.size} streams...")
-        Some(metas.flatMap { m =>
-          postgres
-            .getTracerouteData(m.stream, start, end)
-            .getOrElse(Seq())
-        })
+        Some(metas.map { m =>
+          (
+            m,
+            postgres
+              .getTracerouteData(m.stream, start, end)
+              .getOrElse(Seq())
+          )
+        }.toMap)
       }
     ).get
   }
@@ -82,7 +85,7 @@ class AmpletGraphBuilder(
   /** Gets the inet and (optionally) as paths corresponding to a Traceroute
     * measurement, and merges them into a single AsInetPath. Uses caching.
     */
-  private def getAsInetPath(trace: Traceroute): Option[AsInetPath] = {
+  private def getAsInetPath(trace: Traceroute, meta: TracerouteMeta): Option[AsInetPath] = {
     val path: Option[TraceroutePath] = getWithCache(
       s"AmpletGraph.Path.${trace.stream}.${trace.path_id}",
       ttl,
@@ -94,7 +97,7 @@ class AmpletGraphBuilder(
       postgres.getTracerouteAsPath(trace)
     )
 
-    path.map(p => AsInetPath(p.path, asPath.map(_.aspath)))
+    path.map(p => AsInetPath(p.path, asPath.map(_.aspath), meta))
   }
 
   /** Adds the vertices from an AsInetPath to the provided graph.
@@ -178,21 +181,16 @@ class AmpletGraphBuilder(
       start, end
     )
     logger.info(s"Getting paths for ${measurements.size} measurements...")
-    var lastPercentDone = 0
     measurements
-      .zipWithIndex
-      .flatMap { case (traceroute, i) =>
-        val percentDone = i * 10 / measurements.size
-
-        if (lastPercentDone < percentDone) {
-          logger.debug(s"$i/${measurements.size} (${(i.toDouble / measurements.size * 100).toInt}%)")
-        }
-        lastPercentDone = percentDone
-        getAsInetPath(traceroute)
-      }
-      .foreach { path =>
-        addVertices(newGraph, path)
-        addEdges(newGraph, path)
+      .foreach { case (meta, traceroutes) =>
+        traceroutes
+          .flatMap { traceroute =>
+            getAsInetPath(traceroute, meta)
+          }
+          .foreach { path =>
+            addVertices(newGraph, path)
+            addEdges(newGraph, path)
+          }
       }
 
     logger.info(s"Merging duplicate graph vertices...")

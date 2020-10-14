@@ -36,18 +36,33 @@ object AmpletGraphDotExporter {
 
     // These colours are evenly distributed around hue-space, so they're all
     // reasonably different and black labels should be legible against them.
-    def getAsColor(asn: AsNumber): String = asn.number match {
-      case None => "#FFFFFF"
-      case Some(num) =>
-        val hue = (1.0 * (asNumberIndex(num).toDouble / asNumberIndex.size.toDouble)) % 1
-        val color = Color.getHSBColor(hue.toFloat, 0.5f, 0.95f)
-        f"#${color.getRed}%02X${color.getGreen}%02X${color.getBlue}%02X"
+    def getAsColor(asn: AsNumber, isAmplet: Boolean): String = {
+      if (isAmplet) {
+        "#FF0000"
+      }
+      else {
+        asn.number match {
+          case None => "#FFFFFF"
+          case Some(num) =>
+            val hue = (0.8 * (asNumberIndex(num).toDouble / asNumberIndex.size.toDouble) + 0.1) % 1
+            val color = Color.getHSBColor(hue.toFloat, 0.5f, 0.95f)
+            f"#${color.getRed}%02X${color.getGreen}%02X${color.getBlue}%02X"
+        }
+      }
     }
 
     exporter.setVertexAttributeProvider { entry =>
       Map(
         "style" -> DefaultAttribute.createAttribute("filled"),
-        "fillcolor" -> DefaultAttribute.createAttribute(s"${getAsColor(entry.as)}")
+        "shape" -> DefaultAttribute.createAttribute(if (entry.ampletHostname.isDefined) {
+          "box"
+        }
+        else {
+          "oval"
+        }),
+        "fillcolor" -> DefaultAttribute.createAttribute(
+          getAsColor(entry.as, entry.ampletHostname.isDefined)
+        )
       ).asJava
     }
 

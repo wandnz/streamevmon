@@ -8,8 +8,9 @@ class AsInetPathTest extends PostgresContainerSpec {
     "be created correctly" in {
       val inetPath = SeedData.traceroute.expectedPath
       val asPath = SeedData.traceroute.expectedAsPath
+      val meta = SeedData.traceroute.expectedMeta
 
-      AsInetPath(inetPath.path, Some(asPath.aspath)) shouldBe SeedData.traceroute.expectedAsInetPath
+      AsInetPath(inetPath.path, Some(asPath.aspath), meta) shouldBe SeedData.traceroute.expectedAsInetPath
     }
   }
 }
