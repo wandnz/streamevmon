@@ -16,16 +16,17 @@ case class AsInetPath(
 object AsInetPath {
   def apply(
     inetPath: InetPath,
-    asPath  : Option[AsPath],
-    meta    : TracerouteMeta,
-    distinguishMissingInetAddresses: Boolean
+    asPath: Option[AsPath],
+    meta: TracerouteMeta,
+    distinguishMissingInetAddresses: Boolean,
+    compressMissingInetChains      : Boolean
   ): AsInetPath = {
     AsInetPath(
       asPath match {
         case Some(asPathValue) =>
           var lastHop: AsInetPathEntry = null
           inetPath.zip(asPathValue.expandedPath).map { case (inet, asn) =>
-            lastHop = if (inet == inetPath.head) {
+            val result = if (inet == inetPath.head) {
               AsInetPathEntry(inet, asn, ampletHostname = Some(meta.source))
             }
             else {
@@ -36,7 +37,10 @@ object AsInetPath {
                 AsInetPathEntry(inet, asn)
               }
             }
-            lastHop
+            if (!compressMissingInetChains || result.address.isDefined) {
+              lastHop = result
+            }
+            result
           }
         case None =>
           var lastHop: AsInetPathEntry = null
@@ -44,7 +48,7 @@ object AsInetPath {
             Seq.fill(inetPath.size)(
               AsNumber(AsNumberCategory.Missing.id)
             )).map { case (inet, asn) =>
-            lastHop = if (inet == inetPath.head) {
+            val result = if (inet == inetPath.head) {
               AsInetPathEntry(inet, asn, ampletHostname = Some(meta.source))
             }
             else {
@@ -55,7 +59,10 @@ object AsInetPath {
                 AsInetPathEntry(inet, asn)
               }
             }
-            lastHop
+            if (!compressMissingInetChains || result.address.isDefined) {
+              lastHop = result
+            }
+            result
           }
       },
       meta

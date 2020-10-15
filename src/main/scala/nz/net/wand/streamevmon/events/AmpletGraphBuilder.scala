@@ -87,9 +87,10 @@ class AmpletGraphBuilder(
     * measurement, and merges them into a single AsInetPath. Uses caching.
     */
   private def getAsInetPath(
-    trace                        : Traceroute,
-    meta                         : TracerouteMeta,
-    distinguishMissingInetAddresses: Boolean
+    trace: Traceroute,
+    meta: TracerouteMeta,
+    distinguishMissingInetAddresses: Boolean,
+    compressMissingInetChains: Boolean
   ): Option[AsInetPath] = {
     val path: Option[TraceroutePath] = getWithCache(
       s"AmpletGraph.Path.${trace.stream}.${trace.path_id}",
@@ -102,7 +103,13 @@ class AmpletGraphBuilder(
       postgres.getTracerouteAsPath(trace)
     )
 
-    path.map(p => AsInetPath(p.path, asPath.map(_.aspath), meta, distinguishMissingInetAddresses))
+    path.map(p => AsInetPath(
+      p.path,
+      asPath.map(_.aspath),
+      meta,
+      distinguishMissingInetAddresses,
+      compressMissingInetChains
+    ))
   }
 
   /** Adds the vertices from an AsInetPath to the provided graph.
@@ -203,7 +210,7 @@ class AmpletGraphBuilder(
       .foreach { case (meta, traceroutes) =>
         traceroutes
           .flatMap { traceroute =>
-            getAsInetPath(traceroute, meta, distinguishMissingInetAddresses)
+            getAsInetPath(traceroute, meta, distinguishMissingInetAddresses, compressMissingInetChains)
           }
           .foreach { path =>
             addVertices(newGraph, path, pruneMissingInetAddresses)
@@ -218,10 +225,6 @@ class AmpletGraphBuilder(
     logger.debug(s"Ended with ${newGraph.vertexSet.size} vertices")
 
     if (pruneNonAmpletToAmpletHops) {
-      // TODO
-    }
-
-    if (compressMissingInetChains) {
       // TODO
     }
 
