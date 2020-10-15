@@ -10,9 +10,11 @@ class TracerouteImplPlayground extends PostgresContainerSpec {
   "Traceroute" should {
     "work from class" in {
       val builder = new AmpletGraphBuilder(getPostgres, ttl = Some(10.seconds))
-      builder.rebuildGraph()
+      builder.rebuildGraph(
+        pruneMissingInetAddresses = false,
+        distinguishMissingInetAddresses = false
+      )
       AmpletGraphDotExporter.exportGraph(builder.graph.get, new File("out/traceroute.dot"))
-      builder.invalidateCaches()
     }
   }
 }

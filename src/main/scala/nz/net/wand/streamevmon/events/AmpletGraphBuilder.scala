@@ -4,6 +4,7 @@ import nz.net.wand.streamevmon.{Caching, Logging}
 import nz.net.wand.streamevmon.connectors.postgres._
 import nz.net.wand.streamevmon.measurements.amp._
 
+import java.io.File
 import java.time.Instant
 
 import org.apache.flink.api.java.utils.ParameterTool
@@ -85,7 +86,11 @@ class AmpletGraphBuilder(
   /** Gets the inet and (optionally) as paths corresponding to a Traceroute
     * measurement, and merges them into a single AsInetPath. Uses caching.
     */
-  private def getAsInetPath(trace: Traceroute, meta: TracerouteMeta): Option[AsInetPath] = {
+  private def getAsInetPath(
+    trace                        : Traceroute,
+    meta                         : TracerouteMeta,
+    distinguishMissingInetAddresses: Boolean
+  ): Option[AsInetPath] = {
     val path: Option[TraceroutePath] = getWithCache(
       s"AmpletGraph.Path.${trace.stream}.${trace.path_id}",
       ttl,
@@ -97,27 +102,36 @@ class AmpletGraphBuilder(
       postgres.getTracerouteAsPath(trace)
     )
 
-    path.map(p => AsInetPath(p.path, asPath.map(_.aspath), meta))
+    path.map(p => AsInetPath(p.path, asPath.map(_.aspath), meta, distinguishMissingInetAddresses))
   }
 
   /** Adds the vertices from an AsInetPath to the provided graph.
     */
-  private def addVertices(graph: GraphT, path: AsInetPath): Unit = {
+  private def addVertices(
+    graph                      : GraphT,
+    path                       : AsInetPath,
+    pruneMissingInetAddresses  : Boolean
+  ): Unit = {
     path.foreach { hop =>
-      hop.address match {
-        case Some(_) => graph.addVertex(hop)
-        case None =>
+      if (!pruneMissingInetAddresses || hop.address.isDefined) {
+        graph.addVertex(hop)
       }
     }
   }
 
   /** Adds the edges between vertices in an AsInetPath to the provided graph.
     */
-  private def addEdges(graph: GraphT, path: AsInetPath): Unit = {
+  private def addEdges(
+    graph                                       : GraphT,
+    path                                        : AsInetPath,
+    pruneMissingInetAddresses                   : Boolean
+  ): Unit = {
     path.sliding(2).foreach { pairs =>
-      (pairs.head.address, pairs.last.address) match {
-        case (Some(_), Some(_)) => graph.addEdge(pairs.head, pairs.last)
-        case _ =>
+      if (
+        !pruneMissingInetAddresses ||
+          (pairs.head.address.isDefined && pairs.last.address.isDefined)
+      ) {
+        graph.addEdge(pairs.head, pairs.last)
       }
     }
   }
@@ -172,7 +186,11 @@ class AmpletGraphBuilder(
     */
   def rebuildGraph(
     start: Instant = Instant.EPOCH,
-    end  : Instant = Instant.now()
+    end  : Instant = Instant.now(),
+    pruneMissingInetAddresses: Boolean = true,
+    distinguishMissingInetAddresses: Boolean = true,
+    compressMissingInetChains: Boolean = false,
+    pruneNonAmpletToAmpletHops: Boolean = true
   ): Unit = {
     val newGraph = new DefaultDirectedWeightedGraph[AsInetPathEntry, DefaultWeightedEdge](classOf[DefaultWeightedEdge])
 
@@ -180,16 +198,16 @@ class AmpletGraphBuilder(
       getAllMeta,
       start, end
     )
-    logger.info(s"Getting paths for ${measurements.size} measurements...")
+    logger.info(s"Getting paths for ${measurements.flatMap(_._2).size} measurements...")
     measurements
       .foreach { case (meta, traceroutes) =>
         traceroutes
           .flatMap { traceroute =>
-            getAsInetPath(traceroute, meta)
+            getAsInetPath(traceroute, meta, distinguishMissingInetAddresses)
           }
           .foreach { path =>
-            addVertices(newGraph, path)
-            addEdges(newGraph, path)
+            addVertices(newGraph, path, pruneMissingInetAddresses)
+            addEdges(newGraph, path, pruneMissingInetAddresses)
           }
       }
 
@@ -198,6 +216,14 @@ class AmpletGraphBuilder(
     findDuplicateVertices(newGraph)
       .foreach(pair => replaceVertex(newGraph, pair._1, pair._2))
     logger.debug(s"Ended with ${newGraph.vertexSet.size} vertices")
+
+    if (pruneNonAmpletToAmpletHops) {
+      // TODO
+    }
+
+    if (compressMissingInetChains) {
+      // TODO
+    }
 
     currentGraph = Some(newGraph)
   }
@@ -225,7 +251,6 @@ object AmpletGraphBuilder {
     )
 
     builder.rebuildGraph()
-
-    println(builder.currentGraph)
+    AmpletGraphDotExporter.exportGraph(builder.graph.get, new File("out/traceroute.dot"))
   }
 }
