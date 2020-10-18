@@ -4,7 +4,7 @@ import nz.net.wand.streamevmon.{Caching, Logging}
 import nz.net.wand.streamevmon.connectors.postgres._
 import nz.net.wand.streamevmon.measurements.amp._
 
-import java.io.File
+import java.io.{File, FileOutputStream, ObjectOutputStream}
 import java.time.Instant
 
 import org.apache.flink.api.java.utils.ParameterTool
@@ -39,10 +39,6 @@ class AmpletGraphBuilder(
   type VertexT = AsInetPathEntry
   type EdgeT = DefaultWeightedEdge
   type GraphT = DefaultDirectedWeightedGraph[VertexT, EdgeT]
-
-  private var currentGraph: Option[GraphT] = None
-
-  def graph: Option[GraphT] = currentGraph
 
   /** Gets every TracerouteMeta entry from the database. Uses caching.
     */
@@ -185,37 +181,18 @@ class AmpletGraphBuilder(
     outEdges.foreach(edge => graph.addEdge(newV, graph.getEdgeTarget(edge), edge))
   }
 
-  /** Rebuilds the graph. This operation has the potential to be expensive. Note
-    * that the functions which query from the database use caching, so if the
-    * ttl is not expired, the database will not be re-queried. This is useful
-    * if using external caching, since the rebuild will query the cache server
-    * instead of the database.
-    */
-  def rebuildGraph(
-    start: Instant = Instant.EPOCH,
-    end  : Instant = Instant.now(),
+  /** Builds the actual graph from the AsInetPaths provided. */
+  def buildGraph(
+    paths: Iterable[AsInetPath],
     pruneMissingInetAddresses: Boolean = true,
-    distinguishMissingInetAddresses: Boolean = true,
-    compressMissingInetChains: Boolean = false,
     pruneNonAmpletToAmpletHops: Boolean = true
-  ): Unit = {
+  ): GraphT = {
     val newGraph = new DefaultDirectedWeightedGraph[AsInetPathEntry, DefaultWeightedEdge](classOf[DefaultWeightedEdge])
 
-    val measurements = getTracerouteMeasurements(
-      getAllMeta,
-      start, end
-    )
-    logger.info(s"Getting paths for ${measurements.flatMap(_._2).size} measurements...")
-    measurements
-      .foreach { case (meta, traceroutes) =>
-        traceroutes
-          .flatMap { traceroute =>
-            getAsInetPath(traceroute, meta, distinguishMissingInetAddresses, compressMissingInetChains)
-          }
-          .foreach { path =>
-            addVertices(newGraph, path, pruneMissingInetAddresses)
-            addEdges(newGraph, path, pruneMissingInetAddresses)
-          }
+    paths
+      .foreach { path =>
+        addVertices(newGraph, path, pruneMissingInetAddresses)
+        addEdges(newGraph, path, pruneMissingInetAddresses)
       }
 
     logger.info(s"Merging duplicate graph vertices...")
@@ -228,7 +205,52 @@ class AmpletGraphBuilder(
       // TODO
     }
 
-    currentGraph = Some(newGraph)
+    newGraph
+  }
+
+  def getAsInetPathsFromDatabase(
+    start: Instant = Instant.EPOCH,
+    end: Instant = Instant.now(),
+    distinguishMissingInetAddresses: Boolean = true,
+    compressMissingInetChains      : Boolean = false,
+  ): Iterable[AsInetPath] = {
+    val measurements = getTracerouteMeasurements(
+      getAllMeta,
+      start, end
+    )
+    logger.info(s"Getting paths for ${measurements.flatMap(_._2).size} measurements...")
+    measurements
+      .flatMap { case (meta, traceroutes) =>
+        traceroutes
+          .flatMap { traceroute =>
+            getAsInetPath(traceroute, meta, distinguishMissingInetAddresses, compressMissingInetChains)
+          }
+      }
+  }
+
+  /** Rebuilds the graph. This operation has the potential to be expensive. Note
+    * that the functions which query from the database use caching, so if the
+    * ttl is not expired, the database will not be re-queried. This is useful
+    * if using external caching, since the rebuild will query the cache server
+    * instead of the database.
+    */
+  def rebuildGraph(
+    start: Instant = Instant.EPOCH,
+    end: Instant = Instant.now(),
+    pruneMissingInetAddresses: Boolean = true,
+    distinguishMissingInetAddresses: Boolean = true,
+    compressMissingInetChains      : Boolean = false,
+    pruneNonAmpletToAmpletHops     : Boolean = true
+  ): GraphT = {
+    val paths = getAsInetPathsFromDatabase(
+      start, end, distinguishMissingInetAddresses, compressMissingInetChains
+    )
+
+    buildGraph(
+      paths,
+      pruneMissingInetAddresses,
+      pruneNonAmpletToAmpletHops
+    )
   }
 
   /** Invalidates all caches, causing the next call to `rebuildGraph` to query
@@ -253,7 +275,20 @@ object AmpletGraphBuilder {
       ttl = None
     )
 
-    builder.rebuildGraph()
-    AmpletGraphDotExporter.exportGraph(builder.graph.get, new File("out/traceroute.dot"))
+    val paths = builder.getAsInetPathsFromDatabase(
+      distinguishMissingInetAddresses = true,
+      compressMissingInetChains = true
+    )
+    val graph = builder.buildGraph(
+      paths,
+      pruneMissingInetAddresses = true,
+      pruneNonAmpletToAmpletHops = true
+    )
+
+    AmpletGraphDotExporter.exportGraph(graph, new File("out/traceroute.dot"))
+    val oos = new ObjectOutputStream(new FileOutputStream("out/traceroute.spkl"))
+    oos.writeObject(graph)
+    val oos2 = new ObjectOutputStream(new FileOutputStream("out/traceroute_paths.spkl"))
+    oos2.writeObject(paths)
   }
 }
