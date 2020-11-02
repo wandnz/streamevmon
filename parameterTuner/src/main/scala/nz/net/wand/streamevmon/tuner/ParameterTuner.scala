@@ -65,7 +65,11 @@ object ParameterTuner extends Logging {
 
     // SMAC needs to know about valid parameters and parameter restrictions.
     val parameterSpecFile = s"$baseOutputDir/$smacdir/$rungroup/parameterspec.smac"
-    ParameterSpecToSmac.populateSmacParameterSpec(parameterSpecFile, detectorsToUse: _*)
+    ParameterSpecToSmac.populateSmacParameterSpec(
+      parameterSpecFile,
+      opts.randomiseDefaults,
+      detectorsToUse: _*
+    )
 
     // We'll tee our stdout to a file, so we can review it later as well as
     // seeing it in the terminal as usual.

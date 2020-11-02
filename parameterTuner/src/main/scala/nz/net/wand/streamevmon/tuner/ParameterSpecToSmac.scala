@@ -78,6 +78,7 @@ object ParameterSpecToSmac {
     */
   def populateSmacParameterSpec(
     parameterSpecFile: String,
+    randomiseDefaults: Boolean,
     detectors        : DetectorType.ValueBuilder*
   ): Unit = {
     // We only write the parameters for detectors we'll be using
@@ -89,9 +90,29 @@ object ParameterSpecToSmac {
     FileUtils.forceMkdir(new File(parameterSpecFile).getParentFile)
     val writer = new BufferedWriter(new FileWriter(parameterSpecFile))
 
+    var specsToWrite = allParameterSpecs
+
+    if (randomiseDefaults) {
+      var shouldContinue = true
+      while (shouldContinue) {
+        specsToWrite = specsToWrite.map { spec =>
+          spec.copy(
+            default = spec.generateRandomInRange().value
+          )
+        }
+        val instancesWithDefaultValues = specsToWrite.map { spec =>
+          spec.getDefault
+        }
+
+        if (HasParameterSpecs.parameterInstancesAreValid(instancesWithDefaultValues)) {
+          shouldContinue = false
+        }
+      }
+    }
+
     // First we write down the simple specifications of parameter bounds.
     // toSmacString() takes an optional fixed parameter specification.
-    allParameterSpecs.foreach { spec =>
+    specsToWrite.foreach { spec =>
       writer.write(spec.toSmacString(fixedParameters.get(spec.name)))
       writer.newLine()
     }

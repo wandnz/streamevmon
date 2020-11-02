@@ -77,10 +77,17 @@ class ProgramOptions {
 
   @Parameter(
     names = Array("--cleanupNabScorerOutputs"),
-    description = "If true, the outputs produced by the NAB scorer will be tidied after every algorithm run. This is NOT destructive of results, but it IS destructive of the raw outputs from the algorithm run.",
+    description = "If true, the outputs produced by the NAB scorer will be deleted after every algorithm run. This is NOT destructive of results, but it IS destructive of the raw outputs from the algorithm run.",
     arity = 1
   )
   val cleanupNabScorerOutputs: Boolean = true
+
+  @Parameter(
+    names = Array("--randomise-defaults"),
+    description = "If set, the initial values of all non-fixed parameters will be randomised",
+    arity = 1
+  )
+  val randomiseDefaults: Boolean = false
 
   @Parameter(
     names = Array("--cputime-limit"),
