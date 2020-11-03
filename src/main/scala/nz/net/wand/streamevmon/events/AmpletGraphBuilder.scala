@@ -184,8 +184,7 @@ class AmpletGraphBuilder(
   /** Builds the actual graph from the AsInetPaths provided. */
   def buildGraph(
     paths: Iterable[AsInetPath],
-    pruneMissingInetAddresses: Boolean = true,
-    pruneNonAmpletToAmpletHops: Boolean = true
+    pruneMissingInetAddresses: Boolean = true
   ): GraphT = {
     val newGraph = new DefaultDirectedWeightedGraph[AsInetPathEntry, DefaultWeightedEdge](classOf[DefaultWeightedEdge])
 
@@ -201,10 +200,6 @@ class AmpletGraphBuilder(
       .foreach(pair => replaceVertex(newGraph, pair._1, pair._2))
     logger.debug(s"Ended with ${newGraph.vertexSet.size} vertices")
 
-    if (pruneNonAmpletToAmpletHops) {
-      // TODO
-    }
-
     newGraph
   }
 
@@ -213,9 +208,22 @@ class AmpletGraphBuilder(
     end: Instant = Instant.now(),
     distinguishMissingInetAddresses: Boolean = true,
     compressMissingInetChains      : Boolean = false,
+    pruneNonAmpletToAmpletHops: Boolean = true
   ): Iterable[AsInetPath] = {
+    val metas = getAllMeta
+
+    val usedMetas = if (pruneNonAmpletToAmpletHops) {
+      val knownAmplets = metas.map(_.source).toSet
+      val result = metas.filter(m => knownAmplets.contains(m.destination))
+      logger.debug(s"Only using ${result.size} amplet-to-amplet streams of ${metas.size} total")
+      result
+    }
+    else {
+      metas
+    }
+
     val measurements = getTracerouteMeasurements(
-      getAllMeta,
+      usedMetas,
       start, end
     )
     logger.info(s"Getting paths for ${measurements.flatMap(_._2).size} measurements...")
@@ -243,13 +251,16 @@ class AmpletGraphBuilder(
     pruneNonAmpletToAmpletHops     : Boolean = true
   ): GraphT = {
     val paths = getAsInetPathsFromDatabase(
-      start, end, distinguishMissingInetAddresses, compressMissingInetChains
+      start,
+      end,
+      distinguishMissingInetAddresses,
+      compressMissingInetChains,
+      pruneNonAmpletToAmpletHops
     )
 
     buildGraph(
       paths,
-      pruneMissingInetAddresses,
-      pruneNonAmpletToAmpletHops
+      pruneMissingInetAddresses
     )
   }
 
@@ -281,14 +292,13 @@ object AmpletGraphBuilder {
     )
     val graph = builder.buildGraph(
       paths,
-      pruneMissingInetAddresses = true,
-      pruneNonAmpletToAmpletHops = true
+      pruneMissingInetAddresses = true
     )
 
-    AmpletGraphDotExporter.exportGraph(graph, new File("out/traceroute.dot"))
-    val oos = new ObjectOutputStream(new FileOutputStream("out/traceroute.spkl"))
+    AmpletGraphDotExporter.exportGraph(graph, new File("out/traceroute_cauldron.dot"))
+    val oos = new ObjectOutputStream(new FileOutputStream("out/traceroute_cauldron.spkl"))
     oos.writeObject(graph)
-    val oos2 = new ObjectOutputStream(new FileOutputStream("out/traceroute_paths.spkl"))
+    val oos2 = new ObjectOutputStream(new FileOutputStream("out/traceroute_paths_cauldron.spkl"))
     oos2.writeObject(paths)
   }
 }

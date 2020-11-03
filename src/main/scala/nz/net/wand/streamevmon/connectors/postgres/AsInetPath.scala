@@ -26,16 +26,19 @@ object AsInetPath {
         case Some(asPathValue) =>
           var lastHop: AsInetPathEntry = null
           inetPath.zip(asPathValue.expandedPath).map { case (inet, asn) =>
-            val result = if (inet == inetPath.head) {
-              AsInetPathEntry(inet, asn, ampletHostname = Some(meta.source))
+            val `h` = inetPath.head
+            val `t` = inetPath.last
+            val hostname = inet match {
+              case _@`h` => Some(meta.source)
+              case _@`t` => Some(meta.destination)
+              case _ => None
+            }
+
+            val result = if (distinguishMissingInetAddresses) {
+              AsInetPathEntry(inet, asn, ampletHostname = hostname, lastHop = Some(lastHop))
             }
             else {
-              if (distinguishMissingInetAddresses) {
-                AsInetPathEntry(inet, asn, lastHop = Some(lastHop))
-              }
-              else {
-                AsInetPathEntry(inet, asn)
-              }
+              AsInetPathEntry(inet, asn, ampletHostname = hostname)
             }
             if (!compressMissingInetChains || result.address.isDefined) {
               lastHop = result
@@ -48,16 +51,19 @@ object AsInetPath {
             Seq.fill(inetPath.size)(
               AsNumber(AsNumberCategory.Missing.id)
             )).map { case (inet, asn) =>
-            val result = if (inet == inetPath.head) {
-              AsInetPathEntry(inet, asn, ampletHostname = Some(meta.source))
+            val `h` = inetPath.head
+            val `t` = inetPath.last
+            val hostname = inet match {
+              case _@`h` => Some(meta.source)
+              case _@`t` => Some(meta.destination)
+              case _ => None
+            }
+
+            val result = if (distinguishMissingInetAddresses) {
+              AsInetPathEntry(inet, asn, ampletHostname = hostname, lastHop = Some(lastHop))
             }
             else {
-              if (distinguishMissingInetAddresses) {
-                AsInetPathEntry(inet, asn, lastHop = Some(lastHop))
-              }
-              else {
-                AsInetPathEntry(inet, asn)
-              }
+              AsInetPathEntry(inet, asn, ampletHostname = hostname)
             }
             if (!compressMissingInetChains || result.address.isDefined) {
               lastHop = result

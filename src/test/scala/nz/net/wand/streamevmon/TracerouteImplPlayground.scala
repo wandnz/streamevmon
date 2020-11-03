@@ -1,10 +1,10 @@
 package nz.net.wand.streamevmon
 
+import nz.net.wand.streamevmon.connectors.postgres.AsInetPath
 import nz.net.wand.streamevmon.events.{AmpletGraphBuilder, AmpletGraphDotExporter}
 
 import java.io.{File, FileInputStream, ObjectInputStream}
 
-import scala.collection.JavaConverters._
 import scala.concurrent.duration.DurationInt
 
 class TracerouteImplPlayground extends PostgresContainerSpec {
@@ -14,7 +14,8 @@ class TracerouteImplPlayground extends PostgresContainerSpec {
       val graph = builder.rebuildGraph(
         pruneMissingInetAddresses = false,
         distinguishMissingInetAddresses = true,
-        compressMissingInetChains = true
+        compressMissingInetChains = true,
+        pruneNonAmpletToAmpletHops = true
       )
       AmpletGraphDotExporter.exportGraph(graph, new File("out/traceroute.dot"))
     }
@@ -31,20 +32,24 @@ class TracerouteImplPlayground extends PostgresContainerSpec {
       //  should be a collection of object methods that take a PostgresConnection
       //  as a parameter?
 
-      println(1)
-      val ois = new ObjectInputStream(new FileInputStream("out/traceroute_cauldron.spkl"))
-      println(2)
-      val graph = ois.readObject().asInstanceOf[AmpletGraphBuilder#GraphT]
-      println(3)
+      //println(1)
+      //val ois = new ObjectInputStream(new FileInputStream("out/traceroute_cauldron.spkl"))
+      //println(2)
+      //val graph = ois.readObject().asInstanceOf[AmpletGraphBuilder#GraphT]
+      //println(3)
 
-      graph.vertexSet.asScala.filter(_.ampletHostname.isDefined).toSeq.sortBy(_.as.number).foreach(println)
+      //graph.vertexSet.asScala.filter(_.ampletHostname.isDefined).toSeq.sortBy(_.as.number).foreach(println)
 
-      //val ois2 = new ObjectInputStream(new FileInputStream("out/traceroute_paths_cauldron.spkl"))
-      //println(4)
-      //val paths = ois2.readObject().asInstanceOf[Iterable[AsInetPath]]
-      //println(5)
-      //val graph2 = new AmpletGraphBuilder(getPostgres).buildGraph(paths, true, true)
-      //println(6)
+      val ois2 = new ObjectInputStream(new FileInputStream("out/traceroute_paths_cauldron.spkl"))
+      println(4)
+      val paths = ois2.readObject().asInstanceOf[Iterable[AsInetPath]]
+      println(5)
+      val graph2 = new AmpletGraphBuilder(getPostgres).buildGraph(
+        paths,
+        pruneMissingInetAddresses = false
+      )
+      println(6)
+      AmpletGraphDotExporter.exportGraph(graph2, new File("out/traceroute_cauldron.dot"))
       //graph shouldBe graph2
     }
   }

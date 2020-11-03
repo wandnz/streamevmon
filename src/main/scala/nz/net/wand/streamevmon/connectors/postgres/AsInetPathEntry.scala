@@ -17,7 +17,9 @@ case class AsInetPathEntry(
       case Some(value) => value.toString +
         s"${ampletHostname.map(n => s" ($n)").getOrElse("")}" +
         s" (${as.toString})"
-      case None => s"?.?.?.?${lastHop.map(h => s" (From $h)").getOrElse("")}"
+      case None => s"?.?.?.?" +
+        s"${ampletHostname.map(n => s" ($n)").getOrElse("")}" +
+        s"${lastHop.map(h => s" (From $h)").getOrElse("")}"
     }
   }
 
