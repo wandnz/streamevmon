@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.connectors.postgres
 
-import nz.net.wand.streamevmon.measurements.amp.TracerouteMeta
+import nz.net.wand.streamevmon.measurements.amp.{Traceroute, TracerouteMeta}
 
 /** Combines an AsPath and an InetPath, as though they were zipped. This ties
   * each InetAddress with its corresponding AsNumber, as reported by the data
@@ -8,6 +8,7 @@ import nz.net.wand.streamevmon.measurements.amp.TracerouteMeta
   */
 case class AsInetPath(
   private val path: Iterable[AsInetPathEntry],
+  measurement     : Traceroute,
   meta            : TracerouteMeta
 ) extends Iterable[AsInetPathEntry] {
   override def iterator: Iterator[AsInetPathEntry] = path.iterator
@@ -17,7 +18,8 @@ object AsInetPath {
   def apply(
     inetPath: InetPath,
     asPath: Option[AsPath],
-    meta: TracerouteMeta,
+    measurement        : Traceroute,
+    meta               : TracerouteMeta,
     distinguishMissingInetAddresses: Boolean,
     compressMissingInetChains      : Boolean
   ): AsInetPath = {
@@ -35,10 +37,10 @@ object AsInetPath {
             }
 
             val result = if (distinguishMissingInetAddresses) {
-              AsInetPathEntry(inet, asn, ampletHostname = hostname, lastHop = Some(lastHop))
+              AsInetPathEntry(inet, asn, lastHop = Some(lastHop))
             }
             else {
-              AsInetPathEntry(inet, asn, ampletHostname = hostname)
+              AsInetPathEntry(inet, asn)
             }
             if (!compressMissingInetChains || result.address.isDefined) {
               lastHop = result
@@ -60,10 +62,10 @@ object AsInetPath {
             }
 
             val result = if (distinguishMissingInetAddresses) {
-              AsInetPathEntry(inet, asn, ampletHostname = hostname, lastHop = Some(lastHop))
+              AsInetPathEntry(inet, asn, lastHop = Some(lastHop))
             }
             else {
-              AsInetPathEntry(inet, asn, ampletHostname = hostname)
+              AsInetPathEntry(inet, asn)
             }
             if (!compressMissingInetChains || result.address.isDefined) {
               lastHop = result
@@ -71,6 +73,7 @@ object AsInetPath {
             result
           }
       },
+      measurement,
       meta
     )
   }

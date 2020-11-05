@@ -4,7 +4,7 @@ import nz.net.wand.streamevmon.{Caching, Logging}
 import nz.net.wand.streamevmon.connectors.postgres._
 import nz.net.wand.streamevmon.measurements.amp._
 
-import java.io.{File, FileOutputStream, ObjectOutputStream}
+import java.io.{FileOutputStream, ObjectOutputStream}
 import java.time.Instant
 
 import org.apache.flink.api.java.utils.ParameterTool
@@ -12,6 +12,44 @@ import org.jgrapht.graph.{DefaultDirectedWeightedGraph, DefaultWeightedEdge}
 
 import scala.collection.JavaConverters._
 import scala.concurrent.duration.FiniteDuration
+
+object AmpletGraphBuilder {
+  def main(args: Array[String]): Unit = {
+    val builder = new AmpletGraphBuilder(
+      new PostgresConnection(
+        "localhost",
+        5432,
+        "nntsc",
+        "cuz",
+        "",
+        0
+      ),
+      ttl = None
+    )
+
+    val paths = builder.getAsInetPathsFromDatabase(
+      distinguishMissingInetAddresses = true,
+      compressMissingInetChains = true,
+      pruneNonAmpletToAmpletHops = true
+    )
+
+    val graph = AmpletGraphBuilder2.buildGraph(paths)
+
+    /*
+    val graph = builder.buildGraph(
+      paths,
+      pruneMissingInetAddresses = true
+    )
+
+     */
+
+    //AmpletGraphDotExporter.exportGraph(graph, new File("out/traceroute_cauldron.dot"))
+    val oos = new ObjectOutputStream(new FileOutputStream("out/traceroute_cauldron.spkl"))
+    oos.writeObject(graph)
+    val oos2 = new ObjectOutputStream(new FileOutputStream("out/traceroute_paths_cauldron.spkl"))
+    oos2.writeObject(paths)
+  }
+}
 
 /** Builds a graph from traceroute entries in the database connected to via the
   * supplied PostgresConnection.
@@ -102,6 +140,7 @@ class AmpletGraphBuilder(
     path.map(p => AsInetPath(
       p.path,
       asPath.map(_.aspath),
+      trace,
       meta,
       distinguishMissingInetAddresses,
       compressMissingInetChains
@@ -269,36 +308,5 @@ class AmpletGraphBuilder(
     */
   def invalidateCaches(): Unit = {
     invalidateAll()
-  }
-}
-
-object AmpletGraphBuilder {
-  def main(args: Array[String]): Unit = {
-    val builder = new AmpletGraphBuilder(
-      new PostgresConnection(
-        "localhost",
-        5432,
-        "nntsc",
-        "cuz",
-        "",
-        0
-      ),
-      ttl = None
-    )
-
-    val paths = builder.getAsInetPathsFromDatabase(
-      distinguishMissingInetAddresses = true,
-      compressMissingInetChains = true
-    )
-    val graph = builder.buildGraph(
-      paths,
-      pruneMissingInetAddresses = true
-    )
-
-    AmpletGraphDotExporter.exportGraph(graph, new File("out/traceroute_cauldron.dot"))
-    val oos = new ObjectOutputStream(new FileOutputStream("out/traceroute_cauldron.spkl"))
-    oos.writeObject(graph)
-    val oos2 = new ObjectOutputStream(new FileOutputStream("out/traceroute_paths_cauldron.spkl"))
-    oos2.writeObject(paths)
   }
 }

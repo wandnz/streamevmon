@@ -9,16 +9,15 @@ import java.net.InetAddress
 case class AsInetPathEntry(
   address: Option[InetAddress],
   as: AsNumber,
-  ampletHostname: Option[String] = None,
   lastHop       : Option[AsInetPathEntry] = None
 ) {
+  val ampletHostname: Option[String] = None
+
   override def toString: String = {
     address match {
       case Some(value) => value.toString +
-        s"${ampletHostname.map(n => s" ($n)").getOrElse("")}" +
         s" (${as.toString})"
       case None => s"?.?.?.?" +
-        s"${ampletHostname.map(n => s" ($n)").getOrElse("")}" +
         s"${lastHop.map(h => s" (From $h)").getOrElse("")}"
     }
   }
@@ -30,13 +29,12 @@ case class AsInetPathEntry(
       (that canEqual this) &&
         address == that.address &&
         as == that.as &&
-        ampletHostname == that.ampletHostname &&
         lastHop == that.lastHop
     case _ => false
   }
 
   override def hashCode(): Int = {
-    val state = Seq(address, as, ampletHostname, lastHop)
+    val state = Seq(address, as, lastHop)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 }

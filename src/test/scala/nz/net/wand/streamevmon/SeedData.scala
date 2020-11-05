@@ -291,7 +291,7 @@ object SeedData {
 
     val expectedAsInetPath = AsInetPath(
       Seq(
-        AsInetPathEntry(Some(InetAddress.getByName("172.17.0.1")), AsNumber(-2), Some("amplet")),
+        AsInetPathEntry(Some(InetAddress.getByName("172.17.0.1")), AsNumber(-2)),
         AsInetPathEntry(Some(InetAddress.getByName("130.217.248.251")), AsNumber(681)),
         AsInetPathEntry(Some(InetAddress.getByName("10.5.5.1")), AsNumber(-2)),
         AsInetPathEntry(Some(InetAddress.getByName("130.217.2.4")), AsNumber(681)),
@@ -314,6 +314,7 @@ object SeedData {
         AsInetPathEntry(None, AsNumber(-1)),
         AsInetPathEntry(None, AsNumber(-1)),
       ),
+      expected,
       expectedMeta
     )
   }
