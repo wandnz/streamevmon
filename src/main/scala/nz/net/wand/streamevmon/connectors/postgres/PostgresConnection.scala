@@ -8,8 +8,7 @@ import java.sql.DriverManager
 import java.time.Instant
 
 import org.apache.flink.api.java.utils.ParameterTool
-import org.postgresql.util.PSQLException
-import org.squeryl.{Session, SessionFactory}
+import org.squeryl.Session
 import org.squeryl.adapters.PostgreSqlAdapter
 
 import scala.concurrent.duration._
@@ -94,29 +93,30 @@ case class PostgresConnection(
     s"jdbc:postgresql://$host:$port/$databaseName?loggerLevel=OFF"
   }
 
-  protected def getOrInitSession(): Boolean = {
-    SessionFactory.concreteFactory match {
-      case Some(_) => true
-      case None =>
-        SessionFactory.concreteFactory = {
-          try {
-            DriverManager.getConnection(jdbcUrl, user, password)
+  protected var session: Option[Session] = None
 
-            Some(() => {
-              Class.forName("org.postgresql.Driver")
-              Session.create(
-                DriverManager.getConnection(jdbcUrl, user, password),
-                new PostgreSqlAdapter
-              )
-            })
-          }
-          catch {
-            case e: PSQLException =>
-              logger.error(s"Could not initialise PostgreSQL session! $e")
-              None
-          }
-        }
-        SessionFactory.concreteFactory.isDefined
+  def closeSession(): Unit = {
+    session.foreach { sess => sess.close }
+  }
+
+  protected def getOrInitSession(): Option[Session] = {
+    session match {
+      case Some(_) => session
+      case None =>
+        session = Try {
+          Class.forName("org.postgresql.Driver")
+          Session.create(
+            DriverManager.getConnection(jdbcUrl, user, password),
+            new PostgreSqlAdapter
+          )
+        }.fold(
+          e => {
+            logger.error(s"Could not initialise PostgreSQL session! $e")
+            None
+          },
+          sess => Some(sess)
+        )
+        session
     }
   }
 
@@ -150,28 +150,31 @@ case class PostgresConnection(
     val result: Option[PostgresMeasurementMeta] = getWithCache(
       cacheKey,
       ttl, {
-        if (!getOrInitSession()) {
-          None
-        }
-        else {
-          import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
-          import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
-
-          validateStreamIsInteger(base)
-
-          base match {
-            // It looks like we can't perform m.stream.toString, since Squeryl starts complaining about not knowing
-            // how to cast integers to strings in a PostgreSQL context. Instead, we'll cast our stream ID to an int,
-            // which of course might fail. If it does fail, we'll return a known false expression instead.
-            case _: ICMP => transaction(icmpMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
-            case _: DNS => transaction(dnsMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
-            case _: Traceroute | _: TraceroutePathlen =>
-              transaction(tracerouteMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
-            case _: TCPPing =>
-              transaction(tcppingMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
-            case _: HTTP => transaction(httpMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
-            case _ => None
-          }
+        getOrInitSession() match {
+          case None => None
+          case Some(sess) =>
+            import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
+            import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
+            using(sess) {
+              validateStreamIsInteger(base)
+              transactionCounter += 1
+              base match {
+                // It looks like we can't perform m.stream.toString, since Squeryl starts complaining about not knowing
+                // how to cast integers to strings in a PostgreSQL context. Instead, we'll cast our stream ID to an int,
+                // which of course might fail. If it does fail, we'll return a known false expression instead.
+                case _: ICMP => inTransaction(icmpMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
+                case _: DNS => inTransaction(dnsMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
+                case _: Traceroute | _: TraceroutePathlen =>
+                  inTransaction(tracerouteMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
+                case _: TCPPing =>
+                  inTransaction(tcppingMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
+                case _: HTTP => inTransaction(httpMeta.where(m => Try(m.stream === base.stream.toInt).getOrElse(true === false)).headOption)
+                case _ =>
+                  // easier to increment then decrement than to increment in all the valid paths
+                  transactionCounter -= 1
+                  None
+              }
+            }
         }
       }
     )
@@ -189,62 +192,71 @@ case class PostgresConnection(
     * @return A collection of TracerouteMeta, or None if the query failed.
     */
   def getAllTracerouteMeta: Option[Iterable[TracerouteMeta]] = {
-    if (!getOrInitSession()) {
-      None
-    }
-    else {
-      import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
-      import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
-
-      Try(
-        transaction(from(tracerouteMeta)(m => select(m)).toList)
-      ).fold(
-        e => {
-          logger.error(s"Failed Postgres transaction! $e")
-          None
-        },
-        tr => Some(tr)
-      )
+    getOrInitSession() match {
+      case None => None
+      case Some(value) =>
+        import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
+        import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
+        using(value) {
+          Try(
+            inTransaction(from(tracerouteMeta)(m => select(m)).toList)
+          ).fold(
+            e => {
+              logger.error(s"Failed Postgres transaction! $e")
+              None
+            },
+            tr => {
+              transactionCounter += 1
+              Some(tr)
+            }
+          )
+        }
     }
   }
 
   def getAllTraceroutePaths(stream: Int): Option[Iterable[TraceroutePath]] = {
-    if (!getOrInitSession()) {
-      None
-    }
-    else {
-      import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
-      import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
-
-      Try(
-        transaction(from(traceroutePath(stream))(m => select(m)).toList)
-      ).fold(
-        e => {
-          logger.error(s"Failed Postgres transaction! $e")
-          None
-        },
-        tr => Some(tr)
-      )
+    getOrInitSession() match {
+      case None => None
+      case Some(value) =>
+        import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
+        import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
+        using(value) {
+          Try(
+            inTransaction(from(traceroutePath(stream))(m => select(m)).toList)
+          ).fold(
+            e => {
+              logger.error(s"Failed Postgres transaction! $e")
+              None
+            },
+            tr => {
+              transactionCounter += 1
+              Some(tr)
+            }
+          )
+        }
     }
   }
 
   def getAllTracerouteAsPaths(stream: Int): Option[Iterable[TracerouteAsPath]] = {
-    if (!getOrInitSession()) {
-      None
-    }
-    else {
-      import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
-      import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
-
-      Try(
-        transaction(from(tracerouteAsPath(stream))(m => select(m)).toList)
-      ).fold(
-        e => {
-          logger.error(s"Failed Postgres transaction! $e")
-          None
-        },
-        tr => Some(tr)
-      )
+    getOrInitSession() match {
+      case None => None
+      case Some(value) =>
+        import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
+        import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
+        using(value) {
+          Try(
+            inTransaction(from(tracerouteAsPath(stream))(m => select(m)).toList)
+          ).fold(
+            e => {
+              logger.error(s"Failed Postgres transaction! $e")
+              None
+            },
+            tr => {
+              transactionCounter += 1
+              Some(tr)
+            }
+          )
+        }
     }
   }
 
@@ -264,28 +276,28 @@ case class PostgresConnection(
     start : Instant = Instant.EPOCH,
     end   : Instant = Instant.now()
   ): Option[Iterable[Traceroute]] = {
-    if (!getOrInitSession()) {
-      None
-    }
-    else {
-      import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
-      import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
-
-      Try(
-        transaction(
-          from(traceroute(stream))(t =>
-            where(
-              t.timestamp between(start.getEpochSecond, end.getEpochSecond)
-            ).select(t)
-          ).toList
-        )
-      ).fold(
-        e => {
-          logger.error(s"Failed Postgres transaction! $e")
-          None
-        },
-        tr => Some(tr)
-      )
+    getOrInitSession() match {
+      case None => None
+      case Some(value) =>
+        import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
+        import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
+        using(value) {
+          Try(
+            inTransaction(
+              from(traceroute(stream))(t =>
+                where(
+                  t.timestamp between(start.getEpochSecond, end.getEpochSecond)
+                ).select(t)
+              ).toList
+            )
+          ).fold(
+            e => {
+              logger.error(s"Failed Postgres transaction! $e")
+              None
+            },
+            tr => Some(tr)
+          )
+        }
     }
   }
 
@@ -298,13 +310,25 @@ case class PostgresConnection(
     val result: Option[TraceroutePath] = getWithCache(
       cacheKey,
       ttl, {
-        if (!getOrInitSession()) {
-          None
-        }
-        else {
-          import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
-          import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
-          transaction(traceroutePath(stream).where(_.path_id === pathId).headOption)
+        getOrInitSession() match {
+          case None => None
+          case Some(value) =>
+            import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
+            import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
+            using(value) {
+              Try(
+                inTransaction(traceroutePath(stream).where(_.path_id === pathId).headOption)
+              ).fold(
+                e => {
+                  logger.error(s"Failed Postgres transaction! $e")
+                  None
+                },
+                tr => {
+                  transactionCounter += 1
+                  Some(tr)
+                }
+              )
+            }
         }
       }
     )
@@ -329,13 +353,25 @@ case class PostgresConnection(
     val result: Option[TracerouteAsPath] = getWithCache(
       cacheKey,
       ttl, {
-        if (!getOrInitSession()) {
-          None
-        }
-        else {
-          import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
-          import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
-          transaction(tracerouteAsPath(stream).where(_.aspath_id === asPathId).headOption)
+        getOrInitSession() match {
+          case None => None
+          case Some(value) =>
+            import nz.net.wand.streamevmon.connectors.postgres.PostgresSchema._
+            import nz.net.wand.streamevmon.connectors.postgres.SquerylEntrypoint._
+            using(value) {
+              Try(
+                inTransaction(tracerouteAsPath(stream).where(_.aspath_id === asPathId).headOption)
+              ).fold(
+                e => {
+                  logger.error(s"Failed Postgres transaction! $e")
+                  None
+                },
+                tr => {
+                  transactionCounter += 1
+                  Some(tr)
+                }
+              )
+            }
         }
       }
     )
@@ -360,4 +396,6 @@ case class PostgresConnection(
     }
     this
   }
+
+  var transactionCounter = 0
 }

@@ -9,7 +9,12 @@ case class AsPathEntry(hopsInAs: Int, asNumber: AsNumber)
 object AsPathEntry {
   /** Interprets the format from AMP's PostgreSQL database. */
   def apply(entry: String): AsPathEntry = {
-    val parts = entry.split('.')
-    new AsPathEntry(parts(0).toInt, AsNumber(parts(1).toInt))
+    val parts = entry.replace("\"", "").split('.')
+    try {
+      new AsPathEntry(parts(0).toInt, AsNumber(parts(1).toInt))
+    }
+    catch {
+      case e: NumberFormatException => throw e
+    }
   }
 }

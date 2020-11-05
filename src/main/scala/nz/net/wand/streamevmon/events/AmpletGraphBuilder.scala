@@ -14,19 +14,31 @@ import scala.concurrent.duration.FiniteDuration
 
 object AmpletGraphBuilder {
   def main(args: Array[String]): Unit = {
-    val builder = new AmpletGraphBuilder(
-      new PostgresConnection(
-        "localhost",
-        5432,
-        "nntsc",
-        "cuz",
-        "",
-        0
-      ),
-      ttl = None
+    val pgCon = new PostgresConnection(
+      "localhost",
+      5432,
+      "nntsc",
+      "cuz",
+      "",
+      0
     )
 
-    val paths = builder.getAsInetPathsFromDatabase()
+    val builder = new AmpletGraphBuilder(pgCon, ttl = None)
+
+    val startTime = System.currentTimeMillis()
+
+    val paths = builder.getAsInetPathsFromDatabase(
+      pruneNonAmpletToAmpletHops = true
+    )
+
+    val endTime = System.currentTimeMillis()
+
+    println(s"Getting AsInetPaths took ${endTime - startTime}ms")
+    println(s"Used ${pgCon.transactionCounter} transactions")
+    println(s"Approx ${(endTime - startTime) / pgCon.transactionCounter}ms/transaction")
+
+    pgCon.closeSession()
+    return
 
     val graph = AmpletGraphBuilder2.buildGraph(paths)
 
