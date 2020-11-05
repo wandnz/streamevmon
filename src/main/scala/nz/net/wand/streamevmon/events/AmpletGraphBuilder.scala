@@ -10,7 +10,6 @@ import java.time.Instant
 import org.apache.flink.api.java.utils.ParameterTool
 import org.jgrapht.graph.{DefaultDirectedWeightedGraph, DefaultWeightedEdge}
 
-import scala.collection.JavaConverters._
 import scala.concurrent.duration.FiniteDuration
 
 object AmpletGraphBuilder {
@@ -27,11 +26,7 @@ object AmpletGraphBuilder {
       ttl = None
     )
 
-    val paths = builder.getAsInetPathsFromDatabase(
-      distinguishMissingInetAddresses = true,
-      compressMissingInetChains = false,
-      pruneNonAmpletToAmpletHops = true
-    )
+    val paths = builder.getAsInetPathsFromDatabase()
 
     val graph = AmpletGraphBuilder2.buildGraph(paths)
 
@@ -139,101 +134,6 @@ class AmpletGraphBuilder(
     ))
   }
 
-  /** Adds the vertices from an AsInetPath to the provided graph.
-    */
-  private def addVertices(
-    graph                      : GraphT,
-    path                       : AsInetPath,
-    pruneMissingInetAddresses  : Boolean
-  ): Unit = {
-    path.foreach { hop =>
-      if (!pruneMissingInetAddresses || hop.address.isDefined) {
-        graph.addVertex(hop)
-      }
-    }
-  }
-
-  /** Adds the edges between vertices in an AsInetPath to the provided graph.
-    */
-  private def addEdges(
-    graph                                       : GraphT,
-    path                                        : AsInetPath,
-    pruneMissingInetAddresses                   : Boolean
-  ): Unit = {
-    path.sliding(2).foreach { pairs =>
-      if (
-        !pruneMissingInetAddresses ||
-          (pairs.head.address.isDefined && pairs.last.address.isDefined)
-      ) {
-        graph.addEdge(pairs.head, pairs.last)
-      }
-    }
-  }
-
-  /** Returns a list of vertices detected to be duplicates. The first entry in
-    * the tuple is the one with less information, and should be replaced by the
-    * second entry in the tuple.
-    *
-    * Two vertices are considered duplicates if they share the same InetAddress,
-    * and one of them has the AS number category `Missing`.
-    * AMP allows Traceroute tests without AS lookups, so it's possible to have
-    * multiple entries for the same address, where one has no AS information. If
-    * two vertices have the same InetAddress, but they have distinct,
-    * non-Missing AS information, they are not considered duplicates.
-    */
-  private def findDuplicateVertices(graph: GraphT): Iterable[(AsInetPathEntry, AsInetPathEntry)] = {
-    graph
-      .vertexSet
-      .asScala
-      .toList
-      .flatMap { vertex =>
-        vertex.as.category match {
-          case AsNumberCategory.Missing => Seq()
-          case _ =>
-            graph.vertexSet.asScala.filter { n =>
-              n.as.category == AsNumberCategory.Missing && n.address == vertex.address
-            }.map((_, vertex))
-        }
-      }
-  }
-
-  /** Replaces a vertex in the provided graph with another. `oldV` must already
-    * be present in the graph. `newV` may be present in the graph, but this is
-    * not a requirement. Any edges attached to `oldV` are re-attached to `newV`.
-    */
-  private def replaceVertex(graph: GraphT, oldV: AsInetPathEntry, newV: AsInetPathEntry): Unit = {
-    val inEdges = graph.incomingEdgesOf(oldV).asScala.toList
-    val outEdges = graph.outgoingEdgesOf(oldV).asScala.toList
-
-    graph.removeVertex(oldV)
-    graph.addVertex(newV)
-
-    inEdges.foreach(edge => graph.addEdge(graph.getEdgeSource(edge), newV, edge))
-    outEdges.foreach(edge => graph.addEdge(newV, graph.getEdgeTarget(edge), edge))
-  }
-
-  /** Builds the actual graph from the AsInetPaths provided. */
-  def buildGraph(
-    paths: Iterable[AsInetPath],
-    pruneMissingInetAddresses: Boolean = true
-  ): GraphT = {
-    val newGraph = new DefaultDirectedWeightedGraph[AsInetPathEntry, DefaultWeightedEdge](classOf[DefaultWeightedEdge])
-
-    paths
-      .foreach { path =>
-        addVertices(newGraph, path, pruneMissingInetAddresses)
-        addEdges(newGraph, path, pruneMissingInetAddresses)
-      }
-
-    logger.info(s"Merging duplicate graph vertices...")
-    logger.debug(s"Started with ${newGraph.vertexSet.size} vertices")
-    findDuplicateVertices(newGraph)
-      .foreach(pair => replaceVertex(newGraph, pair._1, pair._2))
-    logger.debug(s"Ended with ${newGraph.vertexSet.size} vertices")
-
-    newGraph
-  }
-
   def getAsInetPathsFromDatabase(
     start: Instant = Instant.EPOCH,
     end: Instant = Instant.now(),
@@ -267,37 +167,7 @@ class AmpletGraphBuilder(
       }
   }
 
-  /** Rebuilds the graph. This operation has the potential to be expensive. Note
-    * that the functions which query from the database use caching, so if the
-    * ttl is not expired, the database will not be re-queried. This is useful
-    * if using external caching, since the rebuild will query the cache server
-    * instead of the database.
-    */
-  def rebuildGraph(
-    start: Instant = Instant.EPOCH,
-    end: Instant = Instant.now(),
-    pruneMissingInetAddresses: Boolean = true,
-    distinguishMissingInetAddresses: Boolean = true,
-    compressMissingInetChains      : Boolean = false,
-    pruneNonAmpletToAmpletHops     : Boolean = true
-  ): GraphT = {
-    val paths = getAsInetPathsFromDatabase(
-      start,
-      end,
-      distinguishMissingInetAddresses,
-      compressMissingInetChains,
-      pruneNonAmpletToAmpletHops
-    )
-
-    buildGraph(
-      paths,
-      pruneMissingInetAddresses
-    )
-  }
-
-  /** Invalidates all caches, causing the next call to `rebuildGraph` to query
-    * the database instead of the cache.
-    */
+  /** Invalidates all caches. */
   def invalidateCaches(): Unit = {
     invalidateAll()
   }

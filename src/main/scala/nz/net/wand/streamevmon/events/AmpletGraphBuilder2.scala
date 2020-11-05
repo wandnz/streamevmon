@@ -2,7 +2,10 @@ package nz.net.wand.streamevmon.events
 
 import nz.net.wand.streamevmon.connectors.postgres.AsInetPath
 
-import org.jgrapht.graph.{DefaultDirectedWeightedGraph, DefaultWeightedEdge}
+import org.jgrapht.graph.{DefaultDirectedWeightedGraph, DefaultWeightedEdge, GraphWalk}
+
+import scala.collection.JavaConverters._
+import scala.collection.mutable
 
 object AmpletGraphBuilder2 {
 
@@ -63,13 +66,16 @@ object AmpletGraphBuilder2 {
       // merge all the hosts that share UIDs.
       .mapValues { hosts => hosts.map(_._2).reduce((a, b) => a.mergeWith(b)) }
 
+    val knownPathLookupTable = mutable.Map[Host, Iterable[GraphWalk[VertexT, EdgeT]]]()
+
     // Now, let's put all the paths into the graph we made earlier.
     pathsAndHosts.foreach { case (path, hosts) =>
       graph.addVertex(mergedHostLookupTable(hosts.head.uid))
       if (path.size > 1) {
-        path
+        // This adds the hosts and edges to the graph, and returns the edges.
+        val edges = path
           .zip(hosts)
-          .sliding(2).foreach { elems =>
+          .sliding(2).map { elems =>
           val source = elems.head
           val dest = elems.last
 
@@ -79,7 +85,31 @@ object AmpletGraphBuilder2 {
             mergedHostLookupTable(dest._2.uid)
           )
         }
+
+        // Turn the edges into a GraphWalk
+        val walk = new GraphWalk[VertexT, EdgeT](
+          graph,
+          mergedHostLookupTable(hosts.head.uid),
+          mergedHostLookupTable(hosts.last.uid),
+          edges.toList.asJava,
+          0.0
+        )
+
+        // Write down that the walk applies to each of the vertices it visits
+        hosts.foreach { h =>
+          if (knownPathLookupTable.contains(h)) {
+            knownPathLookupTable(h) = knownPathLookupTable(h).toList :+ walk
+          }
+          else {
+            knownPathLookupTable(h) = List(walk)
+          }
+        }
       }
+    }
+
+    // Attach the walks to their hosts
+    graph.vertexSet.forEach { v =>
+      v.knownPaths ++= knownPathLookupTable(v)
     }
 
     graph
