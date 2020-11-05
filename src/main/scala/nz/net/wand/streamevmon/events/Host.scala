@@ -8,7 +8,7 @@ import org.jgrapht.graph.GraphWalk
 
 import scala.collection.mutable
 
-sealed trait Host {
+sealed trait Host extends Serializable {
   val knownPaths: mutable.Buffer[GraphWalk[Host, AmpletGraphBuilder2.EdgeT]] = mutable.Buffer()
 
   def sharesAddressesWith(other: Host): Boolean

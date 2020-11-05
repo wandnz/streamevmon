@@ -2,6 +2,12 @@ package nz.net.wand.streamevmon.events
 
 import scala.collection.mutable
 
+// TODO: We'll skip including RTT weights for now. The schema is a little
+//  unclear (why do you have 400ms rtt to localhost? is it ns?), and
+//  I would need to figure out how to munge the weight for a hop with
+//  a NULL rtt into a Double. I don't particularly want to set a
+//  default or a missing special value, since that could mess up many
+//  pathfinding algorithms.
 class TtlEdge(initialTtls: TtlEntry*) {
   val ttls: mutable.Buffer[TtlEntry] = mutable.Buffer(initialTtls: _*)
 

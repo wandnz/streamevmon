@@ -2,12 +2,12 @@ package nz.net.wand.streamevmon.events
 
 import nz.net.wand.streamevmon.connectors.postgres.AsInetPath
 
-import org.jgrapht.graph.DefaultDirectedWeightedGraph
+import org.jgrapht.graph.{DefaultDirectedWeightedGraph, DefaultWeightedEdge}
 
 object AmpletGraphBuilder2 {
 
   type VertexT = Host
-  type EdgeT = TtlEdge
+  type EdgeT = DefaultWeightedEdge
   type GraphT = DefaultDirectedWeightedGraph[VertexT, EdgeT]
 
   /** Annotates an AsInetPath with Host objects for each hop in the path.
@@ -46,12 +46,12 @@ object AmpletGraphBuilder2 {
 
     // First, we want to annotate all the hops in all our paths with some initial
     // Host objects, which is what we use as graph nodes.
-    val hosts = pathsToHosts(paths)
+    val pathsAndHosts = pathsToHosts(paths)
 
     // We make a lookup table to convert Host objects into their merged forms.
     // This is a kind of duplicate-squishing, but it collates hosts with multiple
     // known IP addresses for a single hostname.
-    val mergedHostLookupTable = hosts
+    val mergedHostLookupTable = pathsAndHosts
       // Get a flat list of all the known Hosts
       .flatMap(_._2)
       // Include their UID as the left side of a tuple including the host
@@ -62,6 +62,25 @@ object AmpletGraphBuilder2 {
       // Extract the host so the value doesn't also include the key, and then
       // merge all the hosts that share UIDs.
       .mapValues { hosts => hosts.map(_._2).reduce((a, b) => a.mergeWith(b)) }
+
+    // Now, let's put all the paths into the graph we made earlier.
+    pathsAndHosts.foreach { case (path, hosts) =>
+      graph.addVertex(mergedHostLookupTable(hosts.head.uid))
+      if (path.size > 1) {
+        path
+          .zip(hosts)
+          .sliding(2).foreach { elems =>
+          val source = elems.head
+          val dest = elems.last
+
+          graph.addVertex(mergedHostLookupTable(dest._2.uid))
+          graph.addEdge(
+            mergedHostLookupTable(source._2.uid),
+            mergedHostLookupTable(dest._2.uid)
+          )
+        }
+      }
+    }
 
     graph
   }

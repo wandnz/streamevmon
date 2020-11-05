@@ -29,7 +29,7 @@ object AmpletGraphBuilder {
 
     val paths = builder.getAsInetPathsFromDatabase(
       distinguishMissingInetAddresses = true,
-      compressMissingInetChains = true,
+      compressMissingInetChains = false,
       pruneNonAmpletToAmpletHops = true
     )
 
