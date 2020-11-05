@@ -4,7 +4,7 @@ import nz.net.wand.streamevmon.{Caching, Logging}
 import nz.net.wand.streamevmon.connectors.postgres._
 import nz.net.wand.streamevmon.measurements.amp._
 
-import java.io.{FileOutputStream, ObjectOutputStream}
+import java.io.{File, FileOutputStream, ObjectOutputStream}
 import java.time.Instant
 
 import org.apache.flink.api.java.utils.ParameterTool
@@ -35,15 +35,7 @@ object AmpletGraphBuilder {
 
     val graph = AmpletGraphBuilder2.buildGraph(paths)
 
-    /*
-    val graph = builder.buildGraph(
-      paths,
-      pruneMissingInetAddresses = true
-    )
-
-     */
-
-    //AmpletGraphDotExporter.exportGraph(graph, new File("out/traceroute_cauldron.dot"))
+    AmpletGraphDotExporter.exportGraph(graph, new File("out/traceroute_cauldron.dot"))
     val oos = new ObjectOutputStream(new FileOutputStream("out/traceroute_cauldron.spkl"))
     oos.writeObject(graph)
     val oos2 = new ObjectOutputStream(new FileOutputStream("out/traceroute_paths_cauldron.spkl"))

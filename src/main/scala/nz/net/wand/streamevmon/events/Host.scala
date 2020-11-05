@@ -55,6 +55,8 @@ class HostWithKnownHostname(
   }
 
   override val uid: String = hostname
+
+  override def toString: String = hostname
 }
 
 class HostWithUnknownHostname(
@@ -85,6 +87,8 @@ class HostWithUnknownHostname(
   }
 
   override val uid: String = address.toString
+
+  override def toString: String = s"${address._1} (${address._2})"
 }
 
 class HostWithUnknownAddress(
@@ -119,4 +123,6 @@ class HostWithUnknownAddress(
   }
 
   override val uid: String = s"$stream,$pathId,$indexInPath"
+
+  override def toString: String = s"? ($uid)"
 }

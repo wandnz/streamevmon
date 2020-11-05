@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.events
 
-import nz.net.wand.streamevmon.connectors.postgres.AsNumber
+import nz.net.wand.streamevmon.connectors.postgres.{AsNumber, AsNumberCategory}
 
 import java.awt.Color
 import java.io.File
@@ -15,10 +15,10 @@ import scala.collection.JavaConverters._
   */
 object AmpletGraphDotExporter {
   def exportGraph(
-    graph: AmpletGraphBuilder#GraphT,
+    graph: AmpletGraphBuilder2.GraphT,
     file : File
   ): Unit = {
-    val exporter = new DOTExporter[AmpletGraphBuilder#VertexT, AmpletGraphBuilder#EdgeT]
+    val exporter = new DOTExporter[AmpletGraphBuilder2.VertexT, AmpletGraphBuilder2.EdgeT]
 
     // We want to make sure that nodes have their addresses printed as their
     // names.
@@ -29,39 +29,49 @@ object AmpletGraphDotExporter {
       .vertexSet
       .asScala
       .toList
-      .flatMap(_.as.number)
+      .flatMap {
+        case host: HostWithKnownHostname => host.addresses.map(_._2)
+        case host: HostWithUnknownHostname => Some(host.address._2)
+        case _: HostWithUnknownAddress => None
+      }
+      .flatMap(_.number)
       .toSet
       .zipWithIndex
       .toMap
 
     // These colours are evenly distributed around hue-space, so they're all
     // reasonably different and black labels should be legible against them.
-    def getAsColor(asn: AsNumber, isAmplet: Boolean): String = {
-      if (isAmplet) {
-        "#FF0000"
-      }
-      else {
-        asn.number match {
-          case None => "#FFFFFF"
-          case Some(num) =>
-            val hue = (0.8 * (asNumberIndex(num).toDouble / asNumberIndex.size.toDouble) + 0.1) % 1
-            val color = Color.getHSBColor(hue.toFloat, 0.5f, 0.95f)
-            f"#${color.getRed}%02X${color.getGreen}%02X${color.getBlue}%02X"
-        }
+    def getAsColor(asn: AsNumber): String = {
+      asn.number match {
+        case None => "#FFFFFF"
+        case Some(num) =>
+          val hue = (0.8 * (asNumberIndex(num).toDouble / asNumberIndex.size.toDouble) + 0.1) % 1
+          val color = Color.getHSBColor(hue.toFloat, 0.5f, 0.95f)
+          f"#${color.getRed}%02X${color.getGreen}%02X${color.getBlue}%02X"
       }
     }
 
+    val namedColor = "#FF0000"
+
     exporter.setVertexAttributeProvider { entry =>
+      val isProbablyAmplet = entry match {
+        case host: HostWithKnownHostname => host.hostname.contains("amp")
+        case _ => false
+      }
       Map(
         "style" -> DefaultAttribute.createAttribute("filled"),
-        "shape" -> DefaultAttribute.createAttribute(if (entry.ampletHostname.isDefined) {
+        "shape" -> DefaultAttribute.createAttribute(if (isProbablyAmplet) {
           "box"
         }
         else {
           "oval"
         }),
         "fillcolor" -> DefaultAttribute.createAttribute(
-          getAsColor(entry.as, entry.ampletHostname.isDefined)
+          entry match {
+            case _: HostWithKnownHostname => namedColor
+            case host: HostWithUnknownHostname => getAsColor(host.address._2)
+            case _: HostWithUnknownAddress => getAsColor(AsNumber(AsNumberCategory.Missing.id))
+          }
         )
       ).asJava
     }

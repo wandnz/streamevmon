@@ -1,9 +1,9 @@
 package nz.net.wand.streamevmon
 
 import nz.net.wand.streamevmon.connectors.postgres.AsInetPath
-import nz.net.wand.streamevmon.events.{AmpletGraphBuilder, AmpletGraphDotExporter}
+import nz.net.wand.streamevmon.events.AmpletGraphBuilder
 
-import java.io.{File, FileInputStream, ObjectInputStream}
+import java.io.{FileInputStream, ObjectInputStream}
 
 import scala.concurrent.duration.DurationInt
 
@@ -17,7 +17,7 @@ class TracerouteImplPlayground extends PostgresContainerSpec {
         compressMissingInetChains = true,
         pruneNonAmpletToAmpletHops = true
       )
-      AmpletGraphDotExporter.exportGraph(graph, new File("out/traceroute.dot"))
+      //AmpletGraphDotExporter.exportGraph(graph, new File("out/traceroute.dot"))
     }
 
     "work from spkl" in {
@@ -49,7 +49,7 @@ class TracerouteImplPlayground extends PostgresContainerSpec {
         pruneMissingInetAddresses = false
       )
       println(6)
-      AmpletGraphDotExporter.exportGraph(graph2, new File("out/traceroute_cauldron.dot"))
+      //AmpletGraphDotExporter.exportGraph(graph2, new File("out/traceroute_cauldron.dot"))
       //graph shouldBe graph2
     }
   }
