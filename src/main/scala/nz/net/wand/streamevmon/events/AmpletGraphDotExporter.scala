@@ -15,10 +15,10 @@ import scala.collection.JavaConverters._
   */
 object AmpletGraphDotExporter {
   def exportGraph(
-    graph: AmpletGraphBuilder2.GraphT,
+    graph: AmpletGraphBuilder#GraphT,
     file : File
   ): Unit = {
-    val exporter = new DOTExporter[AmpletGraphBuilder2.VertexT, AmpletGraphBuilder2.EdgeT]
+    val exporter = new DOTExporter[AmpletGraphBuilder#VertexT, AmpletGraphBuilder#EdgeT]
 
     // We want to make sure that nodes have their addresses printed as their
     // names.

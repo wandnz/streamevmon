@@ -325,7 +325,7 @@ case class PostgresConnection(
                 },
                 tr => {
                   transactionCounter += 1
-                  Some(tr)
+                  tr
                 }
               )
             }
@@ -368,7 +368,7 @@ case class PostgresConnection(
                 },
                 tr => {
                   transactionCounter += 1
-                  Some(tr)
+                  tr
                 }
               )
             }
