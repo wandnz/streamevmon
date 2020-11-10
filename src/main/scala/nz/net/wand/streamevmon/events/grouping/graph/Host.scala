@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.events
+package nz.net.wand.streamevmon.events.grouping.graph
 
 import nz.net.wand.streamevmon.connectors.postgres.AsNumber
 
@@ -23,9 +23,10 @@ sealed trait KnownHostname {
 }
 
 class HostWithKnownHostname(
-  val hostname: String,
+  val hostname : String,
   val addresses: Iterable[(InetAddress, AsNumber)]
-) extends Host with KnownHostname {
+) extends Host
+          with KnownHostname {
 
   override def sharesAddressesWith(other: Host): Boolean = other match {
     case that: HostWithKnownHostname => addresses.exists(addr => that.addresses.exists(_ == addr))
@@ -34,12 +35,14 @@ class HostWithKnownHostname(
   }
 
   override def mergeWith(other: Host): Host = other match {
-    case that: HostWithKnownHostname if this == that => new HostWithKnownHostname(
-      hostname,
-      (addresses ++ that.addresses).toSet
-    )
+    case that: HostWithKnownHostname if this == that =>
+      new HostWithKnownHostname(
+        hostname,
+        (addresses ++ that.addresses).toSet
+      )
     case that: HostWithUnknownHostname if this.sharesAddressesWith(that) => this
-    case _ => throw new IllegalArgumentException("Can't merge hosts without shared hostname or address")
+    case _ =>
+      throw new IllegalArgumentException("Can't merge hosts without shared hostname or address")
   }
 
   def canEqual(other: Any): Boolean =
@@ -92,8 +95,8 @@ class HostWithUnknownHostname(
 }
 
 class HostWithUnknownAddress(
-  val stream: Int,
-  val pathId: Int,
+  val stream     : Int,
+  val pathId     : Int,
   val indexInPath: Int
 ) extends Host {
 

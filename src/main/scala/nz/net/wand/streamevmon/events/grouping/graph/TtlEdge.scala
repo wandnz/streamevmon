@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.events
+package nz.net.wand.streamevmon.events.grouping.graph
 
 import scala.collection.mutable
 

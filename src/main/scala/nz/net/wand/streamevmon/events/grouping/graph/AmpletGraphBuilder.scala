@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.events
+package nz.net.wand.streamevmon.events.grouping.graph
 
 import nz.net.wand.streamevmon.{Caching, Logging}
 import nz.net.wand.streamevmon.connectors.postgres._

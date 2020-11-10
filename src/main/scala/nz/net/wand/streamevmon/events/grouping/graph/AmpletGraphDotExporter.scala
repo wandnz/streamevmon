@@ -1,12 +1,12 @@
-package nz.net.wand.streamevmon.events
+package nz.net.wand.streamevmon.events.grouping.graph
 
 import nz.net.wand.streamevmon.connectors.postgres.{AsNumber, AsNumberCategory}
 
 import java.awt.Color
 import java.io.File
 
-import org.jgrapht.nio.dot.DOTExporter
 import org.jgrapht.nio.DefaultAttribute
+import org.jgrapht.nio.dot.DOTExporter
 
 import scala.collection.JavaConverters._
 
@@ -14,6 +14,7 @@ import scala.collection.JavaConverters._
   * AS they belong to.
   */
 object AmpletGraphDotExporter {
+
   def exportGraph(
     graph: AmpletGraphBuilder#GraphT,
     file : File
@@ -25,10 +26,7 @@ object AmpletGraphDotExporter {
     exporter.setVertexIdProvider(entry => s""" "${entry.toString}" """.trim)
 
     // We also want to give them a colour defined by AS.
-    val asNumberIndex: Map[Int, Int] = graph
-      .vertexSet
-      .asScala
-      .toList
+    val asNumberIndex: Map[Int, Int] = graph.vertexSet.asScala.toList
       .flatMap {
         case host: HostWithKnownHostname => host.addresses.map(_._2)
         case host: HostWithUnknownHostname => Some(host.address._2)
