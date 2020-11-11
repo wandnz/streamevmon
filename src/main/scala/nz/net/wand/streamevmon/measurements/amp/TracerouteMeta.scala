@@ -1,5 +1,7 @@
 package nz.net.wand.streamevmon.measurements.amp
 
+import nz.net.wand.streamevmon.measurements.PostgresMeasurementMeta
+
 import org.squeryl.annotations.Column
 
 /** Represents the metadata associated with the scheduled test that an AMP

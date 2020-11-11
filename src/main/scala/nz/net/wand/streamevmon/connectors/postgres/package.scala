@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.connectors
 
 /** This package contains an interface to PostgreSQL that produces
-  * [[nz.net.wand.streamevmon.measurements.amp.PostgresMeasurementMeta MeasurementMeta]]
+  * [[nz.net.wand.streamevmon.measurements.PostgresMeasurementMeta MeasurementMeta]]
   * objects. Create a
   * [[nz.net.wand.streamevmon.connectors.postgres.PostgresConnection PostgresConnection]],
   * and call its [[nz.net.wand.streamevmon.connectors.postgres.PostgresConnection.getMeta getMeta]] function.

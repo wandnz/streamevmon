@@ -22,7 +22,7 @@ class AmpRichMeasurementSourceFunction(
     fetchHistory
   ) {
 
-  private var pgConnection: PostgresConnection = _
+  @transient private var pgConnection: PostgresConnection = _
 
   override def open(parameters: Configuration): Unit = {
     val globalParams = configWithOverride(getRuntimeContext)

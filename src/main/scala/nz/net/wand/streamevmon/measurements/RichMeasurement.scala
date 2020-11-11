@@ -4,6 +4,6 @@ package nz.net.wand.streamevmon.measurements
   * metadata about the test schedule it originated from.
   *
   * For AMP measurements, the metadata can be separately stored in
-  * [[nz.net.wand.streamevmon.measurements.amp.PostgresMeasurementMeta MeasurementMeta]]
+  * [[nz.net.wand.streamevmon.measurements.PostgresMeasurementMeta MeasurementMeta]]
   */
 trait RichMeasurement extends Measurement {}

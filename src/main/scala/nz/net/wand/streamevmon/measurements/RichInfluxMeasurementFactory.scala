@@ -1,7 +1,5 @@
 package nz.net.wand.streamevmon.measurements
 
-import nz.net.wand.streamevmon.measurements.amp.PostgresMeasurementMeta
-
 /** Mixed into companion objects of concrete [[RichInfluxMeasurement]] classes.
   *
   * @see [[InfluxMeasurementFactory]]

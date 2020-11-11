@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.connectors.postgres
 
 import nz.net.wand.streamevmon.{Caching, Logging}
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.{Measurement, PostgresMeasurementMeta}
 import nz.net.wand.streamevmon.measurements.amp._
 
 import java.sql.DriverManager
@@ -67,7 +67,7 @@ object PostgresConnection extends Caching {
 }
 
 /** PostgreSQL interface which produces
-  * [[nz.net.wand.streamevmon.measurements.amp.PostgresMeasurementMeta MeasurementMeta]]
+  * [[nz.net.wand.streamevmon.measurements.PostgresMeasurementMeta MeasurementMeta]]
   * objects. See the package description for configuration details for normal
   * usage.
   */

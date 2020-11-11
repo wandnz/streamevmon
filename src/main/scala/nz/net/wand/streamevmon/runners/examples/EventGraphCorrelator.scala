@@ -1,0 +1,65 @@
+package nz.net.wand.streamevmon.runners.examples
+
+import nz.net.wand.streamevmon.Configuration
+import nz.net.wand.streamevmon.connectors.postgres.PostgresConnection
+import nz.net.wand.streamevmon.flink.sources.AmpMeasurementSourceFunction
+import nz.net.wand.streamevmon.flink.MeasurementMetaExtractor
+import nz.net.wand.streamevmon.measurements.InfluxMeasurement
+
+import java.time.Duration
+
+import org.apache.flink.api.common.restartstrategy.RestartStrategies
+import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
+import org.apache.flink.streaming.api.scala._
+
+object EventGraphCorrelator {
+  def main(args: Array[String]): Unit = {
+    // First, set up a StreamExecutionEnvironment.
+    val env = StreamExecutionEnvironment.getExecutionEnvironment
+    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
+    env.enableCheckpointing(10000, CheckpointingMode.EXACTLY_ONCE)
+    env.setRestartStrategy(RestartStrategies.noRestart())
+
+    env.getConfig.setGlobalJobParameters(Configuration.get(args))
+
+    // We need some deterministic streams that will generate events.
+    // There also needs to be some Traceroute measurements so that we can
+    // actually build the graph.
+    // We'll try the cauldron-collector dataset.
+
+    // Just get all the history :)
+    val sourceFunction = new AmpMeasurementSourceFunction(
+      fetchHistory = Duration.ofMillis(System.currentTimeMillis())
+    )
+
+    val source = env
+      .addSource(sourceFunction)
+      .name("Measurement history and subscription")
+
+    val pgCon = PostgresConnection(
+      "localhost",
+      5432,
+      "nntsc",
+      "cuz",
+      "",
+      0
+    )
+
+    val metaExtractor = new MeasurementMetaExtractor[InfluxMeasurement]
+
+    val withMetaExtractor = source.process(metaExtractor).name("Meta extractor")
+    val metas = withMetaExtractor.getSideOutput(metaExtractor.outputTag)
+
+    withMetaExtractor.print("Measurements")
+    metas.print("Metas")
+
+    // Next, set up all the detectors to use. We might as well use all of them
+    // with their default settings, since it doesn't really matter how good the
+    // accuracy is for this test implementation. We just want event volume.
+
+    // Now that we have a number of event streams, we need to tie them all
+    // together and pass them to our correlator. We might as well print them too.
+
+    env.execute()
+  }
+}
