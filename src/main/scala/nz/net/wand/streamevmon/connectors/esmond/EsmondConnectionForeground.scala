@@ -63,10 +63,10 @@ class EsmondConnectionForeground(
     summaryWindow: Option[Long] = None,
   ): Try[Iterable[Archive]] = {
     wrapInTrySynchronously(esmondAPI.archiveList(
-      timeRange = timeRange.map(new JLong(_)).orNull,
-      time = time.map(new JLong(_)).orNull,
-      timeStart = timeStart.map(new JLong(_)).orNull,
-      timeEnd = timeEnd.map(new JLong(_)).orNull,
+      timeRange = timeRange.map(JLong.valueOf).orNull,
+      time = time.map(JLong.valueOf).orNull,
+      timeStart = timeStart.map(JLong.valueOf).orNull,
+      timeEnd = timeEnd.map(JLong.valueOf).orNull,
       source = source.orNull,
       destination = destination.orNull,
       measurementAgent = measurementAgent.orNull,
@@ -75,8 +75,8 @@ class EsmondConnectionForeground(
       eventType = eventType.orNull,
       summaryType = summaryType.orNull,
       summaryWindow = summaryWindow.map(_.toString).orNull,
-      limit = limit.map(new JLong(_)).orNull,
-      offset = offset.map(new JLong(_)).orNull
+      limit = limit.map(JLong.valueOf).orNull,
+      offset = offset.map(JLong.valueOf).orNull
     ))
   }
 
@@ -99,10 +99,10 @@ class EsmondConnectionForeground(
       eventType,
       "base",
       "",
-      timeRange.map(new JLong(_)).orNull,
-      time.map(new JLong(_)).orNull,
-      timeStart.map(new JLong(_)).orNull,
-      timeEnd.map(new JLong(_)).orNull,
+      timeRange.map(JLong.valueOf).orNull,
+      time.map(JLong.valueOf).orNull,
+      timeStart.map(JLong.valueOf).orNull,
+      timeEnd.map(JLong.valueOf).orNull,
     )
 
     wrapInTrySynchronously(ResponseType.fromString(eventType).toApiCall.tupled(args))
@@ -141,10 +141,10 @@ class EsmondConnectionForeground(
       eventType,
       summaryType,
       summaryWindow.toString,
-      timeRange.map(new JLong(_)).orNull,
-      time.map(new JLong(_)).orNull,
-      timeStart.map(new JLong(_)).orNull,
-      timeEnd.map(new JLong(_)).orNull,
+      timeRange.map(JLong.valueOf).orNull,
+      time.map(JLong.valueOf).orNull,
+      timeStart.map(JLong.valueOf).orNull,
+      timeEnd.map(JLong.valueOf).orNull,
     )
 
     wrapInTrySynchronously(ResponseType.fromString(eventType).toApiCall.tupled(args))

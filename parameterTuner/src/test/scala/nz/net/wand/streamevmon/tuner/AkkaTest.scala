@@ -46,7 +46,7 @@ class AkkaTest extends TestBase {
       }
       catch {
         case _: TimeoutException =>
-        case e => throw e
+        case e: Throwable => throw e
       }
 
       assert(hookHasExecuted)
@@ -72,7 +72,7 @@ class AkkaTest extends TestBase {
       }
       catch {
         case _: TimeoutException =>
-        case e => throw e
+        case e: Throwable => throw e
       }
       assert(!hookHasExecuted)
     }
