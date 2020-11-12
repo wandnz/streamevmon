@@ -106,17 +106,30 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
       val historyString = DurationFormatUtils.formatDuration(timeSinceLastMeasurement.toMillis, "H:mm:ss")
       logger.info(s"Fetching data since $lastMeasurementTime ($historyString ago)")
 
-      val historicalData = influxHistory.get.getAllAmpData(lastMeasurementTime, now)
-      historicalData.foreach { m =>
-        processHistoricalMeasurement(m) match {
-          case Some(value) => ctx.collectWithTimestamp(value, value.time.toEpochMilli)
-          case None => logger.error(s"Historical entry failed to parse: $m")
+      InfluxHistoryConnection
+        .getDataAsBatchedIterator(
+          (s, e) => influxHistory.get.getAllAmpData(s, e),
+          lastMeasurementTime,
+          now
+        )
+        .foreach { m =>
+          try {
+            processHistoricalMeasurement(m) match {
+              case Some(value) =>
+                lastMeasurementTime = value.time
+                ctx.collectWithTimestamp(value, value.time.toEpochMilli)
+              case None => logger.error(s"Historical entry failed to parse: $m")
+            }
+          }
+          catch {
+            case e: Throwable => println(e)
+          }
         }
-      }
-      if (historicalData.nonEmpty) {
-        lastMeasurementTime = historicalData.maxBy(_.time).time
-        ctx.emitWatermark(new Watermark(lastMeasurementTime.minusSeconds(maxLateness).toEpochMilli))
-      }
+      ctx.emitWatermark(new Watermark(lastMeasurementTime.minusSeconds(maxLateness).toEpochMilli))
+
+      // TODO: We don't get any data that occurred between the start and end of
+      //  the historical measurement process, since we jump straight into
+      //  a subscription.
 
       listen(ctx)
 
@@ -151,7 +164,7 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
             sock.setSoTimeout(100)
             val reader = new BufferedReader(new InputStreamReader(sock.getInputStream))
 
-            Stream
+            Iterator
               .continually {
                 reader.readLine
               }

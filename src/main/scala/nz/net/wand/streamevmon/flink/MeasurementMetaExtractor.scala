@@ -44,9 +44,8 @@ class MeasurementMetaExtractor[T <: Measurement]
     if (!seenMetas.contains(value.stream)) {
       pgCon.getMeta(value) match {
         case Some(meta) =>
-          logger.debug(s"Got meta for stream ${value.stream}: $meta")
           seenMetas(value.stream) = meta
-        //ctx.output(outputTag, meta)
+          ctx.output(outputTag, meta)
         case None =>
       }
     }

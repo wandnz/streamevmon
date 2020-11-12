@@ -1,7 +1,6 @@
 package nz.net.wand.streamevmon.runners.examples
 
 import nz.net.wand.streamevmon.Configuration
-import nz.net.wand.streamevmon.connectors.postgres.PostgresConnection
 import nz.net.wand.streamevmon.flink.sources.AmpMeasurementSourceFunction
 import nz.net.wand.streamevmon.flink.MeasurementMetaExtractor
 import nz.net.wand.streamevmon.measurements.InfluxMeasurement
@@ -14,6 +13,8 @@ import org.apache.flink.streaming.api.scala._
 
 object EventGraphCorrelator {
   def main(args: Array[String]): Unit = {
+    val time = System.currentTimeMillis()
+
     // First, set up a StreamExecutionEnvironment.
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
@@ -50,7 +51,7 @@ object EventGraphCorrelator {
     val withMetaExtractor = source.process(metaExtractor).name("Meta extractor")
     val metas = withMetaExtractor.getSideOutput(metaExtractor.outputTag)
 
-    withMetaExtractor.print("Measurements")
+    //withMetaExtractor.print("Measurements")
     metas.print("Metas")
 
     // Next, set up all the detectors to use. We might as well use all of them
@@ -61,5 +62,8 @@ object EventGraphCorrelator {
     // together and pass them to our correlator. We might as well print them too.
 
     env.execute()
+
+    val time2 = System.currentTimeMillis()
+    println(time2 - time, "s")
   }
 }
