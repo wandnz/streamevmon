@@ -14,6 +14,8 @@ source:
   influx:
     serverName: localhost
     portNumber: 8086
+    historicalQueryProtocol: http
+    compressHistoricalQueries: false
     listenProtocol: http
     listenPort: 0
     listenBacklog: 30

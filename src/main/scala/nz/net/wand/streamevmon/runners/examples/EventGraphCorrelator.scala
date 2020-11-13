@@ -5,7 +5,7 @@ import nz.net.wand.streamevmon.flink.sources.AmpMeasurementSourceFunction
 import nz.net.wand.streamevmon.flink.MeasurementMetaExtractor
 import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 
-import java.time.Duration
+import java.time.{Duration, Instant}
 
 import org.apache.flink.api.common.restartstrategy.RestartStrategies
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
@@ -20,6 +20,7 @@ object EventGraphCorrelator {
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
     env.enableCheckpointing(10000, CheckpointingMode.EXACTLY_ONCE)
     env.setRestartStrategy(RestartStrategies.noRestart())
+    env.setParallelism(1)
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
@@ -52,7 +53,8 @@ object EventGraphCorrelator {
     val metas = withMetaExtractor.getSideOutput(metaExtractor.outputTag)
 
     //withMetaExtractor.print("Measurements")
-    metas.print("Metas")
+    //metas.print("Metas")
+    metas.addSink(_ => Unit)
 
     // Next, set up all the detectors to use. We might as well use all of them
     // with their default settings, since it doesn't really matter how good the

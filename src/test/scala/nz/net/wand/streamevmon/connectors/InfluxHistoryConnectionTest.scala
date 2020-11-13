@@ -41,43 +41,43 @@ class InfluxHistoryConnectionTest extends InfluxContainerSpec {
     }
 
     "get ICMP data" in {
-      getInfluxHistory.getIcmpData().head shouldBe SeedData.icmp.expected
+      getInfluxHistory.getIcmpData().next shouldBe SeedData.icmp.expected
     }
 
     "get DNS data" in {
-      getInfluxHistory.getDnsData().head shouldBe SeedData.dns.expected
+      getInfluxHistory.getDnsData().next shouldBe SeedData.dns.expected
     }
 
     "get HTTP data" in {
-      getInfluxHistory.getHttpData().head shouldBe SeedData.http.expected
+      getInfluxHistory.getHttpData().next shouldBe SeedData.http.expected
     }
 
     "get TCPPing data" in {
-      getInfluxHistory.getTcppingData().head shouldBe SeedData.tcpping.expected
+      getInfluxHistory.getTcppingData().next shouldBe SeedData.tcpping.expected
     }
 
     "get Traceroute data" in {
-      getInfluxHistory.getTracerouteData().head shouldBe SeedData.traceroutePathlen.expected
+      getInfluxHistory.getTracerouteData().next shouldBe SeedData.traceroutePathlen.expected
     }
 
     "get Flow data" in {
-      getInfluxHistory.getFlowStatistics() shouldBe SeedData.bigdata.flowsExpected
+      getInfluxHistory.getFlowStatistics().toSeq shouldBe SeedData.bigdata.flowsExpected
     }
 
     "get data between a time range" in {
       val conn = getInfluxHistory
-      conn.getIcmpData(end = SeedData.icmp.expected.time.minusSeconds(10)) shouldBe Seq()
-      conn.getIcmpData(start = SeedData.icmp.expected.time.plusSeconds(10)) shouldBe Seq()
+      conn.getIcmpData(end = SeedData.icmp.expected.time.minusSeconds(10)).toSeq shouldBe Seq()
+      conn.getIcmpData(start = SeedData.icmp.expected.time.plusSeconds(10)).toSeq shouldBe Seq()
       conn
         .getIcmpData(
           start = SeedData.icmp.expected.time.minusSeconds(10),
           end = SeedData.icmp.expected.time.plusSeconds(10)
         )
-        .head shouldBe SeedData.icmp.expected
+        .next shouldBe SeedData.icmp.expected
     }
 
     "get all data" in {
-      getInfluxHistory.getAllAmpData() shouldBe Seq(
+      getInfluxHistory.getAllAmpData().toSeq shouldBe Seq(
         SeedData.icmp.expected,
         SeedData.dns.expected,
         SeedData.http.expected,

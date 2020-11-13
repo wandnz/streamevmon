@@ -31,11 +31,11 @@ class LossyInfluxHistoryTest extends InfluxContainerSpec with BeforeAndAfter {
       }
 
       "icmp" in {
-        getInfluxHistory.getIcmpData() shouldBe Seq(SeedData.icmp.expected, SeedData.icmp.lossyExpected)
+        getInfluxHistory.getIcmpData().toSeq shouldBe Seq(SeedData.icmp.expected, SeedData.icmp.lossyExpected)
       }
 
       "dns" in {
-        getInfluxHistory.getDnsData() shouldBe Seq(SeedData.dns.expected, SeedData.dns.lossyExpected)
+        getInfluxHistory.getDnsData().toSeq shouldBe Seq(SeedData.dns.expected, SeedData.dns.lossyExpected)
       }
 
       "tcpping" ignore {

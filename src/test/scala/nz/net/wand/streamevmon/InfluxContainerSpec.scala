@@ -61,6 +61,8 @@ class InfluxContainerSpec extends TestBase with ForAllTestContainer {
     InfluxHistoryConnection(
       container.database,
       "autogen",
+      "http",
+      compress = false,
       containerAddress,
       containerPort,
       container.username,

@@ -5,18 +5,12 @@ import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata._
 import nz.net.wand.streamevmon.measurements.InfluxMeasurement
 
-import java.time.{Instant, Duration => JDuration}
-import java.util.concurrent.ConcurrentLinkedQueue
+import java.time.Instant
 
-import com.github.fsanaulla.chronicler.ahc.io.{AhcIOClient, InfluxIO}
-import com.github.fsanaulla.chronicler.core.model.{InfluxCredentials, InfluxReader}
+import com.github.fsanaulla.chronicler.core.model.{InfluxCredentials, InfluxReader, ParsingException}
+import com.github.fsanaulla.chronicler.urlhttp.io.UrlIOClient
 import org.apache.flink.api.java.utils.ParameterTool
 
-import scala.collection.AbstractIterator
-import scala.collection.JavaConverters._
-import scala.concurrent.{Await, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.Duration
 import scala.reflect._
 
 /** Additional constructors for the companion class. */
@@ -45,96 +39,13 @@ object InfluxHistoryConnection extends Logging {
     InfluxHistoryConnection(
       getWithFallback(p, configPrefix, datatype, "databaseName"),
       getWithFallback(p, configPrefix, datatype, "retentionPolicy"),
+      getWithFallback(p, configPrefix, datatype, "historicalQueryProtocol"),
+      getWithFallback(p, configPrefix, datatype, "compressHistoricalQueries").toBoolean,
       getWithFallback(p, configPrefix, datatype, "serverName"),
       getWithFallback(p, configPrefix, datatype, "portNumber").toInt,
       getWithFallback(p, configPrefix, datatype, "user"),
       getWithFallback(p, configPrefix, datatype, "password")
     )
-
-  /** Pass this a call to one of an InfluxHistoryConnection's `getXData` methods
-    * to return an iterator with the results. As you request more elements, it
-    * will progressively get new batches of data from InfluxDB, in groups of
-    * time specified by `maximumTimeRange`. This lets you manage memory more
-    * effectively, as well as processing data as it comes rather than all at
-    * once.
-    */
-  def getDataAsBatchedIterator(
-    func            : (Instant, Instant) => Seq[InfluxMeasurement],
-    start           : Instant = Instant.EPOCH,
-    end             : Instant = Instant.now(),
-    maximumTimeRange: JDuration = JDuration.ofMinutes(5)
-  ): Iterator[InfluxMeasurement] = new AbstractIterator[InfluxMeasurement] {
-
-    private val remainingElements = new ConcurrentLinkedQueue[InfluxMeasurement]()
-
-    private var lastEndTime: Instant = start
-
-    private var gettingNextBatch: Boolean = false
-
-    /** Gets the next group of measurements. Returns true if any measurements
-      * were added to the queue.
-      */
-    private def getNextBatch: Boolean = {
-      if (gettingNextBatch) {
-        while (gettingNextBatch) {
-          Thread.sleep(10)
-        }
-        if (!remainingElements.isEmpty) {
-          return true
-        }
-        else {
-          return lastEndTime.compareTo(end) < 0
-        }
-      }
-
-      gettingNextBatch = true
-
-      // Find the new end time, and get the data in the range.
-      val thisEndTime = lastEndTime.plus(maximumTimeRange)
-      logger.info(s"Getting data between $lastEndTime and $thisEndTime")
-      val data = func(lastEndTime, thisEndTime)
-      logger.info(s"Got ${data.size} elements")
-      lastEndTime = thisEndTime
-
-      remainingElements.addAll(data.asJava)
-
-      gettingNextBatch = false
-
-      data.nonEmpty
-    }
-
-    override def hasNext: Boolean = {
-      // If there are still elements in the buffer, then we have a next item.
-      if (!remainingElements.isEmpty) {
-        true
-      }
-      // If there are no elements, and we've already queried all the time we
-      // were told to, then there are no more elements to report.
-      else if (lastEndTime.compareTo(end) >= 0) {
-        false
-      }
-      else {
-        getNextBatch
-      }
-    }
-
-    override def next(): InfluxMeasurement = {
-      if (hasNext) {
-        // TODO: We occasionally get two requests for the same data! This is bad.
-        if (remainingElements.size < 100000) {
-          Future(getNextBatch)
-        }
-        val v = remainingElements.remove()
-        if (v == null) {
-          println("aaa")
-        }
-        v
-      }
-      else {
-        throw new NoSuchElementException("next on empty iterator")
-      }
-    }
-  }
 }
 
 /** InfluxDB connector which allows retrieving historical data. See the package
@@ -143,26 +54,30 @@ object InfluxHistoryConnection extends Logging {
 case class InfluxHistoryConnection(
   dbName        : String,
   rpName        : String,
+  protocol      : String,
+  compress      : Boolean,
   influxAddress : String,
   influxPort    : Int,
   influxUsername: String,
   influxPassword: String
 ) extends Logging {
 
-  private lazy val influx: Option[AhcIOClient] = getClient
+  private lazy val influx: Option[UrlIOClient] = getClient
 
-  private def checkConnection(influx: AhcIOClient): Boolean = {
-    Await.result(influx.ping.map {
-      case Right(_) => true
-      case Left(_) => false
-    }, Duration.Inf)
+  private def checkConnection(influx: UrlIOClient): Boolean = {
+    influx.ping.isSuccess
   }
 
   /** @return The Influx IO connection, or None. */
-  private def getClient: Option[AhcIOClient] = {
-    val influx: AhcIOClient = InfluxIO(influxAddress, influxPort, Some(InfluxCredentials(influxUsername, influxPassword)))
+  private def getClient: Option[UrlIOClient] = {
+    val urlClient = new UrlIOClient(
+      s"$protocol://$influxAddress",
+      influxPort,
+      Some(InfluxCredentials(influxUsername, influxPassword)),
+      compress = compress
+    )
 
-    Some(influx).filter(checkConnection)
+    Some(urlClient).filter(checkConnection)
   }
 
   /** Gets historical data for all supported measurement types over the specified
@@ -174,7 +89,7 @@ case class InfluxHistoryConnection(
   def getAllAmpData(
     start: Instant = Instant.EPOCH,
     end  : Instant = Instant.now()
-  ): Seq[InfluxMeasurement] = {
+  ): Iterator[InfluxMeasurement] = {
     getIcmpData(start, end) ++
       getDnsData(start, end) ++
       getHttpData(start, end) ++
@@ -202,18 +117,25 @@ case class InfluxHistoryConnection(
     reader     : InfluxReader[T],
     start      : Instant,
     end        : Instant
-  ): Seq[T] = {
+  ): Iterator[T] = {
     influx match {
       case Some(db) =>
         val measurement = db.measurement[T](dbName, "")
         val query = s"SELECT ${columnNames.mkString("\"", "\",\"", "\"")} FROM $tableName " +
           s"WHERE time > ${start.toEpochMilli * 1000000} AND time <= ${end.toEpochMilli * 1000000}"
-        val future = measurement.read(query)(reader, classTag[T])
 
-        Await.result(future.flatMap {
-          case Left(value) => throw value
-          case Right(value) => Future(value)
-        }, Duration.Inf)
+        measurement.readChunked(query, chunkSize = 1000)(reader).fold(
+          throwable => throw throwable,
+          value => value.flatMap {
+            case Left(t) => t match {
+              case pe: ParsingException =>
+                logger.debug(s"Got ParsingException. The result was probably empty. $pe")
+                Iterator.empty
+              case _ => throw t
+            }
+            case Right(it) => it
+          }
+        )
 
       case None => throw new IllegalStateException("No InfluxDB connection!")
     }
@@ -227,9 +149,9 @@ case class InfluxHistoryConnection(
     * @return A collection of ICMP measurements, or an empty collection.
     */
   def getIcmpData(
-      start: Instant = Instant.EPOCH,
-      end: Instant = Instant.now()
-  ): Seq[ICMP] = {
+    start: Instant = Instant.EPOCH,
+    end  : Instant = Instant.now()
+  ): Iterator[ICMP] = {
     getData[ICMP](
       ICMP.table_name,
       ICMP.columnNames,
@@ -247,9 +169,9 @@ case class InfluxHistoryConnection(
     * @return A collection of DNS measurements, or an empty collection.
     */
   def getDnsData(
-      start: Instant = Instant.EPOCH,
-      end: Instant = Instant.now()
-  ): Seq[DNS] = {
+    start: Instant = Instant.EPOCH,
+    end  : Instant = Instant.now()
+  ): Iterator[DNS] = {
     getData[DNS](
       DNS.table_name,
       DNS.columnNames,
@@ -267,9 +189,9 @@ case class InfluxHistoryConnection(
     * @return A collection of HTTP measurements, or an empty collection.
     */
   def getHttpData(
-      start: Instant = Instant.EPOCH,
-      end: Instant = Instant.now()
-  ): Seq[HTTP] = {
+    start: Instant = Instant.EPOCH,
+    end  : Instant = Instant.now()
+  ): Iterator[HTTP] = {
     getData[HTTP](
       HTTP.table_name,
       HTTP.columnNames,
@@ -287,9 +209,9 @@ case class InfluxHistoryConnection(
     * @return A collection of TCPPing measurements, or an empty collection.
     */
   def getTcppingData(
-      start: Instant = Instant.EPOCH,
-      end: Instant = Instant.now()
-  ): Seq[TCPPing] = {
+    start: Instant = Instant.EPOCH,
+    end  : Instant = Instant.now()
+  ): Iterator[TCPPing] = {
     getData[TCPPing](
       TCPPing.table_name,
       TCPPing.columnNames,
@@ -309,7 +231,7 @@ case class InfluxHistoryConnection(
   def getTracerouteData(
     start: Instant = Instant.EPOCH,
     end  : Instant = Instant.now()
-  ): Seq[TraceroutePathlen] = {
+  ): Iterator[TraceroutePathlen] = {
     getData[TraceroutePathlen](
       TraceroutePathlen.table_name,
       TraceroutePathlen.columnNames,
@@ -329,7 +251,7 @@ case class InfluxHistoryConnection(
   def getFlowStatistics(
     start: Instant = Instant.EPOCH,
     end  : Instant = Instant.now()
-  ): Seq[Flow] = {
+  ): Iterator[Flow] = {
     getData[Flow](
       Flow.table_name,
       Flow.columnNames,

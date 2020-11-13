@@ -35,7 +35,10 @@ object Dependencies {
 
   val coreDependencies: Seq[ModuleID] = Seq(
     // InfluxDB interaction
+    // Yes, we have two flavours of IO backend. URL supports chunked queries,
+    // while AHC works on Futures.
     "com.github.fsanaulla" %% "chronicler-ahc-io" % chroniclerVersion,
+    "com.github.fsanaulla" %% "chronicler-url-io" % chroniclerVersion,
     "com.github.fsanaulla" %% "chronicler-ahc-management" % chroniclerVersion,
     "com.github.fsanaulla" %% "chronicler-macros" % chroniclerVersion,
     // PostgreSQL interaction
