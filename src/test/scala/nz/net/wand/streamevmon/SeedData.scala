@@ -361,14 +361,16 @@ object SeedData {
     val subscriptionLine =
       "data_amp_tcpping,stream=9 icmperrors=0i,loss=0i,lossrate=0.0,median=189i,packet_size=64i,results=1i,rtts=\"[189]\" 1564713040000000000"
 
+    val lossySubscriptionLine =
+      "data_amp_tcpping,stream=9 loss=1i,lossrate=1.0,packet_size=64i,results=1i,rtts=\"[None]\" 1582151950000000000"
+
     val expected = TCPPing(
       stream = "9",
-      icmperrors = Some(0),
-      loss = Some(0),
-      lossrate = Some(0.0),
+      loss = 0,
+      lossrate = 0.0,
       median = Some(189),
       packet_size = 64,
-      results = Some(1),
+      results = 1,
       rtts = Seq(Some(189)),
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713040000000000L))
     )
@@ -389,14 +391,24 @@ object SeedData {
       port = 443,
       family = "ipv4",
       packet_size_selection = "64",
-      icmperrors = Some(0),
-      loss = Some(0),
-      lossrate = Some(0.0),
+      loss = 0,
+      lossrate = 0.0,
       median = Some(189),
       packet_size = 64,
-      results = Some(1),
+      results = 1,
       rtts = Seq(Some(189)),
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713040000000000L))
+    )
+
+    val lossyExpected = TCPPing(
+      stream = "9",
+      loss = 1,
+      lossrate = 1.0,
+      median = None,
+      packet_size = 64,
+      results = 1,
+      rtts = Seq(None),
+      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1582151950000000000L))
     )
   }
 

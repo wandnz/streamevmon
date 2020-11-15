@@ -24,7 +24,9 @@ class LossyInfluxHistoryTest extends InfluxContainerSpec with BeforeAndAfter {
                   SeedData.icmp.subscriptionLine,
                   SeedData.icmp.lossySubscriptionLine,
                   SeedData.dns.subscriptionLine,
-                  SeedData.dns.lossySubscriptionLine
+                  SeedData.dns.lossySubscriptionLine,
+                  SeedData.tcpping.subscriptionLine,
+                  SeedData.tcpping.lossySubscriptionLine,
                 )),
             Duration.Inf
           ) should not be a[Throwable]
@@ -38,10 +40,8 @@ class LossyInfluxHistoryTest extends InfluxContainerSpec with BeforeAndAfter {
         getInfluxHistory.getDnsData().toSeq shouldBe Seq(SeedData.dns.expected, SeedData.dns.lossyExpected)
       }
 
-      "tcpping" ignore {
-        // We don't have any examples of lossy TCPPing measurements, but we're
-        // fairly sure they exist. It would be silly to test our tcppingReader
-        // for lossy measurements when we are only guessing.
+      "tcpping" in {
+        getInfluxHistory.getTcppingData().toSeq shouldBe Seq(SeedData.tcpping.expected, SeedData.tcpping.lossyExpected)
       }
     }
   }

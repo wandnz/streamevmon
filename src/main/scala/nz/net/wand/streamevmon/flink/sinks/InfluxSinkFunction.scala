@@ -4,10 +4,9 @@ import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 
+import com.github.fsanaulla.chronicler.ahc.io.AhcIOClient
 import com.github.fsanaulla.chronicler.ahc.management.InfluxMng
-import com.github.fsanaulla.chronicler.core.alias.{ErrorOr, ResponseCode}
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
-import com.github.fsanaulla.chronicler.urlhttp.io.UrlIOClient
 import org.apache.flink.{configuration => flinkconf}
 import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
 import org.apache.flink.api.java.utils.ParameterTool
@@ -18,7 +17,9 @@ import org.apache.flink.streaming.api.functions.sink.SinkFunction.Context
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
+import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
 import scala.util.{Failure, Success, Try}
 
 /** A SinkFunction which stores Event objects in InfluxDB. This function makes
@@ -76,7 +77,7 @@ class InfluxSinkFunction
 
   private var retentionPolicy: String = _
 
-  private var influx: UrlIOClient = _
+  private var influx: AhcIOClient = _
 
   private val bufferedEvents: mutable.Buffer[Event] = mutable.Buffer()
 
@@ -115,11 +116,12 @@ class InfluxSinkFunction
     database = p.get(s"sink.$configKeyGroup.databaseName")
     retentionPolicy = p.get(s"sink.$configKeyGroup.retentionPolicy")
 
-    influx = new UrlIOClient(
+    influx = new AhcIOClient(
       host,
       port,
+      false,
       Some(InfluxCredentials(username, password)),
-      compress = false
+      None
     )
 
     val mng = InfluxMng(host, port, Some(InfluxCredentials(username, password)))
@@ -145,17 +147,18 @@ class InfluxSinkFunction
 
     var success = false
     while (!success) {
-      meas.write(value, retentionPolicy = Some(retentionPolicy))(Event.getWriter).fold(
-        {
-          err: Throwable =>
+      Await.result(
+        meas.write(value, retentionPolicy = Some(retentionPolicy))(Event.getWriter).flatMap {
+          case Left(err) => Future {
             logger.error(s"Failed to write to InfluxDB: $err")
             Thread.sleep(500)
-        },
-        {
-          _: ErrorOr[ResponseCode] =>
+          }
+          case Right(_) => Future {
             success = true
             bufferedEvents.remove(bufferedEvents.indexOf(value))
-        }
+          }
+        },
+        Duration.Inf
       )
     }
   }
