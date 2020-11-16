@@ -13,8 +13,8 @@ import org.squeryl.annotations.Column
   */
 case class DNSMeta(
   @Column("stream_id")
-    stream: Int,
-  source  : String,
+  stream: Int,
+  source: String,
   destination: String,
   instance: String,
   address: String,

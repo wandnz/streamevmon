@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.measurements.amp
 
-import nz.net.wand.streamevmon.measurements.{CsvOutputable, Measurement}
+import nz.net.wand.streamevmon.measurements.PostgresMeasurement
 import nz.net.wand.streamevmon.Logging
 
 import java.time.Instant
@@ -15,8 +15,8 @@ import org.squeryl.annotations.Column
   */
 case class Traceroute(
   @Column("stream_id")
-  stream     : String,
-  path_id    : Int,
+  stream: String,
+  path_id: Int,
   aspath_id  : Option[Int],
   packet_size: Int,
   error_type : Option[Int],
@@ -24,8 +24,7 @@ case class Traceroute(
   @Column("hop_rtt")
   raw_rtts   : Array[Int],
   timestamp  : Int
-) extends Measurement
-          with CsvOutputable
+) extends PostgresMeasurement
           with Logging {
 
   lazy val time: Instant = Instant.ofEpochSecond(timestamp)
