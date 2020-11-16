@@ -114,11 +114,12 @@ object InfluxSchema {
       Try(
         TCPPing(
           js.get(cols.indexOf("stream")).asString,
-          js.get(cols.indexOf("loss")).asInt,
-          js.get(cols.indexOf("lossrate")).asDouble,
+          nullToOption(js.get(cols.indexOf("icmperrors"))).map(_.asInt),
+          nullToOption(js.get(cols.indexOf("loss"))).map(_.asInt),
+          nullToOption(js.get(cols.indexOf("lossrate"))).map(_.asDouble),
           nullToOption(js.get(cols.indexOf("median"))).map(_.asInt),
           js.get(cols.indexOf("packet_size")).asInt,
-          js.get(cols.indexOf("results")).asInt,
+          nullToOption(js.get(cols.indexOf("results"))).map(_.asInt),
           s"'${js.get(cols.indexOf("rtts")).asString}'",
           Instant.parse(js.get(cols.indexOf("time")).asString)
         )

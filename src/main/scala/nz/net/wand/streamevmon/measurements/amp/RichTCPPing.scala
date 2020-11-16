@@ -12,17 +12,18 @@ import java.time.{Instant, ZoneId}
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-tcpping]]
   */
 case class RichTCPPing(
-  stream               : String,
-  source               : String,
-  destination          : String,
-  port                 : Int,
-  family               : String,
+  stream: String,
+  source       : String,
+  destination  : String,
+  port         : Int,
+  family       : String,
   packet_size_selection: String,
-  loss                 : Int,
-  lossrate             : Double,
-  median               : Option[Int],
+  icmperrors           : Option[Int],
+  loss: Option[Int],
+  lossrate: Option[Double],
+  median: Option[Int],
   packet_size          : Int,
-  results              : Int,
+  results              : Option[Int],
   rtts                 : Seq[Option[Int]],
   time                 : Instant
 ) extends RichInfluxMeasurement {
@@ -34,6 +35,7 @@ case class RichTCPPing(
       s"port=$port," +
       s"family=$family," +
       s"packet_size_selection=$packet_size_selection," +
+      s"icmperrors=$icmperrors," +
       s"loss=$loss," +
       s"lossrate=$lossrate," +
       s"median=${median.getOrElse("")}," +
@@ -43,7 +45,7 @@ case class RichTCPPing(
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 
-  override def isLossy: Boolean = loss > 0
+  override def isLossy: Boolean = loss.getOrElse(100) > 0
 
   override def toCsvFormat: Seq[String] = RichTCPPing.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 
@@ -64,6 +66,7 @@ object RichTCPPing extends RichInfluxMeasurementFactory {
                 m.port,
                 m.family,
                 m.packet_size_selection,
+                b.icmperrors,
                 b.loss,
                 b.lossrate,
                 b.median,

@@ -12,18 +12,20 @@ import java.util.concurrent.TimeUnit
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-tcpping]]
   */
 final case class TCPPing(
-  stream     : String,
-  loss       : Int,
-  lossrate   : Double,
-  median     : Option[Int],
+  stream: String,
+  icmperrors: Option[Int],
+  loss: Option[Int],
+  lossrate  : Option[Double],
+  median    : Option[Int],
   packet_size: Int,
-  results    : Int,
-  rtts       : Seq[Option[Int]],
-  time       : Instant
+  results   : Option[Int],
+  rtts      : Seq[Option[Int]],
+  time      : Instant
 ) extends InfluxMeasurement {
   override def toString: String = {
     s"${TCPPing.table_name}," +
       s"stream=$stream " +
+      s"icmperrors=$icmperrors," +
       s"loss=$loss," +
       s"lossrate=$lossrate," +
       s"median=${median.getOrElse("")}," +
@@ -33,7 +35,7 @@ final case class TCPPing(
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 
-  override def isLossy: Boolean = loss > 0
+  override def isLossy: Boolean = loss.getOrElse(100) > 0
 
   override def toCsvFormat: Seq[String] = TCPPing.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 
@@ -46,17 +48,19 @@ object TCPPing extends InfluxMeasurementFactory {
   override def columnNames: Seq[String] = getColumnNames[TCPPing]
 
   def apply(
-    stream     : String,
-    loss       : Int,
-    lossrate   : Double,
-    median     : Option[Int],
+    stream: String,
+    icmperrors: Option[Int],
+    loss: Option[Int],
+    lossrate: Option[Double],
+    median  : Option[Int],
     packet_size: Int,
-    results    : Int,
+    results    : Option[Int],
     rtts       : String,
     time       : Instant
   ): TCPPing =
     new TCPPing(
       stream,
+      icmperrors,
       loss,
       lossrate,
       median,
@@ -75,11 +79,12 @@ object TCPPing extends InfluxMeasurementFactory {
       Some(
         TCPPing(
           getNamedField(data, "stream").get,
-          getNamedField(data, "loss").map(_.dropRight(1).toInt).get,
-          getNamedField(data, "lossrate").map(_.toDouble).get,
+          getNamedField(data, "icmperrors").map(_.dropRight(1).toInt),
+          getNamedField(data, "loss").map(_.dropRight(1).toInt),
+          getNamedField(data, "lossrate").map(_.toDouble),
           getNamedField(data, "median").map(_.dropRight(1).toInt),
           getNamedField(data, "packet_size").get.dropRight(1).toInt,
-          getNamedField(data, "results").map(_.dropRight(1).toInt).get,
+          getNamedField(data, "results").map(_.dropRight(1).toInt),
           getRtts(getNamedField(data, "rtts").get),
           Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(data.last.toLong))
         ))
