@@ -88,30 +88,26 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
       throw new IllegalStateException("Parallelism for this SourceFunction must be 1.")
     }
 
-    // Listen for new data
-    if (!startListener()) {
-      logger.error(s"Failed to start listener.")
-    }
-    else {
-      logger.debug("Started listener")
+    // Get historical data - we do it now instead of before starting the listener
+    // since there could be a small time that a measurement occurs in after the
+    // history query is complete but before the listener starts.
+    // We could also keep track of the measurements received and check if the
+    // first couple of measurements that come through the listener are duplicates
+    // because of the potential overlap we've created, but that's not a big deal.
+    val startOfHistoryGettingTime = Instant.now()
+    val timeSinceLastMeasurement = Duration.between(lastMeasurementTime, startOfHistoryGettingTime)
+    val historyString = DurationFormatUtils.formatDuration(timeSinceLastMeasurement.toMillis, "H:mm:ss")
+    logger.info(s"Fetching data since $lastMeasurementTime ($historyString ago)")
 
-      // Get historical data - we do it now instead of before starting the listener
-      // since there could be a small time that a measurement occurs in after the
-      // history query is complete but before the listener starts.
-      // We could also keep track of the measurements received and check if the
-      // first couple of measurements that come through the listener are duplicates
-      // because of the potential overlap we've created, but that's not a big deal.
-      val now = Instant.now()
-      val timeSinceLastMeasurement = Duration.between(lastMeasurementTime, now)
-      val historyString = DurationFormatUtils.formatDuration(timeSinceLastMeasurement.toMillis, "H:mm:ss")
-      logger.info(s"Fetching data since $lastMeasurementTime ($historyString ago)")
-
-      influxHistory.get.getAllAmpData(lastMeasurementTime, now)
+    def processHistory(start: Instant, end: Instant): Int = {
+      var count = 0
+      influxHistory.get.getAllAmpData(start, end)
         .foreach { m =>
           try {
             processHistoricalMeasurement(m) match {
               case Some(value) =>
                 lastMeasurementTime = value.time
+                count += 1
                 ctx.collectWithTimestamp(value, value.time.toEpochMilli)
               case None => logger.error(s"Historical entry failed to parse: $m")
             }
@@ -121,16 +117,23 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
           }
         }
       ctx.emitWatermark(new Watermark(lastMeasurementTime.minusSeconds(maxLateness).toEpochMilli))
-
-      // TODO: We don't get any data that occurred between the start and end of
-      //  the historical measurement process, since we jump straight into
-      //  a subscription.
-
-      listen(ctx)
-
-      stopListener()
-      logger.debug("Stopped listener")
+      count
     }
+
+    var keepGettingHistory = true
+    while (keepGettingHistory) {
+      logger.debug(s"Getting more history at ${Instant.now()}")
+      val historyItemsReceived = processHistory(lastMeasurementTime, Instant.now())
+      logger.debug(s"Got $historyItemsReceived new items")
+      if (historyItemsReceived == 0) {
+        keepGettingHistory = false
+      }
+    }
+
+    listen(ctx)
+
+    stopListener()
+    logger.debug("Stopped listener")
 
     // Tidy up
     influxConnection.foreach(_.disconnect())
@@ -147,6 +150,11 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
     */
   protected def listen(ctx: SourceFunction.SourceContext[T]): Unit = {
     logger.info("Listening for subscribed events...")
+
+    if (!startListener()) {
+      logger.warn("Couldn't start listener!")
+      return
+    }
 
     isRunning = true
 
