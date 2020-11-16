@@ -38,23 +38,11 @@ class MeasurementMetaExtractor[T <: Measurement]
 
   var firstMeasurementTime: Long = 0L
 
-  var counter = 0
-
   override def processElement(
     value: T,
     ctx  : ProcessFunction[T, T]#Context,
     out  : Collector[T]
   ): Unit = {
-    val now = System.nanoTime()
-    counter += 1
-    if (firstMeasurementTime == 0) {
-      firstMeasurementTime = now
-    }
-
-    if (counter % 1000 == 0) {
-      println(s"#$counter, ${now - firstMeasurementTime}ns since start, avg ${(now - firstMeasurementTime) / counter}ns/meas")
-    }
-
     if (!seenMetas.contains(value.stream)) {
       pgCon.getMeta(value) match {
         case Some(meta) =>
