@@ -1,11 +1,9 @@
 package nz.net.wand.streamevmon.runners.examples
 
 import nz.net.wand.streamevmon.Configuration
-import nz.net.wand.streamevmon.flink.sources.AmpMeasurementSourceFunction
-import nz.net.wand.streamevmon.flink.MeasurementMetaExtractor
-import nz.net.wand.streamevmon.measurements.InfluxMeasurement
+import nz.net.wand.streamevmon.flink.sources.{AmpMeasurementSourceFunction, PostgresTracerouteSourceFunction}
 
-import java.time.{Duration, Instant}
+import java.time.Duration
 
 import org.apache.flink.api.common.restartstrategy.RestartStrategies
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
@@ -34,9 +32,9 @@ object EventGraphCorrelator {
       fetchHistory = Duration.ofMillis(System.currentTimeMillis())
     )
 
-    val source = env
-      .addSource(sourceFunction)
-      .name("Measurement history and subscription")
+    //val source = env
+    //  .addSource(sourceFunction)
+    //  .name("Measurement history and subscription")
 
     val pgCon = PostgresConnection(
       "localhost",
@@ -49,12 +47,19 @@ object EventGraphCorrelator {
 
     val metaExtractor = new MeasurementMetaExtractor[InfluxMeasurement]
 
-    val withMetaExtractor = source.process(metaExtractor).name("Meta extractor")
-    val metas = withMetaExtractor.getSideOutput(metaExtractor.outputTag)
+    //val withMetaExtractor = source.process(metaExtractor).name("Meta extractor")
+    //val metas = withMetaExtractor.getSideOutput(metaExtractor.outputTag)
 
     //withMetaExtractor.print("Measurements")
     //metas.print("Metas")
-    metas.addSink(_ => Unit)
+    //metas.addSink(_ => Unit)
+
+    val pgSource = env
+      .addSource(new PostgresTracerouteSourceFunction(
+        fetchHistory = Duration.ofDays(365)
+      ))
+
+    pgSource.addSink(_ => Unit)
 
     // Next, set up all the detectors to use. We might as well use all of them
     // with their default settings, since it doesn't really matter how good the

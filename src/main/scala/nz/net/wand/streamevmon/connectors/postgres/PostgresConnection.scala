@@ -286,7 +286,9 @@ case class PostgresConnection(
             inTransaction(
               from(traceroute(stream))(t =>
                 where(
-                  t.timestamp between(start.getEpochSecond, end.getEpochSecond)
+                  // between is inclusive on both ends. We want it to be
+                  // exclusive on the left, and inclusive on the right.
+                  t.timestamp between(start.getEpochSecond + 1, end.getEpochSecond)
                 ).select(t)
               ).toList
             )

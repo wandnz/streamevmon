@@ -39,8 +39,8 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
 )
   extends RichSourceFunction[T]
           with HasFlinkConfig
-          with Logging
-          with CheckpointedFunction {
+          with CheckpointedFunction
+          with Logging {
 
   override val configKeyGroup: String = "influx"
 
@@ -190,7 +190,7 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
               })
 
           case None =>
-            logger.warn("Listener unexpectedly died")
+            logger.warn("Listener unexpectedly died. Exiting.")
             isRunning = false
         }
       } catch {
