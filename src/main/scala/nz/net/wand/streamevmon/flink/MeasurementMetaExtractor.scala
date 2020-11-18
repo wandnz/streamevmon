@@ -1,10 +1,11 @@
 package nz.net.wand.streamevmon.flink
 
 import nz.net.wand.streamevmon.connectors.postgres.PostgresConnection
-import nz.net.wand.streamevmon.measurements.{Measurement, MeasurementMeta}
+import nz.net.wand.streamevmon.measurements.{Measurement, PostgresMeasurementMeta}
 import nz.net.wand.streamevmon.Logging
 
 import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
+import org.apache.flink.api.common.typeinfo._
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
@@ -15,8 +16,8 @@ import org.apache.flink.util.Collector
 import scala.collection.mutable
 import scala.collection.JavaConverters._
 
-class MeasurementMetaExtractor[T <: Measurement]
-  extends ProcessFunction[T, T]
+class MeasurementMetaExtractor[MeasT <: Measurement, MetaT <: PostgresMeasurementMeta : TypeInformation]
+  extends ProcessFunction[MeasT, MeasT]
           with CheckpointedFunction
           with HasFlinkConfig
           with Logging {
@@ -32,22 +33,23 @@ class MeasurementMetaExtractor[T <: Measurement]
     pgCon = PostgresConnection(globalParams)
   }
 
-  val outputTag = new OutputTag[MeasurementMeta]("all-measurement-meta")
+  val outputTag = new OutputTag[MetaT]("all-measurement-meta")
 
-  val seenMetas: mutable.Map[String, MeasurementMeta] = mutable.Map[String, MeasurementMeta]()
+  val seenMetas: mutable.Map[String, MetaT] = mutable.Map[String, MetaT]()
 
   var firstMeasurementTime: Long = 0L
 
   override def processElement(
-    value: T,
-    ctx  : ProcessFunction[T, T]#Context,
-    out  : Collector[T]
+    value: MeasT,
+    ctx  : ProcessFunction[MeasT, MeasT]#Context,
+    out  : Collector[MeasT]
   ): Unit = {
     if (!seenMetas.contains(value.stream)) {
       pgCon.getMeta(value) match {
         case Some(meta) =>
-          seenMetas(value.stream) = meta
-          ctx.output(outputTag, meta)
+          val metaAsMetaT = meta.asInstanceOf[MetaT]
+          seenMetas(value.stream) = metaAsMetaT
+          ctx.output(outputTag, metaAsMetaT)
         case None =>
       }
     }
@@ -57,7 +59,7 @@ class MeasurementMetaExtractor[T <: Measurement]
 
   // Not sure why we can't get a MapState from the OperatorStateStore, but this
   // workaround is fine.
-  private var checkpointState: ListState[(String, MeasurementMeta)] = _
+  private var checkpointState: ListState[(String, MetaT)] = _
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {
     checkpointState.clear()
@@ -67,7 +69,7 @@ class MeasurementMetaExtractor[T <: Measurement]
   override def initializeState(context: FunctionInitializationContext): Unit = {
     checkpointState = context
       .getOperatorStateStore
-      .getListState(new ListStateDescriptor[(String, MeasurementMeta)]("measurement-meta", classOf[(String, MeasurementMeta)]))
+      .getListState(new ListStateDescriptor[(String, MetaT)](s"measurement-meta-${createTypeInformation[MetaT].getTypeClass.getCanonicalName}", classOf[(String, MetaT)]))
 
     if (context.isRestored) {
       checkpointState.get.forEach { entry => seenMetas.put(entry._1, entry._2) }

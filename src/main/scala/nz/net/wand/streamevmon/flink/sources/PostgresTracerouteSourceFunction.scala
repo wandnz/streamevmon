@@ -19,6 +19,7 @@ class PostgresTracerouteSourceFunction(
           with HasFlinkConfig
           with CheckpointedFunction
           with Logging {
+
   override val flinkName: String = "PostgreSQL Measurement Source"
   override val flinkUid: String = "postgres-measurement-source"
   override val configKeyGroup: String = "postgres"
@@ -31,7 +32,7 @@ class PostgresTracerouteSourceFunction(
   def refreshUsedStreams(
     pgCon         : PostgresConnection,
     ampletToAmplet: Boolean = true
-  ): Iterable[Int] = {
+  ): Iterable[TracerouteMeta] = {
     logger.info("Refreshing traceroute stream library...")
     pgCon.getAllTracerouteMeta match {
       case Some(value) =>
@@ -53,9 +54,7 @@ class PostgresTracerouteSourceFunction(
             // otherwise do nothing
             metas
           }
-          // Finally, get the streams of the successful metas and assign
-          // usedStreams to the result.
-        }.map(_.stream)
+        }
       case None =>
         logger.info("Error getting TracerouteMeta entries.")
         None
@@ -77,8 +76,8 @@ class PostgresTracerouteSourceFunction(
       val usedStreams = refreshUsedStreams(pgCon)
       val now = Instant.now()
       logger.info(s"Getting traceroute measurements for ${usedStreams.size} streams between $lastMeasurementTime and $now...")
-      usedStreams.flatMap { stream =>
-        pgCon.getTracerouteData(stream, lastMeasurementTime, now)
+      usedStreams.flatMap { meta =>
+        pgCon.getTracerouteData(meta.stream, lastMeasurementTime, now)
       }
         .flatten
         .foreach { meas =>
@@ -89,6 +88,7 @@ class PostgresTracerouteSourceFunction(
         }
       Thread.sleep(Duration.ofSeconds(refreshDelay).toMillis)
     }
+    pgCon.closeSession()
   }
 
   override def cancel(): Unit = {

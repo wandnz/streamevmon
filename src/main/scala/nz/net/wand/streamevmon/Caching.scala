@@ -1,5 +1,7 @@
 package nz.net.wand.streamevmon
 
+import nz.net.wand.streamevmon.Caching.CacheMode
+
 import java.time.Instant
 
 import net.spy.memcached.compat.log.SLF4JLogger
@@ -16,6 +18,12 @@ import scala.concurrent.duration.FiniteDuration
 /** Companion object storing the common in-memory cache.
   */
 object Caching {
+
+  protected object CacheMode extends Enumeration {
+    type CacheMode = Value
+    val InMemory, Memcached = Value
+  }
+
   @transient final private lazy val caffeineCache: Cache[Option[Any]] = CaffeineCache[Option[Any]]
 }
 
@@ -69,11 +77,6 @@ object Caching {
   */
 trait Caching {
   protected var cacheMode: CacheMode.Value = CacheMode.InMemory
-
-  protected object CacheMode extends Enumeration {
-    type CacheMode = Value
-    val InMemory, Memcached = Value
-  }
 
   @transient private var memcachedCache: Cache[Option[Any]] = _
 
