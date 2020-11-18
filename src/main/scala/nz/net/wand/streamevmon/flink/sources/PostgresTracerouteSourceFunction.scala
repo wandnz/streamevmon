@@ -7,6 +7,7 @@ import nz.net.wand.streamevmon.measurements.amp.{Traceroute, TracerouteMeta}
 
 import java.time.{Duration, Instant}
 
+import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
 import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.source.{RichSourceFunction, SourceFunction}
@@ -95,11 +96,23 @@ class PostgresTracerouteSourceFunction(
     isRunning = false
   }
 
-  override def snapshotState(context: FunctionSnapshotContext): Unit = {
+  // We only put the last measurement time in our checkpoint state. The rest
+  // is transient and should get reconstructed at next startup.
 
+  private var checkpointState: ListState[Instant] = _
+
+  override def snapshotState(context: FunctionSnapshotContext): Unit = {
+    checkpointState.clear()
+    checkpointState.add(lastMeasurementTime)
   }
 
   override def initializeState(context: FunctionInitializationContext): Unit = {
+    checkpointState = context
+      .getOperatorStateStore
+      .getListState(new ListStateDescriptor[Instant]("lastMeasurementTime", classOf[Instant]))
 
+    if (context.isRestored) {
+      lastMeasurementTime = checkpointState.get().iterator().next()
+    }
   }
 }
