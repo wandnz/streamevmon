@@ -59,20 +59,21 @@ class MeasurementMetaExtractor[MeasT <: Measurement, MetaT <: PostgresMeasuremen
 
   // Not sure why we can't get a MapState from the OperatorStateStore, but this
   // workaround is fine.
-  private var checkpointState: ListState[(String, MetaT)] = _
+  private var checkpointState: ListState[MetaT] = _
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {
     checkpointState.clear()
-    checkpointState.addAll(seenMetas.toSeq.asJava)
+    checkpointState.addAll(seenMetas.values.toSeq.asJava)
   }
 
   override def initializeState(context: FunctionInitializationContext): Unit = {
+    val metaTTypeInfo = createTypeInformation[MetaT]
     checkpointState = context
       .getOperatorStateStore
-      .getListState(new ListStateDescriptor[(String, MetaT)](s"measurement-meta-${createTypeInformation[MetaT].getTypeClass.getCanonicalName}", classOf[(String, MetaT)]))
+      .getUnionListState(new ListStateDescriptor(s"measurement-meta-${metaTTypeInfo.getTypeClass.getCanonicalName}", metaTTypeInfo.getTypeClass))
 
     if (context.isRestored) {
-      checkpointState.get.forEach { entry => seenMetas.put(entry._1, entry._2) }
+      checkpointState.get.forEach { entry => seenMetas.put(entry.stream.toString, entry) }
     }
   }
 }

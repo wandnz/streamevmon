@@ -4,11 +4,15 @@ import nz.net.wand.streamevmon.{Caching, Logging}
 import nz.net.wand.streamevmon.connectors.postgres.{AsInetPath, PostgresConnection}
 import nz.net.wand.streamevmon.measurements.amp._
 
+import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
 import org.apache.flink.configuration.Configuration
+import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
+import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction
 import org.apache.flink.util.Collector
 
 import scala.collection.mutable
+import scala.collection.JavaConverters._
 import scala.concurrent.duration.FiniteDuration
 
 class TracerouteAsInetPathExtractor(
@@ -16,6 +20,7 @@ class TracerouteAsInetPathExtractor(
 )
   extends CoProcessFunction[Traceroute, TracerouteMeta, AsInetPath]
           with HasFlinkConfig
+          with CheckpointedFunction
           with Caching
           with Logging {
 
@@ -81,7 +86,7 @@ class TracerouteAsInetPathExtractor(
 
   override def processElement2(
     value: TracerouteMeta,
-    ctx: CoProcessFunction[Traceroute, TracerouteMeta, AsInetPath]#Context,
+    ctx  : CoProcessFunction[Traceroute, TracerouteMeta, AsInetPath]#Context,
     out  : Collector[AsInetPath]
   ): Unit = {
     val stream = value.stream.toString
@@ -90,5 +95,37 @@ class TracerouteAsInetPathExtractor(
       processElement1(meas, ctx, out)
     })
     unprocessedMeasurements.put(stream, List())
+  }
+
+  private var knownMetasState: ListState[TracerouteMeta] = _
+  private var unprocessedMeasurementsState: ListState[Traceroute] = _
+
+  override def snapshotState(context: FunctionSnapshotContext): Unit = {
+    knownMetasState.clear()
+    unprocessedMeasurementsState.clear()
+
+    knownMetasState.addAll(knownMetas.values.toSeq.asJava)
+    unprocessedMeasurementsState.addAll(unprocessedMeasurements.flatMap(_._2).toSeq.asJava)
+  }
+
+  override def initializeState(context: FunctionInitializationContext): Unit = {
+    knownMetasState = context
+      .getOperatorStateStore
+      .getUnionListState(new ListStateDescriptor[TracerouteMeta](
+        "asinetpathextractor-knownMetas", classOf[TracerouteMeta]
+      ))
+
+    unprocessedMeasurementsState = context
+      .getOperatorStateStore
+      .getUnionListState(new ListStateDescriptor[Traceroute](
+        "asinetpathextractor-unprocessedMeasurements", classOf[Traceroute]
+      ))
+
+    if (context.isRestored) {
+      knownMetasState.get.forEach(entry => knownMetas.put(entry.stream.toString, entry))
+      unprocessedMeasurementsState.get.forEach { entry =>
+        unprocessedMeasurements.getOrElse(entry.stream, List()) :+ entry
+      }
+    }
   }
 }
