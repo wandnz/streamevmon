@@ -241,7 +241,7 @@ class AmpletGraphBuilder(
     // We make a lookup table to convert Host objects into their merged forms.
     // This is a kind of duplicate-squishing, but it collates hosts with multiple
     // known IP addresses for a single hostname.
-    val mergedHostLookupTable = pathsAndHosts
+    val mergedHostLookupTable: Map[String, VertexT] = pathsAndHosts
       // Get a flat list of all the known Hosts
       .flatMap(_._2)
       // Include their UID as the left side of a tuple including the host

@@ -48,13 +48,15 @@ class TracerouteAsInetPathExtractor(
       ttl,
       pgCon.getTraceroutePath(trace)
     )
-    val asPath: Option[TracerouteAsPath] = getWithCache(
-      s"AmpletGraph.AsPath.${trace.stream}.${trace.aspath_id}",
-      ttl,
-      pgCon.getTracerouteAsPath(trace)
-    )
+    val asPath: Option[TracerouteAsPath] = trace.aspath_id.flatMap { aspath_id =>
+      getWithCache(
+        s"AmpletGraph.AsPath.${trace.stream}.$aspath_id",
+        ttl,
+        pgCon.getTracerouteAsPath(trace)
+      )
+    }
 
-    if (path.isEmpty || asPath.isEmpty) {
+    if (path.isEmpty || (trace.aspath_id.isDefined && asPath.isEmpty)) {
       logger.warn(s"Failed to get TraceroutePath or TracerouteAsPath! Values: $path, $asPath")
     }
 

@@ -13,6 +13,15 @@ case class SerializableInetAddress(
   @transient lazy val asInetAddress: InetAddress = this
 
   override def toString: String = asInetAddress.toString
+
+  def canEqual(other: Any): Boolean = other.isInstanceOf[SerializableInetAddress]
+
+  override def equals(obj: Any): Boolean = obj match {
+    case that: SerializableInetAddress => (that canEqual this) && (address sameElements that.address)
+    case _ => false
+  }
+
+  override def hashCode(): Int = address.hashCode
 }
 
 object SerializableInetAddress {

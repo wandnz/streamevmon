@@ -33,15 +33,7 @@ case class Traceroute(
 
   // We have no examples of lossy measurements, so we don't really know what they look like.
   // If we ever find a measurement with an error, let's make some noise.
-  override def isLossy: Boolean = {
-    if (error_type.isDefined || error_code.isDefined) {
-      logger.error(s"Found a potentially lossy Traceroute measurement! $this")
-      true
-    }
-    else {
-      false
-    }
-  }
+  override def isLossy: Boolean = error_type.isDefined || error_code.isDefined
 
   override def toCsvFormat: Seq[String] =
     Seq(stream, path_id, aspath_id, packet_size, error_type, error_code, rtts, time)

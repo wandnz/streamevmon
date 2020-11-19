@@ -1,9 +1,12 @@
 package nz.net.wand.streamevmon.runners.examples
 
 import nz.net.wand.streamevmon.Configuration
-import nz.net.wand.streamevmon.flink.{MeasurementMetaExtractor, TracerouteAsInetPathExtractor}
+import nz.net.wand.streamevmon.detectors.baseline.BaselineDetector
+import nz.net.wand.streamevmon.events.Event
+import nz.net.wand.streamevmon.flink.{MeasurementMetaExtractor, TracerouteAsInetPathExtractor, TraceroutePathGraph}
 import nz.net.wand.streamevmon.flink.sources.PostgresTracerouteSourceFunction
 import nz.net.wand.streamevmon.measurements.amp.{Traceroute, TracerouteMeta}
+import nz.net.wand.streamevmon.measurements.HasDefault
 
 import java.time.{Duration, Instant}
 
@@ -46,8 +49,18 @@ object EventGraphCorrelator {
 
     val asInetPaths = connected.process(co)
 
-    //pgSource.print()
-    asInetPaths.print()
+    val detector = new BaselineDetector[TracerouteWithHasDefault]
+
+    val events = pgSource
+      .map(t => new TracerouteWithHasDefault(t))
+      .keyBy(_.stream)
+      .process(detector)
+
+    val grapher = new TraceroutePathGraph[Event]
+
+    val locatedEvents = events.connect(asInetPaths).process(grapher)
+
+    locatedEvents.print()
 
     // Next, set up all the detectors to use. We might as well use all of them
     // with their default settings, since it doesn't really matter how good the
@@ -61,4 +74,11 @@ object EventGraphCorrelator {
     val time2 = System.currentTimeMillis()
     println(time2 - time, "s")
   }
+}
+
+class TracerouteWithHasDefault(
+  t: Traceroute
+) extends Traceroute(t.stream, t.path_id, t.aspath_id, t.packet_size, t.error_type, t.error_code, t.raw_rtts, t.timestamp) with
+          HasDefault {
+  override var defaultValue: Option[Double] = Some(packet_size)
 }
