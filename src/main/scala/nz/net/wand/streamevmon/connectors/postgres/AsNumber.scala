@@ -27,3 +27,9 @@ case class AsNumber(private val num: Int) {
     case AsNumberCategory.Valid => s"AS $num"
   }
 }
+
+object AsNumber {
+  val PrivateAddress: AsNumber = AsNumber(AsNumberCategory.PrivateAddress.id)
+  val Missing: AsNumber = AsNumber(AsNumberCategory.Missing.id)
+  val Unknown: AsNumber = AsNumber(AsNumberCategory.Unknown.id)
+}

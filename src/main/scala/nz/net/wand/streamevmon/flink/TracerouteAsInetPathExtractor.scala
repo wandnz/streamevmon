@@ -4,8 +4,6 @@ import nz.net.wand.streamevmon.{Caching, Logging}
 import nz.net.wand.streamevmon.connectors.postgres.{AsInetPath, PostgresConnection}
 import nz.net.wand.streamevmon.measurements.amp._
 
-import java.net.InetAddress
-
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction
 import org.apache.flink.util.Collector
@@ -16,7 +14,7 @@ import scala.concurrent.duration.FiniteDuration
 class TracerouteAsInetPathExtractor(
   ttl: Option[FiniteDuration] = None
 )
-  extends CoProcessFunction[Traceroute, TracerouteMeta, InetAddress]
+  extends CoProcessFunction[Traceroute, TracerouteMeta, AsInetPath]
           with HasFlinkConfig
           with Caching
           with Logging {
@@ -65,8 +63,8 @@ class TracerouteAsInetPathExtractor(
 
   override def processElement1(
     value: Traceroute,
-    ctx  : CoProcessFunction[Traceroute, TracerouteMeta, InetAddress]#Context,
-    out  : Collector[InetAddress]
+    ctx: CoProcessFunction[Traceroute, TracerouteMeta, AsInetPath]#Context,
+    out  : Collector[AsInetPath]
   ): Unit = {
     knownMetas.get(value.stream) match {
       // If we don't have a meta for this yet, we can't construct an output.
@@ -77,14 +75,14 @@ class TracerouteAsInetPathExtractor(
         unprocessedMeasurements.getOrElse(value.stream, List()) :+ value
       )
       // If we do have a meta we can go ahead and make our AsInetPath.
-      case Some(meta) => getAsInetPath(value, meta).foreach(p => p.foreach(e => e.address.foreach(a => out.collect(a))))
+      case Some(meta) => getAsInetPath(value, meta).foreach(out.collect)
     }
   }
 
   override def processElement2(
     value: TracerouteMeta,
-    ctx  : CoProcessFunction[Traceroute, TracerouteMeta, InetAddress]#Context,
-    out  : Collector[InetAddress]
+    ctx: CoProcessFunction[Traceroute, TracerouteMeta, AsInetPath]#Context,
+    out  : Collector[AsInetPath]
   ): Unit = {
     val stream = value.stream.toString
     knownMetas.put(stream, value)

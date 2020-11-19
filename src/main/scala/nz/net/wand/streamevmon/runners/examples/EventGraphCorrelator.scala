@@ -5,11 +5,9 @@ import nz.net.wand.streamevmon.flink.{MeasurementMetaExtractor, TracerouteAsInet
 import nz.net.wand.streamevmon.flink.sources.PostgresTracerouteSourceFunction
 import nz.net.wand.streamevmon.measurements.amp.{Traceroute, TracerouteMeta}
 
-import java.net.InetAddress
 import java.time.{Duration, Instant}
 
 import org.apache.flink.api.common.restartstrategy.RestartStrategies
-import org.apache.flink.api.common.typeinfo._
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.scala._
 
@@ -27,41 +25,10 @@ object EventGraphCorrelator {
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
-    env.getConfig.disableGenericTypes()
-
-    implicit val inetAddressInfo: TypeInformation[InetAddress] = createTypeInformation[InetAddress]
-
     // We need some deterministic streams that will generate events.
     // There also needs to be some Traceroute measurements so that we can
     // actually build the graph.
     // We'll try the cauldron-collector dataset.
-
-    // Just get all the history :)
-    val sourceFunction = new AmpMeasurementSourceFunction(
-      fetchHistory = Duration.ofMillis(System.currentTimeMillis())
-    )
-
-    //val source = env
-    //  .addSource(sourceFunction)
-    //  .name("Measurement history and subscription")
-
-    val pgCon = PostgresConnection(
-      "localhost",
-      5432,
-      "nntsc",
-      "cuz",
-      "",
-      0
-    )
-
-    val metaExtractor = new MeasurementMetaExtractor[InfluxMeasurement]
-
-    //val withMetaExtractor = source.process(metaExtractor).name("Meta extractor")
-    //val metas = withMetaExtractor.getSideOutput(metaExtractor.outputTag)
-
-    //withMetaExtractor.print("Measurements")
-    //metas.print("Metas")
-    //metas.addSink(_ => Unit)
 
     val pgSource = env
       .addSource(new PostgresTracerouteSourceFunction(

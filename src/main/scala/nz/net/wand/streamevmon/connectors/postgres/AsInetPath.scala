@@ -1,5 +1,6 @@
 package nz.net.wand.streamevmon.connectors.postgres
 
+import nz.net.wand.streamevmon.flink.SerializableInetAddress._
 import nz.net.wand.streamevmon.measurements.amp.{Traceroute, TracerouteMeta}
 
 /** Combines an AsPath and an InetPath, as though they were zipped. This ties
@@ -29,7 +30,7 @@ object AsInetPath {
           }
         case None =>
           inetPath.map { inet =>
-            AsInetPathEntry(inet, AsNumber(AsNumberCategory.Missing.id))
+            AsInetPathEntry(inet, AsNumber.Missing)
           }
       },
       measurement,

@@ -1,8 +1,7 @@
 package nz.net.wand.streamevmon.events.grouping.graph
 
 import nz.net.wand.streamevmon.connectors.postgres.AsNumber
-
-import java.net.InetAddress
+import nz.net.wand.streamevmon.flink.SerializableInetAddress
 
 import org.jgrapht.graph.GraphWalk
 
@@ -24,7 +23,7 @@ sealed trait KnownHostname {
 
 class HostWithKnownHostname(
   val hostname : String,
-  val addresses: Iterable[(InetAddress, AsNumber)]
+  val addresses: Iterable[(SerializableInetAddress, AsNumber)]
 ) extends Host
           with KnownHostname {
 
@@ -63,7 +62,7 @@ class HostWithKnownHostname(
 }
 
 class HostWithUnknownHostname(
-  val address: (InetAddress, AsNumber)
+  val address: (SerializableInetAddress, AsNumber)
 ) extends Host {
 
   override def sharesAddressesWith(other: Host): Boolean = other match {
