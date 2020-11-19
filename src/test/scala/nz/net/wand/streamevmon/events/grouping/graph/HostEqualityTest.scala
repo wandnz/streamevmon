@@ -13,15 +13,15 @@ class HostEqualityTest extends TestBase {
 
   "Host with known hostname" should {
     "equal hosts with matching hostnames" in {
-      def noAddresses = new HostWithKnownHostname("example.com", Seq())
+      def noAddresses = new HostWithKnownHostname("example.com", Set())
 
-      def oneAddress = new HostWithKnownHostname("example.com", Seq((InetAddress.getByName("0.0.0.0"), AsNumber(1))))
+      def oneAddress = new HostWithKnownHostname("example.com", Set((InetAddress.getByName("0.0.0.0"), AsNumber(1))))
 
-      def differentAddress = new HostWithKnownHostname("example.com", Seq((InetAddress.getByName("8.8.8.8"), AsNumber(1))))
+      def differentAddress = new HostWithKnownHostname("example.com", Set((InetAddress.getByName("8.8.8.8"), AsNumber(1))))
 
-      def differentAs = new HostWithKnownHostname("example.com", Seq((InetAddress.getByName("0.0.0.0"), AsNumber(2))))
+      def differentAs = new HostWithKnownHostname("example.com", Set((InetAddress.getByName("0.0.0.0"), AsNumber(2))))
 
-      def differentBoth = new HostWithKnownHostname("example.com", Seq((InetAddress.getByName("8.8.8.8"), AsNumber(2))))
+      def differentBoth = new HostWithKnownHostname("example.com", Set((InetAddress.getByName("8.8.8.8"), AsNumber(2))))
 
       checkEqualAndHashCode(noAddresses, noAddresses)
       checkEqualAndHashCode(oneAddress, oneAddress)
@@ -33,21 +33,21 @@ class HostEqualityTest extends TestBase {
     "not equal hosts that only share addresses" in {
       new HostWithKnownHostname(
         "example.com",
-        Seq((InetAddress.getByName("0.0.0.0"), AsNumber(1)))
+        Set((InetAddress.getByName("0.0.0.0"), AsNumber(1)))
       ) should not equal new HostWithKnownHostname(
         "example.co.nz",
-        Seq((InetAddress.getByName("0.0.0.0"), AsNumber(1)))
+        Set((InetAddress.getByName("0.0.0.0"), AsNumber(1)))
       )
     }
 
     "not equal hosts that share neither hostnames or addresses" in {
-      def com = new HostWithKnownHostname("example.com", Seq((InetAddress.getByName("0.0.0.0"), AsNumber(1))))
+      def com = new HostWithKnownHostname("example.com", Set((InetAddress.getByName("0.0.0.0"), AsNumber(1))))
 
-      def differentAddress = new HostWithKnownHostname("example.co.nz", Seq((InetAddress.getByName("8.8.8.8"), AsNumber(1))))
+      def differentAddress = new HostWithKnownHostname("example.co.nz", Set((InetAddress.getByName("8.8.8.8"), AsNumber(1))))
 
-      def differentAs = new HostWithKnownHostname("example.co.nz", Seq((InetAddress.getByName("0.0.0.0"), AsNumber(2))))
+      def differentAs = new HostWithKnownHostname("example.co.nz", Set((InetAddress.getByName("0.0.0.0"), AsNumber(2))))
 
-      def allDifferent = new HostWithKnownHostname("example.co.nz", Seq((InetAddress.getByName("8.8.8.8"), AsNumber(2))))
+      def allDifferent = new HostWithKnownHostname("example.co.nz", Set((InetAddress.getByName("8.8.8.8"), AsNumber(2))))
 
       com should not equal differentAddress
       com should not equal differentAs
@@ -57,14 +57,14 @@ class HostEqualityTest extends TestBase {
     "not equal hosts with different knowledge levels" in {
       new HostWithKnownHostname(
         "example.com",
-        Seq((InetAddress.getByName("0.0.0.0"), AsNumber(1)))
+        Set((InetAddress.getByName("0.0.0.0"), AsNumber(1)))
       ) should not equal new HostWithUnknownHostname(
         (InetAddress.getByName("0.0.0.0"), AsNumber(1))
       )
 
       new HostWithKnownHostname(
         "example.com",
-        Seq((InetAddress.getByName("0.0.0.0"), AsNumber(1)))
+        Set((InetAddress.getByName("0.0.0.0"), AsNumber(1)))
       ) should not equal new HostWithUnknownAddress(0, 0, 0)
     }
   }
@@ -101,7 +101,7 @@ class HostEqualityTest extends TestBase {
         (InetAddress.getByName("0.0.0.0"), AsNumber(1))
       ) should not equal new HostWithKnownHostname(
         "example.com",
-        Seq((InetAddress.getByName("0.0.0.0"), AsNumber(1)))
+        Set((InetAddress.getByName("0.0.0.0"), AsNumber(1)))
       )
 
       new HostWithUnknownHostname(
@@ -128,7 +128,7 @@ class HostEqualityTest extends TestBase {
     "not equal hosts with different knowledge levels" in {
       new HostWithUnknownAddress(0, 0, 0) should not equal new HostWithKnownHostname(
         "example.com",
-        Seq()
+        Set()
       )
 
       new HostWithUnknownAddress(0, 0, 0) should not equal new HostWithUnknownHostname(

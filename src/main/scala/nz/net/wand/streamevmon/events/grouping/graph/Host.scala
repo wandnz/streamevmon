@@ -14,6 +14,8 @@ sealed trait Host extends Serializable {
 
   def mergeWith(other: Host): Host
 
+  def deepEquals(other: Any): Boolean = this.equals(other)
+
   val uid: String
 }
 
@@ -23,12 +25,12 @@ sealed trait KnownHostname {
 
 class HostWithKnownHostname(
   val hostname : String,
-  val addresses: Iterable[(SerializableInetAddress, AsNumber)]
+  val addresses: Set[(SerializableInetAddress, AsNumber)]
 ) extends Host
           with KnownHostname {
 
   override def sharesAddressesWith(other: Host): Boolean = other match {
-    case that: HostWithKnownHostname => addresses.exists(addr => that.addresses.exists(_ == addr))
+    case that: HostWithKnownHostname => addresses.exists(addr => that.addresses.contains(addr))
     case that: HostWithUnknownHostname => addresses.toSeq.contains(that.address)
     case _: HostWithUnknownAddress => false
   }
@@ -37,7 +39,7 @@ class HostWithKnownHostname(
     case that: HostWithKnownHostname if this == that =>
       new HostWithKnownHostname(
         hostname,
-        (addresses ++ that.addresses).toSet
+        addresses ++ that.addresses
       )
     case that: HostWithUnknownHostname if this.sharesAddressesWith(that) => this
     case _ =>
@@ -50,6 +52,15 @@ class HostWithKnownHostname(
   override def equals(other: Any): Boolean = other match {
     case that: HostWithKnownHostname => (that canEqual this) && hostname == that.hostname
     case _ => false
+  }
+
+  override def deepEquals(other: Any): Boolean = other match {
+    case that: HostWithKnownHostname =>
+      (that canEqual this) &&
+        hostname == that.hostname &&
+        // Turns out list equality in Scala is kinda stupid.
+        // List(1,2) != Set(1,2), and order matters in other cases.
+        addresses.toSeq == that.addresses.toSeq
   }
 
   override def hashCode(): Int = {
@@ -66,7 +77,7 @@ class HostWithUnknownHostname(
 ) extends Host {
 
   override def sharesAddressesWith(other: Host): Boolean = other match {
-    case that: HostWithKnownHostname => that.addresses.exists(_ == address)
+    case that: HostWithKnownHostname => that.addresses.contains(address)
     case that: HostWithUnknownHostname => address == that.address
     case _: HostWithUnknownAddress => false
   }

@@ -213,7 +213,7 @@ class AmpletGraphBuilder(
             // This maps from an Option[InetAddress] to an Option[(InetAddress, AsNumber)].
             // Since an Option is an Iterable, this is fine. It'll get turned into
             // a regular seq-like collection later if it needs to be.
-            host, entry.address.map(addr => (addr, entry.as))
+            host, entry.address.map(addr => (addr, entry.as)).toSet
           )
           case (None, Some(addr)) => new HostWithUnknownHostname((addr, entry.as))
           case (None, None) => new HostWithUnknownAddress(path.meta.stream, path.measurement.path_id, index)

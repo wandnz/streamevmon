@@ -5,12 +5,16 @@ import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.events.grouping.graph._
 
+import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
 import org.apache.flink.configuration.Configuration
+import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
+import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction
 import org.apache.flink.util.Collector
 import org.jgrapht.graph.{DefaultDirectedWeightedGraph, DefaultWeightedEdge}
 
 import scala.collection.mutable
+import scala.collection.JavaConverters._
 
 /** Attempts to place events on a topological network graph.
   *
@@ -20,6 +24,7 @@ import scala.collection.mutable
   */
 class TraceroutePathGraph[EventT <: Event]
   extends CoProcessFunction[EventT, AsInetPath, Event]
+          with CheckpointedFunction
           with HasFlinkConfig
           with Logging {
   override val flinkName: String = "Traceroute-Path Graph"
@@ -30,7 +35,7 @@ class TraceroutePathGraph[EventT <: Event]
   type EdgeT = DefaultWeightedEdge
   type GraphT = DefaultDirectedWeightedGraph[VertexT, EdgeT]
 
-  val graph = new GraphT(classOf[EdgeT])
+  var graph = new GraphT(classOf[EdgeT])
 
   val mergedHosts: mutable.Map[String, VertexT] = mutable.Map()
 
@@ -64,7 +69,7 @@ class TraceroutePathGraph[EventT <: Event]
       }
 
       (hostname, entry.address) match {
-        case (Some(host), _) => new HostWithKnownHostname(host, entry.address.map(addr => (addr, entry.as)))
+        case (Some(host), _) => new HostWithKnownHostname(host, entry.address.map(addr => (addr, entry.as)).toSet)
         case (None, Some(addr)) => new HostWithUnknownHostname((addr, entry.as))
         case (None, None) => new HostWithUnknownAddress(path.meta.stream, path.measurement.path_id, index)
       }
@@ -73,10 +78,12 @@ class TraceroutePathGraph[EventT <: Event]
 
   /** Translated from https://stackoverflow.com/a/48255973 */
   def replaceVertex(graph: GraphT, oldHost: VertexT, newHost: VertexT): Unit = {
-    graph.addVertex(newHost)
-    graph.outgoingEdgesOf(oldHost).forEach(edge => graph.addEdge(newHost, graph.getEdgeTarget(edge), edge))
-    graph.incomingEdgesOf(oldHost).forEach(edge => graph.addEdge(graph.getEdgeSource(edge), newHost, edge))
-    graph.removeVertex(oldHost)
+    if (!oldHost.deepEquals(newHost)) {
+      graph.addVertex(newHost)
+      graph.outgoingEdgesOf(oldHost).forEach(edge => graph.addEdge(newHost, graph.getEdgeTarget(edge), edge))
+      graph.incomingEdgesOf(oldHost).forEach(edge => graph.addEdge(graph.getEdgeSource(edge), newHost, edge))
+      graph.removeVertex(oldHost)
+    }
   }
 
   override def processElement2(
@@ -86,6 +93,10 @@ class TraceroutePathGraph[EventT <: Event]
   ): Unit = {
     // First, let's convert the AsInetPath to a collection of Host hops.
     val hosts = pathToHosts(value)
+
+    if (!graph.vertexSet.asScala.exists(_.uid.contains("citylink"))) {
+      val breakpoint = 1
+    }
 
     // For each Host, replace it with the deduplicated equivalent.
     hosts
@@ -139,4 +150,32 @@ class TraceroutePathGraph[EventT <: Event]
   }
 
   var counter = 0
+
+  //val graph = new GraphT(classOf[EdgeT])
+  var graphState: ListState[GraphT] = _
+  var mergedHostsState: ListState[VertexT] = _
+
+  //val mergedHosts: mutable.Map[String, VertexT] = mutable.Map()
+
+  override def snapshotState(context: FunctionSnapshotContext): Unit = {
+    graphState.clear()
+    graphState.add(graph)
+    mergedHostsState.clear()
+    mergedHostsState.addAll(mergedHosts.values.toSeq.asJava)
+  }
+
+  override def initializeState(context: FunctionInitializationContext): Unit = {
+    graphState = context
+      .getOperatorStateStore
+      .getUnionListState(new ListStateDescriptor("graph", classOf[GraphT]))
+
+    mergedHostsState = context
+      .getOperatorStateStore
+      .getUnionListState(new ListStateDescriptor("mergedHosts", classOf[VertexT]))
+
+    if (context.isRestored) {
+      graphState.get.forEach(entry => graph = entry)
+      mergedHostsState.get.forEach(entry => mergedHosts.put(entry.uid, entry))
+    }
+  }
 }
