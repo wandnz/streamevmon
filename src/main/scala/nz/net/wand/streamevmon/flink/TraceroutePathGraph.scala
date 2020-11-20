@@ -176,6 +176,7 @@ class TraceroutePathGraph[EventT <: Event]
     }
     else {
       graph = new GraphT(classOf[EdgeT])
+      graph.setEdgeSupplier(new DefaultWeightedEdgeSupplier)
     }
   }
 }
