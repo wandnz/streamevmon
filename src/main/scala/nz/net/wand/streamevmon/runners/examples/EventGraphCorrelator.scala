@@ -37,9 +37,10 @@ object EventGraphCorrelator {
       .addSource(new PostgresTracerouteSourceFunction(
         fetchHistory = Duration.between(Instant.ofEpochSecond(1582152680), Instant.now())
       ))
+      .name("PostgresSource")
 
     val metaExtractor = new MeasurementMetaExtractor[Traceroute, TracerouteMeta]
-    val tracerouteMetas = pgSource.process(metaExtractor)
+    val tracerouteMetas = pgSource.process(metaExtractor).name(metaExtractor.flinkName)
 
     val co = new TracerouteAsInetPathExtractor
     val connected = pgSource.connect(
@@ -47,18 +48,24 @@ object EventGraphCorrelator {
         .getSideOutput(metaExtractor.outputTag)
     )
 
-    val asInetPaths = connected.process(co)
+    val asInetPaths = connected.process(co).name(co.flinkName)
 
     val detector = new BaselineDetector[TracerouteWithHasDefault]
 
     val events = pgSource
       .map(t => new TracerouteWithHasDefault(t))
+      .name("Convert to TracerouteWithHasDefault")
       .keyBy(_.stream)
       .process(detector)
+      .name(detector.flinkName)
 
     val grapher = new TraceroutePathGraph[Event]
 
-    val locatedEvents = events.connect(asInetPaths).process(grapher)
+    val locatedEvents = events
+      .keyBy(_ => 0)
+      .connect(asInetPaths)
+      .process(grapher)
+      .name(grapher.flinkName)
 
     locatedEvents.print()
 

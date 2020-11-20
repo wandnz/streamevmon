@@ -35,7 +35,7 @@ class TraceroutePathGraph[EventT <: Event]
   type EdgeT = DefaultWeightedEdge
   type GraphT = DefaultDirectedWeightedGraph[VertexT, EdgeT]
 
-  var graph = new GraphT(classOf[EdgeT])
+  var graph: GraphT = _
 
   val mergedHosts: mutable.Map[String, VertexT] = mutable.Map()
 
@@ -79,10 +79,12 @@ class TraceroutePathGraph[EventT <: Event]
   /** Translated from https://stackoverflow.com/a/48255973 */
   def replaceVertex(graph: GraphT, oldHost: VertexT, newHost: VertexT): Unit = {
     if (!oldHost.deepEquals(newHost)) {
-      graph.addVertex(newHost)
-      graph.outgoingEdgesOf(oldHost).forEach(edge => graph.addEdge(newHost, graph.getEdgeTarget(edge), edge))
-      graph.incomingEdgesOf(oldHost).forEach(edge => graph.addEdge(graph.getEdgeSource(edge), newHost, edge))
+      val outEdges = graph.outgoingEdgesOf(oldHost).asScala.map(edge => (graph.getEdgeTarget(edge), edge))
+      val inEdges = graph.incomingEdgesOf(oldHost).asScala.map(edge => (graph.getEdgeSource(edge), edge))
       graph.removeVertex(oldHost)
+      graph.addVertex(newHost)
+      outEdges.foreach(edge => graph.addEdge(newHost, edge._1, edge._2))
+      inEdges.foreach(edge => graph.addEdge(edge._1, newHost, edge._2))
     }
   }
 
@@ -93,10 +95,6 @@ class TraceroutePathGraph[EventT <: Event]
   ): Unit = {
     // First, let's convert the AsInetPath to a collection of Host hops.
     val hosts = pathToHosts(value)
-
-    if (!graph.vertexSet.asScala.exists(_.uid.contains("citylink"))) {
-      val breakpoint = 1
-    }
 
     // For each Host, replace it with the deduplicated equivalent.
     hosts
@@ -134,7 +132,6 @@ class TraceroutePathGraph[EventT <: Event]
       .foreach { elems =>
         val source = elems.head
         val dest = elems.lastOption
-
         dest.foreach { d =>
           graph.addEdge(
             mergedHosts(source._2.uid),
@@ -176,6 +173,9 @@ class TraceroutePathGraph[EventT <: Event]
     if (context.isRestored) {
       graphState.get.forEach(entry => graph = entry)
       mergedHostsState.get.forEach(entry => mergedHosts.put(entry.uid, entry))
+    }
+    else {
+      graph = new GraphT(classOf[EdgeT])
     }
   }
 }
