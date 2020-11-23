@@ -5,6 +5,7 @@ import nz.net.wand.streamevmon.connectors.postgres.{AsNumber, AsNumberCategory}
 import java.awt.Color
 import java.io.File
 
+import org.jgrapht.graph.{DefaultDirectedWeightedGraph, DefaultWeightedEdge}
 import org.jgrapht.nio.DefaultAttribute
 import org.jgrapht.nio.dot.DOTExporter
 
@@ -14,12 +15,11 @@ import scala.collection.JavaConverters._
   * AS they belong to.
   */
 object AmpletGraphDotExporter {
-
-  def exportGraph(
-    graph: AmpletGraphBuilder#GraphT,
+  def exportGraph[VertexT <: Host](
+    graph: DefaultDirectedWeightedGraph[VertexT, DefaultWeightedEdge],
     file : File
   ): Unit = {
-    val exporter = new DOTExporter[AmpletGraphBuilder#VertexT, AmpletGraphBuilder#EdgeT]
+    val exporter = new DOTExporter[VertexT, DefaultWeightedEdge]
 
     // We want to make sure that nodes have their addresses printed as their
     // names.

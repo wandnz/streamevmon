@@ -3,13 +3,7 @@ package nz.net.wand.streamevmon.events.grouping.graph
 import nz.net.wand.streamevmon.connectors.postgres.AsNumber
 import nz.net.wand.streamevmon.flink.SerializableInetAddress
 
-import org.jgrapht.graph.GraphWalk
-
-import scala.collection.mutable
-
 sealed trait Host extends Serializable {
-  val knownPaths: mutable.Set[GraphWalk[Host, AmpletGraphBuilder#EdgeT]] = mutable.Set()
-
   def sharesAddressesWith(other: Host): Boolean
 
   def mergeWith(other: Host): Host
