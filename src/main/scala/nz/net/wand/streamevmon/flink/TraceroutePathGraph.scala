@@ -139,20 +139,10 @@ class TraceroutePathGraph[EventT <: Event]
           )
         }
       }
-
-    counter += 1
-    if (counter > 10000) {
-      val breakpoint = 1
-    }
   }
 
-  var counter = 0
-
-  //val graph = new GraphT(classOf[EdgeT])
   var graphState: ListState[GraphT] = _
   var mergedHostsState: ListState[VertexT] = _
-
-  //val mergedHosts: mutable.Map[String, VertexT] = mutable.Map()
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {
     graphState.clear()

@@ -21,7 +21,12 @@ object EventGraphCorrelator {
     // First, set up a StreamExecutionEnvironment.
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
-    env.enableCheckpointing(10000, CheckpointingMode.EXACTLY_ONCE)
+
+    env.enableCheckpointing(Duration.ofSeconds(60).toMillis, CheckpointingMode.EXACTLY_ONCE)
+    env.getCheckpointConfig.setCheckpointTimeout(Duration.ofSeconds(600).toMillis)
+    env.getCheckpointConfig.setMinPauseBetweenCheckpoints(Duration.ofSeconds(10).toMillis)
+    env.getCheckpointConfig.setMaxConcurrentCheckpoints(1)
+
     env.setRestartStrategy(RestartStrategies.noRestart())
     env.setParallelism(1)
     env.disableOperatorChaining()
