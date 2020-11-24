@@ -12,6 +12,28 @@ import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSn
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.source.{RichSourceFunction, SourceFunction}
 
+/** Retrieves new Traceroute measurements from PostgreSQL in a polling fashion.
+  *
+  * Each time a new query is constructed, this source will refresh its list of
+  * relevant streams. This allows any newly created streams to be picked up.
+  *
+  * ==Configuration==
+  *
+  * See [[nz.net.wand.streamevmon.connectors.postgres.PostgresConnection PostgresConnection]]
+  * for configuration details.
+  *
+  * Additionally, this SourceFunction will sleep for the time in seconds
+  * specified by `source.postgres.tracerouteRefreshDelay` after each query.
+  *
+  * Given a `fetchHistory` of one hour, and a `tracerouteRefreshDelay` of five
+  * minutes, the source will use the following procedure:
+  *
+  * - Output the last hour's worth of measurements all at once
+  * - Wait for five minutes
+  * - Output new measurements that arrived in the last five minutes
+  * - Wait for five minutes
+  * - etc...
+  */
 class PostgresTracerouteSourceFunction(
   fetchHistory: Duration = Duration.ZERO
 )

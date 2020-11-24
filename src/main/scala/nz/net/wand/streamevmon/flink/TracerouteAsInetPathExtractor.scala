@@ -13,11 +13,26 @@ import org.apache.flink.util.Collector
 
 import scala.collection.mutable
 import scala.collection.JavaConverters._
-import scala.concurrent.duration.FiniteDuration
 
-class TracerouteAsInetPathExtractor(
-  ttl: Option[FiniteDuration] = None
-)
+/** Receives a stream of Traceroute measurements, and outputs one AsInetPath
+  * for each input measurement (assuming nothing goes wrong in the fetching
+  * process).
+  *
+  * The second input is a stream of TracerouteMeta entries. It is expected that
+  * each Traceroute input will have a corresponding TracerouteMeta that belongs
+  * to the same stream, but it is not required that the TracerouteMeta arrives
+  * first. Any Traceroute measurements that were received before the
+  * corresponding TracerouteMeta are buffered and processed when the Meta
+  * is received.
+  *
+  * If a TracerouteMeta is received that is part of a stream we already have an
+  * entry for, it is simply used from then on, overwriting the previous entry.
+  *
+  * This CoProcessFunction constructs a
+  * [[nz.net.wand.streamevmon.connectors.postgres.PostgresConnection PostgresConnection]],
+  * which uses Caching.
+  */
+class TracerouteAsInetPathExtractor
   extends CoProcessFunction[Traceroute, TracerouteMeta, AsInetPath]
           with HasFlinkConfig
           with CheckpointedFunction
@@ -39,23 +54,18 @@ class TracerouteAsInetPathExtractor(
     pgCon = PostgresConnection(params)
   }
 
+  /** Converts a Traceroute and its corresponding TracerouteMeta into an
+    * AsInetPath. Performs database communication via `pgCon`.
+    */
   protected def getAsInetPath(
     trace: Traceroute,
     meta : TracerouteMeta
   ): Option[AsInetPath] = {
-    val path: Option[TraceroutePath] = getWithCache(
-      s"AmpletGraph.Path.${trace.stream}.${trace.path_id}",
-      ttl,
-      pgCon.getTraceroutePath(trace)
-    )
-    val asPath: Option[TracerouteAsPath] = trace.aspath_id.flatMap { aspath_id =>
-      getWithCache(
-        s"AmpletGraph.AsPath.${trace.stream}.$aspath_id",
-        ttl,
-        pgCon.getTracerouteAsPath(trace)
-      )
-    }
+    val path: Option[TraceroutePath] = pgCon.getTraceroutePath(trace)
+    val asPath: Option[TracerouteAsPath] = trace.aspath_id.flatMap(_ => pgCon.getTracerouteAsPath(trace))
 
+    // If we couldn't find one of the paths we should have, just log a warning
+    // and continue as usual. If the path is empty, no AsInetPath is returned.
     if (path.isEmpty || (trace.aspath_id.isDefined && asPath.isEmpty)) {
       logger.warn(s"Failed to get TraceroutePath or TracerouteAsPath! Values: $path, $asPath")
     }
@@ -68,6 +78,10 @@ class TracerouteAsInetPathExtractor(
     ))
   }
 
+  /** Outputs an AsInetPath for each Traceroute measurement received. If a
+    * corresponding TracerouteMeta has not yet been received via
+    * `processElement2`, we store the Traceroute for later processing.
+    */
   override def processElement1(
     value: Traceroute,
     ctx: CoProcessFunction[Traceroute, TracerouteMeta, AsInetPath]#Context,
@@ -86,9 +100,18 @@ class TracerouteAsInetPathExtractor(
     }
   }
 
+  /** When a TracerouteMeta is received, it is recorded to be used with future
+    * Traceroute measurements that are received. If any unprocessed Traceroute
+    * measurements corresponding to the new Meta were previously received, we
+    * process them now.
+    *
+    * If a TracerouteMeta is received for a stream that we previously had an
+    * entry for, it is simply overwritten with the new one, and the function
+    * will begin to use it from then on.
+    */
   override def processElement2(
     value: TracerouteMeta,
-    ctx  : CoProcessFunction[Traceroute, TracerouteMeta, AsInetPath]#Context,
+    ctx: CoProcessFunction[Traceroute, TracerouteMeta, AsInetPath]#Context,
     out  : Collector[AsInetPath]
   ): Unit = {
     val stream = value.stream.toString
@@ -98,6 +121,12 @@ class TracerouteAsInetPathExtractor(
     })
     unprocessedMeasurements.put(stream, List())
   }
+
+  // == CheckpointedFunction implementation ==
+  // Instead of storing the entire Map in the checkpoint, we just store the
+  // combined list of values for every map entry. Since each value is unique
+  // and the key can be recovered from the entries, we save a bit of storage
+  // complexity.
 
   private var knownMetasState: ListState[TracerouteMeta] = _
   private var unprocessedMeasurementsState: ListState[Traceroute] = _

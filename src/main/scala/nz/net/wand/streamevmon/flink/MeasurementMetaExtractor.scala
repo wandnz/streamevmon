@@ -16,6 +16,26 @@ import org.apache.flink.util.Collector
 import scala.collection.mutable
 import scala.collection.JavaConverters._
 
+/** Outputs PostgresMeasurementMeta objects for each measurement received. Note
+  * that only one Meta object will be output for each stream. if several
+  * measurements that are part of the same stream are received, a corresponding
+  * Meta object will only be output alongside the first entry.
+  *
+  * Received measurements are output unchanged through the main output. Meta
+  * objects are output through a side output, which can be accessed using the
+  * `outputTag` field.
+  *
+  * @tparam MeasT The type of measurements which will be received.
+  * @tparam MetaT The corresponding type of MeasurementMeta which should be
+  *               output. It is the user's responsibility to ensure that any
+  *               Meta obtained via the
+  *               [[nz.net.wand.streamevmon.connectors.postgres.PostgresConnection.getMeta PostgresConnection.getMeta]]
+  *               function are of a type which can be cast to MetaT.
+  *
+  *               This ProcessFunction constructs a
+  *               [[nz.net.wand.streamevmon.connectors.postgres.PostgresConnection PostgresConnection]],
+  *               which uses Caching.
+  */
 class MeasurementMetaExtractor[MeasT <: Measurement, MetaT <: PostgresMeasurementMeta : TypeInformation]
   extends ProcessFunction[MeasT, MeasT]
           with CheckpointedFunction
@@ -37,8 +57,6 @@ class MeasurementMetaExtractor[MeasT <: Measurement, MetaT <: PostgresMeasuremen
 
   val seenMetas: mutable.Map[String, MetaT] = mutable.Map[String, MetaT]()
 
-  var firstMeasurementTime: Long = 0L
-
   override def processElement(
     value: MeasT,
     ctx  : ProcessFunction[MeasT, MeasT]#Context,
@@ -57,8 +75,12 @@ class MeasurementMetaExtractor[MeasT <: Measurement, MetaT <: PostgresMeasuremen
     out.collect(value)
   }
 
-  // Not sure why we can't get a MapState from the OperatorStateStore, but this
-  // workaround is fine.
+  // == CheckpointedFunction implementation ==
+  // Instead of storing the entire Map in the checkpoint, we just store the
+  // combined list of values for every map entry. Since each value is unique
+  // and the key can be recovered from the entries, we save a bit of storage
+  // complexity.
+
   private var checkpointState: ListState[MetaT] = _
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {
