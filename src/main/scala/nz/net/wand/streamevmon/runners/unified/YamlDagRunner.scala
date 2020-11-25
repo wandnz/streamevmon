@@ -2,8 +2,9 @@ package nz.net.wand.streamevmon.runners.unified
 
 import nz.net.wand.streamevmon.{Configuration, Lazy}
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.flink.{HasFlinkConfig, MeasurementTimestampAssigner}
+import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.traits.Measurement
+import nz.net.wand.streamevmon.measurements.MeasurementTimestampAssigner
 import nz.net.wand.streamevmon.parameters.HasParameterSpecs
 import nz.net.wand.streamevmon.runners.unified.schema.{StreamToTypedStreams, StreamWindowType}
 

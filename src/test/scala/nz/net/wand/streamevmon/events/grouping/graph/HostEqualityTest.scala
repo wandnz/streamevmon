@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.events.grouping.graph
 
 import nz.net.wand.streamevmon.TestBase
-import nz.net.wand.streamevmon.connectors.postgres.AsNumber
+import nz.net.wand.streamevmon.connectors.postgres.schema.AsNumber
 
 import java.net.InetAddress
 

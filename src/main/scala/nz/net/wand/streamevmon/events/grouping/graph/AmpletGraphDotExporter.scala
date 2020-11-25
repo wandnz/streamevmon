@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.events.grouping.graph
 
-import nz.net.wand.streamevmon.connectors.postgres.{AsNumber, AsNumberCategory}
+import nz.net.wand.streamevmon.connectors.postgres.schema.{AsNumber, AsNumberCategory}
 
 import java.awt.Color
 import java.io.File

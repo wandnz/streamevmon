@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.connectors.postgres
+package nz.net.wand.streamevmon.connectors.postgres.schema
 
 /** An Autonomous System Number. Supports the special cases of
   * AS "numbers" that amp might report, such as private IPs or

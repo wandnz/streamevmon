@@ -2,9 +2,10 @@ package nz.net.wand.streamevmon.tuner.nab
 
 import nz.net.wand.streamevmon.{Configuration, Logging}
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.flink.{HasFlinkConfig, MeasurementKeySelector}
+import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.flink.sources.NabFileInputFormat
 import nz.net.wand.streamevmon.measurements.nab.NabMeasurement
+import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
 import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
 
 import java.io.File

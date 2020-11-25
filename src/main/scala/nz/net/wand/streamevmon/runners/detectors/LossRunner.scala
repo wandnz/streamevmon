@@ -2,10 +2,10 @@ package nz.net.wand.streamevmon.runners.detectors
 
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
-import nz.net.wand.streamevmon.flink.MeasurementKeySelector
 import nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction
 import nz.net.wand.streamevmon.flink.sources.AmpMeasurementSourceFunction
 import nz.net.wand.streamevmon.measurements.traits.InfluxMeasurement
+import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
 
 import java.time.Duration
 

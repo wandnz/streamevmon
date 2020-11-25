@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon
 
 import nz.net.wand.streamevmon.connectors.esmond.schema._
 import nz.net.wand.streamevmon.connectors.esmond.ResponseType
-import nz.net.wand.streamevmon.connectors.postgres._
+import nz.net.wand.streamevmon.connectors.postgres.schema._
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow

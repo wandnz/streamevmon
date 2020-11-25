@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.flink
+package nz.net.wand.streamevmon.events.grouping.graph
 
 import java.net.InetAddress
 
@@ -21,8 +21,6 @@ case class SerializableInetAddress(
 ) {
 
   // We'll use the implicit conversions here for simplicity.
-
-  import nz.net.wand.streamevmon.flink.SerializableInetAddress._
 
   // Since this object is immutable, we can use a val instead of a def for
   // explicit conversions of this format.

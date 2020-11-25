@@ -1,8 +1,9 @@
 package nz.net.wand.streamevmon.detectors.checkpointing
 
 import nz.net.wand.streamevmon.detectors.distdiff.{DistDiffDetector, WindowedDistDiffDetector}
+import nz.net.wand.streamevmon.detectors.WindowedFunctionWrapper
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.flink.{MockSink, WindowedFunctionWrapper}
+import nz.net.wand.streamevmon.flink.MockSink
 import nz.net.wand.streamevmon.measurements.amp.ICMP
 
 import java.time.{Duration, Instant}

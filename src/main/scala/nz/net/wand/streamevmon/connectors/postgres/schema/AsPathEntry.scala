@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.connectors.postgres
+package nz.net.wand.streamevmon.connectors.postgres.schema
 
 /** This is part of an [[AsPath]]. `hopsInAs` is the number of
   * separate addresses which were visited before leaving the AS described

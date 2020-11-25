@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.connectors.postgres
+package nz.net.wand.streamevmon.connectors.postgres.schema
 
 import org.squeryl.customtypes.StringField
 

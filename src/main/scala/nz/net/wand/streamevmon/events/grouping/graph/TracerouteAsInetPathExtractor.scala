@@ -1,7 +1,9 @@
-package nz.net.wand.streamevmon.flink
+package nz.net.wand.streamevmon.events.grouping.graph
 
 import nz.net.wand.streamevmon.{Caching, Logging}
-import nz.net.wand.streamevmon.connectors.postgres.{AsInetPath, PostgresConnection}
+import nz.net.wand.streamevmon.connectors.postgres.PostgresConnection
+import nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath
+import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.amp._
 
 import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}

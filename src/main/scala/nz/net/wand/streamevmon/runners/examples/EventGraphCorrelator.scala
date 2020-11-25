@@ -3,10 +3,11 @@ package nz.net.wand.streamevmon.runners.examples
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.baseline.BaselineDetector
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.flink.{MeasurementMetaExtractor, TracerouteAsInetPathExtractor, TraceroutePathGraph}
+import nz.net.wand.streamevmon.events.grouping.graph.{TracerouteAsInetPathExtractor, TraceroutePathGraph}
 import nz.net.wand.streamevmon.flink.sources.PostgresTracerouteSourceFunction
 import nz.net.wand.streamevmon.measurements.amp.{Traceroute, TracerouteMeta}
 import nz.net.wand.streamevmon.measurements.traits.HasDefault
+import nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor
 
 import java.time.{Duration, Instant}
 

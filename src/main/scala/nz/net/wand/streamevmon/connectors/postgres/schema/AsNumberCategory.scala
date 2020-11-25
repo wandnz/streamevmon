@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.connectors.postgres
+package nz.net.wand.streamevmon.connectors.postgres.schema
 
 /** AMP can report a few special cases that aren't AS numbers.
   * RFC 1918 declares a few IP address ranges for private use, which

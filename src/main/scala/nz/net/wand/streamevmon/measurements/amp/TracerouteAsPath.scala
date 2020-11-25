@@ -1,9 +1,9 @@
 package nz.net.wand.streamevmon.measurements.amp
 
-import nz.net.wand.streamevmon.connectors.postgres.AsPath
+import nz.net.wand.streamevmon.connectors.postgres.schema.AsPath
 
-/** An [[nz.net.wand.streamevmon.connectors.postgres.AsPath AsPath]], with some
-  * extra metadata. This represents the table named
+/** An [[nz.net.wand.streamevmon.connectors.postgres.schema.AsPath AsPath]], with
+  * some extra metadata. This represents the table named
   * `data_amp_traceroute_aspaths_{aspath_id}` in PostgreSQL.
   *
   * `aspath_length` should be the same as the sum of the `hopsInAs` fields of
@@ -13,7 +13,7 @@ import nz.net.wand.streamevmon.connectors.postgres.AsPath
   *
   * `responses` should be the same as the sum of the `hopsInAs` fields of those
   * elements of `aspath` that are not in the `Missing`
-  * [[nz.net.wand.streamevmon.connectors.postgres.AsNumberCategory AsNumberCategory]].
+  * [[nz.net.wand.streamevmon.connectors.postgres.schema.AsNumberCategory AsNumberCategory]].
   */
 case class TracerouteAsPath(
   aspath_id: Int,

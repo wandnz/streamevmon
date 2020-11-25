@@ -1,6 +1,5 @@
-package nz.net.wand.streamevmon.connectors.postgres
+package nz.net.wand.streamevmon.connectors.postgres.schema
 
-import nz.net.wand.streamevmon.flink.SerializableInetAddress._
 import nz.net.wand.streamevmon.measurements.amp.{Traceroute, TracerouteMeta}
 
 /** Combines an AsPath and an InetPath, as though they were zipped. This ties

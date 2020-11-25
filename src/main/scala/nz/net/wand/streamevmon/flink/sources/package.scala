@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.flink
 
-/** Sinks are the beginning of a Flink pipeline. In our case, they produce
+/** Sources are the beginning of a Flink pipeline. In our case, they produce
   * Measurements to be passed to detectors. Measurements are obtained from
   * outside this program.
   *

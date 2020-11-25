@@ -1,8 +1,8 @@
 package nz.net.wand.streamevmon.runners.unified.schema
 
 import nz.net.wand.streamevmon.{Caching, Lazy}
-import nz.net.wand.streamevmon.flink.MeasurementKeySelector
 import nz.net.wand.streamevmon.measurements.traits.Measurement
+import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
 
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.windowing.time.Time

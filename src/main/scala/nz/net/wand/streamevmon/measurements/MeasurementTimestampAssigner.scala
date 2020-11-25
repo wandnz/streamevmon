@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.flink
+package nz.net.wand.streamevmon.measurements
 
 import nz.net.wand.streamevmon.measurements.traits.Measurement
 

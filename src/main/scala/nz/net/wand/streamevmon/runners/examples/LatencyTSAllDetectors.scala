@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.runners
+package nz.net.wand.streamevmon.runners.examples
 
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.baseline.BaselineDetector
@@ -7,9 +7,9 @@ import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.detectors.spike.SpikeDetector
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.flink.MeasurementKeySelector
 import nz.net.wand.streamevmon.flink.sources.LatencyTSAmpFileInputFormat
 import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
+import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
 
 import java.io.File
 

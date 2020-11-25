@@ -1,8 +1,9 @@
 package nz.net.wand.streamevmon.detectors.checkpointing
 
 import nz.net.wand.streamevmon.{Configuration, TestBase}
-import nz.net.wand.streamevmon.flink.{FailingSource, MeasurementKeySelector}
+import nz.net.wand.streamevmon.flink.FailingSource
 import nz.net.wand.streamevmon.measurements.amp.ICMP
+import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
 
 import java.time.Duration
 

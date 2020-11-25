@@ -1,7 +1,6 @@
 package nz.net.wand.streamevmon.events.grouping.graph
 
-import nz.net.wand.streamevmon.connectors.postgres.AsNumber
-import nz.net.wand.streamevmon.flink.SerializableInetAddress
+import nz.net.wand.streamevmon.connectors.postgres.schema.AsNumber
 
 /** Represents hosts that are part of a Traceroute path.
   *
@@ -19,8 +18,8 @@ import nz.net.wand.streamevmon.flink.SerializableInetAddress
   * can never be merged with higher tiers, since we have no knowledge to merge.
   *
   * Each address is paired with an
-  * [[nz.net.wand.streamevmon.connectors.postgres.AsNumber AsNumber]], which can
-  * be missing or unknown.
+  * [[nz.net.wand.streamevmon.connectors.postgres.schema.AsNumber AsNumber]],
+  * which can be missing or unknown.
   *
   * More advanced methods of host deduplication may reveal a fourth case, where
   * multiple hostnames are known.

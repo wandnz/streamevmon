@@ -2,9 +2,9 @@ package nz.net.wand.streamevmon.runners.detectors
 
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.spike.{SpikeDetail, SpikeDetector}
-import nz.net.wand.streamevmon.flink.MeasurementKeySelector
 import nz.net.wand.streamevmon.flink.sources.LatencyTSAmpFileInputFormat
 import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
+import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
 
 import java.time.Duration
 

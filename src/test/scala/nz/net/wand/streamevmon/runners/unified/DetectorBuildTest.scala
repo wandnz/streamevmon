@@ -7,8 +7,9 @@ import nz.net.wand.streamevmon.detectors.distdiff.{DistDiffDetector, WindowedDis
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.detectors.spike.SpikeDetector
+import nz.net.wand.streamevmon.detectors.WindowedFunctionWrapper
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.flink.{HasFlinkConfig, WindowedFunctionWrapper}
+import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.amp.ICMP
 import nz.net.wand.streamevmon.runners.unified.schema._
 

@@ -8,7 +8,8 @@ import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.detectors.spike.SpikeDetector
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.Perhaps
-import nz.net.wand.streamevmon.flink.{HasFlinkConfig, WindowedFunctionWrapper}
+import nz.net.wand.streamevmon.detectors.WindowedFunctionWrapper
+import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.traits.{CsvOutputable, HasDefault, Measurement}
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
@@ -104,7 +105,7 @@ object DetectorType extends Enumeration {
 
     /** If a detector has a separate windowed implementation, it will be
       * built. Otherwise, the regular keyed detector will be built, then wrapped
-      * in a [[nz.net.wand.streamevmon.flink.WindowedFunctionWrapper WindowedFunctionWrapper]].
+      * in a [[nz.net.wand.streamevmon.detectors.WindowedFunctionWrapper WindowedFunctionWrapper]].
       *
       * Throws an IllegalArgumentException if the type does not have the traits
       * that this detector type requires.
