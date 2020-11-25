@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.flink.sources
 
 import nz.net.wand.streamevmon.connectors.influx.InfluxHistoryConnection
-import nz.net.wand.streamevmon.measurements.InfluxMeasurement
+import nz.net.wand.streamevmon.measurements.traits.InfluxMeasurement
 
 import java.time.{Duration, Instant}
 

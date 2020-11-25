@@ -20,7 +20,7 @@ import org.apache.flink.streaming.api.functions.source.{FileProcessingMode, Sour
 import org.apache.flink.streaming.api.scala._
 
 /** Shows saving measurements that implement
-  * [[nz.net.wand.streamevmon.measurements.CsvOutputable CsvOutputable]] to a
+  * [[nz.net.wand.streamevmon.measurements.traits.CsvOutputable CsvOutputable]] to a
   * file using the StreamingFileSink.
   *
   * This example is more convoluted than it needs to be in order to get around

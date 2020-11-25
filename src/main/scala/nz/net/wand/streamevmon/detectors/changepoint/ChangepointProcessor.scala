@@ -1,8 +1,8 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 import nz.net.wand.streamevmon.Logging
+import nz.net.wand.streamevmon.measurements.traits.{HasDefault, Measurement}
 
 import java.io.{File, PrintWriter}
 import java.time.{Duration, Instant}
@@ -24,8 +24,8 @@ import org.apache.flink.util.Collector
   * @param filename            When shouldDoGraphs is true, this filename is combined with
   *                            the values of the parameters set in the global configuration
   *                            to create the filename of the .csv files output.
-  * @tparam MeasT The type of [[nz.net.wand.streamevmon.measurements.Measurement Measurement]] we're receiving.
-  * @tparam DistT The type of [[Distribution]] to model recent measurements with.
+  * @tparam MeasT The type of Measurement we're receiving.
+  * @tparam DistT The type of Distribution to model recent measurements with.
   */
 case class ChangepointProcessor[MeasT <: Measurement with HasDefault : TypeInformation, DistT <: Distribution[MeasT] : TypeInformation](
   initialDistribution: DistT,

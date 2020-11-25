@@ -2,8 +2,8 @@ package nz.net.wand.streamevmon.runners.examples
 
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.flink.sources.LatencyTSAmpFileInputFormat
-import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
 import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
+import nz.net.wand.streamevmon.measurements.traits.{HasDefault, Measurement}
 
 import java.time.Instant
 
@@ -18,7 +18,7 @@ import org.apache.flink.util.Collector
 import scala.compat.Platform.EOL
 
 /** Gathers some statistical metrics from a measurement stream which implements
-  * [[nz.net.wand.streamevmon.measurements.HasDefault HasDefault]]. It creates
+  * [[nz.net.wand.streamevmon.measurements.traits.HasDefault HasDefault]]. It creates
   * a rolling window and gathers metrics from that, then prints the results.
   *
   * @see [[http://commons.apache.org/proper/commons-math/javadocs/api-3.3/org/apache/commons/math3/stat/descriptive/SummaryStatistics.html Apache Commons Math SummaryStatistics]]

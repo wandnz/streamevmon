@@ -1,8 +1,8 @@
 package nz.net.wand.streamevmon.measurements.bigdata
 
-import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasurementFactory}
 import nz.net.wand.streamevmon.measurements.bigdata.Flow.Endpoint
 import nz.net.wand.streamevmon.measurements.bigdata.Flow.FlowType.FlowType
+import nz.net.wand.streamevmon.measurements.traits.{InfluxMeasurement, InfluxMeasurementFactory}
 
 import java.net.InetAddress
 import java.time.Instant

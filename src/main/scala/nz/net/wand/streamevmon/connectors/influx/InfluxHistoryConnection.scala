@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.connectors.influx
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata._
-import nz.net.wand.streamevmon.measurements.InfluxMeasurement
+import nz.net.wand.streamevmon.measurements.traits.InfluxMeasurement
 
 import java.time.Instant
 

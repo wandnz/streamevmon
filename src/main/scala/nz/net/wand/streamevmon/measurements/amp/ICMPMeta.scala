@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.measurements.amp
 
-import nz.net.wand.streamevmon.measurements.PostgresMeasurementMeta
+import nz.net.wand.streamevmon.measurements.traits.PostgresMeasurementMeta
 
 import org.squeryl.annotations.Column
 

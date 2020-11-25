@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.flink.sources
 import nz.net.wand.streamevmon.connectors.influx.{InfluxConnection, InfluxHistoryConnection}
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
-import nz.net.wand.streamevmon.measurements.InfluxMeasurement
+import nz.net.wand.streamevmon.measurements.traits.InfluxMeasurement
 
 import java.io.{BufferedReader, InputStreamReader}
 import java.net.{ServerSocket, SocketTimeoutException}

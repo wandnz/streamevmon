@@ -5,7 +5,7 @@ import nz.net.wand.streamevmon.detectors.loss.LossDetector
 import nz.net.wand.streamevmon.flink.MeasurementKeySelector
 import nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction
 import nz.net.wand.streamevmon.flink.sources.AmpMeasurementSourceFunction
-import nz.net.wand.streamevmon.measurements._
+import nz.net.wand.streamevmon.measurements.traits.InfluxMeasurement
 
 import java.time.Duration
 

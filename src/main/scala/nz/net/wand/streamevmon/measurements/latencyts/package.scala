@@ -6,8 +6,11 @@ package nz.net.wand.streamevmon.measurements
   * format of ICMP measurements since this dataset was gathered in 2014 and the
   * present. As such, we need a unique representation.
   *
-  * Both of these types inherit from [[RichMeasurement]], [[HasDefault]], and
-  * [[CsvOutputable]], meaning they can be used in a wide variety of detectors.
+  * Both of these types inherit from
+  * [[nz.net.wand.streamevmon.measurements.traits.RichMeasurement RichMeasurement]],
+  * [[nz.net.wand.streamevmon.measurements.traits.HasDefault HasDefault]], and
+  * [[nz.net.wand.streamevmon.measurements.traits.CsvOutputable CsvOutputable]],
+  * meaning they can be used in a wide variety of detectors.
   *
   * Use the [[nz.net.wand.streamevmon.flink.sources.LatencyTSAmpFileInputFormat LatencyTSAmpFileInputFormat]]
   * and [[nz.net.wand.streamevmon.flink.sources.LatencyTSSmokepingFileInputFormat LatencyTSSmokepingFileInputFormat]]

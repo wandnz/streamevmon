@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.measurements
+package nz.net.wand.streamevmon.measurements.traits
 
 /** Mixed into companion objects of concrete [[RichInfluxMeasurement]] classes.
   *

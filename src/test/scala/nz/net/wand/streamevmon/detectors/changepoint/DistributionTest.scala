@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
 import nz.net.wand.streamevmon.TestBase
-import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
+import nz.net.wand.streamevmon.measurements.traits.{HasDefault, Measurement}
 
 import java.time.Instant
 

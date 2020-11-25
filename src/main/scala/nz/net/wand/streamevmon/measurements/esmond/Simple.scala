@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.measurements.esmond
 
 import nz.net.wand.streamevmon.connectors.esmond.schema.SimpleTimeSeriesEntry
-import nz.net.wand.streamevmon.measurements.{CsvOutputable, HasDefault}
+import nz.net.wand.streamevmon.measurements.traits.{CsvOutputable, HasDefault}
 
 import java.time.Instant
 

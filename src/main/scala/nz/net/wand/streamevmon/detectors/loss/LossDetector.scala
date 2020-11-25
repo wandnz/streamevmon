@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.detectors.loss
 
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
-import nz.net.wand.streamevmon.measurements._
+import nz.net.wand.streamevmon.measurements.traits.Measurement
 
 import java.time.Duration
 

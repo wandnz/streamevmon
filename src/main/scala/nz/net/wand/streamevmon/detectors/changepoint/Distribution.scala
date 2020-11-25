@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
-import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
+import nz.net.wand.streamevmon.measurements.traits.{HasDefault, Measurement}
 
 /** Parent class for continuous probability distributions that evolve as more
   * data is provided to them.

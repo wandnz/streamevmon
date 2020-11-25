@@ -1,12 +1,12 @@
 package nz.net.wand.streamevmon.runners.unified.schema
 
-import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.Lazy
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow
 import nz.net.wand.streamevmon.measurements.esmond._
 import nz.net.wand.streamevmon.measurements.latencyts._
 import nz.net.wand.streamevmon.measurements.nab.NabMeasurement
+import nz.net.wand.streamevmon.measurements.traits.Measurement
 
 import java.util.NoSuchElementException
 

@@ -1,13 +1,13 @@
 package nz.net.wand.streamevmon.flink.sources
 
 import nz.net.wand.streamevmon.connectors.postgres.PostgresConnection
-import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasurementFactory, RichInfluxMeasurement}
+import nz.net.wand.streamevmon.measurements.traits.{InfluxMeasurement, InfluxMeasurementFactory, RichInfluxMeasurement}
 
 import java.time.Duration
 
 import org.apache.flink.configuration.Configuration
 
-/** Produces [[nz.net.wand.streamevmon.measurements.RichInfluxMeasurement RichInfluxMeasurement]]
+/** Produces [[nz.net.wand.streamevmon.measurements.traits.RichInfluxMeasurement RichInfluxMeasurement]]
   * values from InfluxDB in a streaming fashion. This source retrieves AMP
   * measurements.
   *

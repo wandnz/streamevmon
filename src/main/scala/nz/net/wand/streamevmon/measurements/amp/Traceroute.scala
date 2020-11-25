@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.measurements.amp
 
-import nz.net.wand.streamevmon.measurements.PostgresMeasurement
 import nz.net.wand.streamevmon.Logging
+import nz.net.wand.streamevmon.measurements.traits.PostgresMeasurement
 
 import java.time.Instant
 

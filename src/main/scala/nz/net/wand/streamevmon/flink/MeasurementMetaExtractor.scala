@@ -1,8 +1,8 @@
 package nz.net.wand.streamevmon.flink
 
 import nz.net.wand.streamevmon.connectors.postgres.PostgresConnection
-import nz.net.wand.streamevmon.measurements.{Measurement, PostgresMeasurementMeta}
 import nz.net.wand.streamevmon.Logging
+import nz.net.wand.streamevmon.measurements.traits.{Measurement, PostgresMeasurementMeta}
 
 import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
 import org.apache.flink.api.common.typeinfo._

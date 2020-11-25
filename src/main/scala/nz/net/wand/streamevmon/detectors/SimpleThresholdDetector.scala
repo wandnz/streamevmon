@@ -1,8 +1,8 @@
 package nz.net.wand.streamevmon.detectors
 
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.measurements.amp.RichICMP
+import nz.net.wand.streamevmon.measurements.traits.Measurement
 
 import java.time.Duration
 

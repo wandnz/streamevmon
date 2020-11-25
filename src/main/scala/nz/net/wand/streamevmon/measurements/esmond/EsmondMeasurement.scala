@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.measurements.esmond
 
 import nz.net.wand.streamevmon.connectors.esmond.schema._
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.traits.Measurement
 
 /** Parent class for measurements from perfSONAR esmond. These don't necessarily
   * implement either HasDefault or CsvOutputable, but we'll define a default

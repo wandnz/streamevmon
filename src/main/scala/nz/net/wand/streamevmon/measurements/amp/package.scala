@@ -4,14 +4,14 @@ package nz.net.wand.streamevmon.measurements
   * WAND's Active Measurement Project. It should be a comprehensive
   * representation of the measurements as they are stored in InfluxDB.
   *
-  * As such, all AMP measurements are [[InfluxMeasurement InfluxMeasurements]].
-  * AMP measurements can be enriched into [[RichInfluxMeasurement RichInfluxMeasurements]]
-  * using [[InfluxMeasurementFactory.enrichMeasurement]].
+  * As such, all AMP measurements are [[nz.net.wand.streamevmon.measurements.traits.InfluxMeasurement InfluxMeasurements]].
+  * AMP measurements can be enriched into [[nz.net.wand.streamevmon.measurements.traits.RichInfluxMeasurement RichInfluxMeasurements]]
+  * using [[nz.net.wand.streamevmon.measurements.traits.InfluxMeasurementFactory.enrichMeasurement InfluxMeasurementFactory.enrichMeasurement]].
   *
   * The metadata used to enrich a measurement is obtained from PostgreSQL (see
   * [[nz.net.wand.streamevmon.connectors.postgres Postgres connector package]]),
   * and can be obtained separately as a
-  * [[nz.net.wand.streamevmon.measurements.PostgresMeasurementMeta MeasurementMeta]].
+  * [[nz.net.wand.streamevmon.measurements.traits.PostgresMeasurementMeta MeasurementMeta]].
   * The metadata is information about the test schedule which produced the
   * measurement.
   *

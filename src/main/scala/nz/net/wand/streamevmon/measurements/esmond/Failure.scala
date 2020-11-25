@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.measurements.esmond
 
 import nz.net.wand.streamevmon.connectors.esmond.schema.FailureTimeSeriesEntry
-import nz.net.wand.streamevmon.measurements.CsvOutputable
+import nz.net.wand.streamevmon.measurements.traits.CsvOutputable
 
 import java.time.Instant
 

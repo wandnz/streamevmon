@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.events
 
-import nz.net.wand.streamevmon.measurements.CsvOutputable
+import nz.net.wand.streamevmon.measurements.traits.CsvOutputable
 
 import java.time.{Duration, Instant}
 import java.util.concurrent.TimeUnit

@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.measurements.latencyts
 
-import nz.net.wand.streamevmon.measurements.{CsvOutputable, HasDefault, RichMeasurement}
+import nz.net.wand.streamevmon.measurements.traits.{CsvOutputable, HasDefault, RichMeasurement}
 
 import java.time.Instant
 

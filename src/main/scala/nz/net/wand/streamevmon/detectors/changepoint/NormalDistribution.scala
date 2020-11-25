@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.detectors.changepoint
 
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.measurements.{HasDefault, Measurement}
+import nz.net.wand.streamevmon.measurements.traits.{HasDefault, Measurement}
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.scalactic.{Equality, TolerantNumerics}

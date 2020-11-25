@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.measurements
+package nz.net.wand.streamevmon.measurements.traits
 
 /** All measurements from InfluxDB have the traits included in this bundle.
   */

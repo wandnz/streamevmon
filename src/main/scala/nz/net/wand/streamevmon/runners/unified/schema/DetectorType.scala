@@ -7,9 +7,9 @@ import nz.net.wand.streamevmon.detectors.loss.LossDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.detectors.spike.SpikeDetector
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.measurements.{CsvOutputable, HasDefault, Measurement}
 import nz.net.wand.streamevmon.Perhaps
 import nz.net.wand.streamevmon.flink.{HasFlinkConfig, WindowedFunctionWrapper}
+import nz.net.wand.streamevmon.measurements.traits.{CsvOutputable, HasDefault, Measurement}
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction

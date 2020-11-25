@@ -1,29 +1,22 @@
 package nz.net.wand.streamevmon
 
 /** Contains classes representing network measurements, such as those gathered
-  * by AMP or perfSONAR.
+  * by AMP or perfSONAR Esmond.
   *
-  * The base type is [[nz.net.wand.streamevmon.measurements.Measurement Measurement]].
-  * This includes a timestamp and a stream ID. Concrete classes will also include
-  * one or more value fields. Measurement also provides an `isLossy` function,
-  * since that knowledge is useful in a wide variety of situations and can be
-  * implemented in the concrete class.
+  * Measurements are grouped into categories based on their source. Each
+  * category has its own package, and the package objects have further
+  * documentation.
   *
-  * A [[nz.net.wand.streamevmon.measurements.RichMeasurement RichMeasurement]]
-  * also includes some metadata about the stream it came from, such as the
-  * source and destination of an ICMP test. Some Measurements can be enriched
-  * into RichMeasurements when provided with some additional data.
+  * Any measurement can inherit from one or more of the items in the [[nz.net.wand.streamevmon.measurements.traits `traits`]]
+  * package. These signal additional functionality, and as such many detectors
+  * require received messages to implement particular traits. The most notable
+  * is [[nz.net.wand.streamevmon.measurements.traits.HasDefault HasDefault]],
+  * which allows a measurement to provide a single default Double value. See
+  * the package object for more details.
   *
-  * Any Measurement can have the additional traits [[HasDefault]] and
-  * [[CsvOutputable]] mixed in, which provide additional functionality. Many
-  * detectors require Measurements with HasDefault so they don't need to choose
-  * which field they use.
-  *
-  * InfluxMeasurement and RichInfluxMeasurement are special subtypes of
-  * Measurement which include both HasDefault and CsvOutputable, as well as
-  * enabling additional functionality, such as InfluxDB Line Protocol support.
-  *
-  * See the child package objects for more specific details about the various
-  * supported measurement types.
+  * All measurements should inherit from
+  * [[nz.net.wand.streamevmon.measurements.traits.Measurement Measurement]], or
+  * one of its more specific subtypes. See the documentation for Measurement for
+  * some notes on what requirements must be implemented.
   */
 package object measurements {}

@@ -2,7 +2,7 @@ package nz.net.wand.streamevmon.runners.examples
 
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.flink.sources.{AmpMeasurementSourceFunction, PollingInfluxSourceFunction}
-import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasurementFactory}
+import nz.net.wand.streamevmon.measurements.traits.{InfluxMeasurement, InfluxMeasurementFactory}
 
 import java.text.SimpleDateFormat
 import java.time.Duration

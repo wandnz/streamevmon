@@ -2,13 +2,13 @@ package nz.net.wand.streamevmon.runners.unified.schema
 
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
-import nz.net.wand.streamevmon.measurements.bigdata.Flow
-import nz.net.wand.streamevmon.measurements.Measurement
 import nz.net.wand.streamevmon.measurements.amp._
+import nz.net.wand.streamevmon.measurements.bigdata.Flow
 import nz.net.wand.streamevmon.measurements.esmond._
 import nz.net.wand.streamevmon.measurements.latencyts.{LatencyTSAmpICMP, LatencyTSSmokeping}
 import nz.net.wand.streamevmon.Perhaps._
 import nz.net.wand.streamevmon.measurements.nab.NabMeasurement
+import nz.net.wand.streamevmon.measurements.traits.Measurement
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction

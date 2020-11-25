@@ -1,10 +1,10 @@
 package nz.net.wand.streamevmon.flink.sources
 
-import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasurementFactory}
+import nz.net.wand.streamevmon.measurements.traits.{InfluxMeasurement, InfluxMeasurementFactory}
 
 import java.time.Duration
 
-/** Produces [[nz.net.wand.streamevmon.measurements.InfluxMeasurement InfluxMeasurement]]
+/** Produces [[nz.net.wand.streamevmon.measurements.traits.InfluxMeasurement InfluxMeasurement]]
   * values from InfluxDB in a streaming fashion. This source retrieves
   * Libtrace-Bigdata flow measurements.
   *

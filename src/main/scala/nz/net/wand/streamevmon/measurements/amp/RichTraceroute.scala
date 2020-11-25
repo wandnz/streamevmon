@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.measurements.amp
 
-import nz.net.wand.streamevmon.measurements.{CsvOutputable, RichMeasurement}
 import nz.net.wand.streamevmon.Logging
+import nz.net.wand.streamevmon.measurements.traits.{CsvOutputable, RichMeasurement}
 
 import java.time.Instant
 

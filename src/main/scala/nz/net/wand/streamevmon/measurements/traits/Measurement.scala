@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.measurements
+package nz.net.wand.streamevmon.measurements.traits
 
 import java.time.Instant
 

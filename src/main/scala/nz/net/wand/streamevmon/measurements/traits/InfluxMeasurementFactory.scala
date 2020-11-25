@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.measurements
+package nz.net.wand.streamevmon.measurements.traits
 
 import nz.net.wand.streamevmon.connectors.postgres.PostgresConnection
 import nz.net.wand.streamevmon.measurements.amp._

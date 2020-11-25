@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.runners.unified.schema
 import nz.net.wand.streamevmon.connectors.esmond.{EsmondConnectionForeground, EsmondStreamDiscovery}
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.flink.sources.{NabFileInputFormat, PollingEsmondSourceFunction}
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.traits.Measurement
 
 import org.apache.flink.api.common.io.{FileInputFormat, FilePathFilter, GlobFilePathFilter}
 import org.apache.flink.api.java.utils.ParameterTool

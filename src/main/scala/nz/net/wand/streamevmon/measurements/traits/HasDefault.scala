@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.measurements
+package nz.net.wand.streamevmon.measurements.traits
 
 /** Contains an optional defaultValue field which can be used to provide
   * detectors the "most-likely-to-be-useful" value. For example, an ICMP

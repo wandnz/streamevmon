@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.measurements.amp
 
-import nz.net.wand.streamevmon.measurements._
+import nz.net.wand.streamevmon.measurements.traits._
 
 import java.time.{Instant, ZoneId}
 

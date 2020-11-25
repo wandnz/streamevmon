@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.measurements.nab
 
-import nz.net.wand.streamevmon.measurements.{CsvOutputable, HasDefault, Measurement}
+import nz.net.wand.streamevmon.measurements.traits.{CsvOutputable, HasDefault, Measurement}
 
 import java.time._
 import java.time.format.DateTimeFormatter

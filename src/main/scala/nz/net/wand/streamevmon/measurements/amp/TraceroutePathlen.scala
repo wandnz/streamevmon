@@ -1,6 +1,6 @@
 package nz.net.wand.streamevmon.measurements.amp
 
-import nz.net.wand.streamevmon.measurements.{InfluxMeasurement, InfluxMeasurementFactory}
+import nz.net.wand.streamevmon.measurements.traits.{InfluxMeasurement, InfluxMeasurementFactory}
 
 import java.time.{Instant, ZoneId}
 import java.util.concurrent.TimeUnit

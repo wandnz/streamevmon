@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.measurements.esmond
 
 import nz.net.wand.streamevmon.connectors.esmond.schema._
-import nz.net.wand.streamevmon.measurements.RichMeasurement
+import nz.net.wand.streamevmon.measurements.traits.RichMeasurement
 
 /** A RichEsmondMeasurement keeps track of a few more things than a regular
   * EsmondMeasurement. In particular, the measurement stream's unique key, and

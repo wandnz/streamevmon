@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.measurements
 
 import nz.net.wand.streamevmon.{PostgresContainerSpec, SeedData}
+import nz.net.wand.streamevmon.measurements.traits.InfluxMeasurementFactory
 
 class MeasurementEnrichTest extends PostgresContainerSpec {
   "Children of Measurement.enrich" should {

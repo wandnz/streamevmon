@@ -11,8 +11,10 @@ package nz.net.wand.streamevmon.measurements
   * on the format of their `value` field. The `stream` field is derived directly
   * from `metadataKey`, which is unique for a particular data stream.
   *
-  * Some EsmondMeasurements implement [[HasDefault]] and [[CsvOutputable]], but
-  * others have more complex value types and do not.
+  * Some EsmondMeasurements implement
+  * [[nz.net.wand.streamevmon.measurements.traits.HasDefault HasDefault]] and
+  * [[nz.net.wand.streamevmon.measurements.traits.CsvOutputable CsvOutputable]],
+  * but others have more complex value types and do not.
   *
   * To obtain EsmondMeasurements, you should use the
   * [[nz.net.wand.streamevmon.flink.sources.PollingEsmondSourceFunction PollingEsmondSourceFunction]],

@@ -1,7 +1,7 @@
 package nz.net.wand.streamevmon.flink
 
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.measurements.Measurement
+import nz.net.wand.streamevmon.measurements.traits.Measurement
 
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.configuration.Configuration
