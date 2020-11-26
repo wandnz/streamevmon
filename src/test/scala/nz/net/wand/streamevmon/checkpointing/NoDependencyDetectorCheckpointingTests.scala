@@ -15,15 +15,15 @@ class NoDependencyDetectorCheckpointingTests extends CheckpointingTestBase {
   "Detectors with no external dependencies" should {
     "restore from checkpoints correctly" when {
       "type is BaselineDetector" in {
-        implicit val detector: BaselineDetector[ICMP] = new BaselineDetector[ICMP]
+        val detector: BaselineDetector[ICMP] = new BaselineDetector[ICMP]
 
-        var harness = newHarness
+        var harness = newHarness(detector)
         harness.open()
 
         sendNormalMeasurement(harness, times = 120)
         harness.getOutput should have size 0
 
-        harness = snapshotAndRestart(harness)
+        harness = snapshotAndRestart(harness, detector)
 
         sendAnomalousMeasurement(harness, times = 120)
         harness.getOutput shouldNot have size 0
@@ -33,75 +33,75 @@ class NoDependencyDetectorCheckpointingTests extends CheckpointingTestBase {
         implicit val ti: TypeInformation[NormalDistribution[ICMP]] =
           TypeInformation.of(classOf[NormalDistribution[ICMP]])
 
-        implicit val detector: ChangepointDetector[ICMP, NormalDistribution[ICMP]] =
+        val detector: ChangepointDetector[ICMP, NormalDistribution[ICMP]] =
           new ChangepointDetector[ICMP, NormalDistribution[ICMP]](
             new NormalDistribution[ICMP](mean = 0)
           )
 
-        var harness = newHarness
+        var harness = newHarness(detector)
         harness.open()
 
         sendNormalMeasurement(harness, times = 120)
         harness.getOutput should have size 0
 
-        harness = snapshotAndRestart(harness)
+        harness = snapshotAndRestart(harness, detector)
 
         sendAnomalousMeasurement(harness, times = 120)
         harness.getOutput shouldNot have size 0
       }
 
       "type is DistDiffDetector" in {
-        implicit val detector: DistDiffDetector[ICMP] = new DistDiffDetector[ICMP]
+        val detector: DistDiffDetector[ICMP] = new DistDiffDetector[ICMP]
 
-        var harness = newHarness
+        var harness = newHarness(detector)
         harness.open()
 
         sendNormalMeasurement(harness, times = 120)
         harness.getOutput should have size 0
 
-        harness = snapshotAndRestart(harness)
+        harness = snapshotAndRestart(harness, detector)
 
         sendAnomalousMeasurement(harness, times = 120)
         harness.getOutput shouldNot have size 0
       }
 
       "type is LossDetector" in {
-        implicit val detector: LossDetector[ICMP] = new LossDetector[ICMP]
-        var harness = newHarness
+        val detector: LossDetector[ICMP] = new LossDetector[ICMP]
+        var harness = newHarness(detector)
         harness.open()
 
         sendNormalMeasurement(harness, times = 30)
         harness.getOutput should have size 0
 
-        harness = snapshotAndRestart(harness)
+        harness = snapshotAndRestart(harness, detector)
 
         sendLossyMeasurement(harness, times = 30)
         harness.getOutput shouldNot have size 0
       }
 
       "type is ModeDetector" in {
-        implicit val detector: ModeDetector[ICMP] = new ModeDetector[ICMP]
-        var harness = newHarness
+        val detector: ModeDetector[ICMP] = new ModeDetector[ICMP]
+        var harness = newHarness(detector)
         harness.open()
 
         sendNormalMeasurement(harness, times = 120)
         harness.getOutput should have size 0
 
-        harness = snapshotAndRestart(harness)
+        harness = snapshotAndRestart(harness, detector)
 
         sendAnomalousMeasurement(harness, times = 120)
         harness.getOutput shouldNot have size 0
       }
 
       "type is SpikeDetector" in {
-        implicit val detector: SpikeDetector[ICMP] = new SpikeDetector[ICMP]
-        var harness = newHarness
+        val detector: SpikeDetector[ICMP] = new SpikeDetector[ICMP]
+        var harness = newHarness(detector)
         harness.open()
 
         sendNormalMeasurement(harness, times = 100)
         harness.getOutput should have size 0
 
-        harness = snapshotAndRestart(harness)
+        harness = snapshotAndRestart(harness, detector)
 
         sendAnomalousMeasurement(harness, times = 100)
         harness.getOutput shouldNot have size 0

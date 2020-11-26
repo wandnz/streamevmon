@@ -1,9 +1,9 @@
 package nz.net.wand.streamevmon.checkpointing
 
 import nz.net.wand.streamevmon.{Configuration, SeedData, TestBase}
-import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.amp.ICMP
 import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
+import nz.net.wand.streamevmon.measurements.traits.Measurement
 
 import java.time.Instant
 
@@ -11,58 +11,62 @@ import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction
 import org.apache.flink.streaming.api.operators.KeyedProcessOperator
 import org.apache.flink.streaming.api.operators.co.CoProcessOperator
-import org.apache.flink.streaming.api.scala.createTypeInformation
-import org.apache.flink.streaming.util.{KeyedOneInputStreamOperatorTestHarness, TwoInputStreamOperatorTestHarness}
+import org.apache.flink.streaming.api.scala._
+import org.apache.flink.streaming.util.{AbstractStreamOperatorTestHarness, KeyedOneInputStreamOperatorTestHarness, TwoInputStreamOperatorTestHarness}
+
+import scala.reflect.ClassTag
 
 trait CheckpointingTestBase extends TestBase {
-  protected type KH = KeyedOneInputStreamOperatorTestHarness[String, ICMP, Event]
 
-  protected def newHarness(implicit function: KeyedProcessFunction[String, ICMP, Event]): KH = {
-    val h = new KH(
-      new KeyedProcessOperator[String, ICMP, Event](function),
-      new MeasurementKeySelector[ICMP],
+  protected def newHarness[I <: Measurement : ClassTag, O](
+    function: KeyedProcessFunction[String, I, O]
+  ): KeyedOneInputStreamOperatorTestHarness[String, I, O] = {
+    val h = new KeyedOneInputStreamOperatorTestHarness(
+      new KeyedProcessOperator(function),
+      new MeasurementKeySelector[I](),
       createTypeInformation[String]
     )
     h.getExecutionConfig.setGlobalJobParameters(Configuration.get(Array()))
     h
   }
 
-  protected def newTwoInputHarness[IN1, IN2, OUT](implicit function: CoProcessFunction[IN1, IN2, OUT]): TwoInputStreamOperatorTestHarness[IN1, IN2, OUT] = {
+  protected def newHarness[IN1, IN2, OUT](
+    function: CoProcessFunction[IN1, IN2, OUT]
+  ): TwoInputStreamOperatorTestHarness[IN1, IN2, OUT] = {
     val h = new TwoInputStreamOperatorTestHarness(
-      new CoProcessOperator[IN1, IN2, OUT](function)
+      new CoProcessOperator(function)
     )
     h.getExecutionConfig.setGlobalJobParameters(Configuration.get(Array()))
     h
   }
 
-  protected def snapshotAndRestart(harness: KH)(implicit function: KeyedProcessFunction[String, ICMP, Event]): KH = {
-    lastGeneratedTime += 1
-    checkpointId += 1
-    val snapshot = harness.snapshot(checkpointId, lastGeneratedTime)
-    harness.close()
-
-    val nextHarness = newHarness(function)
-    nextHarness.setup()
-    nextHarness.initializeState(snapshot)
-    nextHarness.open()
-    nextHarness
+  protected def snapshotAndRestart[I <: Measurement : ClassTag, O](
+    harness: KeyedOneInputStreamOperatorTestHarness[String, I, O],
+    function: KeyedProcessFunction[String, I, O]
+  ): KeyedOneInputStreamOperatorTestHarness[String, I, O] = {
+    snapshotAndRestart[O, KeyedOneInputStreamOperatorTestHarness[String, I, O]](harness, newHarness(function))
   }
 
   protected def snapshotAndRestart[IN1, IN2, OUT](
-    harness: TwoInputStreamOperatorTestHarness[IN1, IN2, OUT]
-  )(
-    implicit function: CoProcessFunction[IN1, IN2, OUT]
+    harness: TwoInputStreamOperatorTestHarness[IN1, IN2, OUT],
+    function: CoProcessFunction[IN1, IN2, OUT]
   ): TwoInputStreamOperatorTestHarness[IN1, IN2, OUT] = {
+    snapshotAndRestart[OUT, TwoInputStreamOperatorTestHarness[IN1, IN2, OUT]](harness, newHarness(function))
+  }
+
+  protected def snapshotAndRestart[O, HarnessT <: AbstractStreamOperatorTestHarness[O]](
+    harness: HarnessT,
+    newHarness: HarnessT
+  ) = {
     lastGeneratedTime += 1
     checkpointId += 1
     val snapshot = harness.snapshot(checkpointId, lastGeneratedTime)
     harness.close()
 
-    val nextHarness = newTwoInputHarness(function)
-    nextHarness.setup()
-    nextHarness.initializeState(snapshot)
-    nextHarness.open()
-    nextHarness
+    newHarness.setup()
+    newHarness.initializeState(snapshot)
+    newHarness.open()
+    newHarness
   }
 
   // Defaults to the nearest round number above Y2K, to give us some leeway
@@ -71,7 +75,10 @@ trait CheckpointingTestBase extends TestBase {
 
   protected var checkpointId: Long = 1L
 
-  protected def sendNormalMeasurement(harness: KH, times: Int): Unit = {
+  protected def sendNormalMeasurement[O](
+    harness: KeyedOneInputStreamOperatorTestHarness[String, ICMP, O],
+    times                                    : Int
+  ): Unit = {
     val e = SeedData.icmp.expected
     for (_ <- Range(0, times)) {
       lastGeneratedTime += 1
@@ -91,7 +98,10 @@ trait CheckpointingTestBase extends TestBase {
     }
   }
 
-  protected def sendAnomalousMeasurement(harness: KH, times: Int): Unit = {
+  protected def sendAnomalousMeasurement[O](
+    harness: KeyedOneInputStreamOperatorTestHarness[String, ICMP, O],
+    times                                       : Int
+  ): Unit = {
     val e = SeedData.icmp.expected
     for (_ <- Range(0, times)) {
       lastGeneratedTime += 1
@@ -111,7 +121,10 @@ trait CheckpointingTestBase extends TestBase {
     }
   }
 
-  protected def sendLossyMeasurement(harness: KH, times: Int): Unit = {
+  protected def sendLossyMeasurement[O](
+    harness                                 : KeyedOneInputStreamOperatorTestHarness[String, ICMP, O],
+    times                                   : Int
+  ): Unit = {
     val e = SeedData.icmp.expected
     for (_ <- Range(0, times)) {
       lastGeneratedTime += 1
