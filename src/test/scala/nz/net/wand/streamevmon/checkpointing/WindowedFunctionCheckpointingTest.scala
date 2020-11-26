@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.detectors.checkpointing
+package nz.net.wand.streamevmon.checkpointing
 
 import nz.net.wand.streamevmon.detectors.distdiff.{DistDiffDetector, WindowedDistDiffDetector}
 import nz.net.wand.streamevmon.detectors.WindowedFunctionWrapper
@@ -13,7 +13,6 @@ import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.{GlobalWindow, TimeWindow}
 
 class WindowedFunctionCheckpointingTest extends NoHarnessCheckpointingTestBase {
-
   "Windowed Functions" should {
     "recover from checkpoints" when {
       "wrapping a KeyedProcessFunction" in {

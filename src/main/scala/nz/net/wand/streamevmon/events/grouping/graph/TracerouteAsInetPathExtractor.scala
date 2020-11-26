@@ -45,7 +45,7 @@ class TracerouteAsInetPathExtractor
   override val flinkUid: String = "asinetpath-extractor"
   override val configKeyGroup: String = "postgres"
 
-  @transient private var pgCon: PostgresConnection = _
+  @transient var pgCon: PostgresConnection = _
 
   protected val knownMetas: mutable.Map[String, TracerouteMeta] = mutable.Map()
 
@@ -53,7 +53,9 @@ class TracerouteAsInetPathExtractor
 
   override def open(parameters: Configuration): Unit = {
     val params = configWithOverride(getRuntimeContext)
-    pgCon = PostgresConnection(params)
+    if (pgCon == null) {
+      pgCon = PostgresConnection(params)
+    }
   }
 
   /** Converts a Traceroute and its corresponding TracerouteMeta into an
@@ -98,7 +100,9 @@ class TracerouteAsInetPathExtractor
         unprocessedMeasurements.getOrElse(value.stream, List()) :+ value
       )
       // If we do have a meta we can go ahead and make our AsInetPath.
-      case Some(meta) => getAsInetPath(value, meta).foreach(out.collect)
+      case Some(meta) =>
+        val p = getAsInetPath(value, meta)
+        p.foreach(out.collect)
     }
   }
 

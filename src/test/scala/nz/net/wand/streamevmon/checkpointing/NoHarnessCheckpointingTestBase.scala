@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.detectors.checkpointing
+package nz.net.wand.streamevmon.checkpointing
 
 import nz.net.wand.streamevmon.{Configuration, TestBase}
 import nz.net.wand.streamevmon.flink.FailingSource

@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.detectors.checkpointing
+package nz.net.wand.streamevmon.checkpointing
 
 import nz.net.wand.streamevmon.{Configuration, SeedData, TestBase}
 import nz.net.wand.streamevmon.events.Event
@@ -8,15 +8,17 @@ import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
 import java.time.Instant
 
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
+import org.apache.flink.streaming.api.functions.co.CoProcessFunction
 import org.apache.flink.streaming.api.operators.KeyedProcessOperator
+import org.apache.flink.streaming.api.operators.co.CoProcessOperator
 import org.apache.flink.streaming.api.scala.createTypeInformation
-import org.apache.flink.streaming.util.KeyedOneInputStreamOperatorTestHarness
+import org.apache.flink.streaming.util.{KeyedOneInputStreamOperatorTestHarness, TwoInputStreamOperatorTestHarness}
 
 trait CheckpointingTestBase extends TestBase {
-  protected type H = KeyedOneInputStreamOperatorTestHarness[String, ICMP, Event]
+  protected type KH = KeyedOneInputStreamOperatorTestHarness[String, ICMP, Event]
 
-  protected def newHarness(implicit function: KeyedProcessFunction[String, ICMP, Event]): H = {
-    val h = new H(
+  protected def newHarness(implicit function: KeyedProcessFunction[String, ICMP, Event]): KH = {
+    val h = new KH(
       new KeyedProcessOperator[String, ICMP, Event](function),
       new MeasurementKeySelector[ICMP],
       createTypeInformation[String]
@@ -25,12 +27,38 @@ trait CheckpointingTestBase extends TestBase {
     h
   }
 
-  protected def snapshotAndRestart(harness: H)(implicit function: KeyedProcessFunction[String, ICMP, Event]): H = {
+  protected def newTwoInputHarness[IN1, IN2, OUT](implicit function: CoProcessFunction[IN1, IN2, OUT]): TwoInputStreamOperatorTestHarness[IN1, IN2, OUT] = {
+    val h = new TwoInputStreamOperatorTestHarness(
+      new CoProcessOperator[IN1, IN2, OUT](function)
+    )
+    h.getExecutionConfig.setGlobalJobParameters(Configuration.get(Array()))
+    h
+  }
+
+  protected def snapshotAndRestart(harness: KH)(implicit function: KeyedProcessFunction[String, ICMP, Event]): KH = {
     lastGeneratedTime += 1
-    val snapshot = harness.snapshot(1, lastGeneratedTime)
+    checkpointId += 1
+    val snapshot = harness.snapshot(checkpointId, lastGeneratedTime)
     harness.close()
 
     val nextHarness = newHarness(function)
+    nextHarness.setup()
+    nextHarness.initializeState(snapshot)
+    nextHarness.open()
+    nextHarness
+  }
+
+  protected def snapshotAndRestart[IN1, IN2, OUT](
+    harness: TwoInputStreamOperatorTestHarness[IN1, IN2, OUT]
+  )(
+    implicit function: CoProcessFunction[IN1, IN2, OUT]
+  ): TwoInputStreamOperatorTestHarness[IN1, IN2, OUT] = {
+    lastGeneratedTime += 1
+    checkpointId += 1
+    val snapshot = harness.snapshot(checkpointId, lastGeneratedTime)
+    harness.close()
+
+    val nextHarness = newTwoInputHarness(function)
     nextHarness.setup()
     nextHarness.initializeState(snapshot)
     nextHarness.open()
@@ -41,7 +69,9 @@ trait CheckpointingTestBase extends TestBase {
   // after the epoch for detectors which have a minimum event interval.
   protected var lastGeneratedTime: Long = 1000000000000L
 
-  protected def sendNormalMeasurement(harness: H, times: Int): Unit = {
+  protected var checkpointId: Long = 1L
+
+  protected def sendNormalMeasurement(harness: KH, times: Int): Unit = {
     val e = SeedData.icmp.expected
     for (_ <- Range(0, times)) {
       lastGeneratedTime += 1
@@ -61,7 +91,7 @@ trait CheckpointingTestBase extends TestBase {
     }
   }
 
-  protected def sendAnomalousMeasurement(harness: H, times: Int): Unit = {
+  protected def sendAnomalousMeasurement(harness: KH, times: Int): Unit = {
     val e = SeedData.icmp.expected
     for (_ <- Range(0, times)) {
       lastGeneratedTime += 1
@@ -81,7 +111,7 @@ trait CheckpointingTestBase extends TestBase {
     }
   }
 
-  protected def sendLossyMeasurement(harness: H, times: Int): Unit = {
+  protected def sendLossyMeasurement(harness: KH, times: Int): Unit = {
     val e = SeedData.icmp.expected
     for (_ <- Range(0, times)) {
       lastGeneratedTime += 1

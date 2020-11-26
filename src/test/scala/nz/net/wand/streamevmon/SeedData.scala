@@ -317,6 +317,35 @@ object SeedData {
       expected,
       expectedMeta
     )
+
+    val expectedAsInetPathWithoutAsPath = AsInetPath(
+      Seq(
+        AsInetPathEntry(Some(InetAddress.getByName("172.17.0.1")), AsNumber.Missing),
+        AsInetPathEntry(Some(InetAddress.getByName("130.217.248.251")), AsNumber.Missing),
+        AsInetPathEntry(Some(InetAddress.getByName("10.5.5.1")), AsNumber.Missing),
+        AsInetPathEntry(Some(InetAddress.getByName("130.217.2.4")), AsNumber.Missing),
+        AsInetPathEntry(Some(InetAddress.getByName("210.7.39.9")), AsNumber.Missing),
+        AsInetPathEntry(Some(InetAddress.getByName("210.7.33.254")), AsNumber.Missing),
+        AsInetPathEntry(Some(InetAddress.getByName("210.7.33.255")), AsNumber.Missing),
+        AsInetPathEntry(Some(InetAddress.getByName("203.109.152.33")), AsNumber.Missing),
+        AsInetPathEntry(None, AsNumber.Missing),
+        AsInetPathEntry(Some(InetAddress.getByName("203.118.150.21")), AsNumber.Missing),
+        AsInetPathEntry(Some(InetAddress.getByName("134.159.174.37")), AsNumber.Missing),
+        AsInetPathEntry(Some(InetAddress.getByName("202.84.223.42")), AsNumber.Missing),
+        AsInetPathEntry(Some(InetAddress.getByName("202.84.219.126")), AsNumber.Missing),
+        AsInetPathEntry(Some(InetAddress.getByName("202.84.138.82")), AsNumber.Missing),
+        AsInetPathEntry(Some(InetAddress.getByName("202.40.149.177")), AsNumber.Missing),
+        AsInetPathEntry(Some(InetAddress.getByName("206.126.236.170")), AsNumber.Missing),
+        AsInetPathEntry(Some(InetAddress.getByName("217.30.84.127")), AsNumber.Missing),
+        AsInetPathEntry(None, AsNumber.Missing),
+        AsInetPathEntry(None, AsNumber.Missing),
+        AsInetPathEntry(None, AsNumber.Missing),
+        AsInetPathEntry(None, AsNumber.Missing),
+        AsInetPathEntry(None, AsNumber.Missing),
+      ),
+      expected,
+      expectedMeta
+    )
   }
 
   object traceroutePathlen {
@@ -1082,5 +1111,4 @@ object SeedData {
       Instant.ofEpochSecond(1396310400L)
     )
   }
-
 }

@@ -1,4 +1,4 @@
-package nz.net.wand.streamevmon.detectors.checkpointing
+package nz.net.wand.streamevmon.checkpointing
 
 import nz.net.wand.streamevmon.detectors.baseline.BaselineDetector
 import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, NormalDistribution}
@@ -11,10 +11,9 @@ import nz.net.wand.streamevmon.measurements.amp.ICMP
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.streaming.api.scala._
 
-class NoDependencyCheckpointingTests extends CheckpointingTestBase {
+class NoDependencyDetectorCheckpointingTests extends CheckpointingTestBase {
   "Detectors with no external dependencies" should {
     "restore from checkpoints correctly" when {
-
       "type is BaselineDetector" in {
         implicit val detector: BaselineDetector[ICMP] = new BaselineDetector[ICMP]
 
