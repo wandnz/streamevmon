@@ -26,16 +26,16 @@ import scala.collection.JavaConverters._
   * objects are output through a side output, which can be accessed using the
   * `outputTag` field.
   *
+  * This ProcessFunction constructs a
+  * [[nz.net.wand.streamevmon.connectors.postgres.PostgresConnection PostgresConnection]],
+  * which uses Caching.
+  *
   * @tparam MeasT The type of measurements which will be received.
   * @tparam MetaT The corresponding type of MeasurementMeta which should be
   *               output. It is the user's responsibility to ensure that any
   *               Meta obtained via the
   *               [[nz.net.wand.streamevmon.connectors.postgres.PostgresConnection.getMeta PostgresConnection.getMeta]]
   *               function are of a type which can be cast to MetaT.
-  *
-  *               This ProcessFunction constructs a
-  *               [[nz.net.wand.streamevmon.connectors.postgres.PostgresConnection PostgresConnection]],
-  *               which uses Caching.
   */
 class MeasurementMetaExtractor[MeasT <: Measurement, MetaT <: PostgresMeasurementMeta : TypeInformation]
   extends ProcessFunction[MeasT, MeasT]
@@ -47,7 +47,7 @@ class MeasurementMetaExtractor[MeasT <: Measurement, MetaT <: PostgresMeasuremen
   val flinkName: String = "MeasurementMeta Extractor"
   val flinkUid: String = "measurement-meta-extractor"
 
-  @transient private var pgCon: PostgresConnection = _
+  @transient var pgCon: PostgresConnection = _
 
   override def open(parameters: Configuration): Unit = {
     val globalParams = configWithOverride(getRuntimeContext)

@@ -7,16 +7,26 @@ import nz.net.wand.streamevmon.measurements.traits.Measurement
 
 import java.time.Instant
 
-import org.apache.flink.streaming.api.functions.KeyedProcessFunction
+import org.apache.flink.streaming.api.functions.{KeyedProcessFunction, ProcessFunction}
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction
-import org.apache.flink.streaming.api.operators.KeyedProcessOperator
+import org.apache.flink.streaming.api.operators.{KeyedProcessOperator, ProcessOperator}
 import org.apache.flink.streaming.api.operators.co.CoProcessOperator
 import org.apache.flink.streaming.api.scala._
-import org.apache.flink.streaming.util.{AbstractStreamOperatorTestHarness, KeyedOneInputStreamOperatorTestHarness, TwoInputStreamOperatorTestHarness}
+import org.apache.flink.streaming.util._
 
 import scala.reflect.ClassTag
 
 trait CheckpointingTestBase extends TestBase {
+
+  protected def newHarness[I <: Measurement : ClassTag, O](
+    function: ProcessFunction[I, O]
+  ): OneInputStreamOperatorTestHarness[I, O] = {
+    val h = new OneInputStreamOperatorTestHarness(
+      new ProcessOperator(function)
+    )
+    h.getExecutionConfig.setGlobalJobParameters(Configuration.get())
+    h
+  }
 
   protected def newHarness[I <: Measurement : ClassTag, O](
     function: KeyedProcessFunction[String, I, O]
@@ -26,7 +36,7 @@ trait CheckpointingTestBase extends TestBase {
       new MeasurementKeySelector[I](),
       createTypeInformation[String]
     )
-    h.getExecutionConfig.setGlobalJobParameters(Configuration.get(Array()))
+    h.getExecutionConfig.setGlobalJobParameters(Configuration.get())
     h
   }
 
@@ -36,19 +46,26 @@ trait CheckpointingTestBase extends TestBase {
     val h = new TwoInputStreamOperatorTestHarness(
       new CoProcessOperator(function)
     )
-    h.getExecutionConfig.setGlobalJobParameters(Configuration.get(Array()))
+    h.getExecutionConfig.setGlobalJobParameters(Configuration.get())
     h
   }
 
   protected def snapshotAndRestart[I <: Measurement : ClassTag, O](
-    harness: KeyedOneInputStreamOperatorTestHarness[String, I, O],
+    harness : OneInputStreamOperatorTestHarness[I, O],
+    function: ProcessFunction[I, O]
+  ): OneInputStreamOperatorTestHarness[I, O] = {
+    snapshotAndRestart[O, OneInputStreamOperatorTestHarness[I, O]](harness, newHarness(function))
+  }
+
+  protected def snapshotAndRestart[I <: Measurement : ClassTag, O](
+    harness : KeyedOneInputStreamOperatorTestHarness[String, I, O],
     function: KeyedProcessFunction[String, I, O]
   ): KeyedOneInputStreamOperatorTestHarness[String, I, O] = {
     snapshotAndRestart[O, KeyedOneInputStreamOperatorTestHarness[String, I, O]](harness, newHarness(function))
   }
 
   protected def snapshotAndRestart[IN1, IN2, OUT](
-    harness: TwoInputStreamOperatorTestHarness[IN1, IN2, OUT],
+    harness : TwoInputStreamOperatorTestHarness[IN1, IN2, OUT],
     function: CoProcessFunction[IN1, IN2, OUT]
   ): TwoInputStreamOperatorTestHarness[IN1, IN2, OUT] = {
     snapshotAndRestart[OUT, TwoInputStreamOperatorTestHarness[IN1, IN2, OUT]](harness, newHarness(function))

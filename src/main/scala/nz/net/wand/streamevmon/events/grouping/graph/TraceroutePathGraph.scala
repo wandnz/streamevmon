@@ -162,8 +162,8 @@ class TraceroutePathGraph[EventT <: Event]
 
   // == CheckpointedFunction implementation ==
 
-  var graphState: ListState[GraphT] = _
-  var mergedHostsState: ListState[VertexT] = _
+  private var graphState: ListState[GraphT] = _
+  private var mergedHostsState: ListState[VertexT] = _
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {
     graphState.clear()
