@@ -28,6 +28,7 @@ class MeasurementTimestampAssignerTest extends TestBase {
       SeedData.tcpping.lossyExpected,
       SeedData.tcpping.expectedRich,
       SeedData.http.expected,
+      SeedData.http.lossyExpected,
       SeedData.http.expectedRich,
       SeedData.latencyTs.amp,
       SeedData.latencyTs.smokepingNoLoss,

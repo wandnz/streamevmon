@@ -145,7 +145,7 @@ object SeedData {
     val subscriptionLine =
       "data_amp_dns,stream=1 flag_aa=False,flag_ad=False,flag_cd=False,flag_qr=True,flag_ra=True,flag_rd=False,flag_tc=False,lossrate=0.0,opcode=0i,query_len=40i,rcode=0i,requests=1i,response_size=68i,rtt=35799i,total_additional=1i,total_answer=1i,total_authority=0i,ttl=0i 1563761841000000000"
     val lossySubscriptionLine =
-      "data_amp_dns,stream=1 lossrate=1.0,query_len=40i,requests=1i 1573020910000000000"
+      "data_amp_dns,stream=1 lossrate=1.0,requests=1i 1573020910000000000"
 
     val lossyExpected = DNS(
       stream = "1",
@@ -158,7 +158,7 @@ object SeedData {
       flag_tc = None,
       lossrate = Some(1.0),
       opcode = None,
-      query_len = 40,
+      query_len = None,
       rcode = None,
       requests = 1,
       response_size = None,
@@ -181,7 +181,7 @@ object SeedData {
       flag_tc = Some(false),
       lossrate = Some(0.0),
       opcode = Some(0),
-      query_len = 40,
+      query_len = Some(40),
       rcode = Some(0),
       requests = 1,
       response_size = Some(68),
@@ -230,7 +230,7 @@ object SeedData {
       flag_tc = Some(false),
       lossrate = Some(0.0),
       opcode = Some(0),
-      query_len = 40,
+      query_len = Some(40),
       rcode = Some(0),
       requests = 1,
       response_size = Some(68),
@@ -448,14 +448,25 @@ object SeedData {
 
     val subscriptionLine =
       "data_amp_http,stream=17 bytes=62210i,duration=77i,object_count=8i,server_count=1i 1564713045000000000"
+    val lossySubscriptionLine =
+      "data_amp_http,stream=17 object_count=0i,server_count=1i 1564713046000000000"
 
     val expected = HTTP(
       stream = "17",
-      bytes = 62210,
-      duration = 77,
+      bytes = Some(62210),
+      duration = Some(77),
       object_count = 8,
       server_count = 1,
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L))
+    )
+
+    val lossyExpected = HTTP(
+      stream = "17",
+      bytes = None,
+      duration = None,
+      object_count = 0,
+      server_count = 1,
+      time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713046000000000L))
     )
 
     val expectedMeta = HTTPMeta(
@@ -482,8 +493,8 @@ object SeedData {
       persist = true,
       pipelining = false,
       caching = false,
-      bytes = 62210,
-      duration = 77,
+      bytes = Some(62210),
+      duration = Some(77),
       object_count = 8,
       server_count = 1,
       time = Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(1564713045000000000L))

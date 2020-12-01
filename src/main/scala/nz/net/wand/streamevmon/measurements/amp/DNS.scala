@@ -22,15 +22,15 @@ final case class DNS(
   flag_tc         : Option[Boolean],
   lossrate        : Option[Double],
   opcode          : Option[Int],
-  query_len       : Int,
-  rcode: Option[Int],
-  requests: Int,
-  response_size: Option[Int],
-  rtt: Option[Int],
+  query_len       : Option[Int],
+  rcode           : Option[Int],
+  requests        : Int,
+  response_size   : Option[Int],
+  rtt             : Option[Int],
   total_additional: Option[Int],
-  total_answer: Option[Int],
-  total_authority: Option[Int],
-  ttl: Option[Int],
+  total_answer    : Option[Int],
+  total_authority : Option[Int],
+  ttl             : Option[Int],
   time            : Instant
 ) extends InfluxMeasurement {
   override def toString: String = {
@@ -45,7 +45,7 @@ final case class DNS(
       s"flag_tc=${flag_tc.getOrElse("")}," +
       s"lossrate=$lossrate," +
       s"opcode=${opcode.getOrElse("")}," +
-      s"query_len=$query_len," +
+      s"query_len=${query_len.getOrElse("")}," +
       s"rcode=${rcode.getOrElse("")}," +
       s"requests=$requests," +
       s"response_size=${response_size.getOrElse("")}," +
@@ -88,7 +88,7 @@ object DNS extends InfluxMeasurementFactory {
           getNamedField(data, "flag_tc").map(_.toBoolean),
           getNamedField(data, "lossrate").map(_.toDouble),
           getNamedField(data, "opcode").map(_.dropRight(1).toInt),
-          getNamedField(data, "query_len").get.dropRight(1).toInt,
+          getNamedField(data, "query_len").map(_.dropRight(1).toInt),
           getNamedField(data, "rcode").map(_.dropRight(1).toInt),
           getNamedField(data, "requests").get.dropRight(1).toInt,
           getNamedField(data, "response_size").map(_.dropRight(1).toInt),

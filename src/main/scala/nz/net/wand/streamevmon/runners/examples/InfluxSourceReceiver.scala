@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat
 import java.time.Duration
 import java.util.Date
 
+import org.apache.flink.api.common.restartstrategy.RestartStrategies
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.scala._
 
@@ -24,13 +25,14 @@ object InfluxSourceReceiver {
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     env.enableCheckpointing(10000, CheckpointingMode.EXACTLY_ONCE)
+    env.setRestartStrategy(RestartStrategies.noRestart())
 
     System.setProperty("source.influx.subscriptionName", "InfluxSourceReceiver")
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
     env
-      .addSource(new AmpMeasurementSourceFunction(fetchHistory = Duration.ofMinutes(1)))
+      .addSource(new AmpMeasurementSourceFunction(fetchHistory = Duration.ofHours(1)))
       .name("Measurement Subscription")
       .map(i =>
         s"${i.getClass.getSimpleName}(${new SimpleDateFormat("HH:mm:ss").format(Date.from(i.time))})")

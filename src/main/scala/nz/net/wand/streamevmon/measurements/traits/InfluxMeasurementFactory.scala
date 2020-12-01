@@ -145,18 +145,23 @@ trait InfluxMeasurementFactory {
     * @return A sequence of round-trip times.
     */
   protected def getRtts(in: String): Seq[Option[Int]] = {
-    in.drop(2).dropRight(2).split(',').map { x =>
-      val y = x.trim
-      if (y == "None") {
-        None
-      }
-      else {
-        Some(y.toInt)
+    val dropEdges = in.drop(2).dropRight(2)
+    if (dropEdges.isEmpty) {
+      Seq()
+    }
+    else {
+      dropEdges.split(',').map { x =>
+        val y = x.trim
+        if (y == "None") {
+          None
+        }
+        else {
+          Some(y.toInt)
+        }
       }
     }
   }
 }
-
 
 /** Creates [[InfluxMeasurement]] and [[RichInfluxMeasurement]] objects.
   *

@@ -27,21 +27,27 @@ class LossyInfluxHistoryTest extends InfluxContainerSpec with BeforeAndAfter {
                   SeedData.dns.lossySubscriptionLine,
                   SeedData.tcpping.subscriptionLine,
                   SeedData.tcpping.lossySubscriptionLine,
+                  SeedData.http.subscriptionLine,
+                  SeedData.http.lossySubscriptionLine,
                 )),
             Duration.Inf
           ) should not be a[Throwable]
       }
 
       "icmp" in {
-        getInfluxHistory.getIcmpData().toSeq shouldBe Seq(SeedData.icmp.expected, SeedData.icmp.lossyExpected)
+        getInfluxHistory.getIcmpData().toList shouldBe List(SeedData.icmp.expected, SeedData.icmp.lossyExpected)
       }
 
       "dns" in {
-        getInfluxHistory.getDnsData().toSeq shouldBe Seq(SeedData.dns.expected, SeedData.dns.lossyExpected)
+        getInfluxHistory.getDnsData().toList shouldBe List(SeedData.dns.expected, SeedData.dns.lossyExpected)
       }
 
       "tcpping" in {
-        getInfluxHistory.getTcppingData().toSeq shouldBe Seq(SeedData.tcpping.expected, SeedData.tcpping.lossyExpected)
+        getInfluxHistory.getTcppingData().toList shouldBe List(SeedData.tcpping.expected, SeedData.tcpping.lossyExpected)
+      }
+
+      "http" in {
+        getInfluxHistory.getHttpData().toList shouldBe List(SeedData.http.expected, SeedData.http.lossyExpected)
       }
     }
   }

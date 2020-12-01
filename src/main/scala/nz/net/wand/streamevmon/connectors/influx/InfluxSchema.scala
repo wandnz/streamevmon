@@ -71,7 +71,7 @@ object InfluxSchema {
           nullToOption(js.get(cols.indexOf("flag_tc"))).map(_.asBoolean),
           nullToOption(js.get(cols.indexOf("lossrate"))).map(_.asDouble),
           nullToOption(js.get(cols.indexOf("opcode"))).map(_.asInt),
-          js.get(cols.indexOf("query_len")).asInt,
+          nullToOption(js.get(cols.indexOf("query_len"))).map(_.asInt),
           nullToOption(js.get(cols.indexOf("rcode"))).map(_.asInt),
           js.get(cols.indexOf("requests")).asInt,
           nullToOption(js.get(cols.indexOf("response_size"))).map(_.asInt),
@@ -92,16 +92,20 @@ object InfluxSchema {
     override def read(js: JArray): ErrorOr[HTTP] = {
       val cols = HTTP.columnNames
 
-      Try(
+      val r = Try(
         HTTP(
           js.get(cols.indexOf("stream")).asString,
-          js.get(cols.indexOf("bytes")).asInt,
-          js.get(cols.indexOf("duration")).asInt,
+          nullToOption(js.get(cols.indexOf("bytes"))).map(_.asInt),
+          nullToOption(js.get(cols.indexOf("duration"))).map(_.asInt),
           js.get(cols.indexOf("object_count")).asInt,
           js.get(cols.indexOf("server_count")).asInt,
           Instant.parse(js.get(cols.indexOf("time")).asString)
         )
       ).toEither
+      if (r.isLeft) {
+        val b = 1
+      }
+      r
     }
 
     override def readUnsafe(js: JArray): HTTP = ???

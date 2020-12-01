@@ -12,7 +12,7 @@ import java.time.{Instant, ZoneId}
   * @see [[https://github.com/wanduow/amplet2/wiki/amp-http]]
   */
 case class RichHTTP(
-  stream: String,
+  stream                               : String,
   source                               : String,
   destination                          : String,
   max_connections                      : Int,
@@ -22,8 +22,8 @@ case class RichHTTP(
   persist                              : Boolean,
   pipelining                           : Boolean,
   caching                              : Boolean,
-  bytes                                : Int,
-  duration                             : Int,
+  bytes                                : Option[Int],
+  duration                             : Option[Int],
   object_count                         : Int,
   server_count                         : Int,
   time                                 : Instant
@@ -40,18 +40,18 @@ case class RichHTTP(
       s"persist=$persist," +
       s"pipelining=$pipelining," +
       s"caching=$caching," +
-      s"bytes=$bytes," +
-      s"duration=$duration," +
+      s"bytes=${bytes.getOrElse("")}," +
+      s"duration=${duration.getOrElse("")}," +
       s"object_count=$object_count," +
       s"server_count=$server_count " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 
-  override def isLossy: Boolean = false
+  override def isLossy: Boolean = bytes.isEmpty
 
   override def toCsvFormat: Seq[String] = RichHTTP.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 
-  var defaultValue: Option[Double] = Some(bytes)
+  var defaultValue: Option[Double] = bytes.map(_.toDouble)
 }
 
 object RichHTTP extends RichInfluxMeasurementFactory {

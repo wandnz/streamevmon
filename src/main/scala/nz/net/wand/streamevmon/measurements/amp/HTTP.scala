@@ -13,8 +13,8 @@ import java.util.concurrent.TimeUnit
   */
 final case class HTTP(
   stream      : String,
-  bytes       : Int,
-  duration    : Int,
+  bytes       : Option[Int],
+  duration    : Option[Int],
   object_count: Int,
   server_count: Int,
   time        : Instant
@@ -22,18 +22,18 @@ final case class HTTP(
   override def toString: String = {
     s"${HTTP.table_name}," +
       s"stream=$stream " +
-      s"bytes=$bytes," +
-      s"duration=$duration," +
+      s"bytes=${bytes.getOrElse("")}," +
+      s"duration=${duration.getOrElse("")}," +
       s"object_count=$object_count," +
       s"server_count=$server_count " +
       s"${time.atZone(ZoneId.systemDefault())}"
   }
 
-  override def isLossy: Boolean = false
+  override def isLossy: Boolean = bytes.isEmpty
 
   override def toCsvFormat: Seq[String] = HTTP.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 
-  var defaultValue: Option[Double] = Some(bytes)
+  var defaultValue: Option[Double] = bytes.map(_.toDouble)
 }
 
 object HTTP extends InfluxMeasurementFactory {
@@ -51,8 +51,8 @@ object HTTP extends InfluxMeasurementFactory {
       Some(
         HTTP(
           getNamedField(data, "stream").get,
-          getNamedField(data, "bytes").get.dropRight(1).toInt,
-          getNamedField(data, "duration").get.dropRight(1).toInt,
+          getNamedField(data, "bytes").map(_.dropRight(1).toInt),
+          getNamedField(data, "duration").map(_.dropRight(1).toInt),
           getNamedField(data, "object_count").get.dropRight(1).toInt,
           getNamedField(data, "server_count").get.dropRight(1).toInt,
           Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(data.last.toLong))

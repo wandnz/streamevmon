@@ -33,7 +33,7 @@ case class RichDNS(
   flag_tc         : Option[Boolean],
   lossrate        : Option[Double],
   opcode          : Option[Int],
-  query_len       : Int,
+  query_len       : Option[Int],
   rcode           : Option[Int],
   requests        : Int,
   response_size   : Option[Int],
@@ -68,7 +68,7 @@ case class RichDNS(
       s"flag_tc=${flag_tc.getOrElse("")}," +
       s"lossrate=$lossrate," +
       s"opcode=${opcode.getOrElse("")}," +
-      s"query_len=$query_len," +
+      s"query_len=${query_len.getOrElse("")}," +
       s"rcode=${rcode.getOrElse("")}," +
       s"requests=$requests," +
       s"response_size=${response_size.getOrElse("")}," +
@@ -106,7 +106,7 @@ case class RichDNS(
     flag_tc: Option[Boolean],
     lossrate: Option[Double],
     opcode: Option[Int],
-    query_len: Int,
+    query_len: Option[Int],
     rcode: Option[Int],
     requests: Int,
     response_size: Option[Int],
