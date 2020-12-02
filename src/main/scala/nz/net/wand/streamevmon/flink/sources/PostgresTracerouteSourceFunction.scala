@@ -29,14 +29,19 @@ package nz.net.wand.streamevmon.flink.sources
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.connectors.postgres.PostgresConnection
+import nz.net.wand.streamevmon.flink.sources.PostgresTracerouteSourceFunction.ampletToAmplet
 import nz.net.wand.streamevmon.measurements.amp.{Traceroute, TracerouteMeta}
 
 import java.time.{Duration, Instant}
 
 import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
+import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.source.{RichSourceFunction, SourceFunction}
+
+import scala.collection.mutable
+import scala.collection.JavaConverters._
 
 /** Retrieves new Traceroute measurements from PostgreSQL in a polling fashion.
   *
@@ -48,8 +53,18 @@ import org.apache.flink.streaming.api.functions.source.{RichSourceFunction, Sour
   * See [[nz.net.wand.streamevmon.connectors.postgres.PostgresConnection PostgresConnection]]
   * for configuration details.
   *
-  * Additionally, this SourceFunction will sleep for the time in seconds
-  * specified by `source.postgres.tracerouteRefreshDelay` after each query.
+  * Additionally, this SourceFunction uses the `source.postgres.traceroute` key
+  * group for extra config.
+  *
+  * - `refreshDelay`: After each query, the SourceFunction will sleep for this
+  * amount of time in seconds. Default 600.
+  * - The `filters` subgroup allows the user to enable methods of reducing the
+  * number of traceroute measurement streams to be considered. These filters
+  * can drastically reduce memory usage and runtime for all operators that use
+  * the resultant Traceroute measurements, including this one.
+  *   - `ampletToAmplet`: If true, only streams containing traces between two
+  *     amplets will be considered. For example, a trace from an amplet to
+  *     google.com will be discarded.
   *
   * Given a `fetchHistory` of one hour, and a `tracerouteRefreshDelay` of five
   * minutes, the source will use the following procedure:
@@ -75,33 +90,26 @@ class PostgresTracerouteSourceFunction(
   @volatile
   @transient protected var isRunning = false
 
-  var lastMeasurementTime: Instant = Instant.now().minus(fetchHistory)
+  val lastMeasurementTimes: mutable.Map[Int, Instant] = mutable.Map()
 
   def refreshUsedStreams(
-    pgCon         : PostgresConnection,
-    ampletToAmplet: Boolean = true
+    pgCon          : PostgresConnection,
+    filterFunctions: Iterable[Iterable[TracerouteMeta] => Set[TracerouteMeta]]
   ): Iterable[TracerouteMeta] = {
     logger.info("Refreshing traceroute stream library...")
     pgCon.getAllTracerouteMeta match {
       case Some(value) =>
-        // We construct a list of potential filters and whether they're enabled.
-        // Each filter corresponds to a boolean argument that was passed to
-        // this function.
-        Seq[(Boolean, TracerouteMeta => Boolean)](
-          // Only retains streams that have a known amplet as a destination
-          (ampletToAmplet, _ => true)
-          // Next, we apply all the filters to the list of all the streams.
-          // The order doesn't matter, but this is easier to write than .fold()
-        ).foldLeft(value) {
-          // If the filter was enabled by the corresponding function argument...
-          case (metas, (enabled, func)) => if (enabled) {
-            // apply it
-            metas.filter(func)
-          }
-          else {
-            // otherwise do nothing
-            metas
-          }
+        // We apply all the filters to the list of all the streams.
+        // Each of them needs to know the full list of streams.
+        if (filterFunctions.nonEmpty) {
+          filterFunctions
+            .map(_ (value))
+            .reduce[Set[TracerouteMeta]] { case (filtered1, filtered2) =>
+              filtered1.intersect(filtered2)
+            }
+        }
+        else {
+          value
         }
       case None =>
         logger.info("Error getting TracerouteMeta entries.")
@@ -109,28 +117,50 @@ class PostgresTracerouteSourceFunction(
     }
   }
 
+  def getFilterFunctions(params: ParameterTool): Iterable[Iterable[TracerouteMeta] => Set[TracerouteMeta]] = {
+    Seq(
+      ("ampletToAmplet", ampletToAmplet),
+    ).flatMap { case (funcName, func) =>
+      if (params.getBoolean(s"source.$configKeyGroup.traceroute.filters.$funcName")) {
+        Some(func)
+      }
+      else {
+        None
+      }
+    }
+  }
+
   override def run(ctx: SourceFunction.SourceContext[Traceroute]): Unit = {
     val params = configWithOverride(getRuntimeContext)
     val pgCon = PostgresConnection(params, configKeyGroup)
-    val refreshDelay = params.getLong(s"source.$configKeyGroup.tracerouteRefreshDelay")
+    val refreshDelay = params.getLong(s"source.$configKeyGroup.traceroute.refreshDelay")
 
     if (getRuntimeContext.getNumberOfParallelSubtasks > 1) {
       throw new IllegalStateException("Parallelism for this SourceFunction must be 1.")
     }
 
+    val filters = getFilterFunctions(params)
+
     isRunning = true
 
     while (isRunning) {
-      val usedStreams = refreshUsedStreams(pgCon)
+      val usedStreams = refreshUsedStreams(pgCon, filters)
       val now = Instant.now()
-      logger.info(s"Getting traceroute measurements for ${usedStreams.size} streams between $lastMeasurementTime and $now...")
+      logger.info(s"Getting traceroute measurements for ${usedStreams.size} streams until $now...")
       usedStreams.flatMap { meta =>
-        pgCon.getTracerouteData(meta.stream, lastMeasurementTime, now)
+        val oldestTime = lastMeasurementTimes.get(meta.stream) match {
+          case Some(value) => value
+          case None =>
+            val oldTime = now.minus(fetchHistory)
+            lastMeasurementTimes.put(meta.stream, oldTime)
+            oldTime
+        }
+        pgCon.getTracerouteData(meta.stream, oldestTime, now)
       }
         .flatten
         .foreach { meas =>
-          if (meas.timestamp > lastMeasurementTime.getEpochSecond) {
-            lastMeasurementTime = meas.time
+          if (meas.timestamp > lastMeasurementTimes(meas.stream.toInt).getEpochSecond) {
+            lastMeasurementTimes.put(meas.stream.toInt, meas.time)
           }
           ctx.collect(meas)
         }
@@ -144,23 +174,31 @@ class PostgresTracerouteSourceFunction(
     isRunning = false
   }
 
-  // We only put the last measurement time in our checkpoint state. The rest
-  // is transient and should get reconstructed at next startup.
-
-  private var checkpointState: ListState[Instant] = _
+  private var checkpointState: ListState[(Int, Instant)] = _
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {
     checkpointState.clear()
-    checkpointState.add(lastMeasurementTime)
+    checkpointState.addAll(lastMeasurementTimes.toSeq.asJava)
   }
 
   override def initializeState(context: FunctionInitializationContext): Unit = {
     checkpointState = context
       .getOperatorStateStore
-      .getListState(new ListStateDescriptor[Instant]("lastMeasurementTime", classOf[Instant]))
+      .getListState(new ListStateDescriptor[(Int, Instant)]("lastMeasurementTimes", classOf[(Int, Instant)]))
 
     if (context.isRestored) {
-      lastMeasurementTime = checkpointState.get().iterator().next()
+      checkpointState.get.forEach(item => lastMeasurementTimes.put(item._1, item._2))
     }
+  }
+}
+
+/** This includes the various filter functions for refreshUsedStreams, which
+  * get configured by the `filters` key subgroup.
+  */
+object PostgresTracerouteSourceFunction {
+
+  val ampletToAmplet: Iterable[TracerouteMeta] => Set[TracerouteMeta] = { metas =>
+    val knownAmplets = metas.map(_.source).toSet
+    metas.filter(meta => knownAmplets.contains(meta.destination)).toSet
   }
 }
