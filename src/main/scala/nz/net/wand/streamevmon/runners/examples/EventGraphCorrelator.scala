@@ -93,7 +93,6 @@ object EventGraphCorrelator {
     val grapher = new TraceroutePathGraph[Event]
 
     val locatedEvents = events
-      .keyBy(_ => 0)
       .connect(asInetPaths)
       .process(grapher)
       .name(grapher.flinkName)

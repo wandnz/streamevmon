@@ -37,7 +37,7 @@ import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSn
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction
 import org.apache.flink.util.Collector
-import org.jgrapht.graph.{DefaultDirectedWeightedGraph, DefaultWeightedEdge}
+import org.jgrapht.graph.DefaultDirectedWeightedGraph
 
 import scala.collection.mutable
 import scala.collection.JavaConverters._
@@ -62,7 +62,7 @@ class TraceroutePathGraph[EventT <: Event]
   override val configKeyGroup: String = "no-config"
 
   type VertexT = Host
-  type EdgeT = DefaultWeightedEdge
+  type EdgeT = EdgeWithLastSeen
   type GraphT = DefaultDirectedWeightedGraph[VertexT, EdgeT]
 
   var graph: GraphT = _
@@ -70,11 +70,6 @@ class TraceroutePathGraph[EventT <: Event]
   /** Multiple hosts that share attributes can be merged into a single host that
     * contains multiple addresses. This is a lookup table from the source host
     * UID to the merged version of that host.
-    *
-    * // TODO: What happens here if we have two separate source hosts that get
-    * merged? Does the map get updated properly? Maybe we need to look at
-    * a different data structure that is better at storing multiple keys
-    * that point to a single value.
     */
   val mergedHosts: mutable.Map[String, VertexT] = mutable.Map()
 
@@ -130,6 +125,18 @@ class TraceroutePathGraph[EventT <: Event]
     }
   }
 
+  /** If an edge is present, it is replaced with the argument. If not, it is
+    * just added.
+    */
+  def addOrUpdateEdge(graph: GraphT, source: VertexT, destination: VertexT, edge: EdgeT): Unit = {
+    val oldEdge = graph.getEdge(source, destination)
+    if (oldEdge != null) {
+      logger.debug(s"Replacing $oldEdge with $edge between $source and $destination!")
+      graph.removeEdge(oldEdge)
+    }
+    graph.addEdge(source, destination, edge)
+  }
+
   /** Adds an AsInetPath to the graph. New hosts will become new vertices, and
     * missing edges will be added. Gives no output.
     */
@@ -176,11 +183,13 @@ class TraceroutePathGraph[EventT <: Event]
       .sliding(2)
       .foreach { elems =>
         val source = elems.head
-        val dest = elems.lastOption
+        val dest = elems.drop(1).headOption
         dest.foreach { d =>
-          graph.addEdge(
+          addOrUpdateEdge(
+            graph,
             mergedHosts(source._2.uid),
-            mergedHosts(d._2.uid)
+            mergedHosts(d._2.uid),
+            EdgeWithLastSeen(value.measurement.time)
           )
         }
       }
@@ -213,7 +222,7 @@ class TraceroutePathGraph[EventT <: Event]
     }
     else {
       graph = new GraphT(classOf[EdgeT])
-      graph.setEdgeSupplier(new DefaultWeightedEdgeSupplier)
+      graph.setEdgeSupplier(new EdgeWithLastSeenSupplier)
     }
   }
 }

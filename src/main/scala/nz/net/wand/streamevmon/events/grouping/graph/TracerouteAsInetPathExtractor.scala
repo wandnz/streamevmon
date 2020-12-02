@@ -151,7 +151,7 @@ class TracerouteAsInetPathExtractor
     unprocessedMeasurements.get(stream).foreach(_.foreach { meas =>
       processElement1(meas, ctx, out)
     })
-    unprocessedMeasurements.put(stream, List())
+    unprocessedMeasurements.remove(stream)
   }
 
   // == CheckpointedFunction implementation ==
