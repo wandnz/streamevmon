@@ -6,7 +6,7 @@ import java.util.function.Supplier
 /** A simple edge type that holds an Instant, used to keep track of when the
   * edge was last seen to allow edge expiry.
   */
-case class EdgeWithLastSeen(lastSeen: Instant)
+class EdgeWithLastSeen(val lastSeen: Instant)
 
 /** Any Edge type needs a supplier to avoid issues discussed in [[DefaultWeightedEdgeSupplier]],
   * but we never want this one to be called. Instead, the EdgeWithLastSeen

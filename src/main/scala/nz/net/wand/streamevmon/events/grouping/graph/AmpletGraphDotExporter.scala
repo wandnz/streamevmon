@@ -41,7 +41,7 @@ import scala.collection.JavaConverters._
   * AS they belong to.
   */
 object AmpletGraphDotExporter {
-  def exportGraph[VertexT <: Host, EdgeT](
+  def exportGraph[VertexT <: Host, EdgeT <: EdgeWithLastSeen](
     graph: DefaultDirectedWeightedGraph[VertexT, EdgeT],
     file : File
   ): Unit = {
@@ -99,6 +99,8 @@ object AmpletGraphDotExporter {
         )
       ).asJava
     }
+
+    exporter.setEdgeIdProvider(_.lastSeen.toString)
 
     // A dot file is just a listing of vertices and edges, and contains nothing
     // about layout. That's left to the renderer, which isn't our problem.
