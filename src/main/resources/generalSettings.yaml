@@ -10,3 +10,7 @@ caching:
 flink:
   maxLateness: 20
   checkpointInterval: 600
+
+eventGrouping:
+  graph:
+    pruneInterval: 10

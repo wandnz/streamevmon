@@ -31,6 +31,8 @@ import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 
+import java.time.{Duration, Instant}
+
 import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
@@ -51,6 +53,15 @@ import scala.collection.JavaConverters._
   *
   * Currently, the "placing events" functionality is unimplemented, and this
   * just acts as a passthrough function for Events that takes up a lot of memory.
+  *
+  * ==Configuration==
+  *
+  * This ProcessFunction is configured by the `eventGrouping.graph` config key
+  * group.
+  *
+  * - `pruneInterval`: This many seconds must pass between graph prunings. This
+  * is based on the event time of events and paths that are received, so if no
+  * items are received, the graph will never be pruned.
   */
 class TraceroutePathGraph[EventT <: Event]
   extends CoProcessFunction[EventT, AsInetPath, Event]
@@ -59,7 +70,7 @@ class TraceroutePathGraph[EventT <: Event]
           with Logging {
   override val flinkName: String = "Traceroute-Path Graph"
   override val flinkUid: String = "traceroute-path-graph"
-  override val configKeyGroup: String = "no-config"
+  override val configKeyGroup: String = "eventGrouping.graph"
 
   type VertexT = Host
   type EdgeT = EdgeWithLastSeen
@@ -73,6 +84,8 @@ class TraceroutePathGraph[EventT <: Event]
     */
   val mergedHosts: mutable.Map[String, VertexT] = mutable.Map()
 
+  var lastPruneTime: Instant = Instant.EPOCH
+
   override def open(parameters: Configuration): Unit = {
     // We can't go sharing inputs with other parallel instances, since that
     // would mean everyone has an incomplete graph.
@@ -81,11 +94,32 @@ class TraceroutePathGraph[EventT <: Event]
     }
   }
 
+  def pruneGraph(currentTime: Instant): Unit = {
+    logger.info("Pruning graph...")
+    lastPruneTime = currentTime
+  }
+
+  @transient lazy val pruneInterval: Duration =
+    Duration.ofSeconds(configWithOverride(getRuntimeContext).getLong(s"$configKeyGroup.pruneInterval"))
+
+  def pruneIfEnoughTimePassed(currentTime: Instant): Unit = {
+    lastPruneTime match {
+      // No reason to prune if this is the first measurement we've seen. Set the
+      // max timeout.
+      case Instant.EPOCH => lastPruneTime = currentTime
+      // If it's been long enough, go ahead and prune the graph.
+      case lTime if Duration.between(lTime, currentTime).compareTo(pruneInterval) > 0 => pruneGraph(currentTime)
+      // Otherwise, do nothing.
+      case _ =>
+    }
+  }
+
   override def processElement1(
     value: EventT,
-    ctx: CoProcessFunction[EventT, AsInetPath, Event]#Context,
+    ctx  : CoProcessFunction[EventT, AsInetPath, Event]#Context,
     out  : Collector[Event]
   ): Unit = {
+    pruneIfEnoughTimePassed(value.time)
     out.collect(value)
   }
 
@@ -145,6 +179,7 @@ class TraceroutePathGraph[EventT <: Event]
     ctx  : CoProcessFunction[EventT, AsInetPath, Event]#Context,
     out  : Collector[Event]
   ): Unit = {
+    pruneIfEnoughTimePassed(value.measurement.time)
     // First, let's convert the AsInetPath to a collection of Host hops.
     val hosts = pathToHosts(value)
 
