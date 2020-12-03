@@ -13,5 +13,6 @@ flink:
 
 eventGrouping:
   graph:
-    pruneInterval: 10
+    pruneIntervalCount: 500
+    pruneIntervalTime: 43200 # 12 hours
     pruneAge: 1200

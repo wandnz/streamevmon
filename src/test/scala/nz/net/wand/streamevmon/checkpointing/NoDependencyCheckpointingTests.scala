@@ -226,12 +226,14 @@ class NoDependencyCheckpointingTests extends HarnessingTest {
       graph.mergedHosts should have size path.size
       graph.graph.vertexSet should have size path.size
       graph.lastPruneTime shouldBe SeedData.traceroute.expectedAsInetPath.measurement.time
+      graph.measurementsSinceLastPrune shouldBe 1
 
       harness = snapshotAndRestart(harness, graph)
 
       graph.mergedHosts should have size path.size
       graph.graph.vertexSet should have size path.size
       graph.lastPruneTime shouldBe SeedData.traceroute.expectedAsInetPath.measurement.time
+      graph.measurementsSinceLastPrune shouldBe 1
     }
   }
 }

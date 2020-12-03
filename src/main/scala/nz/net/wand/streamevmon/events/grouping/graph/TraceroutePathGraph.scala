@@ -60,9 +60,13 @@ import scala.collection.JavaConverters._
   * This ProcessFunction is configured by the `eventGrouping.graph` config key
   * group.
   *
-  * - `pruneInterval`: This many seconds must pass between graph prunings. This
-  * is based on the event time of events and paths that are received, so if no
-  * items are received, the graph will never be pruned.
+  * If any of the prune interval conditions are fulfilled, a prune will occur.
+  * When a prune occurs, all the condition counters are reset.
+  *
+  * - `pruneIntervalCount`: Once this many new paths are received, the graph
+  * will be pruned.
+  * - `pruneIntervalTime`: This many seconds must pass between graph prunings.
+  * This is based on the event time of events and paths that are received.
   * - `pruneAge`: An edge must be this many seconds old before it gets pruned.
   */
 class TraceroutePathGraph[EventT <: Event]
@@ -87,10 +91,15 @@ class TraceroutePathGraph[EventT <: Event]
   val mergedHosts: mutable.Map[String, VertexT] = mutable.Map()
 
   var lastPruneTime: Instant = Instant.EPOCH
+  var measurementsSinceLastPrune: Long = 0
+
+  /** How often we prune, in measurement count */
+  @transient private lazy val pruneIntervalCount: Long =
+  configWithOverride(getRuntimeContext).getLong(s"$configKeyGroup.pruneIntervalCount")
 
   /** How often we prune, in event time */
-  @transient private lazy val pruneInterval: Duration =
-  Duration.ofSeconds(configWithOverride(getRuntimeContext).getLong(s"$configKeyGroup.pruneInterval"))
+  @transient private lazy val pruneIntervalTime: Duration =
+  Duration.ofSeconds(configWithOverride(getRuntimeContext).getLong(s"$configKeyGroup.pruneIntervalTime"))
 
   /** How old an edge must be before it gets pruned */
   @transient private lazy val pruneAge: Duration =
@@ -141,17 +150,25 @@ class TraceroutePathGraph[EventT <: Event]
     val endTime = System.nanoTime()
     logger.debug(s"Pruning took ${Duration.ofNanos(endTime - startTime).toMillis}ms")
     lastPruneTime = currentTime
+    measurementsSinceLastPrune = 0
   }
 
-  def pruneIfEnoughTimePassed(currentTime: Instant): Unit = {
-    lastPruneTime match {
-      // No reason to prune if this is the first measurement we've seen. Set the
-      // max timeout.
-      case Instant.EPOCH => lastPruneTime = currentTime
-      // If it's been long enough, go ahead and prune the graph.
-      case lTime if Duration.between(lTime, currentTime).compareTo(pruneInterval) > 0 => pruneGraph(currentTime)
-      // Otherwise, do nothing.
-      case _ =>
+  def pruneIfRequired(currentTime: Instant): Unit = {
+    measurementsSinceLastPrune += 1
+
+    if (measurementsSinceLastPrune >= pruneIntervalCount) {
+      pruneGraph(currentTime)
+    }
+    else {
+      lastPruneTime match {
+        // If this is our first measurement, we just set the time so that we
+        // prune later after the normal timeout.
+        case Instant.EPOCH => lastPruneTime = currentTime
+        // If it's been long enough, go ahead and prune the graph.
+        case _ if Duration.between(lastPruneTime, currentTime).compareTo(pruneIntervalTime) > 0 => pruneGraph(currentTime)
+        // Otherwise, do nothing.
+        case _ =>
+      }
     }
   }
 
@@ -160,8 +177,8 @@ class TraceroutePathGraph[EventT <: Event]
     ctx  : CoProcessFunction[EventT, AsInetPath, Event]#Context,
     out  : Collector[Event]
   ): Unit = {
+    pruneIfRequired(value.time)
     out.collect(value)
-    pruneIfEnoughTimePassed(value.time)
   }
 
   /** Converts an AsInetPath into a path of Hosts. */
@@ -274,7 +291,7 @@ class TraceroutePathGraph[EventT <: Event]
         }
       }
 
-    pruneIfEnoughTimePassed(value.measurement.time)
+    pruneIfRequired(value.measurement.time)
   }
 
   // == CheckpointedFunction implementation ==
@@ -282,6 +299,7 @@ class TraceroutePathGraph[EventT <: Event]
   private var graphState: ListState[GraphT] = _
   private var mergedHostsState: ListState[VertexT] = _
   private var lastPruneTimeState: ListState[Instant] = _
+  private var measurementsSinceLastPruneState: ListState[Long] = _
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {
     graphState.clear()
@@ -290,6 +308,8 @@ class TraceroutePathGraph[EventT <: Event]
     mergedHostsState.addAll(mergedHosts.values.toSeq.asJava)
     lastPruneTimeState.clear()
     lastPruneTimeState.add(lastPruneTime)
+    measurementsSinceLastPruneState.clear()
+    measurementsSinceLastPruneState.add(measurementsSinceLastPrune)
   }
 
   override def initializeState(context: FunctionInitializationContext): Unit = {
@@ -305,10 +325,15 @@ class TraceroutePathGraph[EventT <: Event]
       .getOperatorStateStore
       .getUnionListState(new ListStateDescriptor("lastPruneTime", classOf[Instant]))
 
+    measurementsSinceLastPruneState = context
+      .getOperatorStateStore
+      .getUnionListState(new ListStateDescriptor("measurementsSinceLastPrune", classOf[Long]))
+
     if (context.isRestored) {
       graphState.get.forEach(entry => graph = entry)
       mergedHostsState.get.forEach(entry => mergedHosts.put(entry.uid, entry))
       lastPruneTimeState.get.forEach(entry => lastPruneTime = entry)
+      measurementsSinceLastPruneState.get.forEach(entry => measurementsSinceLastPrune = entry)
     }
     else {
       graph = new GraphT(classOf[EdgeT])
