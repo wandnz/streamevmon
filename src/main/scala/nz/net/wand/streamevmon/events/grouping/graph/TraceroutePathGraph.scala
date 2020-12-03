@@ -63,6 +63,7 @@ import scala.collection.JavaConverters._
   * - `pruneInterval`: This many seconds must pass between graph prunings. This
   * is based on the event time of events and paths that are received, so if no
   * items are received, the graph will never be pruned.
+  * - `pruneAge`: An edge must be this many seconds old before it gets pruned.
   */
 class TraceroutePathGraph[EventT <: Event]
   extends CoProcessFunction[EventT, AsInetPath, Event]
@@ -87,6 +88,14 @@ class TraceroutePathGraph[EventT <: Event]
 
   var lastPruneTime: Instant = Instant.EPOCH
 
+  /** How often we prune, in event time */
+  @transient private lazy val pruneInterval: Duration =
+  Duration.ofSeconds(configWithOverride(getRuntimeContext).getLong(s"$configKeyGroup.pruneInterval"))
+
+  /** How old an edge must be before it gets pruned */
+  @transient private lazy val pruneAge: Duration =
+  Duration.ofSeconds(configWithOverride(getRuntimeContext).getLong(s"$configKeyGroup.pruneAge"))
+
   override def open(parameters: Configuration): Unit = {
     // We can't go sharing inputs with other parallel instances, since that
     // would mean everyone has an incomplete graph.
@@ -94,9 +103,6 @@ class TraceroutePathGraph[EventT <: Event]
       throw new IllegalStateException("Parallelism for this CoProcessFunction must be 1.")
     }
   }
-
-  @transient private lazy val pruneAge: Duration =
-    Duration.ofSeconds(configWithOverride(getRuntimeContext).getLong(s"$configKeyGroup.pruneAge"))
 
   /** Prunes edges that are older than the configured time (`pruneAge`), and
     * removes any vertices that are no longer connected to the rest of the graph.
@@ -136,9 +142,6 @@ class TraceroutePathGraph[EventT <: Event]
     logger.debug(s"Pruning took ${Duration.ofNanos(endTime - startTime).toMillis}ms")
     lastPruneTime = currentTime
   }
-
-  @transient private lazy val pruneInterval: Duration =
-    Duration.ofSeconds(configWithOverride(getRuntimeContext).getLong(s"$configKeyGroup.pruneInterval"))
 
   def pruneIfEnoughTimePassed(currentTime: Instant): Unit = {
     lastPruneTime match {
@@ -278,12 +281,15 @@ class TraceroutePathGraph[EventT <: Event]
 
   private var graphState: ListState[GraphT] = _
   private var mergedHostsState: ListState[VertexT] = _
+  private var lastPruneTimeState: ListState[Instant] = _
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {
     graphState.clear()
     graphState.add(graph)
     mergedHostsState.clear()
     mergedHostsState.addAll(mergedHosts.values.toSeq.asJava)
+    lastPruneTimeState.clear()
+    lastPruneTimeState.add(lastPruneTime)
   }
 
   override def initializeState(context: FunctionInitializationContext): Unit = {
@@ -295,9 +301,14 @@ class TraceroutePathGraph[EventT <: Event]
       .getOperatorStateStore
       .getUnionListState(new ListStateDescriptor("mergedHosts", classOf[VertexT]))
 
+    lastPruneTimeState = context
+      .getOperatorStateStore
+      .getUnionListState(new ListStateDescriptor("lastPruneTime", classOf[Instant]))
+
     if (context.isRestored) {
       graphState.get.forEach(entry => graph = entry)
       mergedHostsState.get.forEach(entry => mergedHosts.put(entry.uid, entry))
+      lastPruneTimeState.get.forEach(entry => lastPruneTime = entry)
     }
     else {
       graph = new GraphT(classOf[EdgeT])
