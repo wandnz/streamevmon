@@ -39,6 +39,7 @@ import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSn
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction
 import org.apache.flink.util.Collector
+import org.jgrapht.alg.connectivity.ConnectivityInspector
 import org.jgrapht.graph.DefaultDirectedWeightedGraph
 
 import scala.collection.mutable
@@ -94,12 +95,49 @@ class TraceroutePathGraph[EventT <: Event]
     }
   }
 
+  @transient private lazy val pruneAge: Duration =
+    Duration.ofSeconds(configWithOverride(getRuntimeContext).getLong(s"$configKeyGroup.pruneAge"))
+
+  /** Prunes edges that are older than the configured time (`pruneAge`), and
+    * removes any vertices that are no longer connected to the rest of the graph.
+    */
   def pruneGraph(currentTime: Instant): Unit = {
-    logger.info("Pruning graph...")
+    //logger.info("Pruning graph...")
+    val startTime = System.nanoTime()
+
+    graph
+      .edgeSet
+      .asScala
+      // convert the edge list to a solid list instead of a lazy collection so
+      // that we're not modifying the graph during an iteration over its edges.
+      .toList
+      .foreach { edge =>
+        // if it's old enough, get rid of it.
+        if (Duration.between(edge.lastSeen, currentTime).compareTo(pruneAge) > 0) {
+          graph.removeEdge(edge)
+        }
+      }
+
+    // The connectivity inspector can tell us about all sets of connected
+    // elements within the graph. We preserve the one with the most elements,
+    // since it's the main part of the graph that shouldn't be pruned.
+    graph.removeAllVertices(
+      new ConnectivityInspector(graph)
+        .connectedSets
+        .asScala
+        .sortBy(_.size)
+        .dropRight(1)
+        .flatMap(_.asScala.toSeq)
+        .toSet
+        .asJavaCollection
+    )
+
+    val endTime = System.nanoTime()
+    logger.debug(s"Pruning took ${Duration.ofNanos(endTime - startTime).toMillis}ms")
     lastPruneTime = currentTime
   }
 
-  @transient lazy val pruneInterval: Duration =
+  @transient private lazy val pruneInterval: Duration =
     Duration.ofSeconds(configWithOverride(getRuntimeContext).getLong(s"$configKeyGroup.pruneInterval"))
 
   def pruneIfEnoughTimePassed(currentTime: Instant): Unit = {
@@ -119,8 +157,8 @@ class TraceroutePathGraph[EventT <: Event]
     ctx  : CoProcessFunction[EventT, AsInetPath, Event]#Context,
     out  : Collector[Event]
   ): Unit = {
-    pruneIfEnoughTimePassed(value.time)
     out.collect(value)
+    pruneIfEnoughTimePassed(value.time)
   }
 
   /** Converts an AsInetPath into a path of Hosts. */
@@ -144,18 +182,24 @@ class TraceroutePathGraph[EventT <: Event]
   }
 
   /** Replaces a vertex in a GraphT with a new vertex, retaining connected edges.
+    * If the original vertex wasn't present, just add the new vertex.
     *
     * Originally from https://stackoverflow.com/a/48255973, but needed some
     * additional changes to work with our equality definition for Hosts.
     */
-  def replaceVertex(graph: GraphT, oldHost: VertexT, newHost: VertexT): Unit = {
-    if (!oldHost.deepEquals(newHost)) {
-      val outEdges = graph.outgoingEdgesOf(oldHost).asScala.map(edge => (graph.getEdgeTarget(edge), edge))
-      val inEdges = graph.incomingEdgesOf(oldHost).asScala.map(edge => (graph.getEdgeSource(edge), edge))
-      graph.removeVertex(oldHost)
+  def addOrReplaceVertex(graph: GraphT, oldHost: VertexT, newHost: VertexT): Unit = {
+    if (graph.containsVertex(oldHost)) {
+      if (!oldHost.deepEquals(newHost)) {
+        val outEdges = graph.outgoingEdgesOf(oldHost).asScala.map(edge => (graph.getEdgeTarget(edge), edge))
+        val inEdges = graph.incomingEdgesOf(oldHost).asScala.map(edge => (graph.getEdgeSource(edge), edge))
+        graph.removeVertex(oldHost)
+        graph.addVertex(newHost)
+        outEdges.foreach(edge => graph.addEdge(newHost, edge._1, edge._2))
+        inEdges.foreach(edge => graph.addEdge(edge._1, newHost, edge._2))
+      }
+    }
+    else {
       graph.addVertex(newHost)
-      outEdges.foreach(edge => graph.addEdge(newHost, edge._1, edge._2))
-      inEdges.foreach(edge => graph.addEdge(edge._1, newHost, edge._2))
     }
   }
 
@@ -165,7 +209,6 @@ class TraceroutePathGraph[EventT <: Event]
   def addOrUpdateEdge(graph: GraphT, source: VertexT, destination: VertexT, edge: EdgeT): Unit = {
     val oldEdge = graph.getEdge(source, destination)
     if (oldEdge != null) {
-      logger.debug(s"Replacing $oldEdge with $edge between $source and $destination!")
       graph.removeEdge(oldEdge)
     }
     graph.addEdge(source, destination, edge)
@@ -179,7 +222,6 @@ class TraceroutePathGraph[EventT <: Event]
     ctx  : CoProcessFunction[EventT, AsInetPath, Event]#Context,
     out  : Collector[Event]
   ): Unit = {
-    pruneIfEnoughTimePassed(value.measurement.time)
     // First, let's convert the AsInetPath to a collection of Host hops.
     val hosts = pathToHosts(value)
 
@@ -196,7 +238,7 @@ class TraceroutePathGraph[EventT <: Event]
             // the entry in the graph here.
             .map { oldMerged =>
               val newMerged = oldMerged.mergeWith(h)
-              replaceVertex(graph, oldMerged, newMerged)
+              addOrReplaceVertex(graph, oldMerged, newMerged)
               newMerged
             }
             // If there wasn't an existing entry in the first place, we just put
@@ -224,10 +266,12 @@ class TraceroutePathGraph[EventT <: Event]
             graph,
             mergedHosts(source._2.uid),
             mergedHosts(d._2.uid),
-            EdgeWithLastSeen(value.measurement.time)
+            new EdgeWithLastSeen(value.measurement.time)
           )
         }
       }
+
+    pruneIfEnoughTimePassed(value.measurement.time)
   }
 
   // == CheckpointedFunction implementation ==
