@@ -59,14 +59,19 @@ object ItdkLookupPreprocessor {
     * distance (0.0-1.0) through the aligned file that entries beginning with
     * that octet ends.
     */
-  def createAlignedInvertedMapFile(sortedFile: File): (File, File) = {
+  def createAlignedInvertedMapFile(sortedFile: File, onlyProduceLookup: Boolean = false): (File, File) = {
     val alignedFile = new File(s"${sortedFile.getCanonicalPath}.aligned")
     val sortedStream = Source.fromFile(sortedFile)
-    val alignedWriter = new DataOutputStream(new FileOutputStream(alignedFile))
+    val alignedWriter = if (onlyProduceLookup) {
+      new DataOutputStream(OutputStream.nullOutputStream())
+    }
+    else {
+      new DataOutputStream(new FileOutputStream(alignedFile))
+    }
 
     // Start the map off by filling in all the keys we'll ever find.
     val countByFirstOctet = mutable.Map[Byte, Long]()
-    Range(0, 255).foreach(i => countByFirstOctet(i.toByte) = 0)
+    Range(0, 256).foreach(i => countByFirstOctet(i.toByte) = 0)
 
     // Each line in the sorted file corresponds to one entry in the aligned file
     sortedStream.getLines
