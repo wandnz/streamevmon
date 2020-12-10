@@ -9,10 +9,10 @@ import scala.annotation.tailrec
 /** Reads the geolocation annotations for an ITDK dataset. Provides a mapping
   * from ITDK-sourced host IDs to their [[GeoInfo]].
   */
-class ItdkGeoLookup(geoFile: File) extends Logging {
-  @transient protected val reader = new RandomAccessFile(geoFile, "r")
+class ItdkAsLookup(asFile: File) extends Logging {
+  @transient protected val reader = new RandomAccessFile(asFile, "r")
 
-  @transient protected val fileSize: Long = geoFile.length
+  @transient protected val fileSize: Long = asFile.length
 
   /** The longest line in the ITDK-2019-04 dataset is observed to be
     * 127 characters, though the file format specification mentions that it
@@ -25,10 +25,10 @@ class ItdkGeoLookup(geoFile: File) extends Logging {
     */
   @transient protected val bufSize: Int = 4096
 
-  /** Returns however many GeoInfo entries we got, fully intact, from reading
+  /** Returns however many AsNumber entries we got, fully intact, from reading
     * into our buffer size. This is usually somewhere between 2 and 7 elements.
     */
-  protected def getEntriesAfterLocation(idx     : Long): Iterable[GeoInfo] = {
+  protected def getEntriesAfterLocation(idx: Long): Iterable[ItdkAsNumber] = {
     reader.seek(idx)
     val buf = Array.ofDim[Byte](bufSize)
     reader.readFully(buf, 0, math.min(bufSize, fileSize - idx).toInt)
@@ -38,10 +38,9 @@ class ItdkGeoLookup(geoFile: File) extends Logging {
     // end of the file.
     val entries = new String(buf).split("\n", -1)
     val qualifiedEntries = entries
-      .filter(_.startsWith("node.geo N"))
-      .filter(_.count(_ == '\t') == 9)
-
-    qualifiedEntries.map(GeoInfo(_))
+      .filter(_.startsWith("node.AS N"))
+      .filter(e => ItdkAsMethod.values.exists(method => e.endsWith(method.toString)))
+    qualifiedEntries.map(ItdkAsNumber(_))
   }
 
   /** Recursively searches the data file for the given node ID.
@@ -52,12 +51,12 @@ class ItdkGeoLookup(geoFile: File) extends Logging {
     */
   @tailrec
   protected final def search(
-    lowGuess: Long,
+    lowGuess : Long,
     highGuess: Long,
-    target: Long,
-    lastResult: Option[Long] = None,
-    depth   : Int = 1
-  ): Option[GeoInfo] = {
+    target   : Long,
+    lastGuess: Option[Long] = None,
+    depth    : Int = 1
+  ): Option[ItdkAsNumber] = {
     // We do a simple binary chop.
     val midpointOfGuesses = math.max((highGuess + lowGuess) / 2, 0)
     val results = getEntriesAfterLocation(midpointOfGuesses)
@@ -70,7 +69,7 @@ class ItdkGeoLookup(geoFile: File) extends Logging {
     // If we get the same result twice, then we know we haven't found the target
     // and that nothing will change from here, since the binary chop moves less
     // and less each iteration.
-    else if (lastResult.isDefined && lastResult.get == results.head.nodeId) {
+    else if (lastGuess.isDefined && lastGuess.get == midpointOfGuesses) {
       logger.trace(s"Failed to find target $target after $depth lookups")
       None
     }
@@ -88,19 +87,18 @@ class ItdkGeoLookup(geoFile: File) extends Logging {
           }
           else {
             if (results.head.nodeId > target) {
-              search(lowGuess, midpointOfGuesses, target, Some(results.head.nodeId), depth + 1)
+              search(lowGuess, midpointOfGuesses, target, Some(midpointOfGuesses), depth + 1)
             }
             else {
-              search(midpointOfGuesses, highGuess, target, Some(results.head.nodeId), depth + 1)
+              search(midpointOfGuesses, highGuess, target, Some(midpointOfGuesses), depth + 1)
             }
           }
       }
     }
   }
 
-  /** Attempts to retrieve a GeoInfo from a node ID.
-    */
-  def getGeoInfoByNode(nodeId: Int): Option[GeoInfo] = {
+  /** Attempts to retrieve an ItdkAsNumber from a node ID. */
+  def getAsNumberByNode(nodeId: Int): Option[ItdkAsNumber] = {
     search(0, fileSize, nodeId)
   }
 }
