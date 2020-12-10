@@ -1,0 +1,106 @@
+package nz.net.wand.streamevmon.events.grouping.graph.itdk
+
+import nz.net.wand.streamevmon.Logging
+
+import java.io.{File, RandomAccessFile}
+
+import scala.annotation.tailrec
+
+/** Reads the geolocation annotations for an ITDK dataset. Provides a mapping
+  * from ITDK-sourced host IDs to their [[GeoInfo]].
+  */
+class ItdkGeoLookup(geoFile: File) extends Logging {
+  @transient protected val reader = new RandomAccessFile(geoFile, "r")
+
+  @transient protected val fileSize: Long = geoFile.length
+
+  /** The longest line in the ITDK-2019-04 dataset is observed to be
+    * 127 characters, though the file format specification mentions that it
+    * could be up to around 300 characters.
+    *
+    * We'll read a few lines worth so we can seek a little back and forth
+    * around the expected line. It's also still smaller than the normal default
+    * filesystem block size of 4KiB, meaning we shouldn't ever read multiple
+    * blocks, improving performance.
+    */
+  @transient protected val bufSize: Int = 512
+
+  /** Returns however many GeoInfo entries we got, fully intact, from reading
+    * into our buffer size. This is usually somewhere between 2 and 7 elements.
+    */
+  protected def getEntriesAfterLocation(idx     : Long): Iterable[GeoInfo] = {
+    reader.seek(idx)
+    val buf = Array.ofDim[Byte](bufSize)
+    reader.readFully(buf, 0, math.min(bufSize, fileSize - idx).toInt)
+
+    // Using the -1 ensures that any trailing entries still appear in the array.
+    // This just makes the logic a little more consistent, especially at the
+    // end of the file.
+    val entries = new String(buf).split("\n", -1)
+    val qualifiedEntries = entries
+      .filter(_.startsWith("node.geo N"))
+      .filter(_.count(_ == '\t') == 9)
+
+    qualifiedEntries.map(GeoInfo(_))
+  }
+
+  /** Recursively searches the data file for the given node ID.
+    *
+    * @see [[ItdkAliasLookup.search]], which behaves the same as this function.
+    *      The only difference is that each file lookup here can retrieve
+    *      multiple entries.
+    */
+  @tailrec
+  protected final def search(
+    lowGuess: Long,
+    highGuess: Long,
+    target: Long,
+    lastResult: Option[Long] = None,
+    depth   : Int = 1
+  ): Option[GeoInfo] = {
+    // We do a simple binary chop.
+    val midpointOfGuesses = math.max((highGuess + lowGuess) / 2, 0)
+    val results = getEntriesAfterLocation(midpointOfGuesses)
+
+    // This shouldn't really happen, but we do need to check for it.
+    if (results.isEmpty) {
+      logger.trace(s"No results obtained for target $target from guess $midpointOfGuesses because we got the same result twice")
+      None
+    }
+    // If we get the same result twice, then we know we haven't found the target
+    // and that nothing will change from here, since the binary chop moves less
+    // and less each iteration.
+    else if (lastResult.isDefined && lastResult.get == results.head.nodeId) {
+      logger.trace(s"Failed to find target $target after $depth lookups")
+      None
+    }
+    else {
+      results.find(_.nodeId == target) match {
+        case Some(value) =>
+          logger.trace(s"Found target $target after $depth guesses")
+          Some(value)
+        case None =>
+          // If we retrieved results that are both higher and lower than the
+          // target in the same go, then we know the target isn't there.
+          if (results.head.nodeId < target && results.last.nodeId > target) {
+            logger.trace(s"Failed to find target $target after $depth lookups because it is not present")
+            None
+          }
+          else {
+            if (results.head.nodeId > target) {
+              search(lowGuess, midpointOfGuesses, target, Some(results.head.nodeId), depth + 1)
+            }
+            else {
+              search(midpointOfGuesses, highGuess, target, Some(results.head.nodeId), depth + 1)
+            }
+          }
+      }
+    }
+  }
+
+  /** Attempts to retrieve a GeoInfo from a node ID.
+    */
+  def getGeoInfoByNode(nodeId: Int): Option[GeoInfo] = {
+    search(0, fileSize, nodeId)
+  }
+}

@@ -12,7 +12,8 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import scala.annotation.tailrec
 
 /** Reads an ITDK dataset. Requires the output of the [[ItdkLookupPreprocessor]]
-  * as it is considerably faster than reading the raw file.
+  * as it is considerably faster than reading the raw file once preprocessing is
+  * complete.
   *
   * Note that this dataset only includes IPv4 addresses.
   */
@@ -81,9 +82,9 @@ class ItdkAliasLookup(alignedFile: File, lookupMapFile: File) extends Logging {
     lastResult: Option[Array[Byte]] = None,
     depth     : Int = 1
   ): Option[Int] = {
-    // We just do a naive binary chop to locate the address, since we only have
-    // information on the distribution of the first octet, which gets dealt with
-    // outside this function.
+    // We just do a naive binary chop to locate the rest of the address, since
+    // we only have information on the distribution of the first octet, which
+    // gets dealt with outside this function.
     val midpointOfGuesses = (highGuess + lowGuess) / 2
     val result = getNthAddress((midpointOfGuesses * maxEntryIndex).toLong)
 
