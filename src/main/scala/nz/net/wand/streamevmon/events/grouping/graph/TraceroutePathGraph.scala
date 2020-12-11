@@ -78,6 +78,8 @@ class TraceroutePathGraph[EventT <: Event]
 
   var graph: GraphT = _
 
+  @transient private lazy val aliasResolver: AliasResolver = AliasResolver(configWithOverride(getRuntimeContext))
+
   /** How often we prune, in measurement count */
   @transient private lazy val pruneIntervalCount: Long =
   configWithOverride(getRuntimeContext).getLong(s"$configKeyGroup.pruneIntervalCount")
@@ -135,7 +137,7 @@ class TraceroutePathGraph[EventT <: Event]
     ctx  : CoProcessFunction[EventT, AsInetPath, Event]#Context,
     out  : Collector[Event]
   ): Unit = {
-    addAsInetPathToGraph(graph, value)
+    addAsInetPathToGraph(graph, aliasResolver, value)
     pruneIfRequired(value.measurement.time)
   }
 

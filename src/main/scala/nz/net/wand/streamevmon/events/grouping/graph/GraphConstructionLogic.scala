@@ -29,7 +29,6 @@ trait GraphConstructionLogic extends Logging {
     * removes any vertices that are no longer connected to the rest of the graph.
     */
   def pruneGraph(graph: GraphT, pruneAge: Duration, currentTime: Instant): Unit = {
-    //logger.info("Pruning graph...")
     val startTime = System.nanoTime()
 
     graph
@@ -54,13 +53,13 @@ trait GraphConstructionLogic extends Logging {
         .asScala
         .sortBy(_.size)
         .dropRight(1)
-        .flatMap(_.asScala.toSeq)
+        .flatMap(_.asScala)
         .toSet
         .asJavaCollection
     )
 
     val endTime = System.nanoTime()
-    logger.debug(s"Pruning took ${Duration.ofNanos(endTime - startTime).toMillis}ms")
+    logger.trace(s"Pruning graph took ${Duration.ofNanos(endTime - startTime).toMillis}ms")
     lastPruneTime = currentTime
     measurementsSinceLastPrune = 0
   }
@@ -119,34 +118,17 @@ trait GraphConstructionLogic extends Logging {
   }
 
   /** Adds an AsInetPath to the graph. */
-  def addAsInetPathToGraph(graph: GraphT, path: AsInetPath): Unit = {
+  def addAsInetPathToGraph(graph: GraphT, aliasResolver: AliasResolver, path: AsInetPath): Unit = {
     // First, let's convert the AsInetPath to a collection of Host hops.
     val hosts = pathToHosts(path)
 
-    // For each Host, replace it with the deduplicated equivalent.
-    hosts
-      .foreach { h =>
-        // Put the deduplicated entry back into the map with UID as key.
-        mergedHosts.put(
-          h.uid,
-          // We get it by taking the existing entry with a matching UID...
-          mergedHosts
-            .get(h.uid)
-            // ... and merging it with the new entry. We also need to update
-            // the entry in the graph here.
-            .map { oldMerged =>
-              val newMerged = oldMerged.mergeWith(h)
-              addOrUpdateVertex(graph, oldMerged, newMerged)
-              newMerged
-            }
-            // If there wasn't an existing entry in the first place, we just put
-            // the new entry there instead. Also slap it into the graph.
-            .getOrElse {
-              graph.addVertex(h)
-              h
-            }
-        )
-      }
+    hosts.foreach { host =>
+      aliasResolver.resolve(
+        host,
+        h => graph.addVertex(h),
+        (oldH, newH) => addOrUpdateVertex(graph, oldH, newH)
+      )
+    }
 
     // Add the new edges representing the new path to the graph.
     // We do a zip here so that we have the option of creating GraphWalks that
