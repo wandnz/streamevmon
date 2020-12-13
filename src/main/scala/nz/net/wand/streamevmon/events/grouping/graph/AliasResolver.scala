@@ -14,7 +14,9 @@ class AliasResolver(
   itdkGeoLookup  : Option[ItdkGeoLookup]
 ) extends Serializable {
 
-  val mergedHosts: mutable.Map[String, Host] = mutable.Map()
+  type HostT = Host2
+
+  val mergedHosts: mutable.Map[String, HostT] = mutable.Map()
 
   /** Uses all available information to perform alias resolution. If no ITDK
     * data is provided, we do naive resolution based on the hostnames already
@@ -25,10 +27,10 @@ class AliasResolver(
     * data.
     */
   def resolve(
-    host: Host,
-    onNewHost: Host => Unit,
-    onUpdateHost: (Host, Host) => Unit
-  ): Host = {
+    host        : HostT,
+    onNewHost   : HostT => Unit,
+    onUpdateHost: (HostT, HostT) => Unit
+  ): HostT = {
     // Naive resolution.
     val naivelyMergedHost = mergedHosts.get(host.uid) match {
       // If we've seen this UID before, we know we need to merge it.
@@ -55,9 +57,9 @@ class AliasResolver(
 }
 
 object AliasResolver {
-  def apply[T <: Host](
-    params        : ParameterTool,
-    configKeyGroup: String = "grouping.itdk",
+  def apply(
+    params             : ParameterTool,
+    configKeyGroup     : String = "grouping.itdk",
     preprocessIfMissing: Boolean = false
   ): AliasResolver = {
     val alignedFile = Option(params.get(s"$configKeyGroup.alignedNodesFile"))

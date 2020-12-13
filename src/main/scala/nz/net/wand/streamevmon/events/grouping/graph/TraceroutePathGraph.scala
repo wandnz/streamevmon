@@ -31,6 +31,7 @@ import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 
+import java.io.File
 import java.time.{Duration, Instant}
 
 import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
@@ -41,6 +42,7 @@ import org.apache.flink.streaming.api.functions.co.CoProcessFunction
 import org.apache.flink.util.Collector
 
 import scala.collection.JavaConverters._
+import scala.collection.mutable
 
 /** Attempts to place events on a topological network graph.
   *
@@ -79,6 +81,8 @@ class TraceroutePathGraph[EventT <: Event]
   var graph: GraphT = _
 
   @transient private lazy val aliasResolver: AliasResolver = AliasResolver(configWithOverride(getRuntimeContext))
+
+  override def getMergedHosts: mutable.Map[String, VertexT] = aliasResolver.mergedHosts
 
   /** How often we prune, in measurement count */
   @transient private lazy val pruneIntervalCount: Long =
@@ -129,6 +133,8 @@ class TraceroutePathGraph[EventT <: Event]
     out.collect(value)
   }
 
+  var counter = 0
+
   /** Adds an AsInetPath to the graph. New hosts will become new vertices, and
     * missing edges will be added. Gives no output.
     */
@@ -139,6 +145,11 @@ class TraceroutePathGraph[EventT <: Event]
   ): Unit = {
     addAsInetPathToGraph(graph, aliasResolver, value)
     pruneIfRequired(value.measurement.time)
+    counter += 1
+    if (counter % 1000 == 0) {
+      println(counter)
+      AmpletGraphDotExporter.exportGraph(graph, new File("./out/graphme.dot"))
+    }
   }
 
   // == CheckpointedFunction implementation ==
@@ -152,7 +163,7 @@ class TraceroutePathGraph[EventT <: Event]
     graphState.clear()
     graphState.add(graph)
     mergedHostsState.clear()
-    mergedHostsState.addAll(mergedHosts.values.toSeq.asJava)
+    mergedHostsState.addAll(getMergedHosts.values.toSeq.asJava)
     lastPruneTimeState.clear()
     lastPruneTimeState.add(lastPruneTime)
     measurementsSinceLastPruneState.clear()
@@ -178,7 +189,7 @@ class TraceroutePathGraph[EventT <: Event]
 
     if (context.isRestored) {
       graphState.get.forEach(entry => graph = entry)
-      mergedHostsState.get.forEach(entry => mergedHosts.put(entry.uid, entry))
+      mergedHostsState.get.forEach(entry => getMergedHosts.put(entry.uid, entry))
       lastPruneTimeState.get.forEach(entry => lastPruneTime = entry)
       measurementsSinceLastPruneState.get.forEach(entry => measurementsSinceLastPrune = entry)
     }

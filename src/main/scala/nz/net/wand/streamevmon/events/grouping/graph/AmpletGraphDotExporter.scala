@@ -26,7 +26,7 @@
 
 package nz.net.wand.streamevmon.events.grouping.graph
 
-import nz.net.wand.streamevmon.connectors.postgres.schema.{AsNumber, AsNumberCategory}
+import nz.net.wand.streamevmon.connectors.postgres.schema.AsNumber
 
 import java.awt.Color
 import java.io.File
@@ -41,7 +41,7 @@ import scala.collection.JavaConverters._
   * AS they belong to.
   */
 object AmpletGraphDotExporter {
-  def exportGraph[VertexT <: Host, EdgeT <: EdgeWithLastSeen](
+  def exportGraph[VertexT <: Host2, EdgeT <: EdgeWithLastSeen](
     graph: DefaultDirectedWeightedGraph[VertexT, EdgeT],
     file : File
   ): Unit = {
@@ -53,11 +53,7 @@ object AmpletGraphDotExporter {
 
     // We also want to give them a colour defined by AS.
     val asNumberIndex: Map[Int, Int] = graph.vertexSet.asScala.toList
-      .flatMap {
-        case host: HostWithKnownHostname => host.addresses.map(_._2)
-        case host: HostWithUnknownHostname => Some(host.address._2)
-        case _: HostWithUnknownAddress => None
-      }
+      .flatMap(host => host.addresses.map(_._2))
       .flatMap(_.number)
       .toSet
       .zipWithIndex
@@ -78,10 +74,7 @@ object AmpletGraphDotExporter {
     val namedColor = "#FF0000"
 
     exporter.setVertexAttributeProvider { entry =>
-      val isProbablyAmplet = entry match {
-        case host: HostWithKnownHostname => host.hostname.contains("amp")
-        case _ => false
-      }
+      val isProbablyAmplet = entry.hostnames.exists(_.contains("amp"))
       Map(
         "style" -> DefaultAttribute.createAttribute("filled"),
         "shape" -> DefaultAttribute.createAttribute(if (isProbablyAmplet) {
@@ -90,13 +83,17 @@ object AmpletGraphDotExporter {
         else {
           "oval"
         }),
-        "fillcolor" -> DefaultAttribute.createAttribute(
-          entry match {
-            case _: HostWithKnownHostname => namedColor
-            case host: HostWithUnknownHostname => getAsColor(host.address._2)
-            case _: HostWithUnknownAddress => getAsColor(AsNumber(AsNumberCategory.Missing.id))
+        "fillcolor" -> DefaultAttribute.createAttribute {
+          if (entry.hostnames.nonEmpty) {
+            namedColor
           }
-        )
+          else if (entry.addresses.nonEmpty) {
+            getAsColor(entry.addresses.head._2)
+          }
+          else {
+            getAsColor(AsNumber.Missing)
+          }
+        }
       ).asJava
     }
 

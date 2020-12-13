@@ -12,15 +12,11 @@ import scala.collection.mutable
 import scala.collection.JavaConverters._
 
 trait GraphConstructionLogic extends Logging {
-  type VertexT = Host
+  type VertexT = Host2
   type EdgeT = EdgeWithLastSeen
   type GraphT = DefaultDirectedWeightedGraph[VertexT, EdgeT]
 
-  /** Multiple hosts that share attributes can be merged into a single host that
-    * contains multiple addresses. This is a lookup table from the source host
-    * UID to the merged version of that host.
-    */
-  val mergedHosts: mutable.Map[String, VertexT] = mutable.Map()
+  def getMergedHosts: mutable.Map[String, VertexT]
 
   var lastPruneTime: Instant = Instant.EPOCH
   var measurementsSinceLastPrune: Long = 0
@@ -65,7 +61,7 @@ trait GraphConstructionLogic extends Logging {
   }
 
   /** Converts an AsInetPath into a path of Hosts. */
-  def pathToHosts(path: AsInetPath): Iterable[Host] = {
+  def pathToHosts(path: AsInetPath): Iterable[VertexT] = {
     path.zipWithIndex.map { case (entry, index) =>
       // We can usually extract a hostname for the source and destination of
       // the test from the metadata.
@@ -76,11 +72,19 @@ trait GraphConstructionLogic extends Logging {
         case _ => None
       }
 
-      (hostname, entry.address) match {
-        case (Some(host), _) => new HostWithKnownHostname(host, entry.address.map(addr => (addr, entry.as)).toSet)
-        case (None, Some(addr)) => new HostWithUnknownHostname((addr, entry.as))
-        case (None, None) => new HostWithUnknownAddress(path.meta.stream, path.measurement.path_id, index)
-      }
+      val hostnames = hostname.toSet
+      val addresses = entry.address.map(addr => (addr, entry.as)).toSet
+      Host2(
+        hostnames,
+        addresses,
+        if (hostnames.isEmpty && addresses.isEmpty) {
+          Some((path.meta.stream, path.measurement.path_id, index))
+        }
+        else {
+          None
+        },
+        None
+      )
     }
   }
 
@@ -92,7 +96,7 @@ trait GraphConstructionLogic extends Logging {
     */
   def addOrUpdateVertex(graph: GraphT, oldHost: VertexT, newHost: VertexT): Unit = {
     if (graph.containsVertex(oldHost)) {
-      if (!oldHost.deepEquals(newHost)) {
+      if (oldHost != newHost) {
         val outEdges = graph.outgoingEdgesOf(oldHost).asScala.map(edge => (graph.getEdgeTarget(edge), edge))
         val inEdges = graph.incomingEdgesOf(oldHost).asScala.map(edge => (graph.getEdgeSource(edge), edge))
         graph.removeVertex(oldHost)
@@ -135,6 +139,7 @@ trait GraphConstructionLogic extends Logging {
     // also represent the paths later. If we do choose to implement that, note
     // that serializing a GraphWalk to send it via Flink implies serializing
     // the entire graph!
+    val mergedHosts = getMergedHosts
     path
       .zip(hosts)
       .sliding(2)
