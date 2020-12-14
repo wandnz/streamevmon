@@ -54,20 +54,20 @@ case class Host2(
           else {
             ""
           }
-        }"
+        } (${addresses.size} addresses)"
       }
       else if (addresses.nonEmpty) {
-        s"${addresses.head}${
+        s"${addresses.head._1}${
           if (addresses.size > 1) {
             s" (and ${addresses.size - 1} more)"
           }
           else {
             ""
           }
-        }"
+        } (${addresses.head._2})"
       }
       else {
-        ampTracerouteUid.getOrElse("Unknown Host")
+        ampTracerouteUid.map(u => s"? $u").getOrElse("Unknown Host")
       }
     }${itdkNodeId.map(id => s" (ITDK N$id)").getOrElse("")}"
   }
@@ -92,7 +92,7 @@ case class Host2(
     val newItdkNodeId = if (
       this.itdkNodeId.isDefined &&
         other.itdkNodeId.isDefined &&
-        this.itdkNodeId == other.itdkNodeId
+        this.itdkNodeId != other.itdkNodeId
     ) {
       throw new IllegalArgumentException(s"ITDK Node IDs do not match! ${this.itdkNodeId.get} != ${other.itdkNodeId.get}")
     }

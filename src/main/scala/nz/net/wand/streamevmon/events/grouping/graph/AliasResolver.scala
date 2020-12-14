@@ -31,35 +31,88 @@ class AliasResolver(
     onNewHost   : HostT => Unit,
     onUpdateHost: (HostT, HostT) => Unit
   ): HostT = {
-    // Naive resolution.
-    val naivelyMergedHost = mergedHosts.get(host.uid) match {
-      // If we've seen this UID before, we know we need to merge it.
-      case Some(oldMerged) =>
-        // Do the merge, and notify the caller of an update.
-        val newMerged = oldMerged.mergeWith(host)
-        onUpdateHost(oldMerged, newMerged)
-        newMerged
-      case None =>
-        // If we haven't seen it before, there's no merge to do. Notify the
-        // caller of a new host.
-        onNewHost(host)
-        host
-    }
-    // Store the newly merged host back into the map. If it was previously
-    // present, this will overwrite the old value.
-    mergedHosts.put(host.uid, naivelyMergedHost)
+    // Naive resolution. If we've seen it before, it'll be in the mergedHosts
+    // map. We merge it with the new host to retain all the information. If we
+    // haven't seen it before, just continue with the new host.
+    val naivelyMergedHost = mergedHosts.get(host.uid).map(_.mergeWith(host)).getOrElse(host)
 
-    itdkAliasLookup match {
-      case Some(value) => naivelyMergedHost
-      case None => naivelyMergedHost
+    // Now that we have all our current knowledge of the node, let's compare it
+    // against the ITDK dataset.
+    val withItdk = itdkAliasLookup match {
+      case Some(itdk) if naivelyMergedHost.addresses.nonEmpty =>
+        // Get all the unique node IDs that are present in the ITDK dataset for
+        // the addresses in this host.
+        val nodes = naivelyMergedHost.addresses.flatMap { addr =>
+          itdk.getNodeFromAddress(addr._1)
+        }
+
+        // If there's more than one, then our data disagrees with ITDK. This
+        // hasn't yet been observed, so we don't handle it.
+        if (nodes.size > 1) {
+          throw new IllegalStateException("Found multiple ITDK nodes for a single host")
+        }
+
+        // If we got a node ID, then one or more of the addresses is present in
+        // the ITDK dataset.
+        if (nodes.size == 1) {
+          // First, make sure that we don't end up with a single Host containing
+          // addresses that ITDK believes are on different real host machines.
+          // This hasn't yet been observed, so we don't handle it.
+          if (naivelyMergedHost.itdkNodeId.isDefined && naivelyMergedHost.itdkNodeId == nodes.headOption) {
+            throw new IllegalStateException("Found contradicting ITDK nodes for a single host")
+          }
+          // If it doesn't contradict (including if this is the first time we got ITDK info),
+          // we can happily continue with adding the new information.
+          else {
+            val naivelyMergedHostWithItdk = Host2(
+              naivelyMergedHost.hostnames,
+              naivelyMergedHost.addresses,
+              naivelyMergedHost.ampTracerouteUid,
+              Some(nodes.head)
+            )
+            // If we already have information on this ITDK node, we should merge
+            // it with the new information. This step is only needed in the case
+            // where `host` has no existing ITDK information, but a new address
+            // is found in the ITDK dataset that's part of a node we already
+            // have information for in a separate Host. We don't currently
+            // detect this case, so we just do it all the time instead. This
+            // is a good candidate for optimisation by improving the control
+            // flow of this function.
+            mergedHosts.get(naivelyMergedHostWithItdk.uid) match {
+              case Some(value) =>
+                val merged = value.mergeWith(naivelyMergedHostWithItdk)
+                onUpdateHost(value, merged)
+                merged
+              case None => naivelyMergedHostWithItdk
+            }
+          }
+        }
+        // If we didn't find any ITDK information for the host, there's nothing
+        // more to do.
+        else {
+          naivelyMergedHost
+        }
+      // If we don't have the ITDK dataset, or if we don't know any addresses
+      // to compare against the dataset, we just use the naive merge method.
+      case _ => naivelyMergedHost
     }
+
+    // Finally, make sure that our mergedHosts map is up to date and that the
+    // caller is notified of the changes we've made.
+    val original = mergedHosts.remove(host.uid)
+    mergedHosts.put(withItdk.uid, withItdk)
+    original match {
+      case Some(org) => onUpdateHost(org, withItdk)
+      case None => onNewHost(withItdk)
+    }
+    withItdk
   }
 }
 
 object AliasResolver {
   def apply(
     params             : ParameterTool,
-    configKeyGroup     : String = "grouping.itdk",
+    configKeyGroup     : String = "eventGrouping.graph.itdk",
     preprocessIfMissing: Boolean = false
   ): AliasResolver = {
     val alignedFile = Option(params.get(s"$configKeyGroup.alignedNodesFile"))

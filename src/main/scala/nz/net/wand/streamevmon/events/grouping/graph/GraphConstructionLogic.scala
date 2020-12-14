@@ -101,8 +101,16 @@ trait GraphConstructionLogic extends Logging {
         val inEdges = graph.incomingEdgesOf(oldHost).asScala.map(edge => (graph.getEdgeSource(edge), edge))
         graph.removeVertex(oldHost)
         graph.addVertex(newHost)
-        outEdges.foreach(edge => graph.addEdge(newHost, edge._1, edge._2))
-        inEdges.foreach(edge => graph.addEdge(edge._1, newHost, edge._2))
+
+        // If any of the edges are connected to either the old host or the new
+        // host on both sides, then we're creating a self-loop. We will opt to
+        // drop them, since they're not useful in determining a network topology.
+        outEdges
+          .filterNot(e => e._1 == oldHost || e._1 == newHost)
+          .foreach(edge => graph.addEdge(newHost, edge._1, edge._2))
+        inEdges
+          .filterNot(e => e._1 == oldHost || e._1 == newHost)
+          .foreach(edge => graph.addEdge(edge._1, newHost, edge._2))
       }
     }
     else {
@@ -126,7 +134,7 @@ trait GraphConstructionLogic extends Logging {
     // First, let's convert the AsInetPath to a collection of Host hops.
     val hosts = pathToHosts(path)
 
-    hosts.foreach { host =>
+    val hostsAfterMerge = hosts.map { host =>
       aliasResolver.resolve(
         host,
         h => graph.addVertex(h),
@@ -141,7 +149,7 @@ trait GraphConstructionLogic extends Logging {
     // the entire graph!
     val mergedHosts = getMergedHosts
     path
-      .zip(hosts)
+      .zip(hostsAfterMerge)
       .sliding(2)
       .foreach { elems =>
         val source = elems.head

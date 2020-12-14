@@ -3,7 +3,7 @@ package nz.net.wand.streamevmon.events.grouping.graph.itdk
 import nz.net.wand.streamevmon.Logging
 
 import java.io._
-import java.net.{Inet4Address, InetAddress}
+import java.net.{Inet4Address, Inet6Address, InetAddress}
 import java.nio.ByteBuffer
 
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -130,6 +130,9 @@ class ItdkAliasLookup(alignedFile: File, lookupMapFile: File) extends Logging {
           1.0
         }
         search(lowGuess, highGuess, addr.getAddress)
+      case _: Inet6Address =>
+        logger.trace(s"Unsupported InetAddress of type ${address.getClass.getCanonicalName}")
+        None
       case _ =>
         logger.error(s"Unsupported InetAddress of type ${address.getClass.getCanonicalName}")
         None
