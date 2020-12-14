@@ -14,7 +14,7 @@ class AliasResolver(
   itdkGeoLookup  : Option[ItdkGeoLookup]
 ) extends Serializable {
 
-  type HostT = Host2
+  type HostT = Host
 
   val mergedHosts: mutable.Map[String, HostT] = mutable.Map()
 
@@ -64,7 +64,7 @@ class AliasResolver(
           // If it doesn't contradict (including if this is the first time we got ITDK info),
           // we can happily continue with adding the new information.
           else {
-            val naivelyMergedHostWithItdk = Host2(
+            val naivelyMergedHostWithItdk = Host(
               naivelyMergedHost.hostnames,
               naivelyMergedHost.addresses,
               naivelyMergedHost.ampTracerouteUid,

@@ -12,7 +12,7 @@ import scala.collection.mutable
 import scala.collection.JavaConverters._
 
 trait GraphConstructionLogic extends Logging {
-  type VertexT = Host2
+  type VertexT = Host
   type EdgeT = EdgeWithLastSeen
   type GraphT = DefaultDirectedWeightedGraph[VertexT, EdgeT]
 
@@ -74,7 +74,7 @@ trait GraphConstructionLogic extends Logging {
 
       val hostnames = hostname.toSet
       val addresses = entry.address.map(addr => (addr, entry.as)).toSet
-      Host2(
+      Host(
         hostnames,
         addresses,
         if (hostnames.isEmpty && addresses.isEmpty) {

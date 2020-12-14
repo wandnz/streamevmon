@@ -41,7 +41,7 @@ import scala.collection.JavaConverters._
   * AS they belong to.
   */
 object AmpletGraphDotExporter {
-  def exportGraph[VertexT <: Host2, EdgeT <: EdgeWithLastSeen](
+  def exportGraph[VertexT <: Host, EdgeT <: EdgeWithLastSeen](
     graph: DefaultDirectedWeightedGraph[VertexT, EdgeT],
     file : File
   ): Unit = {
