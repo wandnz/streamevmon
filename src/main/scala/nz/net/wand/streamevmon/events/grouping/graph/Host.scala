@@ -26,13 +26,13 @@
 
 package nz.net.wand.streamevmon.events.grouping.graph
 
-import nz.net.wand.streamevmon.connectors.postgres.schema.AsNumber
+import nz.net.wand.streamevmon.connectors.postgres.schema.{AsNumber, AsNumberCategory}
 
 case class Host(
   hostnames: Set[String],
   addresses       : Set[(SerializableInetAddress, AsNumber)],
   ampTracerouteUid: Option[(Int, Int, Int)],
-  itdkNodeId      : Option[Int]
+  itdkNodeId: Option[(Int, AsNumber)]
 ) extends Serializable {
 
   if (ampTracerouteUid.isDefined) {
@@ -50,6 +50,14 @@ case class Host(
     if (hostnames.isEmpty && addresses.isEmpty) {
       throw new IllegalArgumentException("ITDK node ID is defined, but no hostnames or addresses are known!")
     }
+  }
+
+  lazy val allAsNumbers: Set[AsNumber] = {
+    addresses.map(_._2) ++ itdkNodeId.map(_._2)
+  }
+
+  val validAsNumbers: Set[AsNumber] = {
+    allAsNumbers.filter(_.category == AsNumberCategory.Valid)
   }
 
   val uid: String = {

@@ -1,5 +1,6 @@
 package nz.net.wand.streamevmon.events.grouping.graph
 
+import nz.net.wand.streamevmon.connectors.postgres.schema.AsNumber
 import nz.net.wand.streamevmon.events.grouping.graph.itdk._
 
 import java.io.File
@@ -58,17 +59,19 @@ class AliasResolver(
           // First, make sure that we don't end up with a single Host containing
           // addresses that ITDK believes are on different real host machines.
           // This hasn't yet been observed, so we don't handle it.
-          if (naivelyMergedHost.itdkNodeId.isDefined && naivelyMergedHost.itdkNodeId == nodes.headOption) {
+          if (naivelyMergedHost.itdkNodeId.isDefined && naivelyMergedHost.itdkNodeId.map(_._1) == nodes.headOption) {
             throw new IllegalStateException("Found contradicting ITDK nodes for a single host")
           }
           // If it doesn't contradict (including if this is the first time we got ITDK info),
           // we can happily continue with adding the new information.
           else {
+            // Grab the AS number.
+            val asn = itdkAsLookup.flatMap(_.getAsNumberByNode(nodes.head)).getOrElse(AsNumber.Unknown)
             val naivelyMergedHostWithItdk = Host(
               naivelyMergedHost.hostnames,
               naivelyMergedHost.addresses,
               naivelyMergedHost.ampTracerouteUid,
-              Some(nodes.head)
+              Some((nodes.head, asn))
             )
             // If we already have information on this ITDK node, we should merge
             // it with the new information. This step is only needed in the case

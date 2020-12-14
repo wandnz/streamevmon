@@ -32,9 +32,12 @@ package nz.net.wand.streamevmon.connectors.postgres.schema
   * number could fail and result in a Missing or Unknown result.
   */
 object AsNumberCategory extends Enumeration {
-  // RFC 1918 private address
+  /** RFC 1918 private address */
   val PrivateAddress: Value = Value(-2)
+  /** If the IP address was missing, such as if a traceroute probe never got a response */
   val Missing: Value = Value(-1)
+  /** If the IP address doesn't have a known AS mapping */
   val Unknown: Value = Value(0)
+  /** All real AS numbers */
   val Valid: Value = Value(1)
 }
