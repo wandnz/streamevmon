@@ -28,13 +28,28 @@ package nz.net.wand.streamevmon.events.grouping.graph
 
 import nz.net.wand.streamevmon.connectors.postgres.schema.{AsNumber, AsNumberCategory}
 
+/** Represents known single hosts in a network. Each host might have several
+  * hostnames and several addresses. We do our best to use this class in such
+  * a way that one Host represents one physical Host, but it is not a guarantee.
+  *
+  * If either `hostnames` or `addresses` contains at least one entry, then
+  * `ampTracerouteUid` should be None. If both `hostnames` and `addresses` are
+  * empty, then `ampTracerouteUid` should be defined.
+  *
+  * If `itdkNodeId` is defined, then either `hostnames` or `addresses` should
+  * contain at least one entry.
+  *
+  * An IllegalArgumentException will be thrown on construction if any of the
+  * above constraints are violated.
+  */
 case class Host(
   hostnames: Set[String],
-  addresses       : Set[(SerializableInetAddress, AsNumber)],
+  addresses: Set[(SerializableInetAddress, AsNumber)],
   ampTracerouteUid: Option[(Int, Int, Int)],
-  itdkNodeId: Option[(Int, AsNumber)]
+  itdkNodeId      : Option[(Int, AsNumber)]
 ) extends Serializable {
 
+  // Sanity checks
   if (ampTracerouteUid.isDefined) {
     if (hostnames.nonEmpty || addresses.nonEmpty) {
       throw new IllegalArgumentException("Traceroute UID is defined, but a hostname or address is known!")
@@ -52,14 +67,32 @@ case class Host(
     }
   }
 
+  /** A set of all AsNumbers associated with the addresses and ITDK node ID of
+    * this object.
+    */
   lazy val allAsNumbers: Set[AsNumber] = {
     addresses.map(_._2) ++ itdkNodeId.map(_._2)
   }
 
+  /** A set of all valid AsNumbers associated with the addresses and ITDK node
+    * ID of this object. This does not include Missing, Unknown, or
+    * PrivateAddress AsNumbers.
+    */
   val validAsNumbers: Set[AsNumber] = {
     allAsNumbers.filter(_.category == AsNumberCategory.Valid)
   }
 
+  /** A unique identifier for each node, which should be used as the key for
+    * Maps containing these Hosts. It is implemented separately from hashCode
+    * because fulfilling the contract for both hashCode and equals is not
+    * possible with the behaviour we can achieve here.
+    *
+    * The UID follows a hierarchy depending on available information:
+    * - If the ITDK node ID is present, it is used.
+    * - If any hostnames are present, they are separated by ';' and used.
+    * - If any addresses are present, they are separated by ';' and used.
+    * - If nothing else is present, the ampTracerouteUid is used.
+    */
   val uid: String = {
     itdkNodeId match {
       case Some(value) => s"N$value"
@@ -78,6 +111,19 @@ case class Host(
     }
   }
 
+  /** A user-friendly and unique (per `uid`) name for the Host. This does not
+    * need to contain all the information we have about the host, just enough
+    * to differentiate it and describe it.
+    *
+    * - If there are any hostnames, one of them becomes the name of the node. If
+    * there are multiple, it is followed by "(and `n` more)".
+    * - If there are no hostnames, but there are addresses, the same format is
+    * followed with an address.
+    * - If there are no hostnames or addresses, the name is
+    * "? (`ampTracerouteUid`)".
+    * - Regardless of what other information is available, if the ITDK node ID
+    * is known, it is appended to the name in the format "(ITDK N12345)".
+    */
   override def toString: String = {
     s"${
       if (hostnames.nonEmpty) {
@@ -106,22 +152,38 @@ case class Host(
     }${itdkNodeId.map(id => s" (ITDK N$id)").getOrElse("")}"
   }
 
+  /** @return True if both hosts have identical hostname lists. */
   def equalHostnames(other: Host): Boolean = this.hostnames == other.hostnames
 
+  /** @return True if both hosts share any hostnames. */
   def sharesHostnamesWith(other: Host): Boolean = {
     this.hostnames.exists(name => other.hostnames.contains(name))
   }
 
+  /** @return True if both hosts have identical address lists. */
   def equalAddresses(other: Host): Boolean = this.addresses == other.addresses
 
+  /** @return True if both hosts share any addresses. */
   def sharesAddressesWith(other: Host): Boolean = {
     this.addresses.exists(addr => other.addresses.contains(addr))
   }
 
+  /** @return True if both hosts have ITDK node IDs, and they are the same. */
   def equalItdkNode(other: Host): Boolean = {
     itdkNodeId.isDefined && this.itdkNodeId == other.itdkNodeId
   }
 
+  /** Merges this host with the other host, and returns the result. The
+    * following behaviours are followed:
+    *
+    * - If the ITDK node IDs are both present and do not match, an
+    * IllegalArgumentException is thrown. Otherwise, the node ID is preserved.
+    * - Hostname and address lists are merged.
+    * - If there are no hostnames, addresses, or ITDK node IDs, the AMP
+    * traceroute UIDs are compared. If they differ, an
+    * IllegalArgumentException is thrown. If they are the same, it is
+    * preserved.
+    */
   def mergeWith(other: Host): Host = {
     val newItdkNodeId = if (
       this.itdkNodeId.isDefined &&
