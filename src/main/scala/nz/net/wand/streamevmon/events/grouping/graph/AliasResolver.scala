@@ -1,6 +1,5 @@
 package nz.net.wand.streamevmon.events.grouping.graph
 
-import nz.net.wand.streamevmon.connectors.postgres.schema.AsNumber
 import nz.net.wand.streamevmon.events.grouping.graph.itdk._
 
 import java.io.File
@@ -43,35 +42,33 @@ class AliasResolver(
       case Some(itdk) if naivelyMergedHost.addresses.nonEmpty =>
         // Get all the unique node IDs that are present in the ITDK dataset for
         // the addresses in this host.
-        val nodes = naivelyMergedHost.addresses.flatMap { addr =>
+        val nodesAndAsns = naivelyMergedHost.addresses.flatMap { addr =>
           itdk.getNodeFromAddress(addr._1)
         }
 
         // If there's more than one, then our data disagrees with ITDK. This
         // hasn't yet been observed, so we don't handle it.
-        if (nodes.size > 1) {
+        if (nodesAndAsns.size > 1) {
           throw new IllegalStateException("Found multiple ITDK nodes for a single host")
         }
 
         // If we got a node ID, then one or more of the addresses is present in
         // the ITDK dataset.
-        if (nodes.size == 1) {
+        if (nodesAndAsns.size == 1) {
           // First, make sure that we don't end up with a single Host containing
           // addresses that ITDK believes are on different real host machines.
           // This hasn't yet been observed, so we don't handle it.
-          if (naivelyMergedHost.itdkNodeId.isDefined && naivelyMergedHost.itdkNodeId.map(_._1) == nodes.headOption) {
+          if (naivelyMergedHost.itdkNodeId.isDefined && naivelyMergedHost.itdkNodeId == nodesAndAsns.headOption) {
             throw new IllegalStateException("Found contradicting ITDK nodes for a single host")
           }
           // If it doesn't contradict (including if this is the first time we got ITDK info),
           // we can happily continue with adding the new information.
           else {
-            // Grab the AS number.
-            val asn = itdkAsLookup.flatMap(_.getAsNumberByNode(nodes.head)).getOrElse(AsNumber.Unknown)
             val naivelyMergedHostWithItdk = Host(
               naivelyMergedHost.hostnames,
               naivelyMergedHost.addresses,
               naivelyMergedHost.ampTracerouteUid,
-              Some((nodes.head, asn))
+              Some(nodesAndAsns.head)
             )
             // If we already have information on this ITDK node, we should merge
             // it with the new information. This step is only needed in the case

@@ -1,6 +1,7 @@
 package nz.net.wand.streamevmon.events.grouping.graph.itdk
 
 import nz.net.wand.streamevmon.Logging
+import nz.net.wand.streamevmon.connectors.postgres.schema.AsNumber
 
 import java.io._
 import java.net.{Inet4Address, Inet6Address, InetAddress}
@@ -18,8 +19,8 @@ import scala.annotation.tailrec
   * Note that this dataset only includes IPv4 addresses.
   */
 class ItdkAliasLookup(alignedFile: File, lookupMapFile: File) extends Logging {
-  // All IPv4 entries in our aligned format are 8 bytes wide
-  @transient protected val entryLength = 8
+  // All IPv4 entries in our aligned format are 12 bytes wide
+  @transient protected val entryLength = 12
 
   @transient protected val reader = new RandomAccessFile(alignedFile, "r")
 
@@ -76,12 +77,12 @@ class ItdkAliasLookup(alignedFile: File, lookupMapFile: File) extends Logging {
     */
   @tailrec
   protected final def search(
-    lowGuess: Double,
-    highGuess: Double,
-    target  : Array[Byte],
+    lowGuess  : Double,
+    highGuess : Double,
+    target    : Array[Byte],
     lastResult: Option[Array[Byte]] = None,
     depth     : Int = 1
-  ): Option[Int] = {
+  ): Option[(Int, AsNumber)] = {
     // We just do a naive binary chop to locate the rest of the address, since
     // we only have information on the distribution of the first octet, which
     // gets dealt with outside this function.
@@ -100,7 +101,7 @@ class ItdkAliasLookup(alignedFile: File, lookupMapFile: File) extends Logging {
       compare match {
         case 0 =>
           logger.trace(s"Found result after $depth lookups")
-          Some(result._2)
+          Some((result._2, result._3))
         case a if a < 0 => search(lowGuess, midpointOfGuesses, target, Some(result._1.getAddress), depth + 1)
         case a if a > 0 => search(midpointOfGuesses, highGuess, target, Some(result._1.getAddress), depth + 1)
       }
@@ -110,16 +111,16 @@ class ItdkAliasLookup(alignedFile: File, lookupMapFile: File) extends Logging {
   /** Retrieves an entry from the aligned lookup file. Requires `n` to be
     * between 0 and `maxEntryIndex` inclusive.
     */
-  def getNthAddress(n: Long): (InetAddress, Int) = {
+  def getNthAddress(n: Long): (InetAddress, Int, AsNumber) = {
     reader.seek(n * entryLength)
     val buf = Array.ofDim[Byte](entryLength)
     reader.readFully(buf)
 
-    (InetAddress.getByAddress(buf.take(4)), ByteBuffer.wrap(buf.drop(4)).getInt)
+    (InetAddress.getByAddress(buf.take(4)), ByteBuffer.wrap(buf.drop(4)).getInt, AsNumber(ByteBuffer.wrap(buf.drop(8)).getInt))
   }
 
   /** Attempts to locate a node ID from an InetAddress. */
-  def getNodeFromAddress(address: InetAddress): Option[Int] = {
+  def getNodeFromAddress(address: InetAddress): Option[(Int, AsNumber)] = {
     address match {
       case addr: Inet4Address =>
         val lowGuess = lookupMap(addr.getAddress.head)
@@ -140,7 +141,7 @@ class ItdkAliasLookup(alignedFile: File, lookupMapFile: File) extends Logging {
   }
 
   /** Attempts to locate a node ID from an InetAddress. */
-  def getNodeFromAddress(address: String): Option[Int] = {
+  def getNodeFromAddress(address: String): Option[(Int, AsNumber)] = {
     getNodeFromAddress(InetAddress.getByName(address))
   }
 }
