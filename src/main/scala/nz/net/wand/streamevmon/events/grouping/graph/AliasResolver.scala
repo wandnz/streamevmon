@@ -9,9 +9,7 @@ import org.apache.flink.api.java.utils.ParameterTool
 import scala.collection.mutable
 
 class AliasResolver(
-  itdkAliasLookup: Option[ItdkAliasLookup],
-  itdkAsLookup   : Option[ItdkAsLookup],
-  itdkGeoLookup  : Option[ItdkGeoLookup]
+  itdkAliasLookup: Option[ItdkAliasLookup]
 ) extends Serializable {
 
   type HostT = Host
@@ -127,9 +125,7 @@ object AliasResolver {
 
     new AliasResolver(
       Option(params.get(s"$configKeyGroup.alignedNodesFile"))
-        .map(aFile => new ItdkAliasLookup(new File(aFile), new File(s"$aFile.lookupHelper.json"))),
-      Option(params.get(s"$configKeyGroup.asFile")).map(f => new ItdkAsLookup(new File(f))),
-      Option(params.get(s"$configKeyGroup.geoFile")).map(f => new ItdkGeoLookup(new File(f)))
+        .map(aFile => new ItdkAliasLookup(new File(aFile), new File(s"$aFile.lookupHelper.json")))
     )
   }
 }
