@@ -149,7 +149,7 @@ case class Host(
       else {
         ampTracerouteUid.map(u => s"? $u").getOrElse("Unknown Host")
       }
-    }${itdkNodeId.map(id => s" (ITDK N$id)").getOrElse("")}"
+    }${itdkNodeId.map(id => s" (ITDK N${id._1}, ${id._2})").getOrElse("")}"
   }
 
   /** @return True if both hosts have identical hostname lists. */

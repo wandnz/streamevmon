@@ -6,8 +6,10 @@ import nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath
 import java.time.{Duration, Instant}
 
 import org.jgrapht.alg.connectivity.ConnectivityInspector
+import org.jgrapht.alg.shortestpath.AllDirectedPaths
 import org.jgrapht.graph.DefaultDirectedWeightedGraph
 
+import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.collection.JavaConverters._
 
@@ -21,10 +23,131 @@ trait GraphConstructionLogic extends Logging {
   var lastPruneTime: Instant = Instant.EPOCH
   var measurementsSinceLastPrune: Long = 0
 
+  /** If there are multiple parallel paths between two hosts with the same length
+    * that are solely composed of anonymous hosts, then it's likely that they're
+    * the same hosts each time, and meaningless to retain the information of how
+    * many separate traceroute paths took that route. This function merges that
+    * kind of duplicate host group.
+    *
+    * TODO: Implement the actual merge functionality once Host supports it (or
+    * we've decided how to represent merged anonymous hosts). We probably also
+    * want to split each of the filter / map functions into a separate def so
+    * that the logic flow is more readable.
+    */
+  def pruneGraphByParallelAnonymousHostPathMerge(graph: GraphT): Unit = {
+    val allPaths = new AllDirectedPaths(graph)
+    graph
+      .vertexSet
+      .asScala
+      // Find all non-anonymous vertices...
+      .filter(_.ampTracerouteUid.isEmpty)
+      // where there is more than one edge with that vertex as its target...
+      .filter { v =>
+        graph
+          .incomingEdgesOf(v)
+          .asScala
+          .count { e =>
+            // that has an anonymous host on the other end.
+            graph
+              .getEdgeSource(e)
+              .ampTracerouteUid
+              .isDefined
+          } > 1
+      }
+      // Retrieve the anonymous hosts that are the direct parents of this relevant host
+      .map { v =>
+        (
+          v,
+          graph
+            .incomingEdgesOf(v)
+            .asScala
+            .map(e => graph.getEdgeSource(e))
+        )
+      }
+      .toMap
+      // Determine the nearest parent on each path upward that has multiple children.
+      .map { case (bottomHost, directParents) =>
+        @tailrec
+        def findDirectParentWithMultipleChildren(vertex: VertexT): Option[VertexT] = {
+          // If the current node has multiple children, we've found our target.
+          if (graph.outDegreeOf(vertex) > 1) {
+            Some(vertex)
+          }
+          else {
+            // If it doesn't have multiple children, but it doesn't have only a single
+            // parent, then what we're looking for doesn't exist.
+            // If there are no parents, we can't look any further.
+            // If there are multiple parents, there isn't a "direct" parent and this
+            // part of the graph is the wrong shape for what we're expecting.
+            val incoming = graph.incomingEdgesOf(vertex)
+            if (incoming.size != 1) {
+              None
+            }
+            else {
+              // If there is a single parent, try that one.
+              findDirectParentWithMultipleChildren(graph.getEdgeSource(incoming.asScala.head))
+            }
+          }
+        }
+
+        (
+          bottomHost,
+          directParents.flatMap(findDirectParentWithMultipleChildren)
+        )
+      }
+      // Find all the paths between the shared parents and the bottom host.
+      .map { case (bottomHost, sharedParents) =>
+        (
+          bottomHost,
+          sharedParents.map { parent =>
+            (
+              parent,
+              allPaths.getAllPaths(parent, bottomHost, true, null).asScala
+            )
+          }
+            .toMap
+        )
+      }
+      // Filter any paths which don't strictly contain anonymous hosts
+      .map { case (bottomHost, mapTopHostToPaths) =>
+        (
+          bottomHost,
+          mapTopHostToPaths.map { case (topHost, paths) =>
+            (
+              topHost,
+              paths.filter { path =>
+                path
+                  .getVertexList
+                  .asScala
+                  .drop(1)
+                  .dropRight(1)
+                  .forall(_.ampTracerouteUid.isDefined)
+              }
+            )
+          }
+        )
+      }
+      // Group paths by their length, and filter any that have a unique length
+      .map { case (bottomHost, mapTopHostToPaths) =>
+        (
+          bottomHost,
+          mapTopHostToPaths.map { case (topHost, paths) =>
+            (
+              topHost,
+              paths
+                .groupBy(_.getLength)
+                .filter(_._2.size > 1)
+                .values
+            )
+          }
+        )
+      }
+  }
+
   /** Prunes edges that are older than the configured time (`pruneAge`), and
     * removes any vertices that are no longer connected to the rest of the graph.
     */
-  def pruneGraph(graph: GraphT, pruneAge: Duration, currentTime: Instant): Unit = {
+  def pruneGraphByLastSeenTime(graph: GraphT, pruneAge: Duration, currentTime: Instant): Unit = {
     val startTime = System.nanoTime()
 
     graph

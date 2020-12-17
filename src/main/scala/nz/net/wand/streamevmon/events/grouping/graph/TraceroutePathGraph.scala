@@ -108,7 +108,7 @@ class TraceroutePathGraph[EventT <: Event]
     measurementsSinceLastPrune += 1
 
     if (measurementsSinceLastPrune >= pruneIntervalCount) {
-      pruneGraph(graph, pruneAge, currentTime)
+      pruneGraphByLastSeenTime(graph, pruneAge, currentTime)
     }
     else {
       lastPruneTime match {
@@ -117,7 +117,7 @@ class TraceroutePathGraph[EventT <: Event]
         case Instant.EPOCH => lastPruneTime = currentTime
         // If it's been long enough, go ahead and prune the graph.
         case _ if Duration.between(lastPruneTime, currentTime).compareTo(pruneIntervalTime) > 0 =>
-          pruneGraph(graph, pruneAge, currentTime)
+          pruneGraphByLastSeenTime(graph, pruneAge, currentTime)
         // Otherwise, do nothing.
         case _ =>
       }
@@ -146,7 +146,7 @@ class TraceroutePathGraph[EventT <: Event]
     addAsInetPathToGraph(graph, aliasResolver, value)
     pruneIfRequired(value.measurement.time)
     counter += 1
-    if (counter % 1000 == 0) {
+    if (counter % 12838 == 0) {
       println(counter)
       AmpletGraphDotExporter.exportGraph(graph, new File("./out/graphme.dot"))
     }
