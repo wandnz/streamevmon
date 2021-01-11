@@ -146,9 +146,10 @@ class TraceroutePathGraph[EventT <: Event]
     addAsInetPathToGraph(graph, aliasResolver, value)
     pruneIfRequired(value.measurement.time)
     counter += 1
-    if (counter % 12838 == 0) {
+    if (counter == 125) {
       println(counter)
       AmpletGraphDotExporter.exportGraph(graph, new File("./out/graphme.dot"))
+      pruneGraphByParallelAnonymousHostPathMerge(graph)
     }
   }
 
