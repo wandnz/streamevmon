@@ -46,7 +46,7 @@ class GraphPruneParallelAnonymousHost[
     // Get all the vertices...
     val vertices: mutable.Set[VertexT] = graph.vertexSet.asScala
     // that aren't anonymous.
-    val nonAnonymousVertices: mutable.Set[VertexT] = vertices.filter(_.ampTracerouteUid.isEmpty)
+    val nonAnonymousVertices: mutable.Set[VertexT] = vertices.filter(_.ampTracerouteUids.isEmpty)
     // Get only the ones that have multiple anonymous direct parents.
     val multipleIncomingEdgesFromAnonymousVertices: mutable.Set[VertexT] = nonAnonymousVertices
       .filter { v =>
@@ -56,8 +56,8 @@ class GraphPruneParallelAnonymousHost[
           .count { e =>
             graph
               .getEdgeSource(e)
-              .ampTracerouteUid
-              .isDefined
+              .ampTracerouteUids
+              .nonEmpty
           } > 1
       }
     // Make a map of the vertices from the previous step to their direct parents.
@@ -117,7 +117,7 @@ class GraphPruneParallelAnonymousHost[
                   // since they're not gonna be touched regardless.
                   .drop(1)
                   .dropRight(1)
-                  .forall(_.ampTracerouteUid.isDefined)
+                  .forall(_.ampTracerouteUids.nonEmpty)
               }
             )
           }
@@ -168,7 +168,7 @@ class GraphPruneParallelAnonymousHost[
         .foldLeft(
           items.head.asInstanceOf[Host]
         )(
-          (a, b) => a.mergeWith(b)
+          (a, b) => a.mergeAnonymous(b)
         )
     })
   }

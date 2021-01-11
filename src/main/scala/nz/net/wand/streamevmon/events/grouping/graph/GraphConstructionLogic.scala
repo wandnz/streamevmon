@@ -63,10 +63,10 @@ trait GraphConstructionLogic extends Logging {
         hostnames,
         addresses,
         if (hostnames.isEmpty && addresses.isEmpty) {
-          Some((path.meta.stream, path.measurement.path_id, index))
+          Set((path.meta.stream, path.measurement.path_id, index))
         }
         else {
-          None
+          Set()
         },
         None
       )

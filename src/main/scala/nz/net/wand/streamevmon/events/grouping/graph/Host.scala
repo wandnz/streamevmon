@@ -45,12 +45,12 @@ import nz.net.wand.streamevmon.connectors.postgres.schema.{AsNumber, AsNumberCat
 case class Host(
   hostnames: Set[String],
   addresses: Set[(SerializableInetAddress, AsNumber)],
-  ampTracerouteUid: Option[(Int, Int, Int)],
-  itdkNodeId      : Option[(Int, AsNumber)]
+  ampTracerouteUids: Set[(Int, Int, Int)],
+  itdkNodeId: Option[(Int, AsNumber)]
 ) extends Serializable {
 
   // Sanity checks
-  if (ampTracerouteUid.isDefined) {
+  if (ampTracerouteUids.nonEmpty) {
     if (hostnames.nonEmpty || addresses.nonEmpty) {
       throw new IllegalArgumentException("Traceroute UID is defined, but a hostname or address is known!")
     }
@@ -78,8 +78,17 @@ case class Host(
     * ID of this object. This does not include Missing, Unknown, or
     * PrivateAddress AsNumbers.
     */
-  val validAsNumbers: Set[AsNumber] = {
+  lazy val validAsNumbers: Set[AsNumber] = {
     allAsNumbers.filter(_.category == AsNumberCategory.Valid)
+  }
+
+  /** The ITDK AS number, if defined and valid, otherwise one of the valid
+    * numbers from `addresses`. Used if a single consistent AS number is
+    * required, like for toString and exporting.
+    */
+  lazy val primaryAsNumber: Option[AsNumber] = {
+    (Seq(itdkNodeId.map(_._2).getOrElse(AsNumber.Missing)) ++ addresses.map(_._2))
+      .find(_.category == AsNumberCategory.Valid)
   }
 
   /** A unique identifier for each node, which should be used as the key for
@@ -103,10 +112,10 @@ case class Host(
         addresses.mkString(";")
       }
       else {
-        ampTracerouteUid match {
-          case Some(value) => value.toString
-          case None => throw new IllegalStateException("Trying to get UID for host with no data!")
+        if (ampTracerouteUids.isEmpty) {
+          throw new IllegalStateException("Trying to get UID for host with no data!")
         }
+        ampTracerouteUids.head.toString
       }
     }
   }
@@ -125,7 +134,7 @@ case class Host(
     * is known, it is appended to the name in the format "(ITDK N12345)".
     */
   override def toString: String = {
-    s"${
+    s"""${
       if (hostnames.nonEmpty) {
         s"${hostnames.head}${
           if (hostnames.size > 1) {
@@ -144,12 +153,19 @@ case class Host(
           else {
             ""
           }
-        } (${addresses.head._2})"
+        } (${primaryAsNumber.getOrElse(AsNumber.Unknown)}${
+          if (allAsNumbers.size > 1) {
+            s" and ${allAsNumbers.size - 1} more"
+          }
+          else {
+            ""
+          }
+        })"
       }
       else {
-        ampTracerouteUid.map(u => s"? $u").getOrElse("Unknown Host")
+        s"? ${ampTracerouteUids.mkString(",")}".trim
       }
-    }${itdkNodeId.map(id => s" (ITDK N${id._1}, ${id._2})").getOrElse("")}"
+    }${itdkNodeId.map(id => s" (ITDK N${id._1}, ${id._2})").getOrElse("")}"""
   }
 
   /** @return True if both hosts have identical hostname lists. */
@@ -171,6 +187,14 @@ case class Host(
   /** @return True if both hosts have ITDK node IDs, and they are the same. */
   def equalItdkNode(other: Host): Boolean = {
     itdkNodeId.isDefined && this.itdkNodeId == other.itdkNodeId
+  }
+
+  /** @return True if both hosts have identical AMP traceroute UID lists. */
+  def equalAmpTracerouteUids(other: Host): Boolean = this.ampTracerouteUids == other.ampTracerouteUids
+
+  /** @return True if both hosts share any AMP traceroute UIDs. */
+  def sharesAmpTracerouteUidsWith(other: Host): Boolean = {
+    this.ampTracerouteUids.exists(addr => other.ampTracerouteUids.contains(addr))
   }
 
   /** Merges this host with the other host, and returns the result. The
@@ -199,21 +223,21 @@ case class Host(
     val newHostnames = this.hostnames ++ other.hostnames
     val newAddresses = this.addresses ++ other.addresses
 
-    val newTracerouteUid = if (
+    val newTracerouteUid: Set[(Int, Int, Int)] = if (
       newHostnames.isEmpty &&
         newAddresses.isEmpty &&
         newItdkNodeId.isEmpty
     ) {
-      val uids = Set(this.ampTracerouteUid, other.ampTracerouteUid).flatten
+      val uids = Set(this.ampTracerouteUids.headOption, other.ampTracerouteUids.headOption).flatten
       if (uids.size != 1) {
         throw new IllegalArgumentException("Trying to merge two anonymous hosts with different traceroute UIDs!")
       }
       else {
-        this.ampTracerouteUid
+        this.ampTracerouteUids
       }
     }
     else {
-      None
+      Set()
     }
 
     Host(
@@ -222,5 +246,13 @@ case class Host(
       newTracerouteUid,
       newItdkNodeId
     )
+  }
+
+  def mergeAnonymous(other: Host): Host = {
+    if (this.ampTracerouteUids.isEmpty || other.ampTracerouteUids.isEmpty) {
+      throw new IllegalArgumentException(s"Told to merge anonymous hosts, but hosts weren't anonymous! $this, $other")
+    }
+
+    this
   }
 }

@@ -53,7 +53,7 @@ object AmpletGraphDotExporter {
 
     // We also want to give them a colour defined by AS.
     val asNumberIndex: Map[Int, Int] = graph.vertexSet.asScala.toList
-      .flatMap(host => host.addresses.map(_._2))
+      .flatMap(host => host.allAsNumbers)
       .flatMap(_.number)
       .toSet
       .zipWithIndex
@@ -87,8 +87,8 @@ object AmpletGraphDotExporter {
           if (entry.hostnames.nonEmpty) {
             namedColor
           }
-          else if (entry.addresses.nonEmpty) {
-            getAsColor(entry.addresses.head._2)
+          else if (entry.primaryAsNumber.nonEmpty) {
+            getAsColor(entry.primaryAsNumber.get)
           }
           else {
             getAsColor(AsNumber.Missing)

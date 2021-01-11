@@ -65,7 +65,7 @@ class AliasResolver(
             val naivelyMergedHostWithItdk = Host(
               naivelyMergedHost.hostnames,
               naivelyMergedHost.addresses,
-              naivelyMergedHost.ampTracerouteUid,
+              naivelyMergedHost.ampTracerouteUids,
               Some(nodesAndAsns.head)
             )
             // If we already have information on this ITDK node, we should merge
