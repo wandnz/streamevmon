@@ -14,19 +14,29 @@ class GraphPruneParallelAnonymousHost[
   VertexT <: Host,
   EdgeT <: EdgeWithLastSeen,
   GraphT <: Graph[VertexT, EdgeT]
-] extends GraphPruneApproach[VertexT, EdgeT, GraphT]
+](
+  mergedHosts: mutable.Map[String, VertexT],
+  onUpdateHost: (VertexT, VertexT) => Unit
+) extends GraphPruneApproach[VertexT, EdgeT, GraphT]
           with Logging {
 
   /** Travels up the graph until a single parent with multiple children is found.
     * If there are multiple parents, then there is no single direct parent and
     * we return None.
     * If there are no parents, then we return None.
+    *
+    * We keep count of depth (plus a bit) so the search algorithm used later to
+    * find paths between top and bottom hosts has a limit.
     */
   @tailrec
-  private def findDirectParentWithMultipleChildren(graph: GraphT, vertex: VertexT): Option[VertexT] = {
+  private def findDirectParentWithMultipleChildren(
+    graph: GraphT,
+    vertex: VertexT,
+    depth: Int = 3
+  ): Option[(VertexT, Int)] = {
     // If the current node has multiple children, we've found our target.
     if (graph.outDegreeOf(vertex) > 1) {
-      Some(vertex)
+      Some((vertex, depth))
     }
     else {
       val incoming = graph.incomingEdgesOf(vertex)
@@ -35,7 +45,11 @@ class GraphPruneParallelAnonymousHost[
       }
       else {
         // If there is a single parent, try that one.
-        findDirectParentWithMultipleChildren(graph, graph.getEdgeSource(incoming.asScala.head))
+        findDirectParentWithMultipleChildren(
+          graph,
+          graph.getEdgeSource(incoming.asScala.head),
+          depth + 1
+        )
       }
     }
   }
@@ -75,7 +89,7 @@ class GraphPruneParallelAnonymousHost[
     // For each bottom host, find the nearest common single ancestor of its direct parents.
     // This should give us the place where the graph originally split into the parallel
     // anonymous children.
-    val bottomHostToCommonAncestors: Map[VertexT, mutable.Set[VertexT]] = bottomHostToAnonymousDirectParents
+    val bottomHostToCommonAncestors: Map[VertexT, mutable.Set[(VertexT, Int)]] = bottomHostToAnonymousDirectParents
       .map { case (bottomHost, directParents) =>
         // We lose the direct parents in this step, but that's OK since we're
         // getting them back as part of the paths between the common ancestor
@@ -94,8 +108,8 @@ class GraphPruneParallelAnonymousHost[
           bottomHost,
           commonAncestors.map { ancestor =>
             (
-              ancestor,
-              allPaths.getAllPaths(ancestor, bottomHost, true, null).asScala
+              ancestor._1,
+              allPaths.getAllPaths(ancestor._1, bottomHost, true, ancestor._2).asScala
             )
           }.toMap
         )
@@ -162,14 +176,19 @@ class GraphPruneParallelAnonymousHost[
 
     // Perform the merge. We need to fold them into Host objects instead of
     // VertexT because mergeWith returns a Host.
-    hostsToMerge.foreach(_.foreach { items =>
-      items
+    hostsToMerge.map(_.map { items =>
+      val mergedItems = items
         .drop(1)
         .foldLeft(
           items.head.asInstanceOf[Host]
         )(
           (a, b) => a.mergeAnonymous(b)
-        )
+        ).asInstanceOf[VertexT]
+      items.foreach { item =>
+        mergedHosts.remove(item.uid)
+        mergedHosts.put(item.uid, mergedItems)
+        onUpdateHost(item, mergedItems)
+      }
     })
   }
 }

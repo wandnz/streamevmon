@@ -115,7 +115,7 @@ case class Host(
         if (ampTracerouteUids.isEmpty) {
           throw new IllegalStateException("Trying to get UID for host with no data!")
         }
-        ampTracerouteUids.head.toString
+        ampTracerouteUids.mkString(";")
       }
     }
   }
@@ -223,17 +223,16 @@ case class Host(
     val newHostnames = this.hostnames ++ other.hostnames
     val newAddresses = this.addresses ++ other.addresses
 
-    val newTracerouteUid: Set[(Int, Int, Int)] = if (
+    val newTracerouteUids: Set[(Int, Int, Int)] = if (
       newHostnames.isEmpty &&
         newAddresses.isEmpty &&
         newItdkNodeId.isEmpty
     ) {
-      val uids = Set(this.ampTracerouteUids.headOption, other.ampTracerouteUids.headOption).flatten
-      if (uids.size != 1) {
+      if (!this.sharesAmpTracerouteUidsWith(other)) {
         throw new IllegalArgumentException("Trying to merge two anonymous hosts with different traceroute UIDs!")
       }
       else {
-        this.ampTracerouteUids
+        this.ampTracerouteUids ++ other.ampTracerouteUids
       }
     }
     else {
@@ -243,7 +242,7 @@ case class Host(
     Host(
       newHostnames,
       newAddresses,
-      newTracerouteUid,
+      newTracerouteUids,
       newItdkNodeId
     )
   }
@@ -253,6 +252,11 @@ case class Host(
       throw new IllegalArgumentException(s"Told to merge anonymous hosts, but hosts weren't anonymous! $this, $other")
     }
 
-    this
+    Host(
+      hostnames,
+      addresses,
+      ampTracerouteUids ++ other.ampTracerouteUids,
+      itdkNodeId
+    )
   }
 }

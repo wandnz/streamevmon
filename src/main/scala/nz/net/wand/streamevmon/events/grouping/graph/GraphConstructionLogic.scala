@@ -33,7 +33,10 @@ trait GraphConstructionLogic extends Logging {
     * that the logic flow is more readable.
     */
   def pruneGraphByParallelAnonymousHostPathMerge(graph: GraphT): Unit = {
-    new GraphPruneParallelAnonymousHost[VertexT, EdgeT, GraphT]().prune(graph)
+    new GraphPruneParallelAnonymousHost[VertexT, EdgeT, GraphT](
+      getMergedHosts,
+      (oldH, newH) => addOrUpdateVertex(graph, oldH, newH)
+    ).prune(graph)
   }
 
   /** Prunes edges that are older than the configured time (`pruneAge`), and
@@ -41,8 +44,6 @@ trait GraphConstructionLogic extends Logging {
     */
   def pruneGraphByLastSeenTime(graph: GraphT, pruneAge: Duration, currentTime: Instant): Unit = {
     new GraphPruneLastSeenTime[VertexT, EdgeT, GraphT](pruneAge, currentTime).prune(graph)
-    lastPruneTime = currentTime
-    measurementsSinceLastPrune = 0
   }
 
   /** Converts an AsInetPath into a path of Hosts. */
