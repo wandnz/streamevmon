@@ -67,6 +67,9 @@ import scala.collection.mutable
   * - `pruneIntervalTime`: This many seconds must pass between graph prunings.
   * This is based on the event time of events and paths that are received.
   * - `pruneAge`: An edge must be this many seconds old before it gets pruned.
+  *
+  * @see [[nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic GraphConstructionLogic]]
+  *      for a description of the pruning methods used.
   */
 class TraceroutePathGraph[EventT <: Event]
   extends CoProcessFunction[EventT, AsInetPath, Event]
@@ -79,6 +82,9 @@ class TraceroutePathGraph[EventT <: Event]
   override val configKeyGroup: String = "eventGrouping.graph"
 
   var graph: GraphT = _
+
+  var lastPruneTime: Instant = Instant.EPOCH
+  var measurementsSinceLastPrune: Long = 0
 
   @transient private lazy val aliasResolver: AliasResolver = AliasResolver(configWithOverride(getRuntimeContext))
 
@@ -104,6 +110,12 @@ class TraceroutePathGraph[EventT <: Event]
     }
   }
 
+  /** Executes supported pruning methods if one of the supported conditions is
+    * fulfilled
+    *
+    * @see `pruneIntervalCount`, `pruneIntervalTime`
+    * @see [[nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic GraphConstructionLogic]]
+    */
   def pruneIfRequired(currentTime: Instant): Unit = {
     measurementsSinceLastPrune += 1
 
@@ -142,7 +154,8 @@ class TraceroutePathGraph[EventT <: Event]
   var counter = 0
 
   /** Adds an AsInetPath to the graph. New hosts will become new vertices, and
-    * missing edges will be added. Gives no output.
+    * missing edges will be added. Gives no output. Prunes if required, so this
+    * function sometimes takes longer than usual.
     */
   override def processElement2(
     value: AsInetPath,

@@ -10,6 +10,12 @@ import org.jgrapht.alg.connectivity.ConnectivityInspector
 
 import scala.collection.JavaConverters._
 
+/** Pruning algorithm which removes edges when they haven't been seen in a long
+  * time, then removes the now disconnected vertices.
+  *
+  * @param pruneAge    How old an edge must be before it is pruned
+  * @param currentTime The current event time.
+  */
 class GraphPruneLastSeenTime[
   VertexT,
   EdgeT <: EdgeWithLastSeen,
@@ -23,11 +29,11 @@ class GraphPruneLastSeenTime[
     val startTime = System.nanoTime()
 
     graph.edgeSet.asScala
-      // convert the edge list to a solid list instead of a lazy collection so
+      // Convert the edge list to a solid list instead of a lazy collection so
       // that we're not modifying the graph during an iteration over its edges.
       .toList
       .foreach { edge =>
-        // if it's old enough, get rid of it.
+        // If it's old enough, get rid of it.
         if (Duration.between(edge.lastSeen, currentTime).compareTo(pruneAge) > 0) {
           graph.removeEdge(edge)
         }

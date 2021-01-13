@@ -11,26 +11,24 @@ import org.jgrapht.graph.DefaultDirectedWeightedGraph
 import scala.collection.mutable
 import scala.collection.JavaConverters._
 
+/** Contains the logic for constructing and pruning the graph for the
+  * [[TraceroutePathGraph]].
+  */
 trait GraphConstructionLogic extends Logging {
   type VertexT = Host
   type EdgeT = EdgeWithLastSeen
   type GraphT = DefaultDirectedWeightedGraph[VertexT, EdgeT]
 
+  /** Must be overridden with a simple getter for a shared object for looking
+    * up the merged versions of hosts.
+    */
   def getMergedHosts: mutable.Map[String, VertexT]
-
-  var lastPruneTime: Instant = Instant.EPOCH
-  var measurementsSinceLastPrune: Long = 0
 
   /** If there are multiple parallel paths between two hosts with the same length
     * that are solely composed of anonymous hosts, then it's likely that they're
     * the same hosts each time, and meaningless to retain the information of how
     * many separate traceroute paths took that route. This function merges that
     * kind of duplicate host group.
-    *
-    * TODO: Implement the actual merge functionality once Host supports it (or
-    * we've decided how to represent merged anonymous hosts). We probably also
-    * want to split each of the filter / map functions into a separate def so
-    * that the logic flow is more readable.
     */
   def pruneGraphByParallelAnonymousHostPathMerge(graph: GraphT): Unit = {
     new GraphPruneParallelAnonymousHost[VertexT, EdgeT, GraphT](
@@ -89,7 +87,7 @@ trait GraphConstructionLogic extends Logging {
         graph.addVertex(newHost)
 
         // If any of the edges are connected to either the old host or the new
-        // host on both sides, then we're creating a self-loop. We will opt to
+        // host on both sides, then we're creating a self-loop. We opt to
         // drop them, since they're not useful in determining a network topology.
         outEdges
           .filterNot(e => e._1 == oldHost || e._1 == newHost)

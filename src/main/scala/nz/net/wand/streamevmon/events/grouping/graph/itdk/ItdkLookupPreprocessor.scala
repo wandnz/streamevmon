@@ -12,8 +12,8 @@ import scala.collection.mutable
 import scala.io.Source
 
 object ItdkLookupPreprocessor {
-  /** Produces a file where each line includes a single IP, and the node it
-    * belongs to.
+  /** Produces a file where each line includes a single IP, the node it
+    * belongs to, and its ASN.
     */
   def invertItdkNodeLookup(nodesFile: File, asLookupFile: File): File = {
     val invertedMapFile = new File(s"${nodesFile.getCanonicalPath}.inverted")

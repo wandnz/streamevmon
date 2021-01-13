@@ -8,18 +8,42 @@ import org.apache.flink.api.java.utils.ParameterTool
 
 import scala.collection.mutable
 
+/** Worker class for alias resolution, which finds duplicate entries for hosts.
+  *
+  * ==Configuration==
+  *
+  * This class configures the construction of a new [[nz.net.wand.streamevmon.events.grouping.graph.itdk.ItdkAliasLookup ItdkAliasLookup]] object
+  * if the constructor with a ParameterTool is used. As such, the default config
+  * key group is `eventGrouping.graph.itdk`.
+  *
+  * - `alignedNodesFile`: If the file exists, the created AliasLookup will refer
+  * to its contents.
+  * - `nodesFile`: If the above file does not exist, but this one does, and the
+  * `preprocessIfMissing` argument is set to true, then the file referred to by
+  * this config element will be preprocessed, and its results used with a new
+  * AliasLookup. This is likely to take a long time, so it's recommended to
+  * preprocess these files separately using the entrypoint of
+  * [[nz.net.wand.streamevmon.events.grouping.graph.itdk.ItdkLookupPreprocessor ItdkLookupPreprocessor]].
+  *
+  * @param itdkAliasLookup If provided, the ITDK dataset is used to perform more
+  *                        advanced alias resolution.
+  */
 class AliasResolver(
   itdkAliasLookup: Option[ItdkAliasLookup]
 ) extends Serializable {
 
   type HostT = Host
 
+  /** Keeps track of which hosts were replaced by merged hosts. The key is the
+    * original host's UID, and the value is the merged host.
+    */
   val mergedHosts: mutable.Map[String, HostT] = mutable.Map()
 
   /** Uses all available information to perform alias resolution. If no ITDK
     * data is provided, we do naive resolution based on the hostnames already
-    * present in the Hosts supplied. If an [[ItdkAliasLookup]] is provided,
-    * it is used to provide broader and more accurate aliases.
+    * present in the Hosts supplied. If an
+    * [[nz.net.wand.streamevmon.events.grouping.graph.itdk.ItdkAliasLookup ItdkAliasLookup]]
+    * is provided, it is used to provide broader and more accurate aliases.
     *
     * Hostnames provided as part of the Hosts supplied is preferred over ITDK
     * data.

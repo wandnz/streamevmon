@@ -4,6 +4,9 @@ import nz.net.wand.streamevmon.connectors.postgres.schema.AsNumber
 
 import scala.util.Try
 
+/** An AS number obtained from an ITDK dataset. We retain the node ID and method
+  * because they're there in the file, but we don't really need either of them.
+  */
 class ItdkAsNumber(
   val nodeId     : Long,
   private val num: Int,

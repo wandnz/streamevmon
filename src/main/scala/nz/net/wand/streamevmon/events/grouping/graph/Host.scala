@@ -33,8 +33,8 @@ import nz.net.wand.streamevmon.connectors.postgres.schema.{AsNumber, AsNumberCat
   * a way that one Host represents one physical Host, but it is not a guarantee.
   *
   * If either `hostnames` or `addresses` contains at least one entry, then
-  * `ampTracerouteUid` should be None. If both `hostnames` and `addresses` are
-  * empty, then `ampTracerouteUid` should be defined.
+  * `ampTracerouteUids` should be empty. If both `hostnames` and `addresses` are
+  * empty, then `ampTracerouteUid` should contain at least one entry.
   *
   * If `itdkNodeId` is defined, then either `hostnames` or `addresses` should
   * contain at least one entry.
@@ -100,7 +100,7 @@ case class Host(
     * - If the ITDK node ID is present, it is used.
     * - If any hostnames are present, they are separated by ';' and used.
     * - If any addresses are present, they are separated by ';' and used.
-    * - If nothing else is present, the ampTracerouteUid is used.
+    * - If nothing else is present, the ampTracerouteUide are separated by ';' and used.
     */
   val uid: String = {
     itdkNodeId match {
@@ -112,10 +112,12 @@ case class Host(
         addresses.mkString(";")
       }
       else {
-        if (ampTracerouteUids.isEmpty) {
+        if (ampTracerouteUids.nonEmpty) {
+          ampTracerouteUids.mkString(";")
+        }
+        else {
           throw new IllegalStateException("Trying to get UID for host with no data!")
         }
-        ampTracerouteUids.mkString(";")
       }
     }
   }
@@ -129,9 +131,9 @@ case class Host(
     * - If there are no hostnames, but there are addresses, the same format is
     * followed with an address.
     * - If there are no hostnames or addresses, the name is
-    * "? (`ampTracerouteUid`)".
+    * "? (`ampTracerouteUid`)", and can also be followed by "`n` more".
     * - Regardless of what other information is available, if the ITDK node ID
-    * is known, it is appended to the name in the format "(ITDK N12345)".
+    * is known, it is appended to the name in the format "(ITDK N12345, AS `n`)".
     */
   override def toString: String = {
     s"""${
@@ -206,7 +208,7 @@ case class Host(
     * - If there are no hostnames, addresses, or ITDK node IDs, the AMP
     * traceroute UIDs are compared. If they differ, an
     * IllegalArgumentException is thrown. If they are the same, it is
-    * preserved.
+    * preserved. If you want to merge anonymous hosts, use `mergeAnonymous`.
     */
   def mergeWith(other: Host): Host = {
     val newItdkNodeId = if (
@@ -247,6 +249,8 @@ case class Host(
     )
   }
 
+  /** Merges two anonymous hosts. Will fail if one of the hosts is not anonymous.
+    */
   def mergeAnonymous(other: Host): Host = {
     if (this.ampTracerouteUids.isEmpty || other.ampTracerouteUids.isEmpty) {
       throw new IllegalArgumentException(s"Told to merge anonymous hosts, but hosts weren't anonymous! $this, $other")

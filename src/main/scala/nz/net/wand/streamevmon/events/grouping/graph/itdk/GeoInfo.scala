@@ -1,5 +1,6 @@
 package nz.net.wand.streamevmon.events.grouping.graph.itdk
 
+/** The geo information for one node in an ITDK dataset. */
 case class GeoInfo(
   nodeId   : Long,
   continent: String,
@@ -11,6 +12,7 @@ case class GeoInfo(
 )
 
 object GeoInfo {
+  /** Transforms a line from the `nodes.geo` file in the dataset. */
   def apply(line: String): GeoInfo = {
     val parts = line.split("\t")
     GeoInfo(

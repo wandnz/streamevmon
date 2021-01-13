@@ -10,6 +10,22 @@ import scala.annotation.tailrec
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 
+/** Merges duplicate anonymous hosts by finding anonymous parallel paths with
+  * the same length.
+  *
+  * If a host does not respond to a traceroute query, it is represented as an
+  * anonymous host, which uses the location in a traceroute path as its UID. If
+  * one of these anonymous hosts is part of multiple AMP traceroute paths, it
+  * will appear once in each of these paths.
+  *
+  * This results in cases where an identified host has many children, each of
+  * which only have one child until the next identified host is reached. These
+  * parallel paths are very likely to be the same set of hosts, and having them
+  * as multiple nodes is useless to us since their paths will never branch further.
+  *
+  * @param mergedHosts  Get a reference to this from an [[nz.net.wand.streamevmon.events.grouping.graph.AliasResolver AliasResolver]].
+  * @param onUpdateHost A function that updates the old host with the new one in the graph.
+  */
 class GraphPruneParallelAnonymousHost[
   VertexT <: Host,
   EdgeT <: EdgeWithLastSeen,
