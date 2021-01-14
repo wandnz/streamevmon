@@ -116,7 +116,7 @@ class NoDependencyCheckpointingTests extends HarnessingTest {
   "Detectors with no external dependencies" should {
     "restore from checkpoints correctly" when {
       "type is BaselineDetector" in {
-        val detector: BaselineDetector[ICMP] = new BaselineDetector[ICMP]
+        def detector: BaselineDetector[ICMP] = new BaselineDetector[ICMP]
 
         var harness = newHarness(detector)
         harness.open()
@@ -134,7 +134,7 @@ class NoDependencyCheckpointingTests extends HarnessingTest {
         implicit val ti: TypeInformation[NormalDistribution[ICMP]] =
           TypeInformation.of(classOf[NormalDistribution[ICMP]])
 
-        val detector: ChangepointDetector[ICMP, NormalDistribution[ICMP]] =
+        def detector: ChangepointDetector[ICMP, NormalDistribution[ICMP]] =
           new ChangepointDetector[ICMP, NormalDistribution[ICMP]](
             new NormalDistribution[ICMP](mean = 0)
           )
@@ -152,7 +152,7 @@ class NoDependencyCheckpointingTests extends HarnessingTest {
       }
 
       "type is DistDiffDetector" in {
-        val detector: DistDiffDetector[ICMP] = new DistDiffDetector[ICMP]
+        def detector: DistDiffDetector[ICMP] = new DistDiffDetector[ICMP]
 
         var harness = newHarness(detector)
         harness.open()
@@ -167,7 +167,7 @@ class NoDependencyCheckpointingTests extends HarnessingTest {
       }
 
       "type is LossDetector" in {
-        val detector: LossDetector[ICMP] = new LossDetector[ICMP]
+        def detector: LossDetector[ICMP] = new LossDetector[ICMP]
         var harness = newHarness(detector)
         harness.open()
 
@@ -181,7 +181,7 @@ class NoDependencyCheckpointingTests extends HarnessingTest {
       }
 
       "type is ModeDetector" in {
-        val detector: ModeDetector[ICMP] = new ModeDetector[ICMP]
+        def detector: ModeDetector[ICMP] = new ModeDetector[ICMP]
         var harness = newHarness(detector)
         harness.open()
 
@@ -195,7 +195,7 @@ class NoDependencyCheckpointingTests extends HarnessingTest {
       }
 
       "type is SpikeDetector" in {
-        val detector: SpikeDetector[ICMP] = new SpikeDetector[ICMP]
+        def detector: SpikeDetector[ICMP] = new SpikeDetector[ICMP]
         var harness = newHarness(detector)
         harness.open()
 
@@ -225,15 +225,18 @@ class NoDependencyCheckpointingTests extends HarnessingTest {
       // example path.
       graph.getMergedHosts should have size path.size
       graph.graph.vertexSet should have size path.size
+      graph.graph.edgeSet should have size path.size - 1
       graph.lastPruneTime shouldBe SeedData.traceroute.expectedAsInetPath.measurement.time
       graph.measurementsSinceLastPrune shouldBe 1
 
-      harness = snapshotAndRestart(harness, graph)
+      val graph2 = new TraceroutePathGraph[Event]()
+      harness = snapshotAndRestart(harness, graph2)
 
-      graph.getMergedHosts should have size path.size
-      graph.graph.vertexSet should have size path.size
-      graph.lastPruneTime shouldBe SeedData.traceroute.expectedAsInetPath.measurement.time
-      graph.measurementsSinceLastPrune shouldBe 1
+      graph2.getMergedHosts should have size path.size
+      graph2.graph.vertexSet should have size path.size
+      graph2.graph.edgeSet should have size path.size - 1
+      graph2.lastPruneTime shouldBe SeedData.traceroute.expectedAsInetPath.measurement.time
+      graph2.measurementsSinceLastPrune shouldBe 1
     }
   }
 }

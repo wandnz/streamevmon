@@ -13,5 +13,5 @@ class EdgeWithLastSeen(val lastSeen: Instant)
   * constructor should be called in all cases.
   */
 class EdgeWithLastSeenSupplier extends Supplier[EdgeWithLastSeen] with Serializable {
-  override def get(): EdgeWithLastSeen = throw new IllegalCallerException("EdgeWithLastSeenSupplier.get() should never be called.")
+  override def get(): EdgeWithLastSeen = throw new IllegalCallerException("EdgeWithLastSeenSupplier.get() should never be called. Use `new EdgeWithLastSeen(Instant)` instead.")
 }

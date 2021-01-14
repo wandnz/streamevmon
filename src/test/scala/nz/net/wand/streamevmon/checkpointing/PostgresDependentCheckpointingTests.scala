@@ -38,8 +38,11 @@ class PostgresDependentCheckpointingTests extends PostgresContainerSpec with Har
   "ProcessFunctions that require PostgreSQL" should {
     "restore from checkpoints correctly" when {
       "type is TracerouteAsInetPathExtractor" in {
-        val extractor: TracerouteAsInetPathExtractor = new TracerouteAsInetPathExtractor
-        extractor.pgCon = getPostgres
+        def extractor: TracerouteAsInetPathExtractor = {
+          val e = new TracerouteAsInetPathExtractor
+          e.pgCon = getPostgres
+          e
+        }
 
         var harness = newHarness(extractor)
         harness.open()
@@ -87,16 +90,18 @@ class PostgresDependentCheckpointingTests extends PostgresContainerSpec with Har
 
         harness.processElement(SeedData.traceroute.expected, currentTime)
 
-        output should have size 1
-        output.head.asInstanceOf[StreamRecord[TracerouteMeta]].getValue shouldBe SeedData.traceroute.expectedMeta
+        val output2 = harness.getSideOutput(extractor.outputTag).toArray
+        output2 should have size 1
+        output2.head.asInstanceOf[StreamRecord[TracerouteMeta]].getValue shouldBe SeedData.traceroute.expectedMeta
 
-        harness = snapshotAndRestart(harness, extractor)
+        val extractor2 = new MeasurementMetaExtractor[Traceroute, TracerouteMeta]()
+        harness = snapshotAndRestart(harness, extractor2)
 
         harness.processElement(SeedData.traceroute.expected, currentTime)
 
         // If there hasn't been a new entry in the side output since the harness
         // was started, the output is never registered, and comes out as null.
-        val newSideOutput = harness.getSideOutput(extractor.outputTag)
+        val newSideOutput = harness.getSideOutput(extractor2.outputTag)
         if (newSideOutput != null) {
           newSideOutput should have size 0
         }

@@ -187,7 +187,8 @@ class TracerouteAsInetPathExtractor
     if (context.isRestored) {
       knownMetasState.get.forEach(entry => knownMetas.put(entry.stream.toString, entry))
       unprocessedMeasurementsState.get.forEach { entry =>
-        unprocessedMeasurements.getOrElse(entry.stream, List()) :+ entry
+        val existingItems = unprocessedMeasurements.getOrElse(entry.stream, List())
+        unprocessedMeasurements.put(entry.stream, existingItems :+ entry)
       }
     }
   }
