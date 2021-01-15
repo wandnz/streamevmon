@@ -3,6 +3,7 @@ package nz.net.wand.streamevmon.events.grouping.graph
 import nz.net.wand.streamevmon.TestBase
 
 import java.io._
+import java.net.InetAddress
 
 import com.esotericsoftware.kryo.io.{ByteBufferInput, ByteBufferOutput}
 import com.twitter.chill.ScalaKryoInstantiator
@@ -34,8 +35,30 @@ class SerializableInetAddressTest extends TestBase {
       }
     }
 
-    "be convertable to InetAddress" ignore {
+    "be interchangeable with InetAddress" when {
+      "an InetAddress is provided" in {
+        SerializableInetAddress.inetToSerializable(
+          InetAddress.getByAddress(Array(1, 2, 3, 4))
+        ) shouldBe SerializableInetAddress(Array(1, 2, 3, 4))
 
+        SerializableInetAddress.optionInetToOptionSerializable(
+          Some(InetAddress.getByAddress(Array(1, 2, 3, 4)))
+        ) shouldBe Some(SerializableInetAddress(Array(1, 2, 3, 4)))
+
+        SerializableInetAddress.optionInetToOptionSerializable(None) shouldBe None
+      }
+
+      "a SerializableInetAddress is provided" in {
+        SerializableInetAddress.serializableToInet(
+          SerializableInetAddress(Array(1, 2, 3, 4))
+        ) shouldBe InetAddress.getByAddress(Array(1, 2, 3, 4))
+
+        SerializableInetAddress.optionSerializableToOptionInet(
+          Some(SerializableInetAddress(Array(1, 2, 3, 4)))
+        ) shouldBe Some(InetAddress.getByAddress(Array(1, 2, 3, 4)))
+
+        SerializableInetAddress.optionSerializableToOptionInet(None) shouldBe None
+      }
     }
   }
 }
