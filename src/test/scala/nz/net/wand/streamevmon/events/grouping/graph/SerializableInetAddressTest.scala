@@ -5,7 +5,7 @@ import nz.net.wand.streamevmon.TestBase
 import java.io._
 
 import com.esotericsoftware.kryo.io.{ByteBufferInput, ByteBufferOutput}
-import com.twitter.chill.Kryo
+import com.twitter.chill.ScalaKryoInstantiator
 
 class SerializableInetAddressTest extends TestBase {
   "SerializableInetAddress" should {
@@ -21,7 +21,10 @@ class SerializableInetAddressTest extends TestBase {
 
       "using Kryo" in {
         val original = SerializableInetAddress(Array(15, 20, 25, 30))
-        val k = new Kryo()
+        val inst = new ScalaKryoInstantiator()
+        inst.setRegistrationRequired(false)
+        val k = inst.newKryo()
+
         val holder = new ByteBufferOutput(1024)
         k.writeClassAndObject(holder, original)
         val input = new ByteBufferInput(holder.getByteBuffer)
@@ -29,6 +32,10 @@ class SerializableInetAddressTest extends TestBase {
         val output = k.readClassAndObject(input)
         output shouldBe original
       }
+    }
+
+    "be convertable to InetAddress" ignore {
+
     }
   }
 }

@@ -213,7 +213,7 @@ class TraceroutePathGraph[EventT <: Event]
     }
     else {
       graph = new GraphT(classOf[EdgeT])
-      graph.setEdgeSupplier(new EdgeWithLastSeenSupplier)
+      graph.setEdgeSupplier(new NoReflectionUnusableEdgeSupplier[EdgeT])
     }
   }
 }
