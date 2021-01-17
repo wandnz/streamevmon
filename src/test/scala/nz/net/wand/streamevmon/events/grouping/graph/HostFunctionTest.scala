@@ -282,31 +282,221 @@ class HostFunctionTest extends TestBase {
     }
   }
 
-  "mergeWith" ignore {
+  "mergeWith" should {
     "fail" when {
       "given mismatched ITDK node IDs" in {
-
+        an[IllegalArgumentException] shouldBe thrownBy {
+          Host(
+            Set("wand.net.nz"),
+            Set(),
+            Set(),
+            Some((1, AsNumber(1)))
+          ).mergeWith(Host(
+            Set("google.com"),
+            Set(),
+            Set(),
+            Some((2, AsNumber(2)))
+          ))
+        }
       }
 
       "given mismatched anonymous hosts" in {
-
+        an[IllegalArgumentException] shouldBe thrownBy {
+          Host(
+            Set(),
+            Set(),
+            Set((1, 1, 1)),
+            None
+          ).mergeWith(Host(
+            Set(),
+            Set(),
+            Set((2, 2, 2)),
+            None
+          ))
+        }
       }
     }
 
-    "work" in {
+    "work" when {
+      "hosts are identical" in {
+        {
+          val a = Host(
+            Set("wand.net.nz"),
+            Set((InetAddress.getByName("127.0.0.1"), AsNumber.PrivateAddress)),
+            Set(),
+            Some((1, AsNumber(1)))
+          )
+          a.mergeWith(a) shouldBe a
+        }
+        {
+          val a = Host(
+            Set(),
+            Set((InetAddress.getByName("127.0.0.1"), AsNumber.PrivateAddress)),
+            Set(),
+            Some((1, AsNumber(1)))
+          )
+          a.mergeWith(a) shouldBe a
+        }
+        {
+          val a = Host(
+            Set("wand.net.nz"),
+            Set(),
+            Set(),
+            Some((1, AsNumber(1)))
+          )
+          a.mergeWith(a) shouldBe a
+        }
+        {
+          val a = Host(
+            Set("wand.net.nz"),
+            Set((InetAddress.getByName("127.0.0.1"), AsNumber.PrivateAddress)),
+            Set(),
+            None
+          )
+          a.mergeWith(a) shouldBe a
+        }
+        {
+          val a = Host(
+            Set(),
+            Set((InetAddress.getByName("127.0.0.1"), AsNumber.PrivateAddress)),
+            Set(),
+            None
+          )
+          a.mergeWith(a) shouldBe a
+        }
+        {
+          val a = Host(
+            Set("wand.net.nz"),
+            Set(),
+            Set(),
+            None
+          )
+          a.mergeWith(a) shouldBe a
+        }
+        {
+          val a = Host(
+            Set(),
+            Set(),
+            Set((1, 1, 1)),
+            None
+          )
+          a.mergeWith(a) shouldBe a
+        }
+      }
 
+      "hostnames are different" in {
+        Host(
+          Set("wand.net.nz"),
+          Set((InetAddress.getByName("127.0.0.1"), AsNumber.PrivateAddress)),
+          Set(),
+          Some((1, AsNumber(1)))
+        ).mergeWith(
+          Host(
+            Set("google.com"),
+            Set((InetAddress.getByName("127.0.0.1"), AsNumber.PrivateAddress)),
+            Set(),
+            Some((1, AsNumber(1)))
+          )
+        )
+
+        Host(
+          Set("wand.net.nz"),
+          Set((InetAddress.getByName("127.0.0.1"), AsNumber.PrivateAddress)),
+          Set(),
+          None
+        ).mergeWith(
+          Host(
+            Set("google.com"),
+            Set((InetAddress.getByName("127.0.0.1"), AsNumber.PrivateAddress)),
+            Set(),
+            None
+          )
+        )
+      }
+
+      "addresses are different" in {
+        Host(
+          Set("wand.net.nz"),
+          Set((InetAddress.getByName("130.217.250.15"), AsNumber(681))),
+          Set(),
+          Some((1, AsNumber(1)))
+        ).mergeWith(
+          Host(
+            Set("wand.net.nz"),
+            Set((InetAddress.getByName("142.250.71.78"), AsNumber(15169))),
+            Set(),
+            Some((1, AsNumber(1)))
+          )
+        )
+
+        Host(
+          Set("wand.net.nz"),
+          Set((InetAddress.getByName("130.217.250.15"), AsNumber(681))),
+          Set(),
+          None
+        ).mergeWith(
+          Host(
+            Set("wand.net.nz"),
+            Set((InetAddress.getByName("142.250.71.78"), AsNumber(15169))),
+            Set(),
+            None
+          )
+        )
+      }
     }
   }
 
-  "mergeAnonymous" ignore {
+  "mergeAnonymous" should {
     "fail" when {
       "given one or more non-anonymous hosts" in {
-
+        an[IllegalArgumentException] shouldBe thrownBy {
+          val a = Host(
+            Set("wand.net.nz"),
+            Set(),
+            Set(),
+            None
+          )
+          a.mergeAnonymous(a)
+        }
+        an[IllegalArgumentException] shouldBe thrownBy {
+          val a = Host(
+            Set(),
+            Set((InetAddress.getByName("127.0.0.1"), AsNumber.PrivateAddress)),
+            Set(),
+            None
+          )
+          a.mergeAnonymous(a)
+        }
       }
     }
 
     "work" in {
+      val a = Host(
+        Set(),
+        Set(),
+        Set((1, 1, 1)),
+        None
+      )
+      val b = Host(
+        Set(),
+        Set(),
+        Set((2, 2, 2)),
+        None
+      )
+      val c = Host(
+        Set(),
+        Set(),
+        Set((1, 1, 1), (2, 2, 2)),
+        None
+      )
 
+      a.mergeAnonymous(a) shouldBe a
+      b.mergeAnonymous(b) shouldBe b
+      c.mergeAnonymous(c) shouldBe c
+      a.mergeAnonymous(b) shouldBe c
+      b.mergeAnonymous(a) shouldBe c
+      c.mergeAnonymous(a) shouldBe c
+      c.mergeAnonymous(b) shouldBe c
     }
   }
 }
