@@ -31,7 +31,6 @@ import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 
-import java.io.File
 import java.time.{Duration, Instant}
 
 import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
@@ -151,8 +150,6 @@ class TraceroutePathGraph[EventT <: Event]
     out.collect(value)
   }
 
-  var counter = 0
-
   /** Adds an AsInetPath to the graph. New hosts will become new vertices, and
     * missing edges will be added. Gives no output. Prunes if required, so this
     * function sometimes takes longer than usual.
@@ -164,10 +161,6 @@ class TraceroutePathGraph[EventT <: Event]
   ): Unit = {
     addAsInetPathToGraph(graph, aliasResolver, value)
     pruneIfRequired(value.measurement.time)
-    counter += 1
-    if (counter % 200 == 0) {
-      AmpletGraphDotExporter.exportGraph(graph, new File("./out/graphme.dot"))
-    }
   }
 
   // == CheckpointedFunction implementation ==
