@@ -8,20 +8,20 @@ object Dependencies {
   val flinkVersion = "1.11.2"
 
   // Used in multiple library declarations
-  val chroniclerVersion = "0.6.4"
+  val chroniclerVersion = "0.6.5"
   val retrofitVersion = "2.9.0"
   val scalaCacheVersion = "0.28.0"
 
   // Used in a single declaration each
   val slf4jVersion = "1.7.30"
-  val postgresqlVersion = "42.2.17"
-  val squerylVersion = "0.9.15"
-  val snakeyamlVersion = "2.1"
+  val postgresqlVersion = "42.2.18"
+  val squerylVersion = "0.9.16"
+  val snakeyamlVersion = "2.2.1"
   val jacksonVersion = "2.11.3"
   val jgraphtVersion = "1.5.0"
 
   // Used in tests - scalactic in coreDependencies shares a version with scalatest
-  val scalatestVersion = "3.2.2"
+  val scalatestVersion = "3.2.3"
   val testcontainersScalaVersion = "0.38.4"
 
   val providedDependencies: Seq[ModuleID] = Seq(
