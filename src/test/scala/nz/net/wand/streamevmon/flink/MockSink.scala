@@ -7,7 +7,7 @@ import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import scala.collection.mutable
 
 class MockSink extends SinkFunction[Event] {
-  override def invoke(value: Event, context: SinkFunction.Context[_]): Unit = {
+  override def invoke(value: Event, context: SinkFunction.Context): Unit = {
     MockSink.received.append(value)
   }
 }

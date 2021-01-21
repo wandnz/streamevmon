@@ -8,7 +8,6 @@ import nz.net.wand.streamevmon.measurements.traits.{HasDefault, Measurement}
 import java.time.Instant
 
 import org.apache.flink.streaming.api.scala._
-import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala.function.ProcessAllWindowFunction
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows
 import org.apache.flink.streaming.api.windowing.time.Time
@@ -49,7 +48,6 @@ object MetricGatherer {
 
   def main(args: Array[String]): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
     env.setParallelism(1)
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))

@@ -6,7 +6,6 @@ import nz.net.wand.streamevmon.flink.sources.LatencyTSAmpFileInputFormat
 import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
 import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
 
-import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
 
 /** Main runner for mode change detector, detailed in the
@@ -16,7 +15,6 @@ object ModeRunner {
   def main(args: Array[String]): Unit = {
     val filename = "data/latency-ts-i/ampicmp/series/waikato-xero-ipv4.series"
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     System.setProperty("source.influx.subscriptionName", "ModeDetector")
 

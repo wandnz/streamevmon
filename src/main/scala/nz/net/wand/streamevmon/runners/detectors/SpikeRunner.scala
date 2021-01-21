@@ -10,7 +10,7 @@ import java.time.Duration
 
 import org.apache.flink.api.scala.operators.ScalaCsvOutputFormat
 import org.apache.flink.core.fs.Path
-import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
+import org.apache.flink.streaming.api.CheckpointingMode
 import org.apache.flink.streaming.api.scala._
 
 import scala.reflect.io.File
@@ -22,7 +22,6 @@ object SpikeRunner {
   def main(args: Array[String]): Unit = {
 
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 

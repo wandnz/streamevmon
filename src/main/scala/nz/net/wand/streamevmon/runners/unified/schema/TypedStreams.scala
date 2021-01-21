@@ -5,6 +5,7 @@ import nz.net.wand.streamevmon.measurements.traits.Measurement
 import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
 
 import org.apache.flink.streaming.api.scala._
+import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows
 import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.Window
 
@@ -41,9 +42,9 @@ case class TypedStreams(
         Some(
           (windowType, notLossy) match {
             case (_: StreamWindowType.TimeWithOverrides, true) =>
-              notLossyKeyedStream.timeWindow(timeWindowDuration)
+              notLossyKeyedStream.window(TumblingEventTimeWindows.of(timeWindowDuration))
             case (_: StreamWindowType.TimeWithOverrides, false) =>
-              keyedStream.timeWindow(timeWindowDuration)
+              keyedStream.window(TumblingEventTimeWindows.of(timeWindowDuration))
             case (_: StreamWindowType.CountWithOverrides, true) =>
               notLossyKeyedStream.countWindow(countWindowSize, countWindowSlide)
             case (_: StreamWindowType.CountWithOverrides, false) =>

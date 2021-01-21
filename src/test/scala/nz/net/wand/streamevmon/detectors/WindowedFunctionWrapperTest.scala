@@ -12,10 +12,10 @@ import java.util.concurrent.TimeUnit
 
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
+import org.apache.flink.streaming.api.scala.{StreamExecutionEnvironment, _}
+import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows
 import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
-import org.apache.flink.streaming.api.TimeCharacteristic
-import org.apache.flink.streaming.api.scala.{StreamExecutionEnvironment, _}
 import org.apache.flink.util.Collector
 
 class MyReallyFunOutOfOrderSourceFunction extends SourceFunction[InfluxMeasurement] with Serializable {
@@ -67,7 +67,6 @@ class WindowedFunctionWrapperTest extends TestBase {
   "WindowedFunctionWrapper" should {
     "order items correctly within a window" in {
       val env = StreamExecutionEnvironment.getExecutionEnvironment
-      env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
       env.getConfig.setGlobalJobParameters(Configuration.get(Array()))
       env.setParallelism(1)
@@ -77,7 +76,7 @@ class WindowedFunctionWrapperTest extends TestBase {
         .setParallelism(1)
         .name("Fun Source")
         .keyBy(new MeasurementKeySelector[InfluxMeasurement])
-        .timeWindow(Time.seconds(18))
+        .window(TumblingEventTimeWindows.of(Time.seconds(18)))
         .process(
           new WindowedFunctionWrapper[InfluxMeasurement, TimeWindow](
             new AwesomeCheckOnlyIncreasingTimeFunction

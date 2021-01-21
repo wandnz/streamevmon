@@ -12,7 +12,7 @@ import nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor
 import java.time.{Duration, Instant}
 
 import org.apache.flink.api.common.restartstrategy.RestartStrategies
-import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
+import org.apache.flink.streaming.api.CheckpointingMode
 import org.apache.flink.streaming.api.scala._
 
 object EventGraphCorrelator {
@@ -21,7 +21,6 @@ object EventGraphCorrelator {
 
     // First, set up a StreamExecutionEnvironment.
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     env.enableCheckpointing(Duration.ofSeconds(60).toMillis, CheckpointingMode.EXACTLY_ONCE)
     env.getCheckpointConfig.setCheckpointTimeout(Duration.ofSeconds(600).toMillis)

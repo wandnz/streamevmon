@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 
 import org.apache.flink.api.common.eventtime.WatermarkStrategy
 import org.apache.flink.api.common.restartstrategy.RestartStrategies
-import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
+import org.apache.flink.streaming.api.CheckpointingMode
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.windowing.time.Time
@@ -29,7 +29,6 @@ object YamlDagRunner {
   def main(args: Array[String]): Unit = {
     // == Setup flink config ==
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     val config = Configuration.get(args)
     env.getConfig.setGlobalJobParameters(config)

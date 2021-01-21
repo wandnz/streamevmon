@@ -9,6 +9,7 @@ import nz.net.wand.streamevmon.measurements.amp.ICMP
 import java.time.{Duration, Instant}
 
 import org.apache.flink.streaming.api.scala._
+import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows
 import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.{GlobalWindow, TimeWindow}
 
@@ -29,7 +30,7 @@ class WindowedFunctionCheckpointingTest extends NoHarnessCheckpointingTestBase {
         val env = getEnv
         val src = addFailingSource(env)
 
-        src.timeWindow(Time.seconds(1))
+        src.window(TumblingEventTimeWindows.of(Time.seconds(1)))
           .process(new WindowedFunctionWrapper[ICMP, TimeWindow](
             new DistDiffDetector[ICMP]
           ))

@@ -8,7 +8,7 @@ import java.time.Duration
 import java.util.Date
 
 import org.apache.flink.api.common.restartstrategy.RestartStrategies
-import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
+import org.apache.flink.streaming.api.CheckpointingMode
 import org.apache.flink.streaming.api.scala._
 
 /** Most basic example of using an [[nz.net.wand.streamevmon.flink.sources.InfluxSourceFunction InfluxSourceFunction]],
@@ -22,7 +22,6 @@ object InfluxSourceReceiver {
 
   def main(args: Array[String]): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     env.enableCheckpointing(10000, CheckpointingMode.EXACTLY_ONCE)
     env.setRestartStrategy(RestartStrategies.noRestart())

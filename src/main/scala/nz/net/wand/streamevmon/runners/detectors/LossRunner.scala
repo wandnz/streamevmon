@@ -9,7 +9,7 @@ import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
 
 import java.time.Duration
 
-import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
+import org.apache.flink.streaming.api.CheckpointingMode
 import org.apache.flink.streaming.api.scala._
 
 /** Main runner for loss detector, detailed in the
@@ -19,7 +19,6 @@ object LossRunner {
 
   def main(args: Array[String]): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     System.setProperty("source.influx.subscriptionName", "LossDetector")
 

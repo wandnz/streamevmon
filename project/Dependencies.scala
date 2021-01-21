@@ -5,7 +5,7 @@ import sbt._
   */
 object Dependencies {
   // Major library
-  val flinkVersion = "1.11.2"
+  val flinkVersion = "1.12.1"
 
   // Used in multiple library declarations
   val chroniclerVersion = "0.6.5"

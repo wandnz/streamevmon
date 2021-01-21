@@ -17,7 +17,6 @@ import org.apache.commons.io.FilenameUtils
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.api.scala.operators.ScalaCsvOutputFormat
 import org.apache.flink.core.fs.Path
-import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
 
 import scala.reflect.io.Directory
@@ -35,7 +34,6 @@ object LatencyTSAllDetectors {
 
   def runTest(file: File): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     val config = Configuration.get()
     env.getConfig.setGlobalJobParameters(config)

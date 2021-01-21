@@ -141,7 +141,7 @@ class InfluxSinkFunction
     *
     * @param value The data to send to InfluxDB.
     */
-  override def invoke(value: Event, context: Context[_]): Unit = {
+  override def invoke(value: Event, context: Context): Unit = {
     bufferedEvents.append(value)
     val meas = influx.measurement[Event](database, value.eventType)
 

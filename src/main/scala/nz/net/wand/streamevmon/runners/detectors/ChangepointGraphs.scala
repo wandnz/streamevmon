@@ -10,7 +10,6 @@ import java.io.File
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.streaming.api.scala.{StreamExecutionEnvironment, _}
-import org.apache.flink.streaming.api.TimeCharacteristic
 
 /** This class is an alternative runner for the changepoint detector that allows
   * iteration over configuration changes and various input files. It also has
@@ -23,7 +22,6 @@ object ChangepointGraphs {
 
   def doIt(file: String, maxhist: Int, triggerCount: Int, severity: Int): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     val conf = Array(
       "--detector.changepoint.maxHistory",

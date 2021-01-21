@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.apache.commons.io.FileUtils
 import org.apache.flink.streaming.api.scala._
-import org.apache.flink.streaming.api.TimeCharacteristic
 
 import scala.collection.immutable.SortedMap
 import scala.collection.mutable
@@ -173,7 +172,6 @@ object EsmondPlayground extends Logging {
   /** This function makes a PollingEsmondSourceFunction, and does some testing on it. */
   def useSourceFunction(): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     env.getConfig.setGlobalJobParameters(Configuration.get(Array()))
 

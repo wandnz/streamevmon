@@ -11,7 +11,7 @@ import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
 import java.time.Duration
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
-import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
+import org.apache.flink.streaming.api.CheckpointingMode
 import org.apache.flink.streaming.api.scala._
 
 /** This is the main runner for the changepoint detector, which is
@@ -23,7 +23,6 @@ import org.apache.flink.streaming.api.scala._
 object ChangepointRunner {
   def main(args: Array[String]): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     System.setProperty("source.influx.subscriptionName", "ChangepointDetector")
 

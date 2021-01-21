@@ -5,9 +5,9 @@ import java.time.Instant
 
 import org.apache.flink.streaming.api.functions.sink.SinkFunction.Context
 
-class MockSinkContext[T](
+class MockSinkContext(
   time: Instant
-) extends Context[T] {
+) extends Context {
   override def currentProcessingTime(): Long = time.toEpochMilli
 
   override def currentWatermark(): Long = time.toEpochMilli

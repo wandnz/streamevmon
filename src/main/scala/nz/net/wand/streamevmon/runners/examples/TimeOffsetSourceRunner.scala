@@ -9,7 +9,6 @@ import java.time.Duration
 import java.util.Date
 
 import org.apache.flink.api.java.utils.ParameterTool
-import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
 
 import scala.collection.JavaConverters._
@@ -22,7 +21,6 @@ import scala.collection.JavaConverters._
 object TimeOffsetSourceRunner {
   def main(args: Array[String]): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     // Sets the subscription name for the AmpMeasurementSourceFunction.
     System.setProperty("source.influx.subscriptionName", "LiveSource")

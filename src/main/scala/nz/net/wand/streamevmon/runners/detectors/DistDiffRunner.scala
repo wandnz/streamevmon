@@ -6,7 +6,6 @@ import nz.net.wand.streamevmon.flink.sources.LatencyTSAmpFileInputFormat
 import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
 import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
 
-import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.windowing.windows.GlobalWindow
 
@@ -14,7 +13,6 @@ object DistDiffRunner {
 
   def main(args: Array[String]): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     System.setProperty("source.influx.subscriptionName", "DistDiffDetector")
 

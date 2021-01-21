@@ -61,7 +61,7 @@ class NabScoringFormatSink(outputLocation: String, inputFile: File, detectorName
 
   var invocationCount = 0
 
-  override def invoke(value: Event, context: SinkFunction.Context[_]): Unit = {
+  override def invoke(value: Event, context: SinkFunction.Context): Unit = {
     readExampleResults()
     // Whenever we receive an event, we'll output all the input measurements up
     // until that time. The one corresponding to the new event will have its

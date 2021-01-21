@@ -4,7 +4,6 @@ import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.flink.sources.NabFileInputFormat
 
 import org.apache.flink.core.fs.Path
-import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala._
 
 /** Prints out the entire NAB dataset. This is mostly just a test to make sure
@@ -15,7 +14,6 @@ import org.apache.flink.streaming.api.scala._
 object NabPrinter {
   def main(args: Array[String]): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     env.setParallelism(1)
 
