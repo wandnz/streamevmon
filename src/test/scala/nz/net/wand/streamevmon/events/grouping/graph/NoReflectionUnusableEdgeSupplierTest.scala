@@ -18,7 +18,7 @@ class NoReflectionUnusableEdgeSupplierTest extends TestBase {
       k.writeClassAndObject(holder, original)
       val input = new ByteBufferInput(holder.getByteBuffer)
       input.setPosition(0)
-      k.readClassAndObject(input) shouldBe a[NoReflectionUnusableEdgeSupplier[Any]]
+      k.readClassAndObject(input) shouldBe a[NoReflectionUnusableEdgeSupplier[_]]
     }
   }
 }
