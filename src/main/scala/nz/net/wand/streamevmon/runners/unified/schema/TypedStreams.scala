@@ -39,20 +39,18 @@ case class TypedStreams(
       s"windowed-stream:$sourceName-$notLossy-$windowType-$timeWindowDuration-$countWindowSize-$countWindowSlide",
       ttl = None,
       method = {
-        Some(
-          (windowType, notLossy) match {
-            case (_: StreamWindowType.TimeWithOverrides, true) =>
-              notLossyKeyedStream.window(TumblingEventTimeWindows.of(timeWindowDuration))
-            case (_: StreamWindowType.TimeWithOverrides, false) =>
-              keyedStream.window(TumblingEventTimeWindows.of(timeWindowDuration))
-            case (_: StreamWindowType.CountWithOverrides, true) =>
-              notLossyKeyedStream.countWindow(countWindowSize, countWindowSlide)
-            case (_: StreamWindowType.CountWithOverrides, false) =>
-              keyedStream.countWindow(countWindowSize, countWindowSlide)
-            case t => throw new IllegalArgumentException(s"Unrecognised StreamWindowType $t")
-          }
-        )
+        (windowType, notLossy) match {
+          case (_: StreamWindowType.TimeWithOverrides, true) =>
+            notLossyKeyedStream.window(TumblingEventTimeWindows.of(timeWindowDuration))
+          case (_: StreamWindowType.TimeWithOverrides, false) =>
+            keyedStream.window(TumblingEventTimeWindows.of(timeWindowDuration))
+          case (_: StreamWindowType.CountWithOverrides, true) =>
+            notLossyKeyedStream.countWindow(countWindowSize, countWindowSlide)
+          case (_: StreamWindowType.CountWithOverrides, false) =>
+            keyedStream.countWindow(countWindowSize, countWindowSlide)
+          case t => throw new IllegalArgumentException(s"Unrecognised StreamWindowType $t")
+        }
       }
-    ).get
+    ).asInstanceOf[WindowedStream[Measurement, String, Window]]
   }
 }

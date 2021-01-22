@@ -2,29 +2,25 @@ package nz.net.wand.streamevmon
 
 import nz.net.wand.streamevmon.Caching.CacheMode
 
-import java.time.Instant
-
 import net.spy.memcached.compat.log.SLF4JLogger
 import org.apache.flink.api.java.utils.ParameterTool
 import scalacache.{sync, Cache}
 import scalacache.caffeine._
 import scalacache.memcached._
 import scalacache.modes.sync._
-import scalacache.serialization.binary._
+import scalacache.serialization.Codec
 
-import scala.collection.mutable
 import scala.concurrent.duration.FiniteDuration
 
 /** Companion object storing the common in-memory cache.
   */
 object Caching {
-
   protected object CacheMode extends Enumeration {
     type CacheMode = Value
     val InMemory, Memcached = Value
   }
 
-  @transient final private lazy val caffeineCache: Cache[Option[Any]] = CaffeineCache[Option[Any]]
+  @transient final private lazy val caffeineCache: Cache[Any] = CaffeineCache[Any]
 }
 
 /** Allows caching for the results of long-running functions. Supports the
@@ -48,7 +44,7 @@ object Caching {
   * for cached values.
   * Default 30.
   *
-  * The `caching.memcached` key group configured the memcached settings.
+  * The `caching.memcached` key group configures the memcached settings.
   * Caffeine caches are not affected by this group.
   *
   * - `enabled`: This class also does not directly use this key, but inheriting
@@ -78,7 +74,7 @@ object Caching {
 trait Caching {
   protected var cacheMode: CacheMode.Value = CacheMode.InMemory
 
-  @transient private var memcachedCache: Cache[Option[Any]] = _
+  @transient private var memcachedCache: Cache[Any] = _
 
   // Ensure memcached uses the correct logging implementation.
   System.setProperty("net.spy.log.LoggerImpl", classOf[SLF4JLogger].getCanonicalName)
@@ -91,8 +87,10 @@ trait Caching {
     *          `caching.memcached.port`: Defaults to 11211.
     */
   protected def useMemcached(p: ParameterTool): Unit = {
+    implicit val codec: Codec[Any] = new GZippingKryoCodec()
     memcachedCache = MemcachedCache(
-      s"${p.get("caching.memcached.serverName")}:${p.getInt("caching.memcached.port")}")
+      s"${p.get("caching.memcached.serverName")}:${p.getInt("caching.memcached.port")}"
+    )
     cacheMode = CacheMode.Memcached
   }
 
@@ -101,31 +99,21 @@ trait Caching {
     cacheMode = CacheMode.InMemory
   }
 
-  implicit private def cache: Cache[Option[Any]] = cacheMode match {
+  /** Gets the appropriate cache object for the current caching mode. */
+  implicit private def cache: Cache[Any] = cacheMode match {
     case CacheMode.InMemory => Caching.caffeineCache
     case CacheMode.Memcached => memcachedCache
   }
 
-  private val internalUsedCacheKeys: mutable.Map[String, (Instant, Option[FiniteDuration])] = mutable.Map()
-
-  protected def usedCacheKeys: mutable.Map[String, (Instant, Option[FiniteDuration])] = {
-    internalUsedCacheKeys
-      .filter(_._2._2.isDefined)
-      .filter { case (_, value) =>
-        value._1.plusNanos(value._2.get.toNanos).isBefore(Instant.now)
-      }
-      .foreach { case (key, _) =>
-        internalUsedCacheKeys.remove(key)
-      }
-    internalUsedCacheKeys
-  }
+  implicit private def cacheT[T]: Cache[T] = cache.asInstanceOf[Cache[T]]
 
   /** Adds caching to a given method, according to the previously set up
     * configuration.
     *
     * @param key    The cache key. This should be unique for a particular method
     *               result. This function provides no key uniqueness guarantee.
-    * @param ttl    The Time-To-Live value of the particular cache item.
+    * @param ttl    The Time-To-Live value of the particular cache item. If
+    *               None, the item will never expire on its own.
     * @param method The method to obtain a cacheable result from.
     * @tparam T The return type of `method`.
     *
@@ -135,21 +123,13 @@ trait Caching {
   protected def getWithCache[T](
     key   : String,
     ttl   : Option[FiniteDuration],
-    method: => Option[Any]
-  ): Option[T] = {
-    usedCacheKeys += key -> (Instant.now, ttl)
-    sync.caching(key)(ttl)(method).asInstanceOf[Option[T]]
+    method: => T
+  ): T = {
+    sync.caching(key)(ttl)(method)
   }
 
+  /** Removes an item from the cache. */
   protected def invalidate(key: String): Unit = {
     sync.remove(key)
-    usedCacheKeys.remove(key)
-  }
-
-  protected def invalidateAll(): Unit = {
-    internalUsedCacheKeys.foreach { case (key, _) =>
-      sync.remove(key)
-      internalUsedCacheKeys.remove(key)
-    }
   }
 }
