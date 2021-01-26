@@ -17,7 +17,7 @@ class LatencyTSAmpFileInputFormat extends GenericCsvInputFormat[LatencyTSAmpICMP
 
   override val flinkName: String = "Latency TS Amp Source"
   override val flinkUid: String = "latency-ts-amp-source"
-  override val configKeyGroup: String = "latencyts"
+  override val configKeyGroup: String = "latencyts.ampicmp"
 
   override def openInputFormat(): Unit = {
     // We need parallelism 1 because we want to make unique stream IDs.

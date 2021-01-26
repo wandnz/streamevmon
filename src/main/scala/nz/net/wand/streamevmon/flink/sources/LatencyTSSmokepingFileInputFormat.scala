@@ -18,7 +18,7 @@ class LatencyTSSmokepingFileInputFormat extends GenericCsvInputFormat[LatencyTSS
 
   override val flinkName: String = "Latency TS Smokeping Source"
   override val flinkUid: String = "latency-ts-smokeping-source"
-  override val configKeyGroup: String = "latencyts"
+  override val configKeyGroup: String = "latencyts.smokeping"
 
   override def openInputFormat(): Unit = {
     // We need parallelism 1 because we want to make unique stream IDs.
