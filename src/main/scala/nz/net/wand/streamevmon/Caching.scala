@@ -45,7 +45,8 @@ object Caching {
   * Default 30.
   *
   * The `caching.memcached` key group configures the memcached settings.
-  * Caffeine caches are not affected by this group.
+  * Caffeine caches are not affected by this group. Note that Kryo serialization
+  * is used alongside Memcached.
   *
   * - `enabled`: This class also does not directly use this key, but inheriting
   * classes which would like to support memcached caching should check the key's
@@ -131,5 +132,10 @@ trait Caching {
   /** Removes an item from the cache. */
   protected def invalidate(key: String): Unit = {
     sync.remove(key)
+  }
+
+  /** Removes all items from the cache. */
+  protected def invalidateAll(): Unit = {
+    cache.removeAll()
   }
 }
