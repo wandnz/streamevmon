@@ -11,9 +11,8 @@ import nz.net.wand.streamevmon.runners.unified.schema.DetectorType
 import java.io.File
 import java.nio.file.{Files, Paths}
 
-import org.apache.flink.streaming.api.scala._
-import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction
+import org.apache.flink.streaming.api.scala._
 
 import scala.compat.java8.StreamConverters._
 import scala.reflect.io.Directory
@@ -51,7 +50,6 @@ class NabAllDetectors(detectorsToUse: Iterable[DetectorType.ValueBuilder]) exten
   def runTest(args: Array[String], file: File, outputDir: String): Unit = {
 
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     env.setParallelism(1)
 
