@@ -60,7 +60,7 @@ class SourceBuildTest extends TestBase {
 
         built shouldBe a[LatencyTSAmpFileInputFormat]
         an[UnsupportedOperationException] should be thrownBy srcInstance.buildSourceFunction
-        built.configWithOverride(ParameterTool.fromArgs(Array())).toMap.asScala should contain(s"source.${built.configKeyGroup}.ampicmp.extraKey" -> "true")
+        built.configWithOverride(ParameterTool.fromArgs(Array())).toMap.asScala should contain(s"source.${built.configKeyGroup}.extraKey" -> "true")
       }
 
       "source type is LatencyTS/Smokeping" in {
@@ -73,7 +73,7 @@ class SourceBuildTest extends TestBase {
 
         built shouldBe a[LatencyTSSmokepingFileInputFormat]
         an[UnsupportedOperationException] should be thrownBy srcInstance.buildSourceFunction
-        built.configWithOverride(ParameterTool.fromArgs(Array())).toMap.asScala should contain(s"source.${built.configKeyGroup}.smokeping.extraKey" -> "true")
+        built.configWithOverride(ParameterTool.fromArgs(Array())).toMap.asScala should contain(s"source.${built.configKeyGroup}.extraKey" -> "true")
       }
 
       "source type is NAB" in {
