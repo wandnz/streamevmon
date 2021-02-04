@@ -201,7 +201,7 @@ abstract class InfluxSourceFunction[T <: InfluxMeasurement](
               .takeWhile(line => line != null)
               // Drop the HTTP header - some number of nonempty lines, followed
               // by one empty line.
-              .dropWhile(line => !line.isEmpty)
+              .dropWhile(line => line.nonEmpty)
               .drop(1)
               // Process the lines we care about.
               .foreach(line => {

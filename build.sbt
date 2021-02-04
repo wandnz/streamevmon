@@ -58,7 +58,7 @@ lazy val root = (project in file(".")).
       name := "streamevmon",
       libraryDependencies ++= providedDependencies ++ coreDependencies ++ testDependencies,
       mainClass in assembly := Some("nz.net.wand.streamevmon.runners.unified.YamlDagRunner"),
-    ) ++ coreLicensing ++ sharedSettings: _*
+    ) ++ sharedSettings ++ coreLicensing: _*
   )
   .enablePlugins(AutomateHeaderPlugin)
 
