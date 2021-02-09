@@ -22,7 +22,7 @@ object Dependencies {
 
   // Used in tests - scalactic in coreDependencies shares a version with scalatest
   val scalatestVersion = "3.2.3"
-  val testcontainersScalaVersion = "0.38.4"
+  val testcontainersScalaVersion = "0.39.0"
 
   val providedDependencies: Seq[ModuleID] = Seq(
     // Flink

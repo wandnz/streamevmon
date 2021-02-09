@@ -34,7 +34,6 @@ import java.nio.file.{Files, Path}
 import com.dimafeng.testcontainers.{ForEachTestContainer, GenericContainer}
 import org.apache.commons.io.FileUtils
 import org.apache.flink.api.java.utils.ParameterTool
-import org.testcontainers.containers.{GenericContainer => JavaGenericContainer}
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.images.builder.ImageFromDockerfile
 
@@ -132,10 +131,7 @@ class CachingMemcachedBackendTest
   extends CachingBehaviours
           with ForEachTestContainer {
 
-  class JContainer extends JavaGenericContainer[JContainer]
-
-  /** Docker needs a directory to use as the build context.
-    */
+  /** Docker needs a directory to use as the build context. */
   val tempDir = Files.createTempDirectory(Path.of("/tmp"), "memcached-Docker")
 
   // We add a real Dockerfile to the temp directory we created and let

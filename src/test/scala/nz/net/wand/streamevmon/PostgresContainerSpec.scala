@@ -33,12 +33,13 @@ import java.sql.DriverManager
 import com.dimafeng.testcontainers.{ForAllTestContainer, PostgreSQLContainer}
 import org.squeryl.{Session, SessionFactory}
 import org.squeryl.adapters.PostgreSqlAdapter
+import org.testcontainers.utility.DockerImageName
 
 trait PostgresContainerSpec extends TestBase with ForAllTestContainer {
 
   // We know that NNTSC uses postgres 10, so we might as well stick with
   // that version. Alpine for size benefits.
-  override val container: PostgreSQLContainer = PostgreSQLContainer("postgres:10-alpine")
+  override val container: PostgreSQLContainer = PostgreSQLContainer(DockerImageName.parse("postgres").withTag("10-alpine"))
     .configure(db => {
       val params = Configuration.get()
 
