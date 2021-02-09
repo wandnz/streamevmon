@@ -134,5 +134,8 @@ linuxPackageMappings ++= Seq(
   // does not create a mapping from `debianChangelog` to its desired location.
   packageMapping(
     debianChangelog.value.get -> "/usr/share/doc/streamevmon/changelog.Debian.gz"
-  ).gzipped.withPerms("0644")
+  ).gzipped.withPerms("0644"),
+  packageMapping(
+    file(s"${baseDirectory.value}/src/debian/copyright") -> "/usr/share/doc/streamevmon/copyright"
+  ).withPerms("0644")
 )

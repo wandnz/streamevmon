@@ -1,1 +1,2 @@
 streamevmon: missing-dep-on-jarwrapper
+streamevmon: package-contains-timestamped-gzip
