@@ -7,6 +7,7 @@ ThisBuild / scalaVersion := "2.12.13"
 
 import Dependencies._
 import Licensing._
+Licensing.applyLicenseOverrides
 
 // These are settings that are shared between all submodules in this project.
 lazy val sharedSettings = Seq(

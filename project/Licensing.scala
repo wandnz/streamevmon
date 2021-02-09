@@ -1,3 +1,5 @@
+import com.typesafe.sbt.SbtLicenseReport.autoImportImpl._
+import com.typesafe.sbt.license.{DepModuleInfo, LicenseInfo}
 import de.heikoseeberger.sbtheader.CommentStyle
 import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
 import sbt._
@@ -33,4 +35,11 @@ object Licensing {
     // This module inherits the AGPL from SMAC 2.10.x. The core module is not affected.
     licenses += (HeaderLicense.AGPLv3OrLater.spdxIdentifier, url("https://www.gnu.org/licenses/agpl-3.0.html"))
   ) ++ sharedLicensing
+
+  /** Applies license overrides for those missed by sbt-license-report */
+  def applyLicenseOverrides = {
+    licenseOverrides := {
+      case DepModuleInfo("org.apache.zookeeper", "zookeeper", _) => LicenseInfo(LicenseCategory.Apache, "Apache-2.0", "https://www.apache.org/licenses/LICENSE-2.0.txt")
+    }
+  }
 }
