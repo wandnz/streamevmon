@@ -1,0 +1,21 @@
+name: linting
+on: [
+    pull_request,
+    push
+]
+jobs:
+  licenseHeader:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: olafurpg/setup-scala@v10
+        with:
+          java-version: adopt@1.11
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.ivy2/cache
+            ~/.m2/repository
+            ~/.sbt
+          key: streamevmon-${{ hashFiles('**/build.sbt', '**/Dependencies.scala') }}
+      - run: sbt update headerCheckAll parameterTuner/headerCheckAll
