@@ -148,6 +148,9 @@ linuxPackageMappings ++= Seq(
   packageTemplateMapping("/usr")().withPerms("0755"),
   packageTemplateMapping("/usr/lib")().withPerms("0755"),
   packageTemplateMapping("/usr/lib/streamevmon")().withPerms("0755"),
+  packageTemplateMapping("/lib")().withPerms("0755"),
+  packageTemplateMapping("/lib/systemd")().withPerms("0755"),
+  packageTemplateMapping("/lib/systemd/system")().withPerms("0755"),
   packageTemplateMapping("/usr/share")().withPerms("0755"),
   packageTemplateMapping("/usr/share/lintian")().withPerms("0755"),
   packageTemplateMapping("/usr/share/lintian/overrides")().withPerms("0755"),
@@ -157,6 +160,19 @@ linuxPackageMappings ++= Seq(
   packageMapping(
     file((Compile / packageBin / artifactPath).value.getParent + s"/${name.value}-nonProvidedDeps-${version.value}.jar") -> s"/usr/lib/streamevmon/streamevmon.jar"
   ).withUser(name.value).withGroup(name.value),
+  // These scripts are required for the systemd service
+  packageMapping(
+    file(s"${baseDirectory.value}/src/debian/streamevmon.service") -> "/lib/systemd/system/streamevmon.service"
+  ).withPerms("0644"),
+  packageMapping(
+    file(s"${baseDirectory.value}/src/debian/start.sh") -> "/usr/lib/streamevmon/start.sh"
+  ).withPerms("0755"),
+  packageMapping(
+    file(s"${baseDirectory.value}/src/debian/stop-jobmanager.sh") -> "/usr/lib/streamevmon/stop-jobmanager.sh"
+  ).withPerms("0755"),
+  packageMapping(
+    file(s"${baseDirectory.value}/src/debian/stop-taskmanager.sh") -> "/usr/lib/streamevmon/stop-taskmanager.sh"
+  ).withPerms("0755"),
   // This contains any override directives for lintian, since there are a few
   // warnings that we know don't matter.
   packageMapping(

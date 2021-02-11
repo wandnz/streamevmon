@@ -1,0 +1,20 @@
+[Unit]
+Description=Streamevmon time series anomaly detection pipeline
+After=network.target rabbitmq-server.service
+Wants=rabbitmq-server.service
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=forking
+User=streamevmon
+Group=streamevmon
+Environment="FLINK_DIR=/opt/flink"
+Environment="STREAMEVMON_ENTRYPOINT=nz.net.wand.streamevmon.runners.examples.MetricGatherer"
+ExecStart=/usr/lib/streamevmon/start.sh
+ExecStop=/usr/lib/streamevmon/stop-jobmanager.sh
+ExecStopPost=/usr/lib/streamevmon/stop-taskmanager.sh
+SuccessExitStatus=143
+
+WorkingDirectory=/opt/flink

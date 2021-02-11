@@ -42,6 +42,14 @@ import scala.util.Try
   * set as the global job parameters.
   */
 object Configuration {
+  val baseConfigDirectory: String = {
+    if (new File("conf").exists) {
+      "conf"
+    }
+    else {
+      "/etc/streamevmon/conf"
+    }
+  }
 
   /** Constructs a ParameterTool from a number of sources, each of which
     * override the previous.
@@ -156,10 +164,10 @@ object Configuration {
       "detectorSettings.yaml"
     ).map(getClass.getClassLoader.getResourceAsStream)
 
-    val customSettingsFiles = new File("conf").listFiles(
+    val customSettingsFiles = Option(new File(baseConfigDirectory).listFiles(
       (_: File, name: String) =>
         (name.endsWith(".yaml") || name.endsWith(".yml")) && (name != "flows.yaml" && name != "flows.yml")
-    ).sorted.map(new FileInputStream(_))
+    )).getOrElse(Array()).sorted.map(new FileInputStream(_))
 
     val pTools = (defaultSettingsFiles ++ customSettingsFiles).map { f =>
       parameterToolFromYamlStream(f)
@@ -199,7 +207,7 @@ object Configuration {
       case Some(value) => loader.loadFromInputStream(value)
       // External user configuration
       case None => Try(loader.loadFromInputStream(
-        new FileInputStream(new File("conf/flows.yaml"))
+        new FileInputStream(new File(s"$baseConfigDirectory/flows.yaml"))
       )).toOption match {
         case None | Some(null) =>
           // Internal default configuration
