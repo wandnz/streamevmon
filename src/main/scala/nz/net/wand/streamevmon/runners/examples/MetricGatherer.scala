@@ -80,7 +80,7 @@ object MetricGatherer {
     env.disableOperatorChaining()
 
     env
-      .readFile(new LatencyTSAmpFileInputFormat, "data/latency-ts-i/ampicmp/series/waikato-xero-ipv4.series")
+      .readFile(new LatencyTSAmpFileInputFormat, "/usr/share/flink/data/latency-ts-i/ampicmp/series/waikato-xero-ipv4.series")
       .setParallelism(1)
       .assignAscendingTimestamps(_.time.toEpochMilli)
       .keyBy(_.stream)

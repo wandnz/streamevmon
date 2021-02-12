@@ -1,20 +1,19 @@
 [Unit]
 Description=Streamevmon time series anomaly detection pipeline
-After=network.target rabbitmq-server.service
+Documentation=https://github.com/wanduow/streamevmon
+After=network.target rabbitmq-server.service taskmanager@streamevmon.service
 Wants=rabbitmq-server.service
+Requires=taskmanager@streamevmon.service
 
 [Install]
 WantedBy=multi-user.target
 
 [Service]
-Type=forking
-User=streamevmon
-Group=streamevmon
-Environment="FLINK_DIR=/opt/flink"
-Environment="STREAMEVMON_ENTRYPOINT=nz.net.wand.streamevmon.runners.examples.MetricGatherer"
-ExecStart=/usr/lib/streamevmon/start.sh
-ExecStop=/usr/lib/streamevmon/stop-jobmanager.sh
-ExecStopPost=/usr/lib/streamevmon/stop-taskmanager.sh
+Type=simple
+User=flink
+Group=flink
+ExecStart=/usr/share/flink/bin/standalone-job.sh start-foreground --job-classname nz.net.wand.streamevmon.runners.examples.MetricGatherer
+ExecStop=/usr/share/flink/bin/standalone-job.sh stop
 SuccessExitStatus=143
 
-WorkingDirectory=/opt/flink
+WorkingDirectory=/usr/share/flink

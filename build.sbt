@@ -7,6 +7,7 @@ ThisBuild / scalaVersion := "2.12.13"
 
 import Dependencies._
 import Licensing._
+import com.typesafe.sbt.packager.linux.LinuxSymlink
 Licensing.applyLicenseOverrides
 
 // These are settings that are shared between all submodules in this project.
@@ -118,17 +119,13 @@ commands ++= AssemblyCommands.WithScala.allCommands
 AssemblyCommands.addAlias("assemble", AssemblyCommands.allCommands: _*)
 AssemblyCommands.addAlias("assembleScala", AssemblyCommands.WithScala.allCommands: _*)
 
-// Set up Debian packaging
-// JavaServerAppPackaging gets us some interesting benefits, like automatically
-// creating entrypoints for discoveredMainClasses, making a /var/log folder,
-// putting libraries in /usr/share/streamevmon/lib, and finding (but not including?)
-// a scaladoc .jar
-//enablePlugins(JavaServerAppPackaging)
-// DebianPlugin is a more basic, bare-bones approach that lets us just do everything
-// ourselves.
+// DebianPlugin lets us make Debian packages. Sadly, there's a lot of manual
+// overriding we have to do, and things like the Java Server Application
+// archetype didn't end out being that useful.
 enablePlugins(DebianPlugin)
 
-debianPackageDependencies := Seq("openjdk-11-jre-headless | java11-runtime-headless")
+version in Debian := s"${version.value}-1"
+debianPackageDependencies := Seq("openjdk-11-jre-headless | java11-runtime-headless", "flink-scala2.12")
 debianPackageProvides := Seq("streamevmon")
 
 // deb packages aren't compressed by default by sbt-native-packager since
@@ -156,23 +153,18 @@ linuxPackageMappings ++= Seq(
   packageTemplateMapping("/usr/share/lintian/overrides")().withPerms("0755"),
   packageTemplateMapping("/usr/share/doc")().withPerms("0755"),
   packageTemplateMapping("/usr/share/doc/streamevmon")().withPerms("0755"),
+  packageTemplateMapping("/usr/share/streamevmon")().withPerms("0755"),
   // This is the main jar with all the program code
   packageMapping(
-    file((Compile / packageBin / artifactPath).value.getParent + s"/${name.value}-nonProvidedDeps-${version.value}.jar") -> s"/usr/lib/streamevmon/streamevmon.jar"
-  ).withUser(name.value).withGroup(name.value),
+    file((Compile / packageBin / artifactPath).value.getParent + s"/${name.value}-nonProvidedDeps-${version.value}.jar") -> s"/usr/share/streamevmon/streamevmon.jar"
+  ).withPerms("0644"),
   // These scripts are required for the systemd service
   packageMapping(
     file(s"${baseDirectory.value}/src/debian/streamevmon.service") -> "/lib/systemd/system/streamevmon.service"
   ).withPerms("0644"),
   packageMapping(
-    file(s"${baseDirectory.value}/src/debian/start.sh") -> "/usr/lib/streamevmon/start.sh"
-  ).withPerms("0755"),
-  packageMapping(
-    file(s"${baseDirectory.value}/src/debian/stop-jobmanager.sh") -> "/usr/lib/streamevmon/stop-jobmanager.sh"
-  ).withPerms("0755"),
-  packageMapping(
-    file(s"${baseDirectory.value}/src/debian/stop-taskmanager.sh") -> "/usr/lib/streamevmon/stop-taskmanager.sh"
-  ).withPerms("0755"),
+    file(s"${baseDirectory.value}/src/debian/taskmanager@.service") -> "/lib/systemd/system/taskmanager@.service"
+  ).withPerms("0644"),
   // This contains any override directives for lintian, since there are a few
   // warnings that we know don't matter.
   packageMapping(
@@ -186,4 +178,7 @@ linuxPackageMappings ++= Seq(
   packageMapping(
     file(s"${baseDirectory.value}/src/debian/copyright") -> "/usr/share/doc/streamevmon/copyright"
   ).withPerms("0644")
+)
+linuxPackageSymlinks ++= Seq(
+  LinuxSymlink("/usr/share/flink/lib/streamevmon.jar", "/usr/share/streamevmon/streamevmon.jar")
 )
