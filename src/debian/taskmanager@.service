@@ -2,11 +2,15 @@
 Description=Flink Standalone TaskManager
 After=network.target
 
-[Service]
-Type=simple
-User=flink
-Group=flink
-ExecStart=/usr/share/flink/bin/taskmanager.sh start-foreground
-
 [Install]
 WantedBy=multi-user.target
+
+[Service]
+User=flink
+Group=flink
+
+Type=simple
+ExecStart=/usr/share/flink/bin/taskmanager.sh start-foreground
+SuccessExitStatus=143
+
+Restart=on-failure
