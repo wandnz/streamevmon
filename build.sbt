@@ -163,7 +163,7 @@ linuxPackageMappings ++= Seq(
     file(s"${baseDirectory.value}/src/debian/streamevmon.service") -> "/lib/systemd/system/streamevmon.service"
   ).withPerms("0644"),
   packageMapping(
-    file(s"${baseDirectory.value}/src/debian/taskmanager@.service") -> "/lib/systemd/system/taskmanager@.service"
+    file(s"${baseDirectory.value}/src/debian/streamevmon-taskmanager.service") -> "/lib/systemd/system/streamevmon-taskmanager.service"
   ).withPerms("0644"),
   // This contains any override directives for lintian, since there are a few
   // warnings that we know don't matter.

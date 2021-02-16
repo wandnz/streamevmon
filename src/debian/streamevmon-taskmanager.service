@@ -1,0 +1,20 @@
+[Unit]
+Description=Flink Taskmanager for streamevmon
+After=network.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+User=flink
+Group=flink
+
+Type=simple
+Environment=FLINK_LOG_DIR=/var/log/flink
+Environment=FLINK_PID_DIR=/run/flink
+Environment=FLINK_IDENT_STRING=streamevmon
+PIDFile=/run/flink/flink-streamevmon-taskexecutor.pid
+ExecStart=/usr/share/flink/bin/taskmanager.sh start-foreground
+SuccessExitStatus=143
+
+Restart=on-failure
