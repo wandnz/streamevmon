@@ -53,7 +53,7 @@ object LicenseHeaderConstruction {
   implicit class HeaderFixers(val textToFix: String) extends AnyVal {
     /** Updates the year in a header message to the current correct value.
       * If there is a single year present, but it is not the current year,
-      * update it to "20xx-$CurrentYear".
+      * update it to "20xx-CurrentYear".
       * If there is a range present, only the most recent year will be updated
       * to CurrentYear.
       */
