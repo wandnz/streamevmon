@@ -41,13 +41,13 @@ import scala.util.Try
 /** Common configuration setup for Flink jobs. The result of get should be
   * set as the global job parameters.
   */
-object Configuration {
+object Configuration extends Logging {
   val baseConfigDirectory: String = {
     if (new File("conf").exists) {
       "conf"
     }
     else {
-      "/etc/streamevmon/conf"
+      "/etc/streamevmon"
     }
   }
 
@@ -167,7 +167,10 @@ object Configuration {
     val customSettingsFiles = Option(new File(baseConfigDirectory).listFiles(
       (_: File, name: String) =>
         (name.endsWith(".yaml") || name.endsWith(".yml")) && (name != "flows.yaml" && name != "flows.yml")
-    )).getOrElse(Array()).sorted.map(new FileInputStream(_))
+    )).getOrElse(Array()).sorted.map { f =>
+      logger.info(s"Loading configuration from ${f.getName}")
+      new FileInputStream(f)
+    }
 
     val pTools = (defaultSettingsFiles ++ customSettingsFiles).map { f =>
       parameterToolFromYamlStream(f)
@@ -204,7 +207,9 @@ object Configuration {
 
     val loadedYaml = file match {
       // Argument input stream
-      case Some(value) => loader.loadFromInputStream(value)
+      case Some(value) =>
+        logger.info(s"Loading flows definition from provided InputStream")
+        loader.loadFromInputStream(value)
       // External user configuration
       case None => Try(loader.loadFromInputStream(
         new FileInputStream(new File(s"$baseConfigDirectory/flows.yaml"))
@@ -214,8 +219,10 @@ object Configuration {
           val defaults = loader.loadFromInputStream(
             getClass.getClassLoader.getResourceAsStream("flows.yaml")
           )
+          logger.info("Loading flows definition from internal default configuration")
           defaults
         case Some(value) =>
+          logger.info(s"Loading flows definition from $baseConfigDirectory/flows.yaml")
           value
       }
     }

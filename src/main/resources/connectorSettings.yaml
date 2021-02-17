@@ -1,3 +1,8 @@
+# Global settings for sources and sinks (connectors). These can be overridden
+# in flows.yaml. See the Scaladoc entries in the
+# `nz.net.wand.streamevmon.flink.(sources|sinks)` packages for details on
+# configuring each item.
+
 source:
   postgres:
     servername: localhost
@@ -52,14 +57,14 @@ source:
 
   latencyts:
     ampicmp:
-      location: ./data/latency-ts-i/ampicmp/series
+      location: /usr/share/flink/data/latency-ts-i/ampicmp/series
       files: "*"
     smokeping:
-      location: ./data/latency-ts-i/smokeping/series
+      location: /usr/share/flink/data/latency-ts-i/smokeping/series
       files: "*"
 
   nab:
-    location: ./data/NAB/data
+    location: /usr/share/flink/data/NAB/data
 
 sink:
   influx:

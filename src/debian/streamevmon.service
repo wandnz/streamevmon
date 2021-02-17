@@ -23,5 +23,3 @@ ExecStopPost=/usr/share/flink/bin/taskmanager.sh stop
 SuccessExitStatus=143
 
 Restart=on-failure
-
-WorkingDirectory=/usr/share/flink

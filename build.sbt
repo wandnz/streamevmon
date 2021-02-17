@@ -154,19 +154,20 @@ linuxPackageMappings ++= Seq(
   packageTemplateMapping("/usr/share/doc")().withPerms("0755"),
   packageTemplateMapping("/usr/share/doc/streamevmon")().withPerms("0755"),
   packageTemplateMapping("/usr/share/streamevmon")().withPerms("0755"),
+  packageTemplateMapping("/etc")().withPerms("0755"),
+  packageTemplateMapping("/etc/streamevmon")().withPerms("0755"),
   // This is the main jar with all the program code
   packageMapping(
     file((Compile / packageBin / artifactPath).value.getParent + s"/${name.value}-nonProvidedDeps-${version.value}.jar") -> s"/usr/share/streamevmon/streamevmon.jar"
   ).withPerms("0644"),
-  // These scripts are required for the systemd service
+  // Systemd unit files
   packageMapping(
     file(s"${baseDirectory.value}/src/debian/streamevmon.service") -> "/lib/systemd/system/streamevmon.service"
   ).withPerms("0644"),
   packageMapping(
     file(s"${baseDirectory.value}/src/debian/streamevmon-taskmanager.service") -> "/lib/systemd/system/streamevmon-taskmanager.service"
   ).withPerms("0644"),
-  // This contains any override directives for lintian, since there are a few
-  // warnings that we know don't matter.
+  // Any override directives for lintian
   packageMapping(
     file(s"${baseDirectory.value}/src/debian/lintian-overrides") -> "/usr/share/lintian/overrides/streamevmon"
   ).withPerms("0644"),
@@ -177,7 +178,23 @@ linuxPackageMappings ++= Seq(
   ).gzipped.withPerms("0644"),
   packageMapping(
     file(s"${baseDirectory.value}/src/debian/copyright") -> "/usr/share/doc/streamevmon/copyright"
-  ).withPerms("0644")
+  ).withPerms("0644"),
+  // Default config files
+  packageMapping(
+    file(s"${baseDirectory.value}/src/main/resources/simplelogger.properties") -> "/etc/streamevmon/simplelogger.properties"
+  ).withPerms("0644").withConfig(),
+  packageMapping(
+    file(s"${baseDirectory.value}/src/main/resources/connectorSettings.yaml") -> "/etc/streamevmon/connectorSettings.yaml"
+  ).withPerms("0644").withConfig(),
+  packageMapping(
+    file(s"${baseDirectory.value}/src/main/resources/detectorSettings.yaml") -> "/etc/streamevmon/detectorSettings.yaml"
+  ).withPerms("0644").withConfig(),
+  packageMapping(
+    file(s"${baseDirectory.value}/src/main/resources/generalSettings.yaml") -> "/etc/streamevmon/generalSettings.yaml"
+  ).withPerms("0644").withConfig(),
+  packageMapping(
+    file(s"${baseDirectory.value}/src/main/resources/flows.yaml") -> "/etc/streamevmon/flows.yaml"
+  ).withPerms("0644").withConfig(),
 )
 linuxPackageSymlinks ++= Seq(
   LinuxSymlink("/usr/share/flink/lib/streamevmon.jar", "/usr/share/streamevmon/streamevmon.jar")

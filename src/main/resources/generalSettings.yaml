@@ -1,3 +1,5 @@
+# This file contains general settings that don't fit in other files.
+
 caching:
   ttl: 30
   memcached:

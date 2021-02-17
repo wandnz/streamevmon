@@ -1,4 +1,10 @@
+# Global settings for detectors. These can be overridden in flows.yaml.
+# See the Scaladoc entries in the `nz.net.wand.streamevmon.detectors` package
+# for details on configuring each detector.
+
 detector:
+  # We use YAML anchors in this file since there are a number of shared settings
+  # that apply to all detectors.
   default: &timeWindowWrapperSettings
     useFlinkTimeWindow: true
     windowDuration: 60
