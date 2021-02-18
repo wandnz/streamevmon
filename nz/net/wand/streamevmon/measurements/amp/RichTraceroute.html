@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title></title>
-          <meta name="description" content="" />
-          <meta name="keywords" content="" />
+          <title>streamevmon 0.1-SNAPSHOT - nz.net.wand.streamevmon.measurements.amp.RichTraceroute</title>
+          <meta name="description" content="streamevmon 0.1 - SNAPSHOT - nz.net.wand.streamevmon.measurements.amp.RichTraceroute" />
+          <meta name="keywords" content="streamevmon 0.1 SNAPSHOT nz.net.wand.streamevmon.measurements.amp.RichTraceroute" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -19,7 +19,7 @@
       <script type="text/javascript" src="../../../../../../index.js"></script>
       <script type="text/javascript" src="../../../../../../lib/scheduler.js"></script>
       <script type="text/javascript" src="../../../../../../lib/template.js"></script>
-      
+      <script type="text/javascript" src="../../../../../../lib/modernizr.custom.js"></script><script type="text/javascript" src="../../../../../../lib/diagrams.js" id="diagrams-js"></script>
       <script type="text/javascript">
         /* this variable can be used by the JS to determine the path to the root document */
         var toRoot = '../../../../../../';
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title"><span id="doc-version"></span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">0.1-SNAPSHOT</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -289,7 +289,7 @@ measurement.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">RichTraceroute</span><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destination">destination: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="family">family: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="packet_size_selection">packet_size_selection: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path_id">path_id: <span class="extype" name="scala.Int">Int</span></span>, <span name="aspath_id">aspath_id: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="packet_size">packet_size: <span class="extype" name="scala.Int">Int</span></span>, <span name="error_type">error_type: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="error_code">error_code: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="rtts">rtts: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="../traits/RichMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.RichMeasurement">RichMeasurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">RichTraceroute</span><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destination">destination: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="family">family: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="packet_size_selection">packet_size_selection: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path_id">path_id: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="aspath_id">aspath_id: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>]</span>, <span name="packet_size">packet_size: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="error_type">error_type: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>]</span>, <span name="error_code">error_code: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>]</span>, <span name="rtts">rtts: <a href="https://www.scala-lang.org/api/2.12.13/scala/Array.html#scala.Array" class="extype" name="scala.Array">Array</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>]]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="../traits/RichMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.RichMeasurement">RichMeasurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       </h4>
 
@@ -300,8 +300,18 @@ with the scheduled test that generated it.
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a>, <a href="../traits/RichMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.RichMeasurement">RichMeasurement</a>, <a href="../traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div></div>
+          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Equals.html#scala.Equals" class="extype" name="scala.Equals">Equals</a>, <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a>, <a href="../traits/RichMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.RichMeasurement">RichMeasurement</a>, <a href="../traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+        </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
+                <span class="toggle diagram-link">
+                  Type Hierarchy
+                </span>
+                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 556.50 118.00" height="118pt" width="557pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 114)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-114 552.5,-114 552.5,4 -4,4" stroke="transparent" fill="#ffffff"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this class" id="graph1_0"><g id="a_this class|graph1_0"><a xlink:title="nz.net.wand.streamevmon.measurements.amp.RichTraceroute (this class)" xlink:href="#inheritance-diagram"><path d="M348.6667,-49C348.6667,-49 257.3333,-49 257.3333,-49 253.1667,-49 249,-44.8333 249,-40.6667 249,-40.6667 249,-32.3333 249,-32.3333 249,-28.1667 253.1667,-24 257.3333,-24 257.3333,-24 348.6667,-24 348.6667,-24 352.8333,-24 357,-28.1667 357,-32.3333 357,-32.3333 357,-40.6667 357,-40.6667 357,-44.8333 352.8333,-49 348.6667,-49" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../lib/class_diagram.png" y="-43.5" x="259" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-34.1" x="280" text-anchor="start">RichTraceroute</text></a></g></g><!-- node1 --><g class="node trait" id="graph1_1"><g id="a_trait|graph1_1"><a xlink:title="nz.net.wand.streamevmon.measurements.traits.RichMeasurement" xlink:href="../traits/RichMeasurement.html#inheritance-diagram"><path d="M111.6667,-110C111.6667,-110 8.3333,-110 8.3333,-110 4.1667,-110 0,-105.8333 0,-101.6667 0,-101.6667 0,-93.3333 0,-93.3333 0,-89.1667 4.1667,-85 8.3333,-85 8.3333,-85 111.6667,-85 111.6667,-85 115.8333,-85 120,-89.1667 120,-93.3333 120,-93.3333 120,-101.6667 120,-101.6667 120,-105.8333 115.8333,-110 111.6667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="10" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="31" text-anchor="start">RichMeasurement</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph1_1_0"><g id="a_inheritance|graph1_1_0"><a xlink:title="RichTraceroute is a subtype of RichMeasurement"><path d="M117.0676,-83.1744C158.3119,-72.8209 213.4944,-58.9685 253.0098,-49.049" stroke="#d4d4d4" fill="none"></path><polygon points="116.2479,-80.8541 110.0551,-84.9347 117.441,-85.6066 116.2479,-80.8541" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node trait" id="graph1_2"><g id="a_trait|graph1_2"><a xlink:title="nz.net.wand.streamevmon.measurements.traits.CsvOutputable" xlink:href="../traits/CsvOutputable.html#inheritance-diagram"><path d="M237.1667,-110C237.1667,-110 146.8333,-110 146.8333,-110 142.6667,-110 138.5,-105.8333 138.5,-101.6667 138.5,-101.6667 138.5,-93.3333 138.5,-93.3333 138.5,-89.1667 142.6667,-85 146.8333,-85 146.8333,-85 237.1667,-85 237.1667,-85 241.3333,-85 245.5,-89.1667 245.5,-93.3333 245.5,-93.3333 245.5,-101.6667 245.5,-101.6667 245.5,-105.8333 241.3333,-110 237.1667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="149" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="170" text-anchor="start">CsvOutputable</text></a></g></g><!-- node2&#45;&gt;node0 --><g class="edge inheritance" id="graph1_2_0"><g id="a_inheritance|graph1_2_0"><a xlink:title="RichTraceroute is a subtype of CsvOutputable"><path d="M221.5126,-81.2814C239.8479,-71.2052 263.0707,-58.4431 280.0302,-49.123" stroke="#d4d4d4" fill="none"></path><polygon points="219.954,-79.3423 214.9993,-84.8608 222.3139,-83.6365 219.954,-79.3423" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node3 --><g class="node trait" id="graph1_3"><g id="a_trait|graph1_3"><a xlink:title="nz.net.wand.streamevmon.Logging" xlink:href="../../Logging.html#inheritance-diagram"><path d="M333.6667,-110C333.6667,-110 272.3333,-110 272.3333,-110 268.1667,-110 264,-105.8333 264,-101.6667 264,-101.6667 264,-93.3333 264,-93.3333 264,-89.1667 268.1667,-85 272.3333,-85 272.3333,-85 333.6667,-85 333.6667,-85 337.8333,-85 342,-89.1667 342,-93.3333 342,-93.3333 342,-101.6667 342,-101.6667 342,-105.8333 337.8333,-110 333.6667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="274" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="295" text-anchor="start">Logging</text></a></g></g><!-- node3&#45;&gt;node0 --><g class="edge inheritance" id="graph1_3_0"><g id="a_inheritance|graph1_3_0"><a xlink:title="RichTraceroute is a subtype of Logging"><path d="M303,-77.7386C303,-68.3393 303,-57.3803 303,-49.123" stroke="#d4d4d4" fill="none"></path><polygon points="300.5501,-77.8607 303,-84.8608 305.4501,-77.8608 300.5501,-77.8607" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node4 --><g class="node trait" id="graph1_4"><g id="a_trait|graph1_4"><a xlink:title="scala.Product"><path d="M429.1667,-110C429.1667,-110 368.8333,-110 368.8333,-110 364.6667,-110 360.5,-105.8333 360.5,-101.6667 360.5,-101.6667 360.5,-93.3333 360.5,-93.3333 360.5,-89.1667 364.6667,-85 368.8333,-85 368.8333,-85 429.1667,-85 429.1667,-85 433.3333,-85 437.5,-89.1667 437.5,-93.3333 437.5,-93.3333 437.5,-101.6667 437.5,-101.6667 437.5,-105.8333 433.3333,-110 429.1667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="371" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="392" text-anchor="start">Product</text></a></g></g><!-- node4&#45;&gt;node0 --><g class="edge inheritance" id="graph1_4_0"><g id="a_inheritance|graph1_4_0"><a xlink:title="RichTraceroute is a subtype of Product"><path d="M373.0573,-81.0156C357.2661,-70.9816 337.4048,-58.3614 322.8658,-49.123" stroke="#d4d4d4" fill="none"></path><polygon points="371.8866,-83.1744 379.1087,-84.8608 374.5145,-79.0387 371.8866,-83.1744" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node5 --><g class="node trait" id="graph1_5"><g id="a_trait|graph1_5"><a xlink:title="scala.Serializable"><path d="M540.1667,-110C540.1667,-110 463.8333,-110 463.8333,-110 459.6667,-110 455.5,-105.8333 455.5,-101.6667 455.5,-101.6667 455.5,-93.3333 455.5,-93.3333 455.5,-89.1667 459.6667,-85 463.8333,-85 463.8333,-85 540.1667,-85 540.1667,-85 544.3333,-85 548.5,-89.1667 548.5,-93.3333 548.5,-93.3333 548.5,-101.6667 548.5,-101.6667 548.5,-105.8333 544.3333,-110 540.1667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="466" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="487" text-anchor="start">Serializable</text></a></g></g><!-- node5&#45;&gt;node0 --><g class="edge inheritance" id="graph1_5_0"><g id="a_inheritance|graph1_5_0"><a xlink:title="RichTraceroute is a subtype of Serializable"><path d="M453.7604,-82.713C420.1213,-72.4015 375.7284,-58.7936 343.8392,-49.0185" stroke="#d4d4d4" fill="none"></path><polygon points="453.3564,-85.1516 460.7671,-84.8608 454.7925,-80.4668 453.3564,-85.1516" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
+                <div id="diagram-controls" class="hiddenContent">
+                  <button id="diagram-zoom-out" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button id="diagram-zoom-in" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button title="Toggle full-screen" id="diagram-fs" class="diagram-btn to-full"><i class="material-icons"></i></button>
+                </div>
+              </div></div>
         
 
       <div id="mbrsel">
@@ -358,7 +368,7 @@ with the scheduled test that generated it.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">RichTraceroute</span><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destination">destination: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="family">family: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="packet_size_selection">packet_size_selection: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path_id">path_id: <span class="extype" name="scala.Int">Int</span></span>, <span name="aspath_id">aspath_id: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="packet_size">packet_size: <span class="extype" name="scala.Int">Int</span></span>, <span name="error_type">error_type: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="error_code">error_code: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="rtts">rtts: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span>
+        <span class="name">RichTraceroute</span><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destination">destination: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="family">family: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="packet_size_selection">packet_size_selection: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="path_id">path_id: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="aspath_id">aspath_id: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>]</span>, <span name="packet_size">packet_size: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="error_type">error_type: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>]</span>, <span name="error_code">error_code: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>]</span>, <span name="rtts">rtts: <a href="https://www.scala-lang.org/api/2.12.13/scala/Array.html#scala.Array" class="extype" name="scala.Array">Array</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>]]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span>
       </span>
       
       
@@ -384,7 +394,7 @@ with the scheduled test that generated it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -400,7 +410,7 @@ with the scheduled test that generated it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -416,7 +426,7 @@ with the scheduled test that generated it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -448,7 +458,7 @@ with the scheduled test that generated it.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">aspath_id</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>
+        <span class="name">aspath_id</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>]</span>
       </span>
       
       
@@ -464,7 +474,7 @@ with the scheduled test that generated it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -506,7 +516,7 @@ with the scheduled test that generated it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -522,7 +532,7 @@ with the scheduled test that generated it.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">error_code</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>
+        <span class="name">error_code</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>]</span>
       </span>
       
       
@@ -538,7 +548,7 @@ with the scheduled test that generated it.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">error_type</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>
+        <span class="name">error_type</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>]</span>
       </span>
       
       
@@ -591,7 +601,7 @@ with the scheduled test that generated it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -607,7 +617,7 @@ with the scheduled test that generated it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isLossy</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">isLossy</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>True if the object represents a measurement that encountered loss.
@@ -644,7 +654,7 @@ with the scheduled test that generated it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -660,7 +670,7 @@ with the scheduled test that generated it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -681,7 +691,7 @@ with the scheduled test that generated it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -702,7 +712,7 @@ with the scheduled test that generated it.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">packet_size</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">packet_size</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       
@@ -734,7 +744,7 @@ with the scheduled test that generated it.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">path_id</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">path_id</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       
@@ -750,7 +760,7 @@ with the scheduled test that generated it.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">rtts</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]]</span>
+        <span class="name">rtts</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Array.html#scala.Array" class="extype" name="scala.Array">Array</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>]]</span>
       </span>
       
       
@@ -834,7 +844,7 @@ corresponds to a particular test schedule.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toCsvEntry</span><span class="params">(<span name="e">e: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">toCsvEntry</span><span class="params">(<span name="e">e: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
       <p class="shortcomment cmt">Returns this object, simplified in the way that toCsvFormat desires.</p><div class="fullcomment"><div class="comment cmt"><p>Returns this object, simplified in the way that toCsvFormat desires.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a></dd></dl></div>
@@ -874,7 +884,7 @@ object from the result of this method.</p><p>Generally, it's easiest to put all 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="arg1">arg1: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -896,7 +906,7 @@ object from the result of this method.</p><p>Generally, it's easiest to put all 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -920,7 +930,7 @@ object from the result of this method.</p><p>Generally, it's easiest to put all 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -950,7 +960,7 @@ object from the result of this method.</p><p>Generally, it's easiest to put all 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -968,9 +978,9 @@ object from the result of this method.</p><p>Generally, it's easiest to put all 
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.Product">
-              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a></h3>
             </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Equals.html#scala.Equals" class="extype" name="scala.Equals">Equals</a></h3>
             </div><div class="parent" name="nz.net.wand.streamevmon.Logging">
               <h3>Inherited from <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></h3>
             </div><div class="parent" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">
@@ -980,13 +990,13 @@ object from the result of this method.</p><p>Generally, it's easiest to put all 
             </div><div class="parent" name="nz.net.wand.streamevmon.measurements.traits.Measurement">
               <h3>Inherited from <a href="../traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a></h3>
             </div><div class="parent" name="scala.Serializable">
-              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
             </div>
         
         </div>

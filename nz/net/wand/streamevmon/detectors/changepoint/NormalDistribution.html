@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title></title>
-          <meta name="description" content="" />
-          <meta name="keywords" content="" />
+          <title>streamevmon 0.1-SNAPSHOT - nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution</title>
+          <meta name="description" content="streamevmon 0.1 - SNAPSHOT - nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution" />
+          <meta name="keywords" content="streamevmon 0.1 SNAPSHOT nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -19,7 +19,7 @@
       <script type="text/javascript" src="../../../../../../index.js"></script>
       <script type="text/javascript" src="../../../../../../lib/scheduler.js"></script>
       <script type="text/javascript" src="../../../../../../lib/template.js"></script>
-      
+      <script type="text/javascript" src="../../../../../../lib/modernizr.custom.js"></script><script type="text/javascript" src="../../../../../../lib/diagrams.js" id="diagrams-js"></script>
       <script type="text/javascript">
         /* this variable can be used by the JS to determine the path to the root document */
         var toRoot = '../../../../../../';
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title"><span id="doc-version"></span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">0.1-SNAPSHOT</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -240,7 +240,7 @@ Default 30.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><d
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">NormalDistribution</span><span class="tparams">[<span name="T">T &lt;: <a href="../../measurements/traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a> with <a href="../../measurements/traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a></span>]</span><span class="params">(<span name="mean">mean: <span class="extype" name="scala.Double">Double</span></span>, <span name="variance">variance: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">1E8</span></span>, <span name="n">n: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$1">evidence$1: <span class="extype" name="org.apache.flink.api.common.typeinfo.TypeInformation">TypeInformation</span>[<span class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution.T">T</span>]</span>)</span><span class="result"> extends <a href="Distribution.html" class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.Distribution">Distribution</a>[<span class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution.T">T</span>] with <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">NormalDistribution</span><span class="tparams">[<span name="T">T &lt;: <a href="../../measurements/traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a> with <a href="../../measurements/traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a></span>]</span><span class="params">(<span name="mean">mean: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="variance">variance: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a> = <span class="symbol">1E8</span></span>, <span name="n">n: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a> = <span class="symbol">0</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$1">evidence$1: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/typeinfo/TypeInformation.html#org.apache.flink.api.common.typeinfo.TypeInformation" class="extype" name="org.apache.flink.api.common.typeinfo.TypeInformation">TypeInformation</a>[<span class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution.T">T</span>]</span>)</span><span class="result"> extends <a href="Distribution.html" class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.Distribution">Distribution</a>[<span class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution.T">T</span>] with <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       </h4>
 
@@ -254,8 +254,18 @@ the points provided to it.
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="Distribution.html" class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.Distribution">Distribution</a>[<span class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution.T">T</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div></div>
+          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Equals.html#scala.Equals" class="extype" name="scala.Equals">Equals</a>, <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="Distribution.html" class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.Distribution">Distribution</a>[<span class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution.T">T</span>], <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+        </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
+                <span class="toggle diagram-link">
+                  Type Hierarchy
+                </span>
+                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 414.50 118.00" height="118pt" width="415pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 114)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-114 410.5,-114 410.5,4 -4,4" stroke="transparent" fill="#ffffff"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this class" id="graph1_0"><g id="a_this class|graph1_0"><a xlink:title="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution (this class)" xlink:href="#inheritance-diagram"><path d="M268.1667,-49C268.1667,-49 149.8333,-49 149.8333,-49 145.6667,-49 141.5,-44.8333 141.5,-40.6667 141.5,-40.6667 141.5,-32.3333 141.5,-32.3333 141.5,-28.1667 145.6667,-24 149.8333,-24 149.8333,-24 268.1667,-24 268.1667,-24 272.3333,-24 276.5,-28.1667 276.5,-32.3333 276.5,-32.3333 276.5,-40.6667 276.5,-40.6667 276.5,-44.8333 272.3333,-49 268.1667,-49" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../lib/class_diagram.png" y="-43.5" x="152" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-34.1" x="173" text-anchor="start">NormalDistribution[T]</text></a></g></g><!-- node1 --><g class="node trait" id="graph1_1"><g id="a_trait|graph1_1"><a xlink:title="nz.net.wand.streamevmon.detectors.changepoint.Distribution" xlink:href="Distribution.html#inheritance-diagram"><path d="M95.6667,-110C95.6667,-110 8.3333,-110 8.3333,-110 4.1667,-110 0,-105.8333 0,-101.6667 0,-101.6667 0,-93.3333 0,-93.3333 0,-89.1667 4.1667,-85 8.3333,-85 8.3333,-85 95.6667,-85 95.6667,-85 99.8333,-85 104,-89.1667 104,-93.3333 104,-93.3333 104,-101.6667 104,-101.6667 104,-105.8333 99.8333,-110 95.6667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="10" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="31" text-anchor="start">Distribution[T]</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph1_1_0"><g id="a_inheritance|graph1_1_0"><a xlink:title="NormalDistribution[T] is a subtype of Distribution[T]"><path d="M91.0617,-82.3232C117.4754,-72.0605 151.9371,-58.6709 176.7801,-49.0185" stroke="#d4d4d4" fill="none"></path><polygon points="90.168,-80.0419 84.5305,-84.8608 91.9426,-84.6093 90.168,-80.0419" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node trait" id="graph1_2"><g id="a_trait|graph1_2"><a xlink:title="nz.net.wand.streamevmon.Logging" xlink:href="../../Logging.html#inheritance-diagram"><path d="M191.6667,-110C191.6667,-110 130.3333,-110 130.3333,-110 126.1667,-110 122,-105.8333 122,-101.6667 122,-101.6667 122,-93.3333 122,-93.3333 122,-89.1667 126.1667,-85 130.3333,-85 130.3333,-85 191.6667,-85 191.6667,-85 195.8333,-85 200,-89.1667 200,-93.3333 200,-93.3333 200,-101.6667 200,-101.6667 200,-105.8333 195.8333,-110 191.6667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="132" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="153" text-anchor="start">Logging</text></a></g></g><!-- node2&#45;&gt;node0 --><g class="edge inheritance" id="graph1_2_0"><g id="a_inheritance|graph1_2_0"><a xlink:title="NormalDistribution[T] is a subtype of Logging"><path d="M175.461,-79.1225C183.0871,-69.431 192.2479,-57.7891 199.0671,-49.123" stroke="#d4d4d4" fill="none"></path><polygon points="173.349,-77.8446 170.9456,-84.8608 177.1998,-80.8747 173.349,-77.8446" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node3 --><g class="node trait" id="graph1_3"><g id="a_trait|graph1_3"><a xlink:title="scala.Product"><path d="M287.1667,-110C287.1667,-110 226.8333,-110 226.8333,-110 222.6667,-110 218.5,-105.8333 218.5,-101.6667 218.5,-101.6667 218.5,-93.3333 218.5,-93.3333 218.5,-89.1667 222.6667,-85 226.8333,-85 226.8333,-85 287.1667,-85 287.1667,-85 291.3333,-85 295.5,-89.1667 295.5,-93.3333 295.5,-93.3333 295.5,-101.6667 295.5,-101.6667 295.5,-105.8333 291.3333,-110 287.1667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="229" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="250" text-anchor="start">Product</text></a></g></g><!-- node3&#45;&gt;node0 --><g class="edge inheritance" id="graph1_3_0"><g id="a_inheritance|graph1_3_0"><a xlink:title="NormalDistribution[T] is a subtype of Product"><path d="M242.539,-79.1225C234.9129,-69.431 225.7521,-57.7891 218.9329,-49.123" stroke="#d4d4d4" fill="none"></path><polygon points="240.8002,-80.8747 247.0544,-84.8608 244.651,-77.8446 240.8002,-80.8747" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node4 --><g class="node trait" id="graph1_4"><g id="a_trait|graph1_4"><a xlink:title="scala.Serializable"><path d="M398.1667,-110C398.1667,-110 321.8333,-110 321.8333,-110 317.6667,-110 313.5,-105.8333 313.5,-101.6667 313.5,-101.6667 313.5,-93.3333 313.5,-93.3333 313.5,-89.1667 317.6667,-85 321.8333,-85 321.8333,-85 398.1667,-85 398.1667,-85 402.3333,-85 406.5,-89.1667 406.5,-93.3333 406.5,-93.3333 406.5,-101.6667 406.5,-101.6667 406.5,-105.8333 402.3333,-110 398.1667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="324" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="345" text-anchor="start">Serializable</text></a></g></g><!-- node4&#45;&gt;node0 --><g class="edge inheritance" id="graph1_4_0"><g id="a_inheritance|graph1_4_0"><a xlink:title="NormalDistribution[T] is a subtype of Serializable"><path d="M322.1077,-82.1925C296.7461,-71.9471 263.7809,-58.63 239.9885,-49.0185" stroke="#d4d4d4" fill="none"></path><polygon points="321.3046,-84.5104 328.7127,-84.8608 323.14,-79.9671 321.3046,-84.5104" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
+                <div id="diagram-controls" class="hiddenContent">
+                  <button id="diagram-zoom-out" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button id="diagram-zoom-in" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button title="Toggle full-screen" id="diagram-fs" class="diagram-btn to-full"><i class="material-icons"></i></button>
+                </div>
+              </div></div>
         
 
       <div id="mbrsel">
@@ -312,7 +322,7 @@ the points provided to it.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">NormalDistribution</span><span class="params">(<span name="mean">mean: <span class="extype" name="scala.Double">Double</span></span>, <span name="variance">variance: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">1E8</span></span>, <span name="n">n: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="org.apache.flink.api.common.typeinfo.TypeInformation">TypeInformation</span>[<span class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution.T">T</span>]</span>)</span>
+        <span class="name">NormalDistribution</span><span class="params">(<span name="mean">mean: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="variance">variance: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a> = <span class="symbol">1E8</span></span>, <span name="n">n: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a> = <span class="symbol">0</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/typeinfo/TypeInformation.html#org.apache.flink.api.common.typeinfo.TypeInformation" class="extype" name="org.apache.flink.api.common.typeinfo.TypeInformation">TypeInformation</a>[<span class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution.T">T</span>]</span>)</span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">n</dt><dd class="cmt"><p>The number of measurements that have been used to create the
@@ -341,7 +351,7 @@ the points provided to it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -357,7 +367,7 @@ the points provided to it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -373,7 +383,7 @@ the points provided to it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -405,7 +415,7 @@ the points provided to it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -447,7 +457,7 @@ the points provided to it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -484,7 +494,7 @@ the points provided to it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -519,7 +529,7 @@ the points provided to it.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">mean</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+        <span class="name">mean</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution">NormalDistribution</a> → <a href="Distribution.html" class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.Distribution">Distribution</a></dd></dl></div>
@@ -535,7 +545,7 @@ the points provided to it.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">n</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">n</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution">NormalDistribution</a> → <a href="Distribution.html" class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.Distribution">Distribution</a></dd></dl></div>
@@ -551,7 +561,7 @@ the points provided to it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -567,7 +577,7 @@ the points provided to it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -588,7 +598,7 @@ the points provided to it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -609,7 +619,7 @@ the points provided to it.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">pdf</span><span class="params">(<span name="x">x: <span class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution.T">T</span></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+        <span class="name">pdf</span><span class="params">(<span name="x">x: <span class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution.T">T</span></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>
       </span>
       
       <p class="shortcomment cmt">The probability density function, returning the relative likelihood for a
@@ -660,7 +670,7 @@ continuous random variable to take the value of x.defaultValue.</p><p><a href="h
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">variance</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+        <span class="name">variance</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution">NormalDistribution</a> → <a href="Distribution.html" class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.Distribution">Distribution</a></dd></dl></div>
@@ -676,7 +686,7 @@ continuous random variable to take the value of x.defaultValue.</p><p><a href="h
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="arg1">arg1: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -698,7 +708,7 @@ continuous random variable to take the value of x.defaultValue.</p><p><a href="h
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -722,7 +732,7 @@ continuous random variable to take the value of x.defaultValue.</p><p><a href="h
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -744,7 +754,7 @@ continuous random variable to take the value of x.defaultValue.</p><p><a href="h
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">withPoint</span><span class="params">(<span name="newT">newT: <span class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution.T">T</span></span>, <span name="newN">newN: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="" class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution">NormalDistribution</a>[<span class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution.T">T</span>]</span>
+        <span class="name">withPoint</span><span class="params">(<span name="newT">newT: <span class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution.T">T</span></span>, <span name="newN">newN: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result">: <a href="" class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution">NormalDistribution</a>[<span class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution.T">T</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Returns a new Distribution after adjustment for the new point added to it.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new Distribution after adjustment for the new point added to it.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution">NormalDistribution</a> → <a href="Distribution.html" class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.Distribution">Distribution</a></dd></dl></div>
@@ -768,7 +778,7 @@ continuous random variable to take the value of x.defaultValue.</p><p><a href="h
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -786,21 +796,21 @@ continuous random variable to take the value of x.defaultValue.</p><p><a href="h
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
             </div><div class="parent" name="scala.Product">
-              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a></h3>
             </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Equals.html#scala.Equals" class="extype" name="scala.Equals">Equals</a></h3>
             </div><div class="parent" name="nz.net.wand.streamevmon.Logging">
               <h3>Inherited from <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></h3>
             </div><div class="parent" name="nz.net.wand.streamevmon.detectors.changepoint.Distribution">
               <h3>Inherited from <a href="Distribution.html" class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.Distribution">Distribution</a>[<span class="extype" name="nz.net.wand.streamevmon.detectors.changepoint.NormalDistribution.T">T</span>]</h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
             </div>
         
         </div>

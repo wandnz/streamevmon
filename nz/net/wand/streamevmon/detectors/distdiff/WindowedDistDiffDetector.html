@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title></title>
-          <meta name="description" content="" />
-          <meta name="keywords" content="" />
+          <title>streamevmon 0.1-SNAPSHOT - nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector</title>
+          <meta name="description" content="streamevmon 0.1 - SNAPSHOT - nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector" />
+          <meta name="keywords" content="streamevmon 0.1 SNAPSHOT nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -19,7 +19,7 @@
       <script type="text/javascript" src="../../../../../../index.js"></script>
       <script type="text/javascript" src="../../../../../../lib/scheduler.js"></script>
       <script type="text/javascript" src="../../../../../../lib/template.js"></script>
-      
+      <script type="text/javascript" src="../../../../../../lib/modernizr.custom.js"></script><script type="text/javascript" src="../../../../../../lib/diagrams.js" id="diagrams-js"></script>
       <script type="text/javascript">
         /* this variable can be used by the JS to determine the path to the root document */
         var toRoot = '../../../../../../';
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title"><span id="doc-version"></span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">0.1-SNAPSHOT</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -225,7 +225,7 @@ Default 1200s.</p></div><dl class="attributes block"> <dt>Definition Classes</dt
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">WindowedDistDiffDetector</span><span class="tparams">[<span name="MeasT">MeasT &lt;: <a href="../../measurements/traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a> with <a href="../../measurements/traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a></span>, <span name="W">W &lt;: <span class="extype" name="org.apache.flink.streaming.api.windowing.windows.Window">Window</span></span>]</span><span class="result"> extends <span class="extype" name="org.apache.flink.streaming.api.scala.function.ProcessWindowFunction">ProcessWindowFunction</span>[<span class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.MeasT">MeasT</span>, <a href="../../events/Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>, <span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.W">W</span>] with <a href="DistDiffLogic.html" class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.DistDiffLogic">DistDiffLogic</a> with <a href="../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></span>
+        <span class="name">WindowedDistDiffDetector</span><span class="tparams">[<span name="MeasT">MeasT &lt;: <a href="../../measurements/traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a> with <a href="../../measurements/traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a></span>, <span name="W">W &lt;: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/windowing/windows/Window.html#org.apache.flink.streaming.api.windowing.windows.Window" class="extype" name="org.apache.flink.streaming.api.windowing.windows.Window">Window</a></span>]</span><span class="result"> extends <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/scala/function/ProcessWindowFunction.html#org.apache.flink.streaming.api.scala.function.ProcessWindowFunction" class="extype" name="org.apache.flink.streaming.api.scala.function.ProcessWindowFunction">ProcessWindowFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.MeasT">MeasT</span>, <a href="../../events/Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>, <span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.W">W</span>] with <a href="DistDiffLogic.html" class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.DistDiffLogic">DistDiffLogic</a> with <a href="../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></span>
       </span>
       </h4>
 
@@ -241,8 +241,18 @@ late inputs.
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a>, <a href="DistDiffLogic.html" class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.DistDiffLogic">DistDiffLogic</a>, <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <span class="extype" name="org.apache.flink.streaming.api.scala.function.ProcessWindowFunction">ProcessWindowFunction</span>[<span class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.MeasT">MeasT</span>, <a href="../../events/Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>, <span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.W">W</span>], <span class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</span>, <span class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</span>, <span class="extype" name="org.apache.flink.api.common.functions.Function">Function</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div></div>
+          <div class="superTypes hiddenContent"><a href="../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a>, <a href="DistDiffLogic.html" class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.DistDiffLogic">DistDiffLogic</a>, <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/scala/function/ProcessWindowFunction.html#org.apache.flink.streaming.api.scala.function.ProcessWindowFunction" class="extype" name="org.apache.flink.streaming.api.scala.function.ProcessWindowFunction">ProcessWindowFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.MeasT">MeasT</span>, <a href="../../events/Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>, <span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.W">W</span>], <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/AbstractRichFunction.html#org.apache.flink.api.common.functions.AbstractRichFunction" class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RichFunction.html#org.apache.flink.api.common.functions.RichFunction" class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/Function.html#org.apache.flink.api.common.functions.Function" class="extype" name="org.apache.flink.api.common.functions.Function">Function</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+        </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
+                <span class="toggle diagram-link">
+                  Type Hierarchy
+                </span>
+                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 499.50 118.00" height="118pt" width="500pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 114)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-114 495.5,-114 495.5,4 -4,4" stroke="transparent" fill="#ffffff"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this class" id="graph1_0"><g id="a_this class|graph1_0"><a xlink:title="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector (this class)" xlink:href="#inheritance-diagram"><path d="M411.6667,-49C411.6667,-49 227.3333,-49 227.3333,-49 223.1667,-49 219,-44.8333 219,-40.6667 219,-40.6667 219,-32.3333 219,-32.3333 219,-28.1667 223.1667,-24 227.3333,-24 227.3333,-24 411.6667,-24 411.6667,-24 415.8333,-24 420,-28.1667 420,-32.3333 420,-32.3333 420,-40.6667 420,-40.6667 420,-44.8333 415.8333,-49 411.6667,-49" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../lib/class_diagram.png" y="-43.5" x="229.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-34.1" x="250.5" text-anchor="start">WindowedDistDiffDetector[MeasT, W]</text></a></g></g><!-- node1 --><g class="node class" id="graph1_1"><g id="a_class|graph1_1"><a xlink:title="org.apache.flink.streaming.api.scala.function.ProcessWindowFunction"><path d="M244.6667,-110C244.6667,-110 8.3333,-110 8.3333,-110 4.1667,-110 0,-105.8333 0,-101.6667 0,-101.6667 0,-93.3333 0,-93.3333 0,-89.1667 4.1667,-85 8.3333,-85 8.3333,-85 244.6667,-85 244.6667,-85 248.8333,-85 253,-89.1667 253,-93.3333 253,-93.3333 253,-101.6667 253,-101.6667 253,-105.8333 248.8333,-110 244.6667,-110" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../lib/class_diagram.png" y="-104.5" x="10.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="31.5" text-anchor="start">ProcessWindowFunction[MeasT, Event, String, W]</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph1_1_0"><g id="a_inheritance|graph1_1_0"><a xlink:title="WindowedDistDiffDetector[MeasT, W] is a subtype of ProcessWindowFunction[MeasT, Event, String, W]"><path d="M173.2851,-82.713C205.91,-72.4015 248.9644,-58.7936 279.8921,-49.0185" stroke="#d4d4d4" fill="none"></path><polygon points="172.4259,-80.415 166.4897,-84.8608 173.9027,-85.0872 172.4259,-80.415" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node trait" id="graph1_2"><g id="a_trait|graph1_2"><a xlink:title="nz.net.wand.streamevmon.detectors.distdiff.DistDiffLogic" xlink:href="DistDiffLogic.html#inheritance-diagram"><path d="M359.1667,-110C359.1667,-110 279.8333,-110 279.8333,-110 275.6667,-110 271.5,-105.8333 271.5,-101.6667 271.5,-101.6667 271.5,-93.3333 271.5,-93.3333 271.5,-89.1667 275.6667,-85 279.8333,-85 279.8333,-85 359.1667,-85 359.1667,-85 363.3333,-85 367.5,-89.1667 367.5,-93.3333 367.5,-93.3333 367.5,-101.6667 367.5,-101.6667 367.5,-105.8333 363.3333,-110 359.1667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="281.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="302.5" text-anchor="start">DistDiffLogic</text></a></g></g><!-- node2&#45;&gt;node0 --><g class="edge inheritance" id="graph1_2_0"><g id="a_inheritance|graph1_2_0"><a xlink:title="WindowedDistDiffDetector[MeasT, W] is a subtype of DistDiffLogic"><path d="M319.5,-77.7386C319.5,-68.3393 319.5,-57.3803 319.5,-49.123" stroke="#d4d4d4" fill="none"></path><polygon points="317.0501,-77.8607 319.5,-84.8608 321.9501,-77.8608 317.0501,-77.8607" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node3 --><g class="node trait" id="graph1_3"><g id="a_trait|graph1_3"><a xlink:title="nz.net.wand.streamevmon.flink.HasFlinkConfig" xlink:href="../../flink/HasFlinkConfig.html#inheritance-diagram"><path d="M483.1667,-110C483.1667,-110 393.8333,-110 393.8333,-110 389.6667,-110 385.5,-105.8333 385.5,-101.6667 385.5,-101.6667 385.5,-93.3333 385.5,-93.3333 385.5,-89.1667 389.6667,-85 393.8333,-85 393.8333,-85 483.1667,-85 483.1667,-85 487.3333,-85 491.5,-89.1667 491.5,-93.3333 491.5,-93.3333 491.5,-101.6667 491.5,-101.6667 491.5,-105.8333 487.3333,-110 483.1667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="395.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="416.5" text-anchor="start">HasFlinkConfig</text></a></g></g><!-- node3&#45;&gt;node0 --><g class="edge inheritance" id="graph1_3_0"><g id="a_inheritance|graph1_3_0"><a xlink:title="WindowedDistDiffDetector[MeasT, W] is a subtype of HasFlinkConfig"><path d="M407.3764,-81.5459C387.6409,-71.4294 362.4665,-58.5249 344.1253,-49.123" stroke="#d4d4d4" fill="none"></path><polygon points="406.4962,-83.8478 413.8431,-84.8608 408.7315,-79.4873 406.4962,-83.8478" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
+                <div id="diagram-controls" class="hiddenContent">
+                  <button id="diagram-zoom-out" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button id="diagram-zoom-in" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button title="Toggle full-screen" id="diagram-fs" class="diagram-btn to-full"><i class="material-icons"></i></button>
+                </div>
+              </div></div>
         
 
       <div id="mbrsel">
@@ -320,7 +330,7 @@ late inputs.
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">Context</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">Context</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ProcessWindowFunction</dd></dl></div>
@@ -344,7 +354,7 @@ late inputs.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -360,7 +370,7 @@ late inputs.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -376,7 +386,7 @@ late inputs.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -408,7 +418,7 @@ late inputs.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clear</span><span class="params">(<span name="context">context: <a href="#ContextextendsAnyRef" class="extmbr" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.Context">Context</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">clear</span><span class="params">(<span name="context">context: <a href="#ContextextendsAnyRef" class="extmbr" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.Context">Context</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ProcessWindowFunction</dd><dt>Annotations</dt><dd>
@@ -430,7 +440,7 @@ late inputs.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -456,7 +466,7 @@ late inputs.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">close</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">close</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd><dt>Annotations</dt><dd>
@@ -494,7 +504,7 @@ late inputs.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configWithOverride</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</span></span>)</span><span class="result">: <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span></span>
+        <span class="name">configWithOverride</span><span class="params">(<span name="context">context: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>)</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -510,7 +520,7 @@ late inputs.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configWithOverride</span><span class="params">(<span name="config">config: <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span></span>)</span><span class="result">: <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span></span>
+        <span class="name">configWithOverride</span><span class="params">(<span name="config">config: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>)</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -526,7 +536,7 @@ late inputs.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">distributionDifference</span><span class="params">(<span name="longRecentsSorted">longRecentsSorted: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Double">Double</span>]</span>, <span name="recentsSorted">recentsSorted: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Double">Double</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+        <span class="name">distributionDifference</span><span class="params">(<span name="longRecentsSorted">longRecentsSorted: <span class="extype" name="scala.Seq">Seq</span>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a>]</span>, <span name="recentsSorted">recentsSorted: <span class="extype" name="scala.Seq">Seq</span>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a>]</span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>
       </span>
       
       <p class="shortcomment cmt">Compares the two distributions using a similar approach to the Kolmogorov-
@@ -558,7 +568,7 @@ during this process.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">dropExtremeN</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">dropExtremeN</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <p class="shortcomment cmt">When analysing the distributions, <code>recents</code> and <code>longRecents</code> are sorted,
@@ -579,7 +589,7 @@ squash outliers.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -595,7 +605,7 @@ squash outliers.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -611,7 +621,7 @@ squash outliers.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eventSeverity</span><span class="params">(<span name="old">old: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Double">Double</span>]</span>, <span name="rec">rec: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Double">Double</span>]</span>, <span name="z">z: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>
+        <span class="name">eventSeverity</span><span class="params">(<span name="old">old: <span class="extype" name="scala.Seq">Seq</span>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a>]</span>, <span name="rec">rec: <span class="extype" name="scala.Seq">Seq</span>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a>]</span>, <span name="z">z: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>]</span>
       </span>
       
       <p class="shortcomment cmt">Determine the severity of a potential event.</p><div class="fullcomment"><div class="comment cmt"><p>Determine the severity of a potential event. This method is lifted nearly
@@ -682,7 +692,7 @@ verbatim from netevmon as well, including the comments.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getIterationRuntimeContext</span><span class="params">()</span><span class="result">: <span class="extype" name="org.apache.flink.api.common.functions.IterationRuntimeContext">IterationRuntimeContext</span></span>
+        <span class="name">getIterationRuntimeContext</span><span class="params">()</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/IterationRuntimeContext.html#org.apache.flink.api.common.functions.IterationRuntimeContext" class="extype" name="org.apache.flink.api.common.functions.IterationRuntimeContext">IterationRuntimeContext</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd></dl></div>
@@ -698,7 +708,7 @@ verbatim from netevmon as well, including the comments.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getOverrideParams</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span>]</span>
+        <span class="name">getOverrideParams</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -714,7 +724,7 @@ verbatim from netevmon as well, including the comments.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getRuntimeContext</span><span class="params">()</span><span class="result">: <span class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</span></span>
+        <span class="name">getRuntimeContext</span><span class="params">()</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd></dl></div>
@@ -730,7 +740,7 @@ verbatim from netevmon as well, including the comments.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
@@ -751,7 +761,7 @@ verbatim from netevmon as well, including the comments.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">inEvent</span><span class="result">: <span class="extype" name="org.apache.flink.api.common.state.ValueState">ValueState</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
+        <span class="name">inEvent</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/state/ValueState.html#org.apache.flink.api.common.state.ValueState" class="extype" name="org.apache.flink.api.common.state.ValueState">ValueState</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a>]</span>
       </span>
       
       <p class="shortcomment cmt">Events are only emitted the first time they are detected, and not
@@ -770,7 +780,7 @@ continuously for long-running events.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -805,7 +815,7 @@ continuously for long-running events.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">minimumChange</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+        <span class="name">minimumChange</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>
       </span>
       
       <p class="shortcomment cmt">The distributions must be this different for an event to be considered.</p><div class="fullcomment"><div class="comment cmt"><p>The distributions must be this different for an event to be considered.
@@ -823,7 +833,7 @@ For example, a value of 1.05 means there must be at least a 5% change.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -839,7 +849,7 @@ For example, a value of 1.05 means there must be at least a 5% change.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -860,7 +870,7 @@ For example, a value of 1.05 means there must be at least a 5% change.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -881,7 +891,7 @@ For example, a value of 1.05 means there must be at least a 5% change.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">open</span><span class="params">(<span name="parameters">parameters: <span class="extype" name="org.apache.flink.configuration.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">open</span><span class="params">(<span name="parameters">parameters: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/configuration/Configuration.html#org.apache.flink.configuration.Configuration" class="extype" name="org.apache.flink.configuration.Configuration">Configuration</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <p class="shortcomment cmt">Called during initialisation.</p><div class="fullcomment"><div class="comment cmt"><p>Called during initialisation. Sets up persistent state variables and
@@ -899,7 +909,7 @@ configuration.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">overrideConfig</span><span class="params">(<span name="config">config: <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span></span>)</span><span class="result">: <a href="" class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector">WindowedDistDiffDetector</a>.this.type</span>
+        <span class="name">overrideConfig</span><span class="params">(<span name="config">config: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>)</span><span class="result">: <a href="" class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector">WindowedDistDiffDetector</a>.this.type</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -931,7 +941,7 @@ configuration.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">overrideParams</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span>]</span>
+        <span class="name">overrideParams</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -947,7 +957,7 @@ configuration.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">process</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="context">context: <a href="#ContextextendsAnyRef" class="extmbr" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.Context">Context</a></span>, <span name="elements">elements: <span class="extype" name="scala.Iterable">Iterable</span>[<span class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.MeasT">MeasT</span>]</span>, <span name="out">out: <span class="extype" name="org.apache.flink.util.Collector">Collector</span>[<a href="../../events/Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">process</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="context">context: <a href="#ContextextendsAnyRef" class="extmbr" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.Context">Context</a></span>, <span name="elements">elements: <span class="extype" name="scala.Iterable">Iterable</span>[<span class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.MeasT">MeasT</span>]</span>, <span name="out">out: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/util/Collector.html#org.apache.flink.util.Collector" class="extype" name="org.apache.flink.util.Collector">Collector</a>[<a href="../../events/Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>]</span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <p class="shortcomment cmt">New measurements are ingested here.</p><div class="fullcomment"><div class="comment cmt"><p>New measurements are ingested here.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector">WindowedDistDiffDetector</a> → ProcessWindowFunction</dd></dl></div>
@@ -963,7 +973,7 @@ configuration.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">recentsCount</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">recentsCount</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <p class="shortcomment cmt"><code>recents</code> and <code>longRecents</code> have at most this many values.</p><div class="fullcomment"><div class="comment cmt"><p><code>recents</code> and <code>longRecents</code> have at most this many values.
@@ -982,7 +992,7 @@ recent time in <code>longRecents</code>.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setRuntimeContext</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">setRuntimeContext</span><span class="params">(<span name="arg0">arg0: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd></dl></div>
@@ -1030,7 +1040,7 @@ recent time in <code>longRecents</code>.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="arg1">arg1: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1052,7 +1062,7 @@ recent time in <code>longRecents</code>.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1076,7 +1086,7 @@ recent time in <code>longRecents</code>.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1098,7 +1108,7 @@ recent time in <code>longRecents</code>.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">zThreshold</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+        <span class="name">zThreshold</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>
       </span>
       
       <p class="shortcomment cmt">Our calculated Z value must be greater than this threshold for an event
@@ -1125,7 +1135,7 @@ to be considered.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1149,19 +1159,19 @@ to be considered.
             </div><div class="parent" name="nz.net.wand.streamevmon.Logging">
               <h3>Inherited from <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></h3>
             </div><div class="parent" name="org.apache.flink.streaming.api.scala.function.ProcessWindowFunction">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.streaming.api.scala.function.ProcessWindowFunction">ProcessWindowFunction</span>[<span class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.MeasT">MeasT</span>, <a href="../../events/Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>, <span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.W">W</span>]</h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/scala/function/ProcessWindowFunction.html#org.apache.flink.streaming.api.scala.function.ProcessWindowFunction" class="extype" name="org.apache.flink.streaming.api.scala.function.ProcessWindowFunction">ProcessWindowFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.MeasT">MeasT</span>, <a href="../../events/Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>, <span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="nz.net.wand.streamevmon.detectors.distdiff.WindowedDistDiffDetector.W">W</span>]</h3>
             </div><div class="parent" name="org.apache.flink.api.common.functions.AbstractRichFunction">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</span></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/AbstractRichFunction.html#org.apache.flink.api.common.functions.AbstractRichFunction" class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</a></h3>
             </div><div class="parent" name="org.apache.flink.api.common.functions.RichFunction">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</span></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RichFunction.html#org.apache.flink.api.common.functions.RichFunction" class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</a></h3>
             </div><div class="parent" name="org.apache.flink.api.common.functions.Function">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.api.common.functions.Function">Function</span></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/Function.html#org.apache.flink.api.common.functions.Function" class="extype" name="org.apache.flink.api.common.functions.Function">Function</a></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
             </div>
         
         </div>

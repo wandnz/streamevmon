@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title></title>
-          <meta name="description" content="" />
-          <meta name="keywords" content="" />
+          <title>streamevmon 0.1-SNAPSHOT - nz.net.wand.streamevmon.Caching</title>
+          <meta name="description" content="streamevmon 0.1 - SNAPSHOT - nz.net.wand.streamevmon.Caching" />
+          <meta name="keywords" content="streamevmon 0.1 SNAPSHOT nz.net.wand.streamevmon.Caching" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -19,7 +19,7 @@
       <script type="text/javascript" src="../../../../index.js"></script>
       <script type="text/javascript" src="../../../../lib/scheduler.js"></script>
       <script type="text/javascript" src="../../../../lib/template.js"></script>
-      
+      <script type="text/javascript" src="../../../../lib/modernizr.custom.js"></script><script type="text/javascript" src="../../../../lib/diagrams.js" id="diagrams-js"></script>
       <script type="text/javascript">
         /* this variable can be used by the JS to determine the path to the root document */
         var toRoot = '../../../../';
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title"><span id="doc-version"></span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">0.1-SNAPSHOT</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -340,7 +340,7 @@ measurements.
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">Caching</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">Caching</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
 
@@ -354,7 +354,7 @@ may use this value as a user-configurable default expiry time, in seconds,
 for cached values.
 Default 30.</p><p>The <code>caching.memcached</code> key group configures the memcached settings.
 Caffeine caches are not affected by this group. Note that Kryo serialization
-is used alongside Memcached.</p><p>- <code>enabled</code>: This class also does not directly use this key, but inheriting
+is used alongside Memcached (<a href="GZippingKryoCodec.html" class="extype" name="nz.net.wand.streamevmon.GZippingKryoCodec">GZippingKryoCodec</a> by default).</p><p>- <code>enabled</code>: This class also does not directly use this key, but inheriting
 classes which would like to support memcached caching should check the key's
 boolean value before setting this class to memcached mode.
 Default false.</p><p>- <code>serverName</code>: The address which the memcached server is running at.
@@ -372,13 +372,23 @@ Default 11211.
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
         </div><div class="toggleContainer block">
             <span class="toggle">
               Known Subclasses
             </span>
             <div class="subClasses hiddenContent"><a href="connectors/postgres/PostgresConnection.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.PostgresConnection">PostgresConnection</a>, <a href="connectors/postgres/PostgresConnection$.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.PostgresConnection">PostgresConnection</a>, <a href="events/grouping/graph/TracerouteAsInetPathExtractor.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TracerouteAsInetPathExtractor">TracerouteAsInetPathExtractor</a>, <a href="runners/unified/schema/TypedStreams.html" class="extype" name="nz.net.wand.streamevmon.runners.unified.schema.TypedStreams">TypedStreams</a></div>
-          </div></div>
+          </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
+                <span class="toggle diagram-link">
+                  Type Hierarchy
+                </span>
+                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 600.00 155.00" height="155pt" width="600pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 151)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-151 596,-151 596,4 -4,4" stroke="transparent" fill="#ffffff"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this trait" id="graph1_0"><g id="a_this trait|graph1_0"><a xlink:title="nz.net.wand.streamevmon.Caching (this trait)" xlink:href="#inheritance-diagram"><path d="M327.1667,-86C327.1667,-86 265.8333,-86 265.8333,-86 261.6667,-86 257.5,-81.8333 257.5,-77.6667 257.5,-77.6667 257.5,-69.3333 257.5,-69.3333 257.5,-65.1667 261.6667,-61 265.8333,-61 265.8333,-61 327.1667,-61 327.1667,-61 331.3333,-61 335.5,-65.1667 335.5,-69.3333 335.5,-69.3333 335.5,-77.6667 335.5,-77.6667 335.5,-81.8333 331.3333,-86 327.1667,-86" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../lib/trait_diagram.png" y="-80.5" x="267.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-71.1" x="288.5" text-anchor="start">Caching</text></a></g></g><!-- node1 --><g class="node object" id="graph1_1"><g id="a_object|graph1_1"><a xlink:title="nz.net.wand.streamevmon.connectors.postgres.PostgresConnection" xlink:href="connectors/postgres/PostgresConnection$.html#inheritance-diagram"><path d="M120.6667,-25C120.6667,-25 8.3333,-25 8.3333,-25 4.1667,-25 0,-20.8333 0,-16.6667 0,-16.6667 0,-8.3333 0,-8.3333 0,-4.1667 4.1667,0 8.3333,0 8.3333,0 120.6667,0 120.6667,0 124.8333,0 129,-4.1667 129,-8.3333 129,-8.3333 129,-16.6667 129,-16.6667 129,-20.8333 124.8333,-25 120.6667,-25" stroke="#103a51" fill="#103a51"></path><image xlink:href="../../../../lib/object_diagram.png" y="-19.5" x="10.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-10.1" x="31.5" text-anchor="start">PostgresConnection</text></a></g></g><!-- node0&#45;&gt;node1 --><g class="edge inheritance" id="graph1_0_1"><g id="a_inheritance|graph1_0_1"><a xlink:title="PostgresConnection is a subtype of Caching"><path d="M250.149,-61.3129C210.143,-50.7941 152.5864,-35.6606 112.1938,-25.0402" stroke="#d4d4d4" fill="none"></path><polygon points="250.0138,-63.8105 257.4067,-63.2212 251.2598,-59.0716 250.0138,-63.8105" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node class" id="graph1_2"><g id="a_class|graph1_2"><a xlink:title="nz.net.wand.streamevmon.connectors.postgres.PostgresConnection" xlink:href="connectors/postgres/PostgresConnection.html#inheritance-diagram"><path d="M267.6667,-25C267.6667,-25 155.3333,-25 155.3333,-25 151.1667,-25 147,-20.8333 147,-16.6667 147,-16.6667 147,-8.3333 147,-8.3333 147,-4.1667 151.1667,0 155.3333,0 155.3333,0 267.6667,0 267.6667,0 271.8333,0 276,-4.1667 276,-8.3333 276,-8.3333 276,-16.6667 276,-16.6667 276,-20.8333 271.8333,-25 267.6667,-25" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../lib/class_diagram.png" y="-19.5" x="157.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-10.1" x="178.5" text-anchor="start">PostgresConnection</text></a></g></g><!-- node0&#45;&gt;node2 --><g class="edge inheritance" id="graph1_0_2"><g id="a_inheritance|graph1_0_2"><a xlink:title="PostgresConnection is a subtype of Caching"><path d="M273.1579,-56.7486C259.2372,-46.7585 241.8486,-34.2796 229.0895,-25.123" stroke="#d4d4d4" fill="none"></path><polygon points="271.7724,-58.7699 278.8879,-60.8608 274.6293,-54.7889 271.7724,-58.7699" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node3 --><g class="node class" id="graph1_3"><g id="a_class|graph1_3"><a xlink:title="nz.net.wand.streamevmon.events.grouping.graph.TracerouteAsInetPathExtractor" xlink:href="events/grouping/graph/TracerouteAsInetPathExtractor.html#inheritance-diagram"><path d="M460.1667,-25C460.1667,-25 302.8333,-25 302.8333,-25 298.6667,-25 294.5,-20.8333 294.5,-16.6667 294.5,-16.6667 294.5,-8.3333 294.5,-8.3333 294.5,-4.1667 298.6667,0 302.8333,0 302.8333,0 460.1667,0 460.1667,0 464.3333,0 468.5,-4.1667 468.5,-8.3333 468.5,-8.3333 468.5,-16.6667 468.5,-16.6667 468.5,-20.8333 464.3333,-25 460.1667,-25" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../lib/class_diagram.png" y="-19.5" x="304.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-10.1" x="325.5" text-anchor="start">TracerouteAsInetPathExtractor</text></a></g></g><!-- node0&#45;&gt;node3 --><g class="edge inheritance" id="graph1_0_3"><g id="a_inheritance|graph1_0_3"><a xlink:title="TracerouteAsInetPathExtractor is a subtype of Caching"><path d="M319.8421,-56.7486C333.7628,-46.7585 351.1514,-34.2796 363.9105,-25.123" stroke="#d4d4d4" fill="none"></path><polygon points="318.3707,-54.7889 314.1121,-60.8608 321.2276,-58.7699 318.3707,-54.7889" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node4 --><g class="node class" id="graph1_4"><g id="a_class|graph1_4"><a xlink:title="nz.net.wand.streamevmon.runners.unified.schema.TypedStreams" xlink:href="runners/unified/schema/TypedStreams.html#inheritance-diagram"><path d="M583.6667,-25C583.6667,-25 495.3333,-25 495.3333,-25 491.1667,-25 487,-20.8333 487,-16.6667 487,-16.6667 487,-8.3333 487,-8.3333 487,-4.1667 491.1667,0 495.3333,0 495.3333,0 583.6667,0 583.6667,0 587.8333,0 592,-4.1667 592,-8.3333 592,-8.3333 592,-16.6667 592,-16.6667 592,-20.8333 587.8333,-25 583.6667,-25" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../lib/class_diagram.png" y="-19.5" x="497.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-10.1" x="518.5" text-anchor="start">TypedStreams</text></a></g></g><!-- node0&#45;&gt;node4 --><g class="edge inheritance" id="graph1_0_4"><g id="a_inheritance|graph1_0_4"><a xlink:title="TypedStreams is a subtype of Caching"><path d="M342.3638,-61.9869C384.3643,-51.4435 446.3874,-35.8739 489.6104,-25.0237" stroke="#d4d4d4" fill="none"></path><polygon points="341.735,-59.6186 335.5422,-63.6993 342.928,-64.3712 341.735,-59.6186" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node5 --><g class="node class" id="graph1_5"><g id="a_class|graph1_5"><a xlink:title="scala.AnyRef"><path d="M325.6667,-147C325.6667,-147 267.3333,-147 267.3333,-147 263.1667,-147 259,-142.8333 259,-138.6667 259,-138.6667 259,-130.3333 259,-130.3333 259,-126.1667 263.1667,-122 267.3333,-122 267.3333,-122 325.6667,-122 325.6667,-122 329.8333,-122 334,-126.1667 334,-130.3333 334,-130.3333 334,-138.6667 334,-138.6667 334,-142.8333 329.8333,-147 325.6667,-147" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../lib/class_diagram.png" y="-141.5" x="269.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-132.1" x="290.5" text-anchor="start">AnyRef</text></a></g></g><!-- node5&#45;&gt;node0 --><g class="edge inheritance" id="graph1_5_0"><g id="a_inheritance|graph1_5_0"><a xlink:title="Caching is a subtype of AnyRef"><path d="M296.5,-114.7386C296.5,-105.3393 296.5,-94.3803 296.5,-86.123" stroke="#d4d4d4" fill="none"></path><polygon points="294.0501,-114.8607 296.5,-121.8608 298.9501,-114.8608 294.0501,-114.8607" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
+                <div id="diagram-controls" class="hiddenContent">
+                  <button id="diagram-zoom-out" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button id="diagram-zoom-in" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button title="Toggle full-screen" id="diagram-fs" class="diagram-btn to-full"><i class="material-icons"></i></button>
+                </div>
+              </div></div>
         
 
       <div id="mbrsel">
@@ -442,7 +452,7 @@ Default 11211.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -458,7 +468,7 @@ Default 11211.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -474,7 +484,7 @@ Default 11211.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -522,7 +532,7 @@ Default 11211.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -548,7 +558,7 @@ Default 11211.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -564,7 +574,7 @@ Default 11211.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -601,7 +611,7 @@ Default 11211.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getWithCache</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="ttl">ttl: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.concurrent.duration.FiniteDuration">FiniteDuration</span>]</span>, <span name="method">method: ⇒ <span class="extype" name="nz.net.wand.streamevmon.Caching.getWithCache.T">T</span></span>)</span><span class="result">: <span class="extype" name="nz.net.wand.streamevmon.Caching.getWithCache.T">T</span></span>
+        <span class="name">getWithCache</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="ttl">ttl: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/concurrent/duration/FiniteDuration.html#scala.concurrent.duration.FiniteDuration" class="extype" name="scala.concurrent.duration.FiniteDuration">FiniteDuration</a>]</span>, <span name="method">method: ⇒ <span class="extype" name="nz.net.wand.streamevmon.Caching.getWithCache.T">T</span></span>)</span><span class="result">: <span class="extype" name="nz.net.wand.streamevmon.Caching.getWithCache.T">T</span></span>
       </span>
       
       <p class="shortcomment cmt">Adds caching to a given method, according to the previously set up
@@ -623,7 +633,7 @@ configuration.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
@@ -644,7 +654,7 @@ configuration.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">invalidate</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">invalidate</span><span class="params">(<span name="key">key: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <p class="shortcomment cmt">Removes an item from the cache.</p><div class="fullcomment"><div class="comment cmt"><p>Removes an item from the cache.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
@@ -660,7 +670,7 @@ configuration.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">invalidateAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">invalidateAll</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <p class="shortcomment cmt">Removes all items from the cache.</p><div class="fullcomment"><div class="comment cmt"><p>Removes all items from the cache.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
@@ -676,7 +686,7 @@ configuration.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -692,7 +702,7 @@ configuration.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -708,7 +718,7 @@ configuration.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -729,7 +739,7 @@ configuration.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -782,7 +792,7 @@ configuration.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">useInMemoryCache</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">useInMemoryCache</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <p class="shortcomment cmt">Begins using an in-memory Caffeine cache for all new caching operations.</p><div class="fullcomment"><div class="comment cmt"><p>Begins using an in-memory Caffeine cache for all new caching operations.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
@@ -798,7 +808,7 @@ configuration.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">useMemcached</span><span class="params">(<span name="p">p: <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">useMemcached</span><span class="params">(<span name="p">p: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <p class="shortcomment cmt">Sets up a connection to a Memcached instance, and starts to use it for
@@ -819,7 +829,7 @@ all new caching operations.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="arg1">arg1: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -841,7 +851,7 @@ all new caching operations.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -865,7 +875,7 @@ all new caching operations.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -895,7 +905,7 @@ all new caching operations.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -913,9 +923,9 @@ all new caching operations.
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
             </div>
         
         </div>

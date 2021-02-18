@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title></title>
-          <meta name="description" content="" />
-          <meta name="keywords" content="" />
+          <title>streamevmon 0.1-SNAPSHOT - nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph</title>
+          <meta name="description" content="streamevmon 0.1 - SNAPSHOT - nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph" />
+          <meta name="keywords" content="streamevmon 0.1 SNAPSHOT nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -19,7 +19,7 @@
       <script type="text/javascript" src="../../../../../../../index.js"></script>
       <script type="text/javascript" src="../../../../../../../lib/scheduler.js"></script>
       <script type="text/javascript" src="../../../../../../../lib/template.js"></script>
-      
+      <script type="text/javascript" src="../../../../../../../lib/modernizr.custom.js"></script><script type="text/javascript" src="../../../../../../../lib/diagrams.js" id="diagrams-js"></script>
       <script type="text/javascript">
         /* this variable can be used by the JS to determine the path to the root document */
         var toRoot = '../../../../../../../';
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title"><span id="doc-version"></span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">0.1-SNAPSHOT</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -249,7 +249,7 @@ another.
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">TraceroutePathGraph</span><span class="tparams">[<span name="EventT">EventT &lt;: <a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a></span>]</span><span class="result"> extends <span class="extype" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction">CoProcessFunction</span>[<span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.EventT">EventT</span>, <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a>, <a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>] with <span class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</span> with <a href="../../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a> with <a href="../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></span>
+        <span class="name">TraceroutePathGraph</span><span class="tparams">[<span name="EventT">EventT &lt;: <a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a></span>]</span><span class="result"> extends <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/co/CoProcessFunction.html#org.apache.flink.streaming.api.functions.co.CoProcessFunction" class="extype" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction">CoProcessFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.EventT">EventT</span>, <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a>, <a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>] with <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a> with <a href="../../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a> with <a href="../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></span>
       </span>
       </h4>
 
@@ -261,8 +261,18 @@ just acts as a passthrough function for Events that takes up a lot of memory.
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="../../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a>, <span class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</span>, <span class="extype" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction">CoProcessFunction</span>[<span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.EventT">EventT</span>, <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a>, <a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>], <span class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</span>, <span class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</span>, <span class="extype" name="org.apache.flink.api.common.functions.Function">Function</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div></div>
+          <div class="superTypes hiddenContent"><a href="../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="../../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/co/CoProcessFunction.html#org.apache.flink.streaming.api.functions.co.CoProcessFunction" class="extype" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction">CoProcessFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.EventT">EventT</span>, <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a>, <a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>], <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/AbstractRichFunction.html#org.apache.flink.api.common.functions.AbstractRichFunction" class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RichFunction.html#org.apache.flink.api.common.functions.RichFunction" class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/Function.html#org.apache.flink.api.common.functions.Function" class="extype" name="org.apache.flink.api.common.functions.Function">Function</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+        </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
+                <span class="toggle diagram-link">
+                  Type Hierarchy
+                </span>
+                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 622.00 118.00" height="118pt" width="622pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 114)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-114 618,-114 618,4 -4,4" stroke="transparent" fill="#ffffff"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this class" id="graph1_0"><g id="a_this class|graph1_0"><a xlink:title="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph (this class)" xlink:href="#inheritance-diagram"><path d="M471.6667,-49C471.6667,-49 318.3333,-49 318.3333,-49 314.1667,-49 310,-44.8333 310,-40.6667 310,-40.6667 310,-32.3333 310,-32.3333 310,-28.1667 314.1667,-24 318.3333,-24 318.3333,-24 471.6667,-24 471.6667,-24 475.8333,-24 480,-28.1667 480,-32.3333 480,-32.3333 480,-40.6667 480,-40.6667 480,-44.8333 475.8333,-49 471.6667,-49" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../../lib/class_diagram.png" y="-43.5" x="320" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-34.1" x="341" text-anchor="start">TraceroutePathGraph[EventT]</text></a></g></g><!-- node1 --><g class="node class" id="graph1_1"><g id="a_class|graph1_1"><a xlink:title="org.apache.flink.streaming.api.functions.co.CoProcessFunction"><path d="M231.6667,-110C231.6667,-110 8.3333,-110 8.3333,-110 4.1667,-110 0,-105.8333 0,-101.6667 0,-101.6667 0,-93.3333 0,-93.3333 0,-89.1667 4.1667,-85 8.3333,-85 8.3333,-85 231.6667,-85 231.6667,-85 235.8333,-85 240,-89.1667 240,-93.3333 240,-93.3333 240,-101.6667 240,-101.6667 240,-105.8333 235.8333,-110 231.6667,-110" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../../lib/class_diagram.png" y="-104.5" x="10" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="31" text-anchor="start">CoProcessFunction[EventT, AsInetPath, Event]</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph1_1_0"><g id="a_inheritance|graph1_1_0"><a xlink:title="TraceroutePathGraph[EventT] is a subtype of CoProcessFunction[EventT, AsInetPath, Event]"><path d="M183.7165,-83.3665C230.4835,-72.9928 293.4304,-59.03 338.4268,-49.049" stroke="#d4d4d4" fill="none"></path><polygon points="182.95,-81.0269 176.6467,-84.9347 184.0112,-85.8106 182.95,-81.0269" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node trait" id="graph1_2"><g id="a_trait|graph1_2"><a xlink:title="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction"><path d="M385.6667,-110C385.6667,-110 266.3333,-110 266.3333,-110 262.1667,-110 258,-105.8333 258,-101.6667 258,-101.6667 258,-93.3333 258,-93.3333 258,-89.1667 262.1667,-85 266.3333,-85 266.3333,-85 385.6667,-85 385.6667,-85 389.8333,-85 394,-89.1667 394,-93.3333 394,-93.3333 394,-101.6667 394,-101.6667 394,-105.8333 389.8333,-110 385.6667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../../lib/trait_diagram.png" y="-104.5" x="268" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="289" text-anchor="start">CheckpointedFunction</text></a></g></g><!-- node2&#45;&gt;node0 --><g class="edge inheritance" id="graph1_2_0"><g id="a_inheritance|graph1_2_0"><a xlink:title="TraceroutePathGraph[EventT] is a subtype of CheckpointedFunction"><path d="M345.5563,-80.2111C356.7515,-70.3138 370.549,-58.1161 380.7215,-49.123" stroke="#d4d4d4" fill="none"></path><polygon points="343.9186,-78.3888 340.2968,-84.8608 347.164,-82.0599 343.9186,-78.3888" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node3 --><g class="node trait" id="graph1_3"><g id="a_trait|graph1_3"><a xlink:title="nz.net.wand.streamevmon.flink.HasFlinkConfig" xlink:href="../../../flink/HasFlinkConfig.html#inheritance-diagram"><path d="M509.6667,-110C509.6667,-110 420.3333,-110 420.3333,-110 416.1667,-110 412,-105.8333 412,-101.6667 412,-101.6667 412,-93.3333 412,-93.3333 412,-89.1667 416.1667,-85 420.3333,-85 420.3333,-85 509.6667,-85 509.6667,-85 513.8333,-85 518,-89.1667 518,-93.3333 518,-93.3333 518,-101.6667 518,-101.6667 518,-105.8333 513.8333,-110 509.6667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../../lib/trait_diagram.png" y="-104.5" x="422" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="443" text-anchor="start">HasFlinkConfig</text></a></g></g><!-- node3&#45;&gt;node0 --><g class="edge inheritance" id="graph1_3_0"><g id="a_inheritance|graph1_3_0"><a xlink:title="TraceroutePathGraph[EventT] is a subtype of HasFlinkConfig"><path d="M445.1602,-80.2111C433.8028,-70.3138 419.8054,-58.1161 409.4855,-49.123" stroke="#d4d4d4" fill="none"></path><polygon points="443.609,-82.109 450.496,-84.8608 446.8282,-78.4148 443.609,-82.109" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node4 --><g class="node trait" id="graph1_4"><g id="a_trait|graph1_4"><a xlink:title="nz.net.wand.streamevmon.Logging" xlink:href="../../../Logging.html#inheritance-diagram"><path d="M605.6667,-110C605.6667,-110 544.3333,-110 544.3333,-110 540.1667,-110 536,-105.8333 536,-101.6667 536,-101.6667 536,-93.3333 536,-93.3333 536,-89.1667 540.1667,-85 544.3333,-85 544.3333,-85 605.6667,-85 605.6667,-85 609.8333,-85 614,-89.1667 614,-93.3333 614,-93.3333 614,-101.6667 614,-101.6667 614,-105.8333 609.8333,-110 605.6667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../../lib/trait_diagram.png" y="-104.5" x="546" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="567" text-anchor="start">Logging</text></a></g></g><!-- node4&#45;&gt;node0 --><g class="edge inheritance" id="graph1_4_0"><g id="a_inheritance|graph1_4_0"><a xlink:title="TraceroutePathGraph[EventT] is a subtype of Logging"><path d="M530.9838,-82.5834C500.6031,-72.2877 460.6638,-58.7527 431.94,-49.0185" stroke="#d4d4d4" fill="none"></path><polygon points="530.2879,-84.9344 537.7039,-84.8608 531.8606,-80.2936 530.2879,-84.9344" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
+                <div id="diagram-controls" class="hiddenContent">
+                  <button id="diagram-zoom-out" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button id="diagram-zoom-in" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button title="Toggle full-screen" id="diagram-fs" class="diagram-btn to-full"><i class="material-icons"></i></button>
+                </div>
+              </div></div>
         
 
       <div id="mbrsel">
@@ -340,7 +350,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">Context</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">Context</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CoProcessFunction</dd></dl></div>
@@ -447,7 +457,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -463,7 +473,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -479,7 +489,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -511,7 +521,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -537,7 +547,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">close</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">close</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd><dt>Annotations</dt><dd>
@@ -575,7 +585,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configWithOverride</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</span></span>)</span><span class="result">: <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span></span>
+        <span class="name">configWithOverride</span><span class="params">(<span name="context">context: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>)</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -591,7 +601,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configWithOverride</span><span class="params">(<span name="config">config: <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span></span>)</span><span class="result">: <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span></span>
+        <span class="name">configWithOverride</span><span class="params">(<span name="config">config: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>)</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -607,7 +617,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -623,7 +633,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -692,7 +702,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getIterationRuntimeContext</span><span class="params">()</span><span class="result">: <span class="extype" name="org.apache.flink.api.common.functions.IterationRuntimeContext">IterationRuntimeContext</span></span>
+        <span class="name">getIterationRuntimeContext</span><span class="params">()</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/IterationRuntimeContext.html#org.apache.flink.api.common.functions.IterationRuntimeContext" class="extype" name="org.apache.flink.api.common.functions.IterationRuntimeContext">IterationRuntimeContext</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd></dl></div>
@@ -708,7 +718,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getOverrideParams</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span>]</span>
+        <span class="name">getOverrideParams</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -724,7 +734,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getRuntimeContext</span><span class="params">()</span><span class="result">: <span class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</span></span>
+        <span class="name">getRuntimeContext</span><span class="params">()</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd></dl></div>
@@ -756,7 +766,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
@@ -777,7 +787,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">initializeState</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.flink.runtime.state.FunctionInitializationContext">FunctionInitializationContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">initializeState</span><span class="params">(<span name="context">context: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/runtime/state/FunctionInitializationContext.html#org.apache.flink.runtime.state.FunctionInitializationContext" class="extype" name="org.apache.flink.runtime.state.FunctionInitializationContext">FunctionInitializationContext</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph">TraceroutePathGraph</a> → CheckpointedFunction</dd></dl></div>
@@ -793,7 +803,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -828,7 +838,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">mergedHosts</span><span class="result">: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT">VertexT</a>]</span>
+        <span class="name">mergedHosts</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/collection/mutable/Map.html#scala.collection.mutable.Map" class="extype" name="scala.collection.mutable.Map">Map</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT">VertexT</a>]</span>
       </span>
       
       <p class="shortcomment cmt">Multiple hosts that share attributes can be merged into a single host that
@@ -851,7 +861,7 @@ that point to a single value.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -867,7 +877,7 @@ that point to a single value.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -888,7 +898,7 @@ that point to a single value.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -909,7 +919,7 @@ that point to a single value.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">onTimer</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction.OnTimerContext">OnTimerContext</span></span>, <span name="arg2">arg2: <span class="extype" name="org.apache.flink.util.Collector">Collector</span>[<a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">onTimer</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="arg1">arg1: <span class="extype" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction.OnTimerContext">OnTimerContext</span></span>, <span name="arg2">arg2: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/util/Collector.html#org.apache.flink.util.Collector" class="extype" name="org.apache.flink.util.Collector">Collector</a>[<a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>]</span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CoProcessFunction</dd><dt>Annotations</dt><dd>
@@ -931,7 +941,7 @@ that point to a single value.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">open</span><span class="params">(<span name="parameters">parameters: <span class="extype" name="org.apache.flink.configuration.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">open</span><span class="params">(<span name="parameters">parameters: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/configuration/Configuration.html#org.apache.flink.configuration.Configuration" class="extype" name="org.apache.flink.configuration.Configuration">Configuration</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph">TraceroutePathGraph</a> → AbstractRichFunction → RichFunction</dd></dl></div>
@@ -947,7 +957,7 @@ that point to a single value.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">overrideConfig</span><span class="params">(<span name="config">config: <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span></span>)</span><span class="result">: <a href="" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph">TraceroutePathGraph</a>.this.type</span>
+        <span class="name">overrideConfig</span><span class="params">(<span name="config">config: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>)</span><span class="result">: <a href="" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph">TraceroutePathGraph</a>.this.type</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -979,7 +989,7 @@ that point to a single value.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">overrideParams</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span>]</span>
+        <span class="name">overrideParams</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -1011,7 +1021,7 @@ that point to a single value.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">processElement1</span><span class="params">(<span name="value">value: <span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.EventT">EventT</span></span>, <span name="ctx">ctx: <span class="extype" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction.Context">Context</span></span>, <span name="out">out: <span class="extype" name="org.apache.flink.util.Collector">Collector</span>[<a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">processElement1</span><span class="params">(<span name="value">value: <span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.EventT">EventT</span></span>, <span name="ctx">ctx: <span class="extype" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction.Context">Context</span></span>, <span name="out">out: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/util/Collector.html#org.apache.flink.util.Collector" class="extype" name="org.apache.flink.util.Collector">Collector</a>[<a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>]</span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph">TraceroutePathGraph</a> → CoProcessFunction</dd></dl></div>
@@ -1027,7 +1037,7 @@ that point to a single value.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">processElement2</span><span class="params">(<span name="value">value: <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a></span>, <span name="ctx">ctx: <span class="extype" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction.Context">Context</span></span>, <span name="out">out: <span class="extype" name="org.apache.flink.util.Collector">Collector</span>[<a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">processElement2</span><span class="params">(<span name="value">value: <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a></span>, <span name="ctx">ctx: <span class="extype" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction.Context">Context</span></span>, <span name="out">out: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/util/Collector.html#org.apache.flink.util.Collector" class="extype" name="org.apache.flink.util.Collector">Collector</a>[<a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>]</span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <p class="shortcomment cmt">Adds an AsInetPath to the graph.</p><div class="fullcomment"><div class="comment cmt"><p>Adds an AsInetPath to the graph. New hosts will become new vertices, and
@@ -1045,7 +1055,7 @@ missing edges will be added. Gives no output.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">replaceVertex</span><span class="params">(<span name="graph">graph: <a href="#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[TraceroutePathGraph.this.VertexT,TraceroutePathGraph.this.EdgeT]" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.GraphT">GraphT</a></span>, <span name="oldHost">oldHost: <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT">VertexT</a></span>, <span name="newHost">newHost: <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT">VertexT</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">replaceVertex</span><span class="params">(<span name="graph">graph: <a href="#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[TraceroutePathGraph.this.VertexT,TraceroutePathGraph.this.EdgeT]" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.GraphT">GraphT</a></span>, <span name="oldHost">oldHost: <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT">VertexT</a></span>, <span name="newHost">newHost: <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT">VertexT</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <p class="shortcomment cmt">Replaces a vertex in a GraphT with a new vertex, retaining connected edges.</p><div class="fullcomment"><div class="comment cmt"><p>Replaces a vertex in a GraphT with a new vertex, retaining connected edges.</p><p>Originally from https://stackoverflow.com/a/48255973, but needed some
@@ -1063,7 +1073,7 @@ additional changes to work with our equality definition for Hosts.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setRuntimeContext</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">setRuntimeContext</span><span class="params">(<span name="arg0">arg0: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd></dl></div>
@@ -1079,7 +1089,7 @@ additional changes to work with our equality definition for Hosts.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">snapshotState</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.flink.runtime.state.FunctionSnapshotContext">FunctionSnapshotContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">snapshotState</span><span class="params">(<span name="context">context: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/runtime/state/FunctionSnapshotContext.html#org.apache.flink.runtime.state.FunctionSnapshotContext" class="extype" name="org.apache.flink.runtime.state.FunctionSnapshotContext">FunctionSnapshotContext</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph">TraceroutePathGraph</a> → CheckpointedFunction</dd></dl></div>
@@ -1127,7 +1137,7 @@ additional changes to work with our equality definition for Hosts.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="arg1">arg1: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1149,7 +1159,7 @@ additional changes to work with our equality definition for Hosts.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1173,7 +1183,7 @@ additional changes to work with our equality definition for Hosts.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1203,7 +1213,7 @@ additional changes to work with our equality definition for Hosts.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1225,21 +1235,21 @@ additional changes to work with our equality definition for Hosts.
             </div><div class="parent" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">
               <h3>Inherited from <a href="../../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></h3>
             </div><div class="parent" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</span></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a></h3>
             </div><div class="parent" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction">CoProcessFunction</span>[<span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.EventT">EventT</span>, <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a>, <a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>]</h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/co/CoProcessFunction.html#org.apache.flink.streaming.api.functions.co.CoProcessFunction" class="extype" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction">CoProcessFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.EventT">EventT</span>, <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a>, <a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>]</h3>
             </div><div class="parent" name="org.apache.flink.api.common.functions.AbstractRichFunction">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</span></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/AbstractRichFunction.html#org.apache.flink.api.common.functions.AbstractRichFunction" class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</a></h3>
             </div><div class="parent" name="org.apache.flink.api.common.functions.RichFunction">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</span></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RichFunction.html#org.apache.flink.api.common.functions.RichFunction" class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</a></h3>
             </div><div class="parent" name="org.apache.flink.api.common.functions.Function">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.api.common.functions.Function">Function</span></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/Function.html#org.apache.flink.api.common.functions.Function" class="extype" name="org.apache.flink.api.common.functions.Function">Function</a></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
             </div>
         
         </div>

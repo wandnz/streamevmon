@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title></title>
-          <meta name="description" content="" />
-          <meta name="keywords" content="" />
+          <title>streamevmon 0.1-SNAPSHOT - nz.net.wand.streamevmon.measurements</title>
+          <meta name="description" content="streamevmon 0.1 - SNAPSHOT - nz.net.wand.streamevmon.measurements" />
+          <meta name="keywords" content="streamevmon 0.1 SNAPSHOT nz.net.wand.streamevmon.measurements" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -19,7 +19,7 @@
       <script type="text/javascript" src="../../../../../index.js"></script>
       <script type="text/javascript" src="../../../../../lib/scheduler.js"></script>
       <script type="text/javascript" src="../../../../../lib/template.js"></script>
-      
+      <script type="text/javascript" src="../../../../../lib/modernizr.custom.js"></script><script type="text/javascript" src="../../../../../lib/diagrams.js" id="diagrams-js"></script>
       <script type="text/javascript">
         /* this variable can be used by the JS to determine the path to the root document */
         var toRoot = '../../../../../';
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title"><span id="doc-version"></span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">0.1-SNAPSHOT</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -497,7 +497,7 @@ some notes on what requirements must be implemented.
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
         </div></div>
         
 
@@ -521,7 +521,7 @@ some notes on what requirements must be implemented.
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="Used to convert a DataStream to a KeyedStream." href="MeasurementKeySelector.html"><span class="name">MeasurementKeySelector</span></a><span class="tparams">[<span name="T">T &lt;: <a href="traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a></span>]</span><span class="result"> extends <span class="extype" name="org.apache.flink.api.java.functions.KeySelector">KeySelector</span>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementKeySelector.T">T</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>
+        <a title="Used to convert a DataStream to a KeyedStream." href="MeasurementKeySelector.html"><span class="name">MeasurementKeySelector</span></a><span class="tparams">[<span name="T">T &lt;: <a href="traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a></span>]</span><span class="result"> extends <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/functions/KeySelector.html#org.apache.flink.api.java.functions.KeySelector" class="extype" name="org.apache.flink.api.java.functions.KeySelector">KeySelector</a>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementKeySelector.T">T</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Used to convert a DataStream to a KeyedStream.</p><div class="fullcomment"><div class="comment cmt"><p>Used to convert a DataStream to a KeyedStream. Stream ID is based on the
@@ -541,7 +541,7 @@ sent to the same downstream operators.
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="Outputs PostgresMeasurementMeta objects for each measurement received." href="MeasurementMetaExtractor.html"><span class="name">MeasurementMetaExtractor</span></a><span class="tparams">[<span name="MeasT">MeasT &lt;: <a href="traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a></span>, <span name="MetaT">MetaT &lt;: <a href="traits/PostgresMeasurementMeta.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.PostgresMeasurementMeta">PostgresMeasurementMeta</a></span>]</span><span class="result"> extends <span class="extype" name="org.apache.flink.streaming.api.functions.ProcessFunction">ProcessFunction</span>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>, <span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>] with <span class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</span> with <a href="../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a> with <a href="../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></span>
+        <a title="Outputs PostgresMeasurementMeta objects for each measurement received." href="MeasurementMetaExtractor.html"><span class="name">MeasurementMetaExtractor</span></a><span class="tparams">[<span name="MeasT">MeasT &lt;: <a href="traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a></span>, <span name="MetaT">MetaT &lt;: <a href="traits/PostgresMeasurementMeta.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.PostgresMeasurementMeta">PostgresMeasurementMeta</a></span>]</span><span class="result"> extends <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/ProcessFunction.html#org.apache.flink.streaming.api.functions.ProcessFunction" class="extype" name="org.apache.flink.streaming.api.functions.ProcessFunction">ProcessFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>, <span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>] with <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a> with <a href="../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a> with <a href="../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></span>
       </span>
       
       <p class="shortcomment cmt">Outputs PostgresMeasurementMeta objects for each measurement received.</p><div class="fullcomment"><div class="comment cmt"><p>Outputs PostgresMeasurementMeta objects for each measurement received. Note
@@ -569,7 +569,7 @@ which uses Caching.
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="Simply extracts timestamps from measurements." href="MeasurementTimestampAssigner.html"><span class="name">MeasurementTimestampAssigner</span></a><span class="result"> extends <span class="extype" name="org.apache.flink.api.common.eventtime.SerializableTimestampAssigner">SerializableTimestampAssigner</span>[<a href="traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a>]</span>
+        <a title="Simply extracts timestamps from measurements." href="MeasurementTimestampAssigner.html"><span class="name">MeasurementTimestampAssigner</span></a><span class="result"> extends <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/eventtime/SerializableTimestampAssigner.html#org.apache.flink.api.common.eventtime.SerializableTimestampAssigner" class="extype" name="org.apache.flink.api.common.eventtime.SerializableTimestampAssigner">SerializableTimestampAssigner</a>[<a href="traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a>]</span>
       </span>
       
       <p class="shortcomment cmt">Simply extracts timestamps from measurements.</p>
@@ -587,9 +587,9 @@ which uses Caching.
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
             </div>
         
         </div>

@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title></title>
-          <meta name="description" content="" />
-          <meta name="keywords" content="" />
+          <title>streamevmon 0.1-SNAPSHOT - nz.net.wand.streamevmon.flink.sources.PollingEsmondSourceFunction</title>
+          <meta name="description" content="streamevmon 0.1 - SNAPSHOT - nz.net.wand.streamevmon.flink.sources.PollingEsmondSourceFunction" />
+          <meta name="keywords" content="streamevmon 0.1 SNAPSHOT nz.net.wand.streamevmon.flink.sources.PollingEsmondSourceFunction" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -19,7 +19,7 @@
       <script type="text/javascript" src="../../../../../../index.js"></script>
       <script type="text/javascript" src="../../../../../../lib/scheduler.js"></script>
       <script type="text/javascript" src="../../../../../../lib/template.js"></script>
-      
+      <script type="text/javascript" src="../../../../../../lib/modernizr.custom.js"></script><script type="text/javascript" src="../../../../../../lib/diagrams.js" id="diagrams-js"></script>
       <script type="text/javascript">
         /* this variable can be used by the JS to determine the path to the root document */
         var toRoot = '../../../../../../';
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title"><span id="doc-version"></span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">0.1-SNAPSHOT</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -237,7 +237,7 @@ FileInputFormat is specifically for reading files, usually from disk.
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">PollingEsmondSourceFunction</span><span class="tparams">[<span name="EsmondConnectionT">EsmondConnectionT &lt;: <a href="../../connectors/esmond/AbstractEsmondConnection.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.AbstractEsmondConnection">AbstractEsmondConnection</a></span>, <span name="EsmondDiscoveryT">EsmondDiscoveryT &lt;: <a href="../../connectors/esmond/AbstractEsmondStreamDiscovery.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.AbstractEsmondStreamDiscovery">AbstractEsmondStreamDiscovery</a></span>]</span><span class="result"> extends <span class="extype" name="org.apache.flink.streaming.api.functions.source.RichSourceFunction">RichSourceFunction</span>[<a href="../../measurements/esmond/RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a>] with <a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a> with <span class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</span> with <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></span>
+        <span class="name">PollingEsmondSourceFunction</span><span class="tparams">[<span name="EsmondConnectionT">EsmondConnectionT &lt;: <a href="../../connectors/esmond/AbstractEsmondConnection.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.AbstractEsmondConnection">AbstractEsmondConnection</a></span>, <span name="EsmondDiscoveryT">EsmondDiscoveryT &lt;: <a href="../../connectors/esmond/AbstractEsmondStreamDiscovery.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.AbstractEsmondStreamDiscovery">AbstractEsmondStreamDiscovery</a></span>]</span><span class="result"> extends <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/source/RichSourceFunction.html#org.apache.flink.streaming.api.functions.source.RichSourceFunction" class="extype" name="org.apache.flink.streaming.api.functions.source.RichSourceFunction">RichSourceFunction</a>[<a href="../../measurements/esmond/RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a>] with <a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a> with <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a> with <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></span>
       </span>
       </h4>
 
@@ -250,8 +250,18 @@ the StreamDiscovery and the EsmondConnection.
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <span class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</span>, <a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a>, <span class="extype" name="org.apache.flink.streaming.api.functions.source.RichSourceFunction">RichSourceFunction</span>[<a href="../../measurements/esmond/RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a>], <span class="extype" name="org.apache.flink.streaming.api.functions.source.SourceFunction">SourceFunction</span>[<a href="../../measurements/esmond/RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a>], <span class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</span>, <span class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</span>, <span class="extype" name="org.apache.flink.api.common.functions.Function">Function</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div></div>
+          <div class="superTypes hiddenContent"><a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a>, <a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/source/RichSourceFunction.html#org.apache.flink.streaming.api.functions.source.RichSourceFunction" class="extype" name="org.apache.flink.streaming.api.functions.source.RichSourceFunction">RichSourceFunction</a>[<a href="../../measurements/esmond/RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a>], <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/source/SourceFunction.html#org.apache.flink.streaming.api.functions.source.SourceFunction" class="extype" name="org.apache.flink.streaming.api.functions.source.SourceFunction">SourceFunction</a>[<a href="../../measurements/esmond/RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a>], <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/AbstractRichFunction.html#org.apache.flink.api.common.functions.AbstractRichFunction" class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RichFunction.html#org.apache.flink.api.common.functions.RichFunction" class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/Function.html#org.apache.flink.api.common.functions.Function" class="extype" name="org.apache.flink.api.common.functions.Function">Function</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+        </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
+                <span class="toggle diagram-link">
+                  Type Hierarchy
+                </span>
+                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 624.00 118.00" height="118pt" width="624pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 114)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-114 620,-114 620,4 -4,4" stroke="transparent" fill="#ffffff"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this class" id="graph1_0"><g id="a_this class|graph1_0"><a xlink:title="nz.net.wand.streamevmon.flink.sources.PollingEsmondSourceFunction (this class)" xlink:href="#inheritance-diagram"><path d="M548.1667,-49C548.1667,-49 215.8333,-49 215.8333,-49 211.6667,-49 207.5,-44.8333 207.5,-40.6667 207.5,-40.6667 207.5,-32.3333 207.5,-32.3333 207.5,-28.1667 211.6667,-24 215.8333,-24 215.8333,-24 548.1667,-24 548.1667,-24 552.3333,-24 556.5,-28.1667 556.5,-32.3333 556.5,-32.3333 556.5,-40.6667 556.5,-40.6667 556.5,-44.8333 552.3333,-49 548.1667,-49" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../lib/class_diagram.png" y="-43.5" x="218" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-34.1" x="239" text-anchor="start">PollingEsmondSourceFunction[EsmondConnectionT, EsmondDiscoveryT]</text></a></g></g><!-- node1 --><g class="node class" id="graph1_1"><g id="a_class|graph1_1"><a xlink:title="org.apache.flink.streaming.api.functions.source.RichSourceFunction"><path d="M233.6667,-110C233.6667,-110 8.3333,-110 8.3333,-110 4.1667,-110 0,-105.8333 0,-101.6667 0,-101.6667 0,-93.3333 0,-93.3333 0,-89.1667 4.1667,-85 8.3333,-85 8.3333,-85 233.6667,-85 233.6667,-85 237.8333,-85 242,-89.1667 242,-93.3333 242,-93.3333 242,-101.6667 242,-101.6667 242,-105.8333 237.8333,-110 233.6667,-110" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../lib/class_diagram.png" y="-104.5" x="10" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="31" text-anchor="start">RichSourceFunction[RichEsmondMeasurement]</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph1_1_0"><g id="a_inheritance|graph1_1_0"><a xlink:title="PollingEsmondSourceFunction[EsmondConnectionT, EsmondDiscoveryT] is a subtype of RichSourceFunction[RichEsmondMeasurement]"><path d="M181.7464,-83.3026C226.1042,-72.9354 285.6889,-59.0095 328.3069,-49.049" stroke="#d4d4d4" fill="none"></path><polygon points="181.0216,-80.9559 174.7629,-84.9347 182.1368,-85.7273 181.0216,-80.9559" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node trait" id="graph1_2"><g id="a_trait|graph1_2"><a xlink:title="nz.net.wand.streamevmon.flink.HasFlinkConfig" xlink:href="../HasFlinkConfig.html#inheritance-diagram"><path d="M357.6667,-110C357.6667,-110 268.3333,-110 268.3333,-110 264.1667,-110 260,-105.8333 260,-101.6667 260,-101.6667 260,-93.3333 260,-93.3333 260,-89.1667 264.1667,-85 268.3333,-85 268.3333,-85 357.6667,-85 357.6667,-85 361.8333,-85 366,-89.1667 366,-93.3333 366,-93.3333 366,-101.6667 366,-101.6667 366,-105.8333 361.8333,-110 357.6667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="270" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="291" text-anchor="start">HasFlinkConfig</text></a></g></g><!-- node2&#45;&gt;node0 --><g class="edge inheritance" id="graph1_2_0"><g id="a_inheritance|graph1_2_0"><a xlink:title="PollingEsmondSourceFunction[EsmondConnectionT, EsmondDiscoveryT] is a subtype of HasFlinkConfig"><path d="M332.5563,-80.2111C343.7515,-70.3138 357.549,-58.1161 367.7215,-49.123" stroke="#d4d4d4" fill="none"></path><polygon points="330.9186,-78.3888 327.2968,-84.8608 334.164,-82.0599 330.9186,-78.3888" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node3 --><g class="node trait" id="graph1_3"><g id="a_trait|graph1_3"><a xlink:title="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction"><path d="M511.6667,-110C511.6667,-110 392.3333,-110 392.3333,-110 388.1667,-110 384,-105.8333 384,-101.6667 384,-101.6667 384,-93.3333 384,-93.3333 384,-89.1667 388.1667,-85 392.3333,-85 392.3333,-85 511.6667,-85 511.6667,-85 515.8333,-85 520,-89.1667 520,-93.3333 520,-93.3333 520,-101.6667 520,-101.6667 520,-105.8333 515.8333,-110 511.6667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="394" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="415" text-anchor="start">CheckpointedFunction</text></a></g></g><!-- node3&#45;&gt;node0 --><g class="edge inheritance" id="graph1_3_0"><g id="a_inheritance|graph1_3_0"><a xlink:title="PollingEsmondSourceFunction[EsmondConnectionT, EsmondDiscoveryT] is a subtype of CheckpointedFunction"><path d="M432.1602,-80.2111C420.8028,-70.3138 406.8054,-58.1161 396.4855,-49.123" stroke="#d4d4d4" fill="none"></path><polygon points="430.609,-82.109 437.496,-84.8608 433.8282,-78.4148 430.609,-82.109" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node4 --><g class="node trait" id="graph1_4"><g id="a_trait|graph1_4"><a xlink:title="nz.net.wand.streamevmon.Logging" xlink:href="../../Logging.html#inheritance-diagram"><path d="M607.6667,-110C607.6667,-110 546.3333,-110 546.3333,-110 542.1667,-110 538,-105.8333 538,-101.6667 538,-101.6667 538,-93.3333 538,-93.3333 538,-89.1667 542.1667,-85 546.3333,-85 546.3333,-85 607.6667,-85 607.6667,-85 611.8333,-85 616,-89.1667 616,-93.3333 616,-93.3333 616,-101.6667 616,-101.6667 616,-105.8333 611.8333,-110 607.6667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="548" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="569" text-anchor="start">Logging</text></a></g></g><!-- node4&#45;&gt;node0 --><g class="edge inheritance" id="graph1_4_0"><g id="a_inheritance|graph1_4_0"><a xlink:title="PollingEsmondSourceFunction[EsmondConnectionT, EsmondDiscoveryT] is a subtype of Logging"><path d="M530.6603,-83.004C497.6078,-72.6645 453.6111,-58.9014 422.0718,-49.0353" stroke="#d4d4d4" fill="none"></path><polygon points="530.1266,-85.4041 537.5388,-85.1557 531.5896,-80.7275 530.1266,-85.4041" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
+                <div id="diagram-controls" class="hiddenContent">
+                  <button id="diagram-zoom-out" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button id="diagram-zoom-in" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button title="Toggle full-screen" id="diagram-fs" class="diagram-btn to-full"><i class="material-icons"></i></button>
+                </div>
+              </div></div>
         
 
       <div id="mbrsel">
@@ -308,7 +318,7 @@ the StreamDiscovery and the EsmondConnection.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">PollingEsmondSourceFunction</span><span class="params">(<span name="configPrefix">configPrefix: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;esmond&quot;</span></span>, <span name="connectionBuilder">connectionBuilder: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <a href="../../connectors/esmond/AbstractEsmondConnection.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.AbstractEsmondConnection">AbstractEsmondConnection</a> = <span class="defval" name='<span class="name"><a href="../../../../../index.html">(s: String) =&gt; new EsmondConnectionForeground(s)</a></span>'>...</span></span>, <span name="discoveryBuilder">discoveryBuilder: (<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span>, <a href="../../connectors/esmond/AbstractEsmondConnection.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.AbstractEsmondConnection">AbstractEsmondConnection</a>) ⇒ <a href="../../connectors/esmond/AbstractEsmondStreamDiscovery.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.AbstractEsmondStreamDiscovery">AbstractEsmondStreamDiscovery</a> = <span class="defval" name="(s: String, p: ParameterTool, c: AbstractEsmondConnection) =&gt; new EsmondStreamDiscovery(s, p, c)">...</span></span>)</span>
+        <span class="name">PollingEsmondSourceFunction</span><span class="params">(<span name="configPrefix">configPrefix: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;esmond&quot;</span></span>, <span name="connectionBuilder">connectionBuilder: (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <a href="../../connectors/esmond/AbstractEsmondConnection.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.AbstractEsmondConnection">AbstractEsmondConnection</a> = <span class="defval" name='<span class="name"><a href="../../../../../index.html">(s: String) =&gt; new EsmondConnectionForeground(s)</a></span>'>...</span></span>, <span name="discoveryBuilder">discoveryBuilder: (<span class="extype" name="scala.Predef.String">String</span>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a>, <a href="../../connectors/esmond/AbstractEsmondConnection.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.AbstractEsmondConnection">AbstractEsmondConnection</a>) ⇒ <a href="../../connectors/esmond/AbstractEsmondStreamDiscovery.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.AbstractEsmondStreamDiscovery">AbstractEsmondStreamDiscovery</a> = <span class="defval" name="(s: String, p: ParameterTool, c: AbstractEsmondConnection) =&gt; new EsmondStreamDiscovery(s, p, c)">...</span></span>)</span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">configPrefix</dt><dd class="cmt"><p>A custom config prefix to use.</p></dd><dt class="param">connectionBuilder</dt><dd class="cmt"><p>A function which builds the Esmond connection implementation.</p></dd><dt class="param">discoveryBuilder</dt><dd class="cmt"><p>A function which builds the Esmond stream discovery implementation.</p></dd></dl></div>
@@ -329,7 +339,7 @@ the StreamDiscovery and the EsmondConnection.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Keeps track of an endpoint that's being queried, as well as the time of the last measurement we received." href="PollingEsmondSourceFunction$Endpoint.html"><span class="name">Endpoint</span></a><span class="params">(<span name="details">details: <span class="extype" name="scala.Either">Either</span>[<a href="../../connectors/esmond/schema/EventType.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.EventType">EventType</a>, <a href="../../connectors/esmond/schema/Summary.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.Summary">Summary</a>]</span>, <span name="lastMeasurementTime">lastMeasurementTime: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="Keeps track of an endpoint that's being queried, as well as the time of the last measurement we received." href="PollingEsmondSourceFunction$Endpoint.html"><span class="name">Endpoint</span></a><span class="params">(<span name="details">details: <span class="extype" name="scala.Either">Either</span>[<a href="../../connectors/esmond/schema/EventType.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.EventType">EventType</a>, <a href="../../connectors/esmond/schema/Summary.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.Summary">Summary</a>]</span>, <span name="lastMeasurementTime">lastMeasurementTime: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Keeps track of an endpoint that's being queried, as well as the time of
@@ -357,7 +367,7 @@ we haven't seen before.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -373,7 +383,7 @@ we haven't seen before.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -389,7 +399,7 @@ we haven't seen before.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -421,7 +431,7 @@ we haven't seen before.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">cancel</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">cancel</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.flink.sources.PollingEsmondSourceFunction">PollingEsmondSourceFunction</a> → SourceFunction</dd></dl></div>
@@ -437,7 +447,7 @@ we haven't seen before.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -463,7 +473,7 @@ we haven't seen before.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">close</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">close</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd><dt>Annotations</dt><dd>
@@ -501,7 +511,7 @@ we haven't seen before.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configWithOverride</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</span></span>)</span><span class="result">: <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span></span>
+        <span class="name">configWithOverride</span><span class="params">(<span name="context">context: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>)</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -517,7 +527,7 @@ we haven't seen before.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configWithOverride</span><span class="params">(<span name="config">config: <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span></span>)</span><span class="result">: <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span></span>
+        <span class="name">configWithOverride</span><span class="params">(<span name="config">config: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>)</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -533,7 +543,7 @@ we haven't seen before.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -549,7 +559,7 @@ we haven't seen before.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -565,7 +575,7 @@ we haven't seen before.
         <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">esmond</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="../../connectors/esmond/AbstractEsmondConnection.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.AbstractEsmondConnection">AbstractEsmondConnection</a>]</span>
+        <span class="name">esmond</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="../../connectors/esmond/AbstractEsmondConnection.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.AbstractEsmondConnection">AbstractEsmondConnection</a>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
@@ -687,7 +697,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getEntries</span><span class="params">(<span name="eventType">eventType: <a href="../../connectors/esmond/schema/EventType.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.EventType">EventType</a></span>, <span name="timeStart">timeStart: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="java.time.Instant">Instant</span>]</span>, <span name="timeEnd">timeEnd: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="java.time.Instant">Instant</span>]</span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="scala.Iterable">Iterable</span>[<a href="../../connectors/esmond/schema/AbstractTimeSeriesEntry.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.AbstractTimeSeriesEntry">AbstractTimeSeriesEntry</a>]]</span>
+        <span class="name">getEntries</span><span class="params">(<span name="eventType">eventType: <a href="../../connectors/esmond/schema/EventType.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.EventType">EventType</a></span>, <span name="timeStart">timeStart: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="java.time.Instant">Instant</span>]</span>, <span name="timeEnd">timeEnd: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="java.time.Instant">Instant</span>]</span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/util/Try.html#scala.util.Try" class="extype" name="scala.util.Try">Try</a>[<span class="extype" name="scala.Iterable">Iterable</span>[<a href="../../connectors/esmond/schema/AbstractTimeSeriesEntry.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.AbstractTimeSeriesEntry">AbstractTimeSeriesEntry</a>]]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
@@ -703,7 +713,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getIterationRuntimeContext</span><span class="params">()</span><span class="result">: <span class="extype" name="org.apache.flink.api.common.functions.IterationRuntimeContext">IterationRuntimeContext</span></span>
+        <span class="name">getIterationRuntimeContext</span><span class="params">()</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/IterationRuntimeContext.html#org.apache.flink.api.common.functions.IterationRuntimeContext" class="extype" name="org.apache.flink.api.common.functions.IterationRuntimeContext">IterationRuntimeContext</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd></dl></div>
@@ -719,7 +729,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getOverrideParams</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span>]</span>
+        <span class="name">getOverrideParams</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -735,7 +745,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getRuntimeContext</span><span class="params">()</span><span class="result">: <span class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</span></span>
+        <span class="name">getRuntimeContext</span><span class="params">()</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd></dl></div>
@@ -751,7 +761,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getSummaryEntries</span><span class="params">(<span name="summary">summary: <a href="../../connectors/esmond/schema/Summary.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.Summary">Summary</a></span>, <span name="timeStart">timeStart: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="java.time.Instant">Instant</span>]</span>, <span name="timeEnd">timeEnd: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="java.time.Instant">Instant</span>]</span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="scala.Iterable">Iterable</span>[<a href="../../connectors/esmond/schema/AbstractTimeSeriesEntry.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.AbstractTimeSeriesEntry">AbstractTimeSeriesEntry</a>]]</span>
+        <span class="name">getSummaryEntries</span><span class="params">(<span name="summary">summary: <a href="../../connectors/esmond/schema/Summary.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.Summary">Summary</a></span>, <span name="timeStart">timeStart: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="java.time.Instant">Instant</span>]</span>, <span name="timeEnd">timeEnd: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="java.time.Instant">Instant</span>]</span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/util/Try.html#scala.util.Try" class="extype" name="scala.util.Try">Try</a>[<span class="extype" name="scala.Iterable">Iterable</span>[<a href="../../connectors/esmond/schema/AbstractTimeSeriesEntry.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.AbstractTimeSeriesEntry">AbstractTimeSeriesEntry</a>]]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
@@ -767,7 +777,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
@@ -788,7 +798,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">initializeState</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.flink.runtime.state.FunctionInitializationContext">FunctionInitializationContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">initializeState</span><span class="params">(<span name="context">context: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/runtime/state/FunctionInitializationContext.html#org.apache.flink.runtime.state.FunctionInitializationContext" class="extype" name="org.apache.flink.runtime.state.FunctionInitializationContext">FunctionInitializationContext</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.flink.sources.PollingEsmondSourceFunction">PollingEsmondSourceFunction</a> → CheckpointedFunction</dd></dl></div>
@@ -804,7 +814,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -820,7 +830,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">isRunning</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">isRunning</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
@@ -836,7 +846,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">listen</span><span class="params">(<span name="ctx">ctx: <span class="extype" name="org.apache.flink.streaming.api.functions.source.SourceFunction.SourceContext">SourceContext</span>[<a href="../../measurements/esmond/RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">listen</span><span class="params">(<span name="ctx">ctx: <span class="extype" name="org.apache.flink.streaming.api.functions.source.SourceFunction.SourceContext">SourceContext</span>[<a href="../../measurements/esmond/RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a>]</span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <p class="shortcomment cmt">Continually polls all the endpoints for new data.</p><div class="fullcomment"><div class="comment cmt"><p>Continually polls all the endpoints for new data.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
@@ -887,7 +897,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -903,7 +913,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -924,7 +934,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -945,7 +955,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">open</span><span class="params">(<span name="parameters">parameters: <span class="extype" name="org.apache.flink.configuration.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">open</span><span class="params">(<span name="parameters">parameters: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/configuration/Configuration.html#org.apache.flink.configuration.Configuration" class="extype" name="org.apache.flink.configuration.Configuration">Configuration</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.flink.sources.PollingEsmondSourceFunction">PollingEsmondSourceFunction</a> → AbstractRichFunction → RichFunction</dd></dl></div>
@@ -961,7 +971,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">overrideConfig</span><span class="params">(<span name="config">config: <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span></span>)</span><span class="result">: <a href="" class="extype" name="nz.net.wand.streamevmon.flink.sources.PollingEsmondSourceFunction">PollingEsmondSourceFunction</a>.this.type</span>
+        <span class="name">overrideConfig</span><span class="params">(<span name="config">config: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>)</span><span class="result">: <a href="" class="extype" name="nz.net.wand.streamevmon.flink.sources.PollingEsmondSourceFunction">PollingEsmondSourceFunction</a>.this.type</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -993,7 +1003,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">overrideParams</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span>]</span>
+        <span class="name">overrideParams</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -1009,7 +1019,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">run</span><span class="params">(<span name="ctx">ctx: <span class="extype" name="org.apache.flink.streaming.api.functions.source.SourceFunction.SourceContext">SourceContext</span>[<a href="../../measurements/esmond/RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">run</span><span class="params">(<span name="ctx">ctx: <span class="extype" name="org.apache.flink.streaming.api.functions.source.SourceFunction.SourceContext">SourceContext</span>[<a href="../../measurements/esmond/RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a>]</span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.flink.sources.PollingEsmondSourceFunction">PollingEsmondSourceFunction</a> → SourceFunction</dd></dl></div>
@@ -1041,7 +1051,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">selectedStreamsStorage</span><span class="result">: <span class="extype" name="org.apache.flink.api.common.state.ListState">ListState</span>[<a href="PollingEsmondSourceFunction$Endpoint.html" class="extype" name="nz.net.wand.streamevmon.flink.sources.PollingEsmondSourceFunction.Endpoint">Endpoint</a>]</span>
+        <span class="name">selectedStreamsStorage</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/state/ListState.html#org.apache.flink.api.common.state.ListState" class="extype" name="org.apache.flink.api.common.state.ListState">ListState</a>[<a href="PollingEsmondSourceFunction$Endpoint.html" class="extype" name="nz.net.wand.streamevmon.flink.sources.PollingEsmondSourceFunction.Endpoint">Endpoint</a>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
@@ -1057,7 +1067,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setRuntimeContext</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">setRuntimeContext</span><span class="params">(<span name="arg0">arg0: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd></dl></div>
@@ -1073,7 +1083,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">snapshotState</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.flink.runtime.state.FunctionSnapshotContext">FunctionSnapshotContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">snapshotState</span><span class="params">(<span name="context">context: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/runtime/state/FunctionSnapshotContext.html#org.apache.flink.runtime.state.FunctionSnapshotContext" class="extype" name="org.apache.flink.runtime.state.FunctionSnapshotContext">FunctionSnapshotContext</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.flink.sources.PollingEsmondSourceFunction">PollingEsmondSourceFunction</a> → CheckpointedFunction</dd></dl></div>
@@ -1153,7 +1163,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="arg1">arg1: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1175,7 +1185,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1199,7 +1209,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1229,7 +1239,7 @@ waiting the appropriate amount of time between queries.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1249,25 +1259,25 @@ waiting the appropriate amount of time between queries.
         <div class="parent" name="nz.net.wand.streamevmon.Logging">
               <h3>Inherited from <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></h3>
             </div><div class="parent" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</span></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a></h3>
             </div><div class="parent" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">
               <h3>Inherited from <a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></h3>
             </div><div class="parent" name="org.apache.flink.streaming.api.functions.source.RichSourceFunction">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.streaming.api.functions.source.RichSourceFunction">RichSourceFunction</span>[<a href="../../measurements/esmond/RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a>]</h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/source/RichSourceFunction.html#org.apache.flink.streaming.api.functions.source.RichSourceFunction" class="extype" name="org.apache.flink.streaming.api.functions.source.RichSourceFunction">RichSourceFunction</a>[<a href="../../measurements/esmond/RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a>]</h3>
             </div><div class="parent" name="org.apache.flink.streaming.api.functions.source.SourceFunction">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.streaming.api.functions.source.SourceFunction">SourceFunction</span>[<a href="../../measurements/esmond/RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a>]</h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/source/SourceFunction.html#org.apache.flink.streaming.api.functions.source.SourceFunction" class="extype" name="org.apache.flink.streaming.api.functions.source.SourceFunction">SourceFunction</a>[<a href="../../measurements/esmond/RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a>]</h3>
             </div><div class="parent" name="org.apache.flink.api.common.functions.AbstractRichFunction">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</span></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/AbstractRichFunction.html#org.apache.flink.api.common.functions.AbstractRichFunction" class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</a></h3>
             </div><div class="parent" name="org.apache.flink.api.common.functions.RichFunction">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</span></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RichFunction.html#org.apache.flink.api.common.functions.RichFunction" class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</a></h3>
             </div><div class="parent" name="org.apache.flink.api.common.functions.Function">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.api.common.functions.Function">Function</span></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/Function.html#org.apache.flink.api.common.functions.Function" class="extype" name="org.apache.flink.api.common.functions.Function">Function</a></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
             </div>
         
         </div>

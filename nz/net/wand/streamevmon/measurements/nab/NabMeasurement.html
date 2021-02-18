@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title></title>
-          <meta name="description" content="" />
-          <meta name="keywords" content="" />
+          <title>streamevmon 0.1-SNAPSHOT - nz.net.wand.streamevmon.measurements.nab.NabMeasurement</title>
+          <meta name="description" content="streamevmon 0.1 - SNAPSHOT - nz.net.wand.streamevmon.measurements.nab.NabMeasurement" />
+          <meta name="keywords" content="streamevmon 0.1 SNAPSHOT nz.net.wand.streamevmon.measurements.nab.NabMeasurement" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -19,7 +19,7 @@
       <script type="text/javascript" src="../../../../../../index.js"></script>
       <script type="text/javascript" src="../../../../../../lib/scheduler.js"></script>
       <script type="text/javascript" src="../../../../../../lib/template.js"></script>
-      
+      <script type="text/javascript" src="../../../../../../lib/modernizr.custom.js"></script><script type="text/javascript" src="../../../../../../lib/diagrams.js" id="diagrams-js"></script>
       <script type="text/javascript">
         /* this variable can be used by the JS to determine the path to the root document */
         var toRoot = '../../../../../../';
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title"><span id="doc-version"></span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">0.1-SNAPSHOT</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -208,7 +208,7 @@ some notes on what requirements must be implemented.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">NabMeasurement</span><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Double">Double</span></span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="../traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="../traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">NabMeasurement</span><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="../traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="../traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       </h4>
 
@@ -219,8 +219,18 @@ The stream corresponds to the filename the measurement is from.
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="../traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a>, <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a>, <a href="../traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div></div>
+          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Equals.html#scala.Equals" class="extype" name="scala.Equals">Equals</a>, <a href="../traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a>, <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a>, <a href="../traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+        </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
+                <span class="toggle diagram-link">
+                  Type Hierarchy
+                </span>
+                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 550.50 118.00" height="118pt" width="551pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 114)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-114 546.5,-114 546.5,4 -4,4" stroke="transparent" fill="#ffffff"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this class" id="graph1_0"><g id="a_this class|graph1_0"><a xlink:title="nz.net.wand.streamevmon.measurements.nab.NabMeasurement (this class)" xlink:href="#inheritance-diagram"><path d="M342.1667,-49C342.1667,-49 239.8333,-49 239.8333,-49 235.6667,-49 231.5,-44.8333 231.5,-40.6667 231.5,-40.6667 231.5,-32.3333 231.5,-32.3333 231.5,-28.1667 235.6667,-24 239.8333,-24 239.8333,-24 342.1667,-24 342.1667,-24 346.3333,-24 350.5,-28.1667 350.5,-32.3333 350.5,-32.3333 350.5,-40.6667 350.5,-40.6667 350.5,-44.8333 346.3333,-49 342.1667,-49" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../lib/class_diagram.png" y="-43.5" x="242" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-34.1" x="263" text-anchor="start">NabMeasurement</text></a></g></g><!-- node1 --><g class="node trait" id="graph1_1"><g id="a_trait|graph1_1"><a xlink:title="nz.net.wand.streamevmon.measurements.traits.Measurement" xlink:href="../traits/Measurement.html#inheritance-diagram"><path d="M93.6667,-110C93.6667,-110 8.3333,-110 8.3333,-110 4.1667,-110 0,-105.8333 0,-101.6667 0,-101.6667 0,-93.3333 0,-93.3333 0,-89.1667 4.1667,-85 8.3333,-85 8.3333,-85 93.6667,-85 93.6667,-85 97.8333,-85 102,-89.1667 102,-93.3333 102,-93.3333 102,-101.6667 102,-101.6667 102,-105.8333 97.8333,-110 93.6667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="10" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="31" text-anchor="start">Measurement</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph1_1_0"><g id="a_inheritance|graph1_1_0"><a xlink:title="NabMeasurement is a subtype of Measurement"><path d="M107.363,-83.1744C148.0982,-72.8209 202.5994,-58.9685 241.627,-49.049" stroke="#d4d4d4" fill="none"></path><polygon points="106.6179,-80.8358 100.4372,-84.9347 107.825,-85.5848 106.6179,-80.8358" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node trait" id="graph1_2"><g id="a_trait|graph1_2"><a xlink:title="nz.net.wand.streamevmon.measurements.traits.CsvOutputable" xlink:href="../traits/CsvOutputable.html#inheritance-diagram"><path d="M219.1667,-110C219.1667,-110 128.8333,-110 128.8333,-110 124.6667,-110 120.5,-105.8333 120.5,-101.6667 120.5,-101.6667 120.5,-93.3333 120.5,-93.3333 120.5,-89.1667 124.6667,-85 128.8333,-85 128.8333,-85 219.1667,-85 219.1667,-85 223.3333,-85 227.5,-89.1667 227.5,-93.3333 227.5,-93.3333 227.5,-101.6667 227.5,-101.6667 227.5,-105.8333 223.3333,-110 219.1667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="131" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="152" text-anchor="start">CsvOutputable</text></a></g></g><!-- node2&#45;&gt;node0 --><g class="edge inheritance" id="graph1_2_0"><g id="a_inheritance|graph1_2_0"><a xlink:title="NabMeasurement is a subtype of CsvOutputable"><path d="M204.6005,-81.5459C224.0043,-71.4294 248.7556,-58.5249 266.7886,-49.123" stroke="#d4d4d4" fill="none"></path><polygon points="203.3169,-79.4521 198.2425,-84.8608 205.5822,-83.797 203.3169,-79.4521" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node3 --><g class="node trait" id="graph1_3"><g id="a_trait|graph1_3"><a xlink:title="nz.net.wand.streamevmon.measurements.traits.HasDefault" xlink:href="../traits/HasDefault.html#inheritance-diagram"><path d="M327.6667,-110C327.6667,-110 254.3333,-110 254.3333,-110 250.1667,-110 246,-105.8333 246,-101.6667 246,-101.6667 246,-93.3333 246,-93.3333 246,-89.1667 250.1667,-85 254.3333,-85 254.3333,-85 327.6667,-85 327.6667,-85 331.8333,-85 336,-89.1667 336,-93.3333 336,-93.3333 336,-101.6667 336,-101.6667 336,-105.8333 331.8333,-110 327.6667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="256" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="277" text-anchor="start">HasDefault</text></a></g></g><!-- node3&#45;&gt;node0 --><g class="edge inheritance" id="graph1_3_0"><g id="a_inheritance|graph1_3_0"><a xlink:title="NabMeasurement is a subtype of HasDefault"><path d="M291,-77.7386C291,-68.3393 291,-57.3803 291,-49.123" stroke="#d4d4d4" fill="none"></path><polygon points="288.5501,-77.8607 291,-84.8608 293.4501,-77.8608 288.5501,-77.8607" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node4 --><g class="node trait" id="graph1_4"><g id="a_trait|graph1_4"><a xlink:title="scala.Product"><path d="M423.1667,-110C423.1667,-110 362.8333,-110 362.8333,-110 358.6667,-110 354.5,-105.8333 354.5,-101.6667 354.5,-101.6667 354.5,-93.3333 354.5,-93.3333 354.5,-89.1667 358.6667,-85 362.8333,-85 362.8333,-85 423.1667,-85 423.1667,-85 427.3333,-85 431.5,-89.1667 431.5,-93.3333 431.5,-93.3333 431.5,-101.6667 431.5,-101.6667 431.5,-105.8333 427.3333,-110 423.1667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="365" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="386" text-anchor="start">Product</text></a></g></g><!-- node4&#45;&gt;node0 --><g class="edge inheritance" id="graph1_4_0"><g id="a_inheritance|graph1_4_0"><a xlink:title="NabMeasurement is a subtype of Product"><path d="M365.4359,-81.0156C348.6577,-70.9816 327.5551,-58.3614 312.1074,-49.123" stroke="#d4d4d4" fill="none"></path><polygon points="364.6004,-83.3706 371.8655,-84.8608 367.1154,-79.1652 364.6004,-83.3706" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node5 --><g class="node trait" id="graph1_5"><g id="a_trait|graph1_5"><a xlink:title="scala.Serializable"><path d="M534.1667,-110C534.1667,-110 457.8333,-110 457.8333,-110 453.6667,-110 449.5,-105.8333 449.5,-101.6667 449.5,-101.6667 449.5,-93.3333 449.5,-93.3333 449.5,-89.1667 453.6667,-85 457.8333,-85 457.8333,-85 534.1667,-85 534.1667,-85 538.3333,-85 542.5,-89.1667 542.5,-93.3333 542.5,-93.3333 542.5,-101.6667 542.5,-101.6667 542.5,-105.8333 538.3333,-110 534.1667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="460" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="481" text-anchor="start">Serializable</text></a></g></g><!-- node5&#45;&gt;node0 --><g class="edge inheritance" id="graph1_5_0"><g id="a_inheritance|graph1_5_0"><a xlink:title="NabMeasurement is a subtype of Serializable"><path d="M446.7404,-82.8423C412.0356,-72.5155 366.0587,-58.8345 333.0705,-49.0185" stroke="#d4d4d4" fill="none"></path><polygon points="446.1158,-85.2125 453.5239,-84.8608 447.5134,-80.516 446.1158,-85.2125" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
+                <div id="diagram-controls" class="hiddenContent">
+                  <button id="diagram-zoom-out" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button id="diagram-zoom-in" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button title="Toggle full-screen" id="diagram-fs" class="diagram-btn to-full"><i class="material-icons"></i></button>
+                </div>
+              </div></div>
         
 
       <div id="mbrsel">
@@ -277,7 +287,7 @@ The stream corresponds to the filename the measurement is from.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">NabMeasurement</span><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Double">Double</span></span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span>
+        <span class="name">NabMeasurement</span><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span>
       </span>
       
       
@@ -303,7 +313,7 @@ The stream corresponds to the filename the measurement is from.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -319,7 +329,7 @@ The stream corresponds to the filename the measurement is from.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -335,7 +345,7 @@ The stream corresponds to the filename the measurement is from.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -367,7 +377,7 @@ The stream corresponds to the filename the measurement is from.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -393,7 +403,7 @@ The stream corresponds to the filename the measurement is from.
         <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">defaultValue</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Double">Double</span>]</span>
+        <span class="name">defaultValue</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.measurements.nab.NabMeasurement">NabMeasurement</a> → <a href="../traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a></dd></dl></div>
@@ -409,7 +419,7 @@ The stream corresponds to the filename the measurement is from.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -446,7 +456,7 @@ The stream corresponds to the filename the measurement is from.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -462,7 +472,7 @@ The stream corresponds to the filename the measurement is from.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isLossy</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">isLossy</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>True if the object represents a measurement that encountered loss.
@@ -480,7 +490,7 @@ The stream corresponds to the filename the measurement is from.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -496,7 +506,7 @@ The stream corresponds to the filename the measurement is from.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -517,7 +527,7 @@ The stream corresponds to the filename the measurement is from.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -590,7 +600,7 @@ corresponds to a particular test schedule.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toCsvEntry</span><span class="params">(<span name="e">e: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">toCsvEntry</span><span class="params">(<span name="e">e: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       
       <p class="shortcomment cmt">Returns this object, simplified in the way that toCsvFormat desires.</p><div class="fullcomment"><div class="comment cmt"><p>Returns this object, simplified in the way that toCsvFormat desires.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a></dd></dl></div>
@@ -646,7 +656,7 @@ object from the result of this method.</p><p>Generally, it's easiest to put all 
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">value</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+        <span class="name">value</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>
       </span>
       
       
@@ -662,7 +672,7 @@ object from the result of this method.</p><p>Generally, it's easiest to put all 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="arg1">arg1: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -684,7 +694,7 @@ object from the result of this method.</p><p>Generally, it's easiest to put all 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -708,7 +718,7 @@ object from the result of this method.</p><p>Generally, it's easiest to put all 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -738,7 +748,7 @@ object from the result of this method.</p><p>Generally, it's easiest to put all 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -756,9 +766,9 @@ object from the result of this method.</p><p>Generally, it's easiest to put all 
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.Product">
-              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a></h3>
             </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Equals.html#scala.Equals" class="extype" name="scala.Equals">Equals</a></h3>
             </div><div class="parent" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">
               <h3>Inherited from <a href="../traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a></h3>
             </div><div class="parent" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">
@@ -766,13 +776,13 @@ object from the result of this method.</p><p>Generally, it's easiest to put all 
             </div><div class="parent" name="nz.net.wand.streamevmon.measurements.traits.Measurement">
               <h3>Inherited from <a href="../traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a></h3>
             </div><div class="parent" name="scala.Serializable">
-              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
             </div>
         
         </div>

@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title></title>
-          <meta name="description" content="" />
-          <meta name="keywords" content="" />
+          <title>streamevmon 0.1-SNAPSHOT - nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor</title>
+          <meta name="description" content="streamevmon 0.1 - SNAPSHOT - nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor" />
+          <meta name="keywords" content="streamevmon 0.1 SNAPSHOT nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -19,7 +19,7 @@
       <script type="text/javascript" src="../../../../../index.js"></script>
       <script type="text/javascript" src="../../../../../lib/scheduler.js"></script>
       <script type="text/javascript" src="../../../../../lib/template.js"></script>
-      
+      <script type="text/javascript" src="../../../../../lib/modernizr.custom.js"></script><script type="text/javascript" src="../../../../../lib/diagrams.js" id="diagrams-js"></script>
       <script type="text/javascript">
         /* this variable can be used by the JS to determine the path to the root document */
         var toRoot = '../../../../../';
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title"><span id="doc-version"></span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">0.1-SNAPSHOT</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -351,7 +351,7 @@ that are common to all measurements stored in particular databases
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">MeasurementMetaExtractor</span><span class="tparams">[<span name="MeasT">MeasT &lt;: <a href="traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a></span>, <span name="MetaT">MetaT &lt;: <a href="traits/PostgresMeasurementMeta.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.PostgresMeasurementMeta">PostgresMeasurementMeta</a></span>]</span><span class="result"> extends <span class="extype" name="org.apache.flink.streaming.api.functions.ProcessFunction">ProcessFunction</span>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>, <span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>] with <span class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</span> with <a href="../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a> with <a href="../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></span>
+        <span class="name">MeasurementMetaExtractor</span><span class="tparams">[<span name="MeasT">MeasT &lt;: <a href="traits/Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.Measurement">Measurement</a></span>, <span name="MetaT">MetaT &lt;: <a href="traits/PostgresMeasurementMeta.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.PostgresMeasurementMeta">PostgresMeasurementMeta</a></span>]</span><span class="result"> extends <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/ProcessFunction.html#org.apache.flink.streaming.api.functions.ProcessFunction" class="extype" name="org.apache.flink.streaming.api.functions.ProcessFunction">ProcessFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>, <span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>] with <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a> with <a href="../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a> with <a href="../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></span>
       </span>
       </h4>
 
@@ -372,8 +372,18 @@ which uses Caching.
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a>, <span class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</span>, <span class="extype" name="org.apache.flink.streaming.api.functions.ProcessFunction">ProcessFunction</span>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>, <span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>], <span class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</span>, <span class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</span>, <span class="extype" name="org.apache.flink.api.common.functions.Function">Function</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div></div>
+          <div class="superTypes hiddenContent"><a href="../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/ProcessFunction.html#org.apache.flink.streaming.api.functions.ProcessFunction" class="extype" name="org.apache.flink.streaming.api.functions.ProcessFunction">ProcessFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>, <span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>], <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/AbstractRichFunction.html#org.apache.flink.api.common.functions.AbstractRichFunction" class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RichFunction.html#org.apache.flink.api.common.functions.RichFunction" class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/Function.html#org.apache.flink.api.common.functions.Function" class="extype" name="org.apache.flink.api.common.functions.Function">Function</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+        </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
+                <span class="toggle diagram-link">
+                  Type Hierarchy
+                </span>
+                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 560.00 118.00" height="118pt" width="560pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 114)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-114 556,-114 556,4 -4,4" stroke="transparent" fill="#ffffff"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this class" id="graph1_0"><g id="a_this class|graph1_0"><a xlink:title="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor (this class)" xlink:href="#inheritance-diagram"><path d="M437.6667,-49C437.6667,-49 228.3333,-49 228.3333,-49 224.1667,-49 220,-44.8333 220,-40.6667 220,-40.6667 220,-32.3333 220,-32.3333 220,-28.1667 224.1667,-24 228.3333,-24 228.3333,-24 437.6667,-24 437.6667,-24 441.8333,-24 446,-28.1667 446,-32.3333 446,-32.3333 446,-40.6667 446,-40.6667 446,-44.8333 441.8333,-49 437.6667,-49" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../lib/class_diagram.png" y="-43.5" x="230" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-34.1" x="251" text-anchor="start">MeasurementMetaExtractor[MeasT, MetaT]</text></a></g></g><!-- node1 --><g class="node class" id="graph1_1"><g id="a_class|graph1_1"><a xlink:title="org.apache.flink.streaming.api.functions.ProcessFunction"><path d="M169.6667,-110C169.6667,-110 8.3333,-110 8.3333,-110 4.1667,-110 0,-105.8333 0,-101.6667 0,-101.6667 0,-93.3333 0,-93.3333 0,-89.1667 4.1667,-85 8.3333,-85 8.3333,-85 169.6667,-85 169.6667,-85 173.8333,-85 178,-89.1667 178,-93.3333 178,-93.3333 178,-101.6667 178,-101.6667 178,-105.8333 173.8333,-110 169.6667,-110" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../lib/class_diagram.png" y="-104.5" x="10" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="31" text-anchor="start">ProcessFunction[MeasT, MeasT]</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph1_1_0"><g id="a_inheritance|graph1_1_0"><a xlink:title="MeasurementMetaExtractor[MeasT, MetaT] is a subtype of ProcessFunction[MeasT, MeasT]"><path d="M146.3024,-83.1744C187.7165,-72.8209 243.126,-58.9685 282.8041,-49.049" stroke="#d4d4d4" fill="none"></path><polygon points="145.4579,-80.8601 139.2611,-84.9347 146.6463,-85.6138 145.4579,-80.8601" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node trait" id="graph1_2"><g id="a_trait|graph1_2"><a xlink:title="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction"><path d="M323.6667,-110C323.6667,-110 204.3333,-110 204.3333,-110 200.1667,-110 196,-105.8333 196,-101.6667 196,-101.6667 196,-93.3333 196,-93.3333 196,-89.1667 200.1667,-85 204.3333,-85 204.3333,-85 323.6667,-85 323.6667,-85 327.8333,-85 332,-89.1667 332,-93.3333 332,-93.3333 332,-101.6667 332,-101.6667 332,-105.8333 327.8333,-110 323.6667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../lib/trait_diagram.png" y="-104.5" x="206" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="227" text-anchor="start">CheckpointedFunction</text></a></g></g><!-- node2&#45;&gt;node0 --><g class="edge inheritance" id="graph1_2_0"><g id="a_inheritance|graph1_2_0"><a xlink:title="MeasurementMetaExtractor[MeasT, MetaT] is a subtype of CheckpointedFunction"><path d="M283.5563,-80.2111C294.7515,-70.3138 308.549,-58.1161 318.7215,-49.123" stroke="#d4d4d4" fill="none"></path><polygon points="281.9186,-78.3888 278.2968,-84.8608 285.164,-82.0599 281.9186,-78.3888" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node3 --><g class="node trait" id="graph1_3"><g id="a_trait|graph1_3"><a xlink:title="nz.net.wand.streamevmon.flink.HasFlinkConfig" xlink:href="../flink/HasFlinkConfig.html#inheritance-diagram"><path d="M447.6667,-110C447.6667,-110 358.3333,-110 358.3333,-110 354.1667,-110 350,-105.8333 350,-101.6667 350,-101.6667 350,-93.3333 350,-93.3333 350,-89.1667 354.1667,-85 358.3333,-85 358.3333,-85 447.6667,-85 447.6667,-85 451.8333,-85 456,-89.1667 456,-93.3333 456,-93.3333 456,-101.6667 456,-101.6667 456,-105.8333 451.8333,-110 447.6667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../lib/trait_diagram.png" y="-104.5" x="360" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="381" text-anchor="start">HasFlinkConfig</text></a></g></g><!-- node3&#45;&gt;node0 --><g class="edge inheritance" id="graph1_3_0"><g id="a_inheritance|graph1_3_0"><a xlink:title="MeasurementMetaExtractor[MeasT, MetaT] is a subtype of HasFlinkConfig"><path d="M383.1602,-80.2111C371.8028,-70.3138 357.8054,-58.1161 347.4855,-49.123" stroke="#d4d4d4" fill="none"></path><polygon points="381.609,-82.109 388.496,-84.8608 384.8282,-78.4148 381.609,-82.109" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node4 --><g class="node trait" id="graph1_4"><g id="a_trait|graph1_4"><a xlink:title="nz.net.wand.streamevmon.Logging" xlink:href="../Logging.html#inheritance-diagram"><path d="M543.6667,-110C543.6667,-110 482.3333,-110 482.3333,-110 478.1667,-110 474,-105.8333 474,-101.6667 474,-101.6667 474,-93.3333 474,-93.3333 474,-89.1667 478.1667,-85 482.3333,-85 482.3333,-85 543.6667,-85 543.6667,-85 547.8333,-85 552,-89.1667 552,-93.3333 552,-93.3333 552,-101.6667 552,-101.6667 552,-105.8333 547.8333,-110 543.6667,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../lib/trait_diagram.png" y="-104.5" x="484" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="505" text-anchor="start">Logging</text></a></g></g><!-- node4&#45;&gt;node0 --><g class="edge inheritance" id="graph1_4_0"><g id="a_inheritance|graph1_4_0"><a xlink:title="MeasurementMetaExtractor[MeasT, MetaT] is a subtype of Logging"><path d="M468.9838,-82.5834C438.6031,-72.2877 398.6638,-58.7527 369.94,-49.0185" stroke="#d4d4d4" fill="none"></path><polygon points="468.2879,-84.9344 475.7039,-84.8608 469.8606,-80.2936 468.2879,-84.9344" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
+                <div id="diagram-controls" class="hiddenContent">
+                  <button id="diagram-zoom-out" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button id="diagram-zoom-in" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button title="Toggle full-screen" id="diagram-fs" class="diagram-btn to-full"><i class="material-icons"></i></button>
+                </div>
+              </div></div>
         
 
       <div id="mbrsel">
@@ -430,7 +440,7 @@ which uses Caching.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">MeasurementMetaExtractor</span><span class="params">()</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="org.apache.flink.api.common.typeinfo.TypeInformation">TypeInformation</span>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MetaT">MetaT</span>]</span>)</span>
+        <span class="name">MeasurementMetaExtractor</span><span class="params">()</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/typeinfo/TypeInformation.html#org.apache.flink.api.common.typeinfo.TypeInformation" class="extype" name="org.apache.flink.api.common.typeinfo.TypeInformation">TypeInformation</a>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MetaT">MetaT</span>]</span>)</span>
       </span>
       
       <p class="shortcomment cmt"></p>
@@ -451,7 +461,7 @@ which uses Caching.
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">Context</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">Context</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ProcessFunction</dd></dl></div>
@@ -510,7 +520,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -526,7 +536,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -542,7 +552,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -574,7 +584,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -600,7 +610,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">close</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">close</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd><dt>Annotations</dt><dd>
@@ -638,7 +648,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configWithOverride</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</span></span>)</span><span class="result">: <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span></span>
+        <span class="name">configWithOverride</span><span class="params">(<span name="context">context: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>)</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -654,7 +664,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configWithOverride</span><span class="params">(<span name="config">config: <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span></span>)</span><span class="result">: <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span></span>
+        <span class="name">configWithOverride</span><span class="params">(<span name="config">config: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>)</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -670,7 +680,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -686,7 +696,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -755,7 +765,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getIterationRuntimeContext</span><span class="params">()</span><span class="result">: <span class="extype" name="org.apache.flink.api.common.functions.IterationRuntimeContext">IterationRuntimeContext</span></span>
+        <span class="name">getIterationRuntimeContext</span><span class="params">()</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/IterationRuntimeContext.html#org.apache.flink.api.common.functions.IterationRuntimeContext" class="extype" name="org.apache.flink.api.common.functions.IterationRuntimeContext">IterationRuntimeContext</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd></dl></div>
@@ -771,7 +781,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getOverrideParams</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span>]</span>
+        <span class="name">getOverrideParams</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -787,7 +797,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getRuntimeContext</span><span class="params">()</span><span class="result">: <span class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</span></span>
+        <span class="name">getRuntimeContext</span><span class="params">()</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd></dl></div>
@@ -803,7 +813,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
@@ -824,7 +834,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">initializeState</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.flink.runtime.state.FunctionInitializationContext">FunctionInitializationContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">initializeState</span><span class="params">(<span name="context">context: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/runtime/state/FunctionInitializationContext.html#org.apache.flink.runtime.state.FunctionInitializationContext" class="extype" name="org.apache.flink.runtime.state.FunctionInitializationContext">FunctionInitializationContext</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor">MeasurementMetaExtractor</a> → CheckpointedFunction</dd></dl></div>
@@ -840,7 +850,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -875,7 +885,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -891,7 +901,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -912,7 +922,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -933,7 +943,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">onTimer</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="org.apache.flink.streaming.api.functions.ProcessFunction.OnTimerContext">OnTimerContext</span></span>, <span name="arg2">arg2: <span class="extype" name="org.apache.flink.util.Collector">Collector</span>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">onTimer</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="arg1">arg1: <span class="extype" name="org.apache.flink.streaming.api.functions.ProcessFunction.OnTimerContext">OnTimerContext</span></span>, <span name="arg2">arg2: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/util/Collector.html#org.apache.flink.util.Collector" class="extype" name="org.apache.flink.util.Collector">Collector</a>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>]</span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ProcessFunction</dd><dt>Annotations</dt><dd>
@@ -955,7 +965,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">open</span><span class="params">(<span name="parameters">parameters: <span class="extype" name="org.apache.flink.configuration.Configuration">Configuration</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">open</span><span class="params">(<span name="parameters">parameters: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/configuration/Configuration.html#org.apache.flink.configuration.Configuration" class="extype" name="org.apache.flink.configuration.Configuration">Configuration</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor">MeasurementMetaExtractor</a> → AbstractRichFunction → RichFunction</dd></dl></div>
@@ -971,7 +981,7 @@ which uses Caching.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">outputTag</span><span class="result">: <span class="extype" name="org.apache.flink.streaming.api.scala.OutputTag">OutputTag</span>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MetaT">MetaT</span>]</span>
+        <span class="name">outputTag</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/scala/OutputTag.html#org.apache.flink.streaming.api.scala.OutputTag" class="extype" name="org.apache.flink.streaming.api.scala.OutputTag">OutputTag</a>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MetaT">MetaT</span>]</span>
       </span>
       
       
@@ -987,7 +997,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">overrideConfig</span><span class="params">(<span name="config">config: <span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span></span>)</span><span class="result">: <a href="" class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor">MeasurementMetaExtractor</a>.this.type</span>
+        <span class="name">overrideConfig</span><span class="params">(<span name="config">config: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>)</span><span class="result">: <a href="" class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor">MeasurementMetaExtractor</a>.this.type</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -1019,7 +1029,7 @@ which uses Caching.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">overrideParams</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</span>]</span>
+        <span class="name">overrideParams</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -1051,7 +1061,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">processElement</span><span class="params">(<span name="value">value: <span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span></span>, <span name="ctx">ctx: <span class="extype" name="org.apache.flink.streaming.api.functions.ProcessFunction.Context">Context</span></span>, <span name="out">out: <span class="extype" name="org.apache.flink.util.Collector">Collector</span>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">processElement</span><span class="params">(<span name="value">value: <span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span></span>, <span name="ctx">ctx: <span class="extype" name="org.apache.flink.streaming.api.functions.ProcessFunction.Context">Context</span></span>, <span name="out">out: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/util/Collector.html#org.apache.flink.util.Collector" class="extype" name="org.apache.flink.util.Collector">Collector</a>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>]</span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor">MeasurementMetaExtractor</a> → ProcessFunction</dd></dl></div>
@@ -1067,7 +1077,7 @@ which uses Caching.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">seenMetas</span><span class="result">: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MetaT">MetaT</span>]</span>
+        <span class="name">seenMetas</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/collection/mutable/Map.html#scala.collection.mutable.Map" class="extype" name="scala.collection.mutable.Map">Map</a>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MetaT">MetaT</span>]</span>
       </span>
       
       
@@ -1083,7 +1093,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setRuntimeContext</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">setRuntimeContext</span><span class="params">(<span name="arg0">arg0: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd></dl></div>
@@ -1099,7 +1109,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">snapshotState</span><span class="params">(<span name="context">context: <span class="extype" name="org.apache.flink.runtime.state.FunctionSnapshotContext">FunctionSnapshotContext</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">snapshotState</span><span class="params">(<span name="context">context: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/runtime/state/FunctionSnapshotContext.html#org.apache.flink.runtime.state.FunctionSnapshotContext" class="extype" name="org.apache.flink.runtime.state.FunctionSnapshotContext">FunctionSnapshotContext</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor">MeasurementMetaExtractor</a> → CheckpointedFunction</dd></dl></div>
@@ -1147,7 +1157,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="arg1">arg1: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1169,7 +1179,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1193,7 +1203,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1223,7 +1233,7 @@ which uses Caching.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1245,21 +1255,21 @@ which uses Caching.
             </div><div class="parent" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">
               <h3>Inherited from <a href="../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></h3>
             </div><div class="parent" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</span></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a></h3>
             </div><div class="parent" name="org.apache.flink.streaming.api.functions.ProcessFunction">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.streaming.api.functions.ProcessFunction">ProcessFunction</span>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>, <span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>]</h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/ProcessFunction.html#org.apache.flink.streaming.api.functions.ProcessFunction" class="extype" name="org.apache.flink.streaming.api.functions.ProcessFunction">ProcessFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>, <span class="extype" name="nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor.MeasT">MeasT</span>]</h3>
             </div><div class="parent" name="org.apache.flink.api.common.functions.AbstractRichFunction">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</span></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/AbstractRichFunction.html#org.apache.flink.api.common.functions.AbstractRichFunction" class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</a></h3>
             </div><div class="parent" name="org.apache.flink.api.common.functions.RichFunction">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</span></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RichFunction.html#org.apache.flink.api.common.functions.RichFunction" class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</a></h3>
             </div><div class="parent" name="org.apache.flink.api.common.functions.Function">
-              <h3>Inherited from <span class="extype" name="org.apache.flink.api.common.functions.Function">Function</span></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/Function.html#org.apache.flink.api.common.functions.Function" class="extype" name="org.apache.flink.api.common.functions.Function">Function</a></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
             </div>
         
         </div>
