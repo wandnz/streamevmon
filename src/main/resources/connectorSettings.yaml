@@ -1,7 +1,10 @@
 # Global settings for sources and sinks (connectors). These can be overridden
-# in flows.yaml. See the Scaladoc entries in the
-# `nz.net.wand.streamevmon.flink.(sources|sinks)` packages for details on
-# configuring each item.
+# in flows.yaml.
+# Each connector has a Scaladoc entry detailing its configuration. You can find
+# listings of the entries at
+# https://wanduow.github.io/streamevmon/nz/net/wand/streamevmon/flink/sources/index.html
+# and
+# https://wanduow.github.io/streamevmon/nz/net/wand/streamevmon/flink/sinks/index.html
 
 source:
   postgres:

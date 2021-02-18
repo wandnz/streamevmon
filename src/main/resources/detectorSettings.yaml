@@ -1,5 +1,6 @@
 # Global settings for detectors. These can be overridden in flows.yaml.
-# See the Scaladoc entries in the `nz.net.wand.streamevmon.detectors` package
+# See the Scaladoc entries for the package objects (on the right side) at
+# https://wanduow.github.io/streamevmon/nz/net/wand/streamevmon/detectors/index.html
 # for details on configuring each detector.
 
 detector:
