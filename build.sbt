@@ -8,6 +8,7 @@ ThisBuild / scalaVersion := "2.12.13"
 import Dependencies._
 import Licensing._
 import com.typesafe.sbt.packager.linux.LinuxSymlink
+import com.typesafe.sbt.packager.Keys.linuxPackageSymlinks
 Licensing.applyLicenseOverrides
 
 // These are settings that are shared between all submodules in this project.
@@ -142,20 +143,20 @@ packageBin in Debian := ((packageBin in Debian) dependsOn (debianMD5sumsFile in 
 linuxPackageMappings ++= Seq(
   // We've got to include some redundant mappings here since the native packager
   // creates parent folders with permission 0775, which is non-standard.
-  packageTemplateMapping("/usr")().withPerms("0755"),
-  packageTemplateMapping("/usr/lib")().withPerms("0755"),
-  packageTemplateMapping("/usr/lib/streamevmon")().withPerms("0755"),
+  packageTemplateMapping("/etc")().withPerms("0755"),
+  packageTemplateMapping("/etc/streamevmon")().withPerms("0755"),
   packageTemplateMapping("/lib")().withPerms("0755"),
   packageTemplateMapping("/lib/systemd")().withPerms("0755"),
   packageTemplateMapping("/lib/systemd/system")().withPerms("0755"),
+  packageTemplateMapping("/usr")().withPerms("0755"),
   packageTemplateMapping("/usr/share")().withPerms("0755"),
   packageTemplateMapping("/usr/share/lintian")().withPerms("0755"),
   packageTemplateMapping("/usr/share/lintian/overrides")().withPerms("0755"),
   packageTemplateMapping("/usr/share/doc")().withPerms("0755"),
   packageTemplateMapping("/usr/share/doc/streamevmon")().withPerms("0755"),
+  packageTemplateMapping("/usr/share/flink")().withPerms("0755"),
+  packageTemplateMapping("/usr/share/flink/lib")().withPerms("0755"),
   packageTemplateMapping("/usr/share/streamevmon")().withPerms("0755"),
-  packageTemplateMapping("/etc")().withPerms("0755"),
-  packageTemplateMapping("/etc/streamevmon")().withPerms("0755"),
   // This is the main jar with all the program code
   packageMapping(
     file((Compile / packageBin / artifactPath).value.getParent + s"/${name.value}-nonProvidedDeps-${version.value}.jar") -> s"/usr/share/streamevmon/streamevmon.jar"
@@ -199,3 +200,29 @@ linuxPackageMappings ++= Seq(
 linuxPackageSymlinks ++= Seq(
   LinuxSymlink("/usr/share/flink/lib/streamevmon.jar", "/usr/share/streamevmon/streamevmon.jar")
 )
+
+// Hook into the stage step of Debian packaging to relativize symlinks.
+stage in Debian := {
+  // This creates absolute symlinks, despite that being a lintian warning.
+  val staged = (stage in Debian).value
+  import java.nio.file._
+  val buildDir = Path.of(s"target/${name.value}-${(version in Debian).value}")
+  // Grab all the absolute symlinks in the build dir
+  Files
+    .walk(buildDir)
+    .filter(Files.isSymbolicLink(_))
+    .filter(Files.readSymbolicLink(_).isAbsolute)
+    .forEach { existingLink =>
+      // Find where they point
+      val target = Files.readSymbolicLink(existingLink)
+      // Map the target onto the build directory
+      val targetInBuildDir = Paths.get(buildDir.toString, target.toString)
+      // Turn it into a relative target
+      val relativized = existingLink.getParent.relativize(targetInBuildDir)
+      // Recreate the link as a relative one
+      Files.delete(existingLink)
+      Files.createSymbolicLink(existingLink, relativized)
+      sLog.value.log(Level.Info, s"Relativizing symlink at $existingLink from $target to $relativized")
+    }
+  staged
+}
