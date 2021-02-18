@@ -1,7 +1,8 @@
 name: scaladoc-to-gh-pages
-on: [
-    push
-]
+on:
+  push:
+    branches:
+      - master
 jobs:
   scaladoc-to-gh-pages:
     runs-on: ubuntu-latest
