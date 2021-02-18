@@ -1,6 +1,5 @@
 name: scaladoc-to-gh-pages
 on: [
-    pull_request,
     push
 ]
 jobs:
@@ -18,6 +17,7 @@ jobs:
             ~/.m2/repository
             ~/.sbt
           key: streamevmon-${{ hashFiles('**/build.sbt', '**/Dependencies.scala') }}
+      - run: sudo apt install -y graphviz
       - run: sbt doc
       - uses: JamesIves/github-pages-deploy-action@4.0.0
         with:

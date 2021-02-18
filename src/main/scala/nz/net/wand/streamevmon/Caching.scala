@@ -72,7 +72,7 @@ object Caching {
   *
   * The `caching.memcached` key group configures the memcached settings.
   * Caffeine caches are not affected by this group. Note that Kryo serialization
-  * is used alongside Memcached.
+  * is used alongside Memcached ([[GZippingKryoCodec]] by default).
   *
   * - `enabled`: This class also does not directly use this key, but inheriting
   * classes which would like to support memcached caching should check the key's
