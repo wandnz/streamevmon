@@ -9,6 +9,7 @@ import Dependencies._
 import Licensing._
 import com.typesafe.sbt.packager.linux.LinuxSymlink
 import com.typesafe.sbt.packager.Keys.linuxPackageSymlinks
+import com.typesafe.sbt.packager.chmod
 Licensing.applyLicenseOverrides
 
 // These are settings that are shared between all submodules in this project.
@@ -203,7 +204,7 @@ linuxPackageSymlinks ++= Seq(
 
 // Hook into the stage step of Debian packaging to relativize symlinks.
 stage in Debian := {
-  // This creates absolute symlinks, despite that being a lintian warning.
+  // By default it creates absolute symlinks, despite that being a lintian warning.
   val staged = (stage in Debian).value
   import java.nio.file._
   val buildDir = Path.of(s"target/${name.value}-${(version in Debian).value}")
@@ -223,6 +224,39 @@ stage in Debian := {
       Files.delete(existingLink)
       Files.createSymbolicLink(existingLink, relativized)
       sLog.value.log(Level.Info, s"Relativizing symlink at $existingLink from $target to $relativized")
+    }
+  staged
+}
+
+// Hook into the staging step again, but this time to strip timestamps from gz archives.
+stage in Debian := {
+  // By default it keeps the timestamps in gz files, despite that being a lintian warning.
+  val staged = (stage in Debian).value
+  import java.nio.file._
+  val buildDir = Path.of(s"target/${name.value}-${(version in Debian).value}")
+  // Grab all the .gz files in the build dir
+  Files
+    .walk(buildDir)
+    .filter(Files.isRegularFile(_))
+    .filter(_.toString.endsWith(".gz"))
+    .forEach { gz =>
+      import scala.sys.process._
+      val tempFile = new File(gz.toAbsolutePath.toString + "-notimestamp")
+      // Use gzip to re-compress the file with new arguments
+      // This is equivalent to $ gzip -cd <file> | gzip -9n > output.gz
+      (
+        Seq("gzip", "-cd", gz.toAbsolutePath.toString) #|
+          Seq("gzip", "-9n") #>
+          tempFile
+        ).! match {
+        case 0 =>
+        // Throw an error if gzip returned anything other than a success
+        case n => sys.error("Error re-gzipping " + gz + ". Exit code: " + n)
+      }
+      sLog.value.log(Level.Info, s"Re-gzipping $gz without timestamps")
+      // Overwrite the original file, and fix its permissions.
+      Files.move(tempFile.toPath, gz, StandardCopyOption.REPLACE_EXISTING)
+      chmod(gz.toFile, "0644")
     }
   staged
 }
