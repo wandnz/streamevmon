@@ -42,7 +42,7 @@ import scala.util.Try
   * set as the global job parameters.
   */
 object Configuration extends Logging {
-  val baseConfigDirectory: String = {
+  lazy val baseConfigDirectory: String = {
     if (new File("conf").exists) {
       "conf"
     }

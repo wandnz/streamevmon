@@ -4,3 +4,8 @@ source:
     serverName: localhost
   influx:
     serverName: localhost
+  latencyts:
+    ampicmp:
+      location: ./data/latency-ts-i/ampicmp/series
+    smokepoing:
+      location: ./data/latency-ts-i/smokeping/series

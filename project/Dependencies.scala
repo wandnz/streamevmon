@@ -11,6 +11,7 @@ object Dependencies {
   val chroniclerVersion = "0.6.5"
   val retrofitVersion = "2.9.0"
   val scalaCacheVersion = "0.28.0"
+  val log4jVersion = "2.14.0"
 
   // Used in a single declaration each
   val slf4jVersion = "1.7.30"
@@ -28,9 +29,7 @@ object Dependencies {
     // Flink
     "org.apache.flink" %% "flink-scala" % flinkVersion % Provided,
     "org.apache.flink" %% "flink-clients" % flinkVersion % Provided,
-    "org.apache.flink" %% "flink-streaming-scala" % flinkVersion % Provided,
-    // Logging
-    "org.slf4j" % "slf4j-simple" % slf4jVersion % Provided
+    "org.apache.flink" %% "flink-streaming-scala" % flinkVersion % Provided
   )
 
   val coreDependencies: Seq[ModuleID] = Seq(
@@ -59,7 +58,11 @@ object Dependencies {
     "org.scalactic" %% "scalactic" % scalatestVersion,
     // Directed graph logic
     "org.jgrapht" % "jgrapht-core" % jgraphtVersion,
-    "org.jgrapht" % "jgrapht-io" % jgraphtVersion
+    "org.jgrapht" % "jgrapht-io" % jgraphtVersion,
+    // Logging
+    "org.apache.logging.log4j" % "log4j-slf4j-impl" % log4jVersion,
+    "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
+    "org.apache.logging.log4j" % "log4j-core" % log4jVersion
   )
     // chronicler-ahc-shared depends on scalatest for some reason, despite not
     // actually needing it for production code.

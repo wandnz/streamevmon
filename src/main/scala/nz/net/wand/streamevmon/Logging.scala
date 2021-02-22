@@ -26,7 +26,17 @@
 
 package nz.net.wand.streamevmon
 
+import java.io.File
+import java.nio.file.{Files, Path}
+
+import org.apache.logging.log4j.core.config.composite.CompositeConfiguration
+import org.apache.logging.log4j.core.config.properties.PropertiesConfigurationFactory
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.core.LoggerContext
+import org.apache.logging.log4j.core.config.ConfigurationSource
 import org.slf4j.{Logger, LoggerFactory}
+
+import scala.collection.JavaConverters._
 
 /** Allows globally configurable logging.
   *
@@ -40,5 +50,76 @@ import org.slf4j.{Logger, LoggerFactory}
   *      usage and output configuration.
   */
 trait Logging {
-  @transient protected lazy val logger: Logger = LoggerFactory.getLogger(getClass)
+  @transient protected lazy val logger: Logger = {
+    Logging.configure()
+    val l = LoggerFactory.getLogger(getClass)
+    l.info(s"Configured logger for $getClass!")
+    println(s"Configured logger $l for $getClass!")
+    l
+  }
+}
+
+/** Global configuration utilities for the logger. The configure() function
+  * executes once, and loads log4j configs from all the correct places. The
+  * `getXConfig` functions should probably be in [[Configuration]], but there's
+  * a circular dependency there in that Configuration uses the Logging trait.
+  * This also means we have to duplicate the `baseConfigDirectory` val.
+  */
+object Logging {
+  lazy val baseConfigDirectory: String = {
+    if (new File("conf").exists) {
+      "conf"
+    }
+    else {
+      "/etc/streamevmon"
+    }
+  }
+
+  lazy val flinkConfigDirectory: String = "/usr/share/flink/conf"
+
+  lazy val log4jConfigFile: String = "streamevmon-log4j.properties"
+
+  lazy val flinkLoggerConfigFile: String = "flink-log4j-console.properties"
+
+  var hasConfigured = false
+
+  private def configure(): Unit = {
+    val ctx = LogManager.getContext.asInstanceOf[LoggerContext]
+    val factory = new PropertiesConfigurationFactory()
+
+    val conf = new CompositeConfiguration(Seq(
+      factory.getConfiguration(ctx, getFlinkLoggerConfig),
+      factory.getConfiguration(ctx, getLoggerConfig)
+    ).asJava)
+    conf.setName("Streamevmon logger conf")
+
+    ctx.setConfiguration(conf)
+  }
+
+  /** Gets a log4j ConfigurationSource representing the system's Flink logging
+    * config, or the bundled one as fallback.
+    */
+  def getFlinkLoggerConfig: ConfigurationSource = {
+    val configFileLocation = Path.of(flinkConfigDirectory, flinkLoggerConfigFile)
+    if (Files.exists(configFileLocation)) {
+      ConfigurationSource.fromUri(configFileLocation.toUri)
+    }
+    else {
+      ConfigurationSource.fromResource(flinkLoggerConfigFile, getClass.getClassLoader)
+    }
+  }
+
+  /** Gets a log4j ConfigurationSource representing the system configuration for
+    * this program's logging. /etc/streamevmon is tried first, then ./conf, then
+    * the bundled config as fallback.
+    */
+  def getLoggerConfig: ConfigurationSource = {
+    val configFileLocation = Path.of(baseConfigDirectory, log4jConfigFile)
+    if (Files.exists(configFileLocation)) {
+      ConfigurationSource.fromUri(configFileLocation.toUri)
+    }
+    else {
+      ConfigurationSource.fromResource(log4jConfigFile, getClass.getClassLoader)
+    }
+  }
 }
