@@ -111,9 +111,14 @@ lazy val root = (project in file(".")).
       name := "streamevmon",
       libraryDependencies ++= providedDependencies ++ coreDependencies ++ testDependencies,
       mainClass in assembly := Some("nz.net.wand.streamevmon.runners.unified.YamlDagRunner"),
+      annotationProcessingMapping := Map(
+        "org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor" -> Seq(
+          "nz.net.wand.streamevmon.LoggingConfigurationFactory"
+        )
+      ),
     ) ++ sharedSettings ++ coreLicensing: _*
   )
-  .enablePlugins(AutomateHeaderPlugin)
+  .enablePlugins(AnnotationProcessingPlugin, AutomateHeaderPlugin)
 
 // Parameter tuner module depends on core project + SMAC dependencies
 // We need to manually specify providedDependencies since % Provided modules
@@ -137,39 +142,6 @@ commands ++= AssemblyCommands.allCommands
 commands ++= AssemblyCommands.WithScala.allCommands
 AssemblyCommands.addAlias("assemble", AssemblyCommands.allCommands: _*)
 AssemblyCommands.addAlias("assembleScala", AssemblyCommands.WithScala.allCommands: _*)
-
-lazy val processAnnotations = taskKey[Unit]("Process annotations")
-
-processAnnotations := {
-  val log = streams.value.log
-  log.info("Processing annotations ...")
-
-  val classpath = ((products in Compile).value ++ (dependencyClasspath in Compile).value.files) mkString ":"
-  val destinationDirectory = (classDirectory in Compile).value
-  val annotationProcessSettings = Map(
-    "org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor" -> Seq(
-      "nz.net.wand.streamevmon.LoggingConfigurationFactory"
-    )
-  )
-
-  import scala.sys.process._
-  annotationProcessSettings.foreach { case (processor, classesToProcess) =>
-    val command = Seq("bash", "-c", "shopt -s globstar && " +
-      s"javac -proc:only -cp $classpath -d $destinationDirectory " +
-      s"-processor $processor " +
-      s"${classesToProcess.mkString(" ")}"
-    )
-    val result = command.!
-    if (result != 0) {
-      log.error(s"Failed to process annotations using $processor for ${classesToProcess.mkString(" ")}")
-      sys.error("Failed running command: " + command)
-    }
-  }
-
-  log.info("Done processing annotations.")
-}
-
-processAnnotations := processAnnotations.triggeredBy(compile in Compile).value
 
 // DebianPlugin lets us make Debian packages. Sadly, there's a lot of manual
 // overriding we have to do, and things like the Java Server Application
