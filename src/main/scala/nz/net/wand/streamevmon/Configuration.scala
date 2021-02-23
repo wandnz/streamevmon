@@ -168,7 +168,7 @@ object Configuration extends Logging {
       (_: File, name: String) =>
         (name.endsWith(".yaml") || name.endsWith(".yml")) && (name != "flows.yaml" && name != "flows.yml")
     )).getOrElse(Array()).sorted.map { f =>
-      logger.info(s"Loading configuration from ${f.getName}")
+      logger.info(s"Loading configuration from ${f.getCanonicalPath}")
       new FileInputStream(f)
     }
 

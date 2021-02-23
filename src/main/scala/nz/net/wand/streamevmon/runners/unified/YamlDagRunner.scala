@@ -26,7 +26,7 @@
 
 package nz.net.wand.streamevmon.runners.unified
 
-import nz.net.wand.streamevmon.{Configuration, Lazy}
+import nz.net.wand.streamevmon.{Configuration, Lazy, Logging}
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.traits.Measurement
@@ -45,12 +45,13 @@ import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.api.windowing.time.Time
 
 import scala.collection.mutable
+import scala.compat.Platform.EOL
 import scala.util.Try
 
 /** Reads a flow configuration from a YAML file, and constructs and executes
   * a Flink pipeline for it.
   */
-object YamlDagRunner {
+object YamlDagRunner extends Logging {
 
   def main(args: Array[String]): Unit = {
     // == Setup flink config ==
@@ -246,9 +247,7 @@ object YamlDagRunner {
         }
     }
 
-    val breakpoint = 1
-
-    println(env.getExecutionPlan)
+    logger.info(s"Execution plan: ${env.getExecutionPlan.replace(EOL, "")}")
     env.execute()
   }
 }

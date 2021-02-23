@@ -27,10 +27,12 @@ object Dependencies {
 
   val providedDependencies: Seq[ModuleID] = Seq(
     // Flink
-    "org.apache.flink" %% "flink-scala" % flinkVersion % Provided,
-    "org.apache.flink" %% "flink-clients" % flinkVersion % Provided,
-    "org.apache.flink" %% "flink-streaming-scala" % flinkVersion % Provided
-  )
+    "org.apache.flink" %% "flink-scala" % flinkVersion,
+    "org.apache.flink" %% "flink-clients" % flinkVersion,
+    "org.apache.flink" %% "flink-streaming-scala" % flinkVersion,
+    // Logging
+    "org.apache.logging.log4j" % "log4j-slf4j-impl" % log4jVersion
+  ).map(module => module % Provided)
 
   val coreDependencies: Seq[ModuleID] = Seq(
     // InfluxDB interaction
@@ -60,7 +62,6 @@ object Dependencies {
     "org.jgrapht" % "jgrapht-core" % jgraphtVersion,
     "org.jgrapht" % "jgrapht-io" % jgraphtVersion,
     // Logging
-    "org.apache.logging.log4j" % "log4j-slf4j-impl" % log4jVersion,
     "org.apache.logging.log4j" % "log4j-api" % log4jVersion,
     "org.apache.logging.log4j" % "log4j-core" % log4jVersion
   )
@@ -69,15 +70,15 @@ object Dependencies {
     .map(_ excludeAll ExclusionRule("org.scalatest", "scalatest").withCrossVersion(CrossVersion.binary))
 
   val testDependencies: Seq[ModuleID] = Seq(
-    "org.scalatest" %% "scalatest" % scalatestVersion % Test,
-    "com.dimafeng" %% "testcontainers-scala" % testcontainersScalaVersion % Test,
-    "com.dimafeng" %% "testcontainers-scala-scalatest" % testcontainersScalaVersion % Test,
-    "com.dimafeng" %% "testcontainers-scala-postgresql" % testcontainersScalaVersion % Test,
-    "com.dimafeng" %% "testcontainers-scala-influxdb" % testcontainersScalaVersion % Test,
-    "org.apache.flink" %% "flink-test-utils" % flinkVersion % Test,
-    "org.apache.flink" %% "flink-runtime" % flinkVersion % Test classifier "tests",
-    "org.apache.flink" %% "flink-streaming-java" % flinkVersion % Test classifier "tests"
-  )
+    "org.scalatest" %% "scalatest" % scalatestVersion,
+    "com.dimafeng" %% "testcontainers-scala" % testcontainersScalaVersion,
+    "com.dimafeng" %% "testcontainers-scala-scalatest" % testcontainersScalaVersion,
+    "com.dimafeng" %% "testcontainers-scala-postgresql" % testcontainersScalaVersion,
+    "com.dimafeng" %% "testcontainers-scala-influxdb" % testcontainersScalaVersion,
+    "org.apache.flink" %% "flink-test-utils" % flinkVersion,
+    "org.apache.flink" %% "flink-runtime" % flinkVersion classifier "tests",
+    "org.apache.flink" %% "flink-streaming-java" % flinkVersion classifier "tests"
+  ).map(module => module % Test)
 
   // These are all dependencies for SMAC2, at the versions distributed with the
   // software. There are more in the parameterTuner/lib/ folder that we couldn't

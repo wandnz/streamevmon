@@ -44,6 +44,14 @@ lazy val sharedSettings = Seq(
           // The URL here only specifies up to minor releases, so we need to
           // drop the patch level of the version, eg 1.12.1 -> 1.12
           revision => revision.substring(0, revision.lastIndexOf('.'))
+        ) ++
+        mappingsFor(
+          "org.apache.logging.log4j", List("log4j-api"),
+          "https://logging.apache.org/log4j/2.x/log4j-api/apidocs/index.html"
+        ) ++
+        mappingsFor(
+          "org.apache.logging.log4j", List("log4j-core"),
+          "https://logging.apache.org/log4j/2.x/log4j-core/apidocs/index.html"
         )
 
     mappings.toMap
@@ -78,11 +86,20 @@ lazy val sharedSettings = Seq(
   // Stop JAR packaging from running tests first
   test in assembly := {},
 
+  // META-INF gets special packaging behaviour depending on the subfolder
   // exclude META-INF from packaged JAR and use correct behaviour for duplicate library files
   assemblyMergeStrategy in assembly := {
+    // Service definitions should all be concatenated
     case PathList("META-INF", "services", _@_*) => MergeStrategy.filterDistinctLines
+    // Log4j2 plugin listings need special code to be merged properly.
+    case PathList(ps@_*) if ps.last == "Log4j2Plugins.dat" => Log4j2MergeStrategy.strategy
+    // The rest of META-INF gets tossed out.
     case PathList("META-INF", _@_*) => MergeStrategy.discard
+    // We totally ignore the Java 11 module system... This produces runtime JVM
+    // warnings, but it's not worth the effort to squash them since it doesn't
+    // affect behaviour.
     case PathList("module-info.class") => MergeStrategy.discard
+    // Everything else is kept as is.
     case other => (assemblyMergeStrategy in assembly).value(other)
   },
 )
@@ -120,6 +137,39 @@ commands ++= AssemblyCommands.allCommands
 commands ++= AssemblyCommands.WithScala.allCommands
 AssemblyCommands.addAlias("assemble", AssemblyCommands.allCommands: _*)
 AssemblyCommands.addAlias("assembleScala", AssemblyCommands.WithScala.allCommands: _*)
+
+lazy val processAnnotations = taskKey[Unit]("Process annotations")
+
+processAnnotations := {
+  val log = streams.value.log
+  log.info("Processing annotations ...")
+
+  val classpath = ((products in Compile).value ++ (dependencyClasspath in Compile).value.files) mkString ":"
+  val destinationDirectory = (classDirectory in Compile).value
+  val annotationProcessSettings = Map(
+    "org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor" -> Seq(
+      "nz.net.wand.streamevmon.LoggingConfigurationFactory"
+    )
+  )
+
+  import scala.sys.process._
+  annotationProcessSettings.foreach { case (processor, classesToProcess) =>
+    val command = Seq("bash", "-c", "shopt -s globstar && " +
+      s"javac -proc:only -cp $classpath -d $destinationDirectory " +
+      s"-processor $processor " +
+      s"${classesToProcess.mkString(" ")}"
+    )
+    val result = command.!
+    if (result != 0) {
+      log.error(s"Failed to process annotations using $processor for ${classesToProcess.mkString(" ")}")
+      sys.error("Failed running command: " + command)
+    }
+  }
+
+  log.info("Done processing annotations.")
+}
+
+processAnnotations := processAnnotations.triggeredBy(compile in Compile).value
 
 // DebianPlugin lets us make Debian packages. Sadly, there's a lot of manual
 // overriding we have to do, and things like the Java Server Application
