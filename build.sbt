@@ -7,9 +7,6 @@ ThisBuild / scalaVersion := "2.12.13"
 
 import Dependencies._
 import Licensing._
-import com.typesafe.sbt.packager.linux.LinuxSymlink
-import com.typesafe.sbt.packager.Keys.linuxPackageSymlinks
-import com.typesafe.sbt.packager.chmod
 Licensing.applyLicenseOverrides
 
 // These are settings that are shared between all submodules in this project.
@@ -118,7 +115,11 @@ lazy val root = (project in file(".")).
       ),
     ) ++ sharedSettings ++ coreLicensing: _*
   )
-  .enablePlugins(AnnotationProcessingPlugin, AutomateHeaderPlugin)
+  .enablePlugins(
+    AnnotationProcessingPlugin,
+    AutomateHeaderPlugin,
+    DebianStreamevmonPlugin
+  )
 
 // Parameter tuner module depends on core project + SMAC dependencies
 // We need to manually specify providedDependencies since % Provided modules
@@ -142,143 +143,3 @@ commands ++= AssemblyCommands.allCommands
 commands ++= AssemblyCommands.WithScala.allCommands
 AssemblyCommands.addAlias("assemble", AssemblyCommands.allCommands: _*)
 AssemblyCommands.addAlias("assembleScala", AssemblyCommands.WithScala.allCommands: _*)
-
-// DebianPlugin lets us make Debian packages. Sadly, there's a lot of manual
-// overriding we have to do, and things like the Java Server Application
-// archetype didn't end out being that useful.
-enablePlugins(DebianPlugin)
-
-version in Debian := s"${version.value}-1"
-debianPackageDependencies := Seq("openjdk-11-jre-headless | java11-runtime-headless", "flink-scala2.12")
-debianPackageProvides := Seq("streamevmon")
-
-// deb packages aren't compressed by default by sbt-native-packager since
-// jars are already compressed, but that makes lintian complain and we'd prefer
-// to keep the number of lintian overrides at a minimum.
-// The java build method doesn't support these flags and enforces no
-// compression, along with a couple of other issues. We use the native build
-// instead because of these issues.
-debianNativeBuildOptions in Debian := Nil
-debianChangelog := Some(file("src/debian/changelog"))
-
-// packageBin doesn't normally require the md5sums file to be generated, but we want it.
-packageBin in Debian := ((packageBin in Debian) dependsOn (debianMD5sumsFile in Debian)).value
-linuxPackageMappings ++= Seq(
-  // We've got to include some redundant mappings here since the native packager
-  // creates parent folders with permission 0775, which is non-standard.
-  packageTemplateMapping("/etc")().withPerms("0755"),
-  packageTemplateMapping("/etc/streamevmon")().withPerms("0755"),
-  packageTemplateMapping("/lib")().withPerms("0755"),
-  packageTemplateMapping("/lib/systemd")().withPerms("0755"),
-  packageTemplateMapping("/lib/systemd/system")().withPerms("0755"),
-  packageTemplateMapping("/usr")().withPerms("0755"),
-  packageTemplateMapping("/usr/share")().withPerms("0755"),
-  packageTemplateMapping("/usr/share/lintian")().withPerms("0755"),
-  packageTemplateMapping("/usr/share/lintian/overrides")().withPerms("0755"),
-  packageTemplateMapping("/usr/share/doc")().withPerms("0755"),
-  packageTemplateMapping("/usr/share/doc/streamevmon")().withPerms("0755"),
-  packageTemplateMapping("/usr/share/flink")().withPerms("0755"),
-  packageTemplateMapping("/usr/share/flink/lib")().withPerms("0755"),
-  packageTemplateMapping("/usr/share/streamevmon")().withPerms("0755"),
-  // This is the main jar with all the program code
-  packageMapping(
-    file((Compile / packageBin / artifactPath).value.getParent + s"/${name.value}-nonProvidedDeps-${version.value}.jar") -> s"/usr/share/streamevmon/streamevmon.jar"
-  ).withPerms("0644"),
-  // Systemd unit files
-  packageMapping(
-    file(s"${baseDirectory.value}/src/debian/streamevmon.service") -> "/lib/systemd/system/streamevmon.service"
-  ).withPerms("0644"),
-  packageMapping(
-    file(s"${baseDirectory.value}/src/debian/streamevmon-taskmanager.service") -> "/lib/systemd/system/streamevmon-taskmanager.service"
-  ).withPerms("0644"),
-  // Any override directives for lintian
-  packageMapping(
-    file(s"${baseDirectory.value}/src/debian/lintian-overrides") -> "/usr/share/lintian/overrides/streamevmon"
-  ).withPerms("0644"),
-  // Despite the changelog file location being standard, sbt-native-packager
-  // does not create a mapping from `debianChangelog` to its desired location.
-  packageMapping(
-    debianChangelog.value.get -> "/usr/share/doc/streamevmon/changelog.Debian.gz"
-  ).gzipped.withPerms("0644"),
-  packageMapping(
-    file(s"${baseDirectory.value}/src/debian/copyright") -> "/usr/share/doc/streamevmon/copyright"
-  ).withPerms("0644"),
-  // Default config files
-  packageMapping(
-    file(s"${baseDirectory.value}/src/main/resources/simplelogger.properties") -> "/etc/streamevmon/simplelogger.properties"
-  ).withPerms("0644").withConfig(),
-  packageMapping(
-    file(s"${baseDirectory.value}/src/main/resources/connectorSettings.yaml") -> "/etc/streamevmon/connectorSettings.yaml"
-  ).withPerms("0644").withConfig(),
-  packageMapping(
-    file(s"${baseDirectory.value}/src/main/resources/detectorSettings.yaml") -> "/etc/streamevmon/detectorSettings.yaml"
-  ).withPerms("0644").withConfig(),
-  packageMapping(
-    file(s"${baseDirectory.value}/src/main/resources/generalSettings.yaml") -> "/etc/streamevmon/generalSettings.yaml"
-  ).withPerms("0644").withConfig(),
-  packageMapping(
-    file(s"${baseDirectory.value}/src/main/resources/flows.yaml") -> "/etc/streamevmon/flows.yaml"
-  ).withPerms("0644").withConfig(),
-)
-linuxPackageSymlinks ++= Seq(
-  LinuxSymlink("/usr/share/flink/lib/streamevmon.jar", "/usr/share/streamevmon/streamevmon.jar")
-)
-
-// Hook into the stage step of Debian packaging to relativize symlinks.
-stage in Debian := {
-  // By default it creates absolute symlinks, despite that being a lintian warning.
-  val staged = (stage in Debian).value
-  import java.nio.file._
-  val buildDir = Path.of(s"target/${name.value}-${(version in Debian).value}")
-  // Grab all the absolute symlinks in the build dir
-  Files
-    .walk(buildDir)
-    .filter(Files.isSymbolicLink(_))
-    .filter(Files.readSymbolicLink(_).isAbsolute)
-    .forEach { existingLink =>
-      // Find where they point
-      val target = Files.readSymbolicLink(existingLink)
-      // Map the target onto the build directory
-      val targetInBuildDir = Paths.get(buildDir.toString, target.toString)
-      // Turn it into a relative target
-      val relativized = existingLink.getParent.relativize(targetInBuildDir)
-      // Recreate the link as a relative one
-      Files.delete(existingLink)
-      Files.createSymbolicLink(existingLink, relativized)
-      sLog.value.log(Level.Info, s"Relativizing symlink at $existingLink from $target to $relativized")
-    }
-  staged
-}
-
-// Hook into the staging step again, but this time to strip timestamps from gz archives.
-stage in Debian := {
-  // By default it keeps the timestamps in gz files, despite that being a lintian warning.
-  val staged = (stage in Debian).value
-  import java.nio.file._
-  val buildDir = Path.of(s"target/${name.value}-${(version in Debian).value}")
-  // Grab all the .gz files in the build dir
-  Files
-    .walk(buildDir)
-    .filter(Files.isRegularFile(_))
-    .filter(_.toString.endsWith(".gz"))
-    .forEach { gz =>
-      import scala.sys.process._
-      val tempFile = new File(gz.toAbsolutePath.toString + "-notimestamp")
-      // Use gzip to re-compress the file with new arguments
-      // This is equivalent to $ gzip -cd <file> | gzip -9n > output.gz
-      (
-        Seq("gzip", "-cd", gz.toAbsolutePath.toString) #|
-          Seq("gzip", "-9n") #>
-          tempFile
-        ).! match {
-        case 0 =>
-        // Throw an error if gzip returned anything other than a success
-        case n => sys.error("Error re-gzipping " + gz + ". Exit code: " + n)
-      }
-      sLog.value.log(Level.Info, s"Re-gzipping $gz without timestamps")
-      // Overwrite the original file, and fix its permissions.
-      Files.move(tempFile.toPath, gz, StandardCopyOption.REPLACE_EXISTING)
-      chmod(gz.toFile, "0644")
-    }
-  staged
-}
