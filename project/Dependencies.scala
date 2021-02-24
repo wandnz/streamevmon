@@ -1,7 +1,9 @@
 import sbt._
+import sbt.Keys._
 
 /** Declares the dependencies used by the project, sorted into a number of
-  * groups. Also declares the versions in use of all libraries.
+  * groups. Also declares the versions in use of all libraries, as well as some
+  * API locations for sbt doc.
   */
 object Dependencies {
   // Major library
@@ -110,4 +112,38 @@ object Dependencies {
     "net.sf.opencsv" % "opencsv" % "2.3",
     "org.slf4j" % "slf4j-api" % "1.7.5"
   )
+
+  def builtApiUrl: Option[URL] = Some(url("https://wanduow.github.io/streamevmon/"))
+
+  // This code is from https://stackoverflow.com/a/35673212
+  def dependencyApiMappings(classpath: Classpath): Map[File, URL] = {
+    def mappingsFor(organization: String, names: List[String], location: String, revision: String => String = identity): Seq[(File, URL)] =
+      for {
+        entry: Attributed[File] <- classpath
+        module: ModuleID <- entry.get(moduleID.key)
+        if module.organization == organization
+        if names.exists(module.name.startsWith)
+      } yield entry.data -> url(location.format(revision(module.revision)))
+
+    val mappings: Seq[(File, URL)] =
+      mappingsFor("org.scala-lang", List("scala-library"), "http://scala-lang.org/api/%s/") ++
+        mappingsFor(
+          "org.apache.flink",
+          List("flink-"),
+          "https://ci.apache.org/projects/flink/flink-docs-release-%s/api/java/",
+          // The URL here only specifies up to minor releases, so we need to
+          // drop the patch level of the version, eg 1.12.1 -> 1.12
+          revision => revision.substring(0, revision.lastIndexOf('.'))
+        ) ++
+        mappingsFor(
+          "org.apache.logging.log4j", List("log4j-api"),
+          "https://logging.apache.org/log4j/2.x/log4j-api/apidocs/index.html"
+        ) ++
+        mappingsFor(
+          "org.apache.logging.log4j", List("log4j-core"),
+          "https://logging.apache.org/log4j/2.x/log4j-core/apidocs/index.html"
+        )
+
+    mappings.toMap
+  }
 }
