@@ -49,31 +49,11 @@ lazy val sharedSettings = Seq(
   autoAPIMappings := true,
   apiMappings in doc ++= Dependencies.dependencyApiMappings((fullClasspath in Compile).value),
   apiURL := Dependencies.builtApiUrl,
-
-  // Stop JAR packaging from running tests first
-  test in assembly := {},
-
-  // META-INF gets special packaging behaviour depending on the subfolder
-  // exclude META-INF from packaged JAR and use correct behaviour for duplicate library files
-  assemblyMergeStrategy in assembly := {
-    // Service definitions should all be concatenated
-    case PathList("META-INF", "services", _@_*) => MergeStrategy.filterDistinctLines
-    // Log4j2 plugin listings need special code to be merged properly.
-    case PathList(ps@_*) if ps.last == "Log4j2Plugins.dat" => Log4j2MergeStrategy.strategy
-    // The rest of META-INF gets tossed out.
-    case PathList("META-INF", _@_*) => MergeStrategy.discard
-    // We totally ignore the Java 11 module system... This produces runtime JVM
-    // warnings, but it's not worth the effort to squash them since it doesn't
-    // affect behaviour.
-    case PathList("module-info.class") => MergeStrategy.discard
-    // Everything else is kept as is.
-    case other => (assemblyMergeStrategy in assembly).value(other)
-  },
 )
 
 // Core project does not depend on tunerDependencies, but does on everything else
-lazy val root = (project in file(".")).
-  settings(
+lazy val root = (project in file("."))
+  .settings(
     Seq(
       name := "streamevmon",
       libraryDependencies ++= providedDependencies ++ coreDependencies ++ testDependencies,
@@ -102,8 +82,8 @@ lazy val parameterTuner = (project in file("parameterTuner"))
       libraryDependencies ++= providedDependencies ++ tunerDependencies,
       unmanagedBase := baseDirectory.value / "lib",
       mainClass in assembly := Some("nz.net.wand.streamevmon.tuner.ParameterTuner"),
-      assembly / fullClasspath := (Compile / fullClasspath).value,
-      assembly / assemblyOption := (assembly / assemblyOption).value.copy(includeScala = true, includeDependency = true)
+      fullClasspath in assembly := (fullClasspath in Compile).value,
+      assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = true, includeDependency = true)
     ) ++ sharedSettings ++ parameterTunerLicensing: _*
   )
   .enablePlugins(AutomateHeaderPlugin)
