@@ -3,6 +3,8 @@ import com.typesafe.sbt.packager.debian.DebianPlugin.autoImport.Debian
 import com.typesafe.sbt.packager.Keys._
 import sbt._
 import sbt.Keys._
+import AssemblyStreamevmonPlugin.autoImport.ProjectAndNonProvidedDeps
+import sbtassembly.AssemblyKeys.{assembly, assemblyOutputPath}
 
 /** This plugin specifies our project settings for the DebianPlugin that allows
   * us to package .deb files.
@@ -40,6 +42,8 @@ object DebianStreamevmonPlugin extends AutoPlugin {
     debianNativeBuildOptions in Debian := Nil,
     // packageBin doesn't normally require the md5sums file to be generated, but we want it.
     packageBin in Debian := ((packageBin in Debian) dependsOn (debianMD5sumsFile in Debian)).value,
+    // We also depend on the assembly task that generates the JAR we want.
+    packageBin in Debian := ((packageBin in Debian) dependsOn (assembly in ProjectAndNonProvidedDeps)).value,
     // We need to apply a couple of patches to the staged project before packaging it.
     debianPatchRelativizeSymlinks := DebianPatchMethods.RelativizeSymlinks(
       stageDir = s"target/${name.value}-${(version in Debian).value}",
@@ -55,7 +59,7 @@ object DebianStreamevmonPlugin extends AutoPlugin {
     debianChangelog in Debian := Some(file("src/debian/changelog")),
     linuxPackageMappings in Debian ++= DebianPackageMappings.packageMappings(
       baseDirectory = baseDirectory.value,
-      jarFile = file((Compile / packageBin / artifactPath).value.getParent + s"/${name.value}-nonProvidedDeps-${version.value}.jar"),
+      jarFile = (assemblyOutputPath in assembly in ProjectAndNonProvidedDeps).value,
       changelogFile = (debianChangelog in Debian).value.get
     ),
     linuxPackageSymlinks in Debian ++= DebianPackageMappings.symlinks
