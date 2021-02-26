@@ -19,11 +19,11 @@ jobs:
             ~/.sbt
           key: streamevmon-${{ hashFiles('**/build.sbt', '**/Dependencies.scala') }}
       - run: sudo apt install -y dpkg-dev dpkg-sig lintian
-      - run: sbt update clean assembly-nonProvidedDeps debian:packageBin
+      - run: sbt update clean debian:packageBin
       - uses: actions/upload-artifact@v2
         with:
-          name: streamevmon-nonProvidedDeps
-          path: target/scala-2.12/streamevmon-nonProvidedDeps-*.jar
+          name: streamevmon-projectAndNonProvidedDeps
+          path: target/scala-2.12/streamevmon-projectAndNonProvidedDeps-*.jar
       - uses: actions/upload-artifact@v2
         with:
           name: streamevmon-deb
