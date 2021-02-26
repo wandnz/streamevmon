@@ -34,10 +34,10 @@ object DebianPackageMappings {
     // Systemd unit files
     packageMapping(
       file(s"$baseDirectory/src/debian/streamevmon.service") -> "/lib/systemd/system/streamevmon.service"
-    ).withPerms("0644"),
+    ).withPerms("0644").withConfig(),
     packageMapping(
       file(s"$baseDirectory/src/debian/streamevmon-taskmanager.service") -> "/lib/systemd/system/streamevmon-taskmanager.service"
-    ).withPerms("0644"),
+    ).withPerms("0644").withConfig(),
     // Any override directives for lintian
     packageMapping(
       file(s"$baseDirectory/src/debian/lintian-overrides") -> "/usr/share/lintian/overrides/streamevmon"
