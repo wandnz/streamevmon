@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title>streamevmon 0.1-SNAPSHOT - nz.net.wand.streamevmon.Perhaps</title>
-          <meta name="description" content="streamevmon 0.1 - SNAPSHOT - nz.net.wand.streamevmon.Perhaps" />
-          <meta name="keywords" content="streamevmon 0.1 SNAPSHOT nz.net.wand.streamevmon.Perhaps" />
+          <title>streamevmon 0.1-SNAPSHOT - nz.net.wand.streamevmon.LoggingConfigurationFactory</title>
+          <meta name="description" content="streamevmon 0.1 - SNAPSHOT - nz.net.wand.streamevmon.LoggingConfigurationFactory" />
+          <meta name="keywords" content="streamevmon 0.1 SNAPSHOT nz.net.wand.streamevmon.LoggingConfigurationFactory" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -313,10 +313,10 @@ measurements.
                         <a href="Logging.html" title="Allows globally configurable logging.">Logging</a>
                       </li><li class="current-entities indented4">
                         <a class="object" href="LoggingConfigurationFactory$.html" title="Config file discovery utilities."></a>
-                        <a class="class" href="LoggingConfigurationFactory.html" title="Forcibly overrides Log4j2 config file lookup."></a>
-                        <a href="LoggingConfigurationFactory.html" title="Forcibly overrides Log4j2 config file lookup.">LoggingConfigurationFactory</a>
+                        <a class="class" href="" title="Forcibly overrides Log4j2 config file lookup."></a>
+                        <a href="" title="Forcibly overrides Log4j2 config file lookup.">LoggingConfigurationFactory</a>
                       </li><li class="current-entities indented4">
-                        <a class="object" href="" title=""></a>
+                        <a class="object" href="Perhaps$.html" title=""></a>
                         <a class="class" href="Perhaps.html" title="Allows for optional implicit evidence of additional type parameters."></a>
                         <a href="Perhaps.html" title="Allows for optional implicit evidence of additional type parameters.">Perhaps</a>
                       </li>
@@ -324,37 +324,59 @@ measurements.
             </div>
           </div>
           <div id="content">
-            <body class="object value">
+            <body class="class type">
       <div id="definition">
-        <a href="Perhaps.html" title="See companion class"><div class="big-circle object-companion-class">o</div></a>
+        <a href="LoggingConfigurationFactory$.html" title="See companion object"><div class="big-circle class-companion-object">c</div></a>
         <p id="owner"><a href="../../../index.html" class="extype" name="nz">nz</a>.<a href="../../index.html" class="extype" name="nz.net">net</a>.<a href="../index.html" class="extype" name="nz.net.wand">wand</a>.<a href="index.html" class="extype" name="nz.net.wand.streamevmon">streamevmon</a></p>
-        <h1><a href="Perhaps.html" title="See companion class">Perhaps</a><span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html" title="Permalink">
+        <h1><a href="LoggingConfigurationFactory$.html" title="See companion object">LoggingConfigurationFactory</a><span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
         <h3><span class="morelinks"><div>
-            Companion <a href="Perhaps.html" title="See companion class">class Perhaps</a>
+            Companion <a href="LoggingConfigurationFactory$.html" title="See companion object">object LoggingConfigurationFactory</a>
           </div></span></h3>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">Perhaps</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <span class="name">LoggingConfigurationFactory</span><span class="result"> extends <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/config/ConfigurationFactory.html#org.apache.logging.log4j.core.config.ConfigurationFactory" class="extype" name="org.apache.logging.log4j.core.config.ConfigurationFactory">ConfigurationFactory</a></span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Forcibly overrides Log4j2 config file lookup.</p><p>By registering a Log4j2 Plugin of type ConfigurationFactory with a high
+priority, we can override the default behaviour of searching environment
+variables for logging configuration files.</p><p>We do still end out using the configuration that Flink would load, but we
+create a
+<a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/config/composite/CompositeConfiguration.html" class="extype" name="org.apache.logging.log4j.core.config.composite.CompositeConfiguration">CompositeConfiguration</a>
+which allows streamevmon config files to
+override anything set by the Flink config files.
+</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@Plugin</span><span class="args">()</span>
+              
+                <span class="name">@Order</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p><a href="https://logging.apache.org/log4j/2.x/manual/customconfig.html" target="_blank">https://logging.apache.org/log4j/2.x/manual/customconfig.html</a></p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
-        </div></div>
+          <div class="superTypes hiddenContent"><a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/config/ConfigurationFactory.html#org.apache.logging.log4j.core.config.ConfigurationFactory" class="extype" name="org.apache.logging.log4j.core.config.ConfigurationFactory">ConfigurationFactory</a>, <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilderFactory.html#org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory" class="extype" name="org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory">ConfigurationBuilderFactory</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+        </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
+                <span class="toggle diagram-link">
+                  Type Hierarchy
+                </span>
+                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 222.00 118.00" height="118pt" width="222pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 114)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-114 218,-114 218,4 -4,4" stroke="transparent" fill="#ffffff"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this class" id="graph1_0"><g id="a_this class|graph1_0"><a xlink:title="nz.net.wand.streamevmon.LoggingConfigurationFactory (this class)" xlink:href="#inheritance-diagram"><path d="M181.1667,-49C181.1667,-49 32.8333,-49 32.8333,-49 28.6667,-49 24.5,-44.8333 24.5,-40.6667 24.5,-40.6667 24.5,-32.3333 24.5,-32.3333 24.5,-28.1667 28.6667,-24 32.8333,-24 32.8333,-24 181.1667,-24 181.1667,-24 185.3333,-24 189.5,-28.1667 189.5,-32.3333 189.5,-32.3333 189.5,-40.6667 189.5,-40.6667 189.5,-44.8333 185.3333,-49 181.1667,-49" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../lib/class_diagram.png" y="-43.5" x="35" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-34.1" x="56" text-anchor="start">LoggingConfigurationFactory</text></a></g></g><!-- node1 --><g class="node class" id="graph1_1"><g id="a_class|graph1_1"><a xlink:title="org.apache.logging.log4j.core.config.ConfigurationFactory"><path d="M164.6667,-110C164.6667,-110 49.3333,-110 49.3333,-110 45.1667,-110 41,-105.8333 41,-101.6667 41,-101.6667 41,-93.3333 41,-93.3333 41,-89.1667 45.1667,-85 49.3333,-85 49.3333,-85 164.6667,-85 164.6667,-85 168.8333,-85 173,-89.1667 173,-93.3333 173,-93.3333 173,-101.6667 173,-101.6667 173,-105.8333 168.8333,-110 164.6667,-110" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../lib/class_diagram.png" y="-104.5" x="51" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="72" text-anchor="start">ConfigurationFactory</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph1_1_0"><g id="a_inheritance|graph1_1_0"><a xlink:title="LoggingConfigurationFactory is a subtype of ConfigurationFactory"><path d="M107,-77.7386C107,-68.3393 107,-57.3803 107,-49.123" stroke="#d4d4d4" fill="none"></path><polygon points="104.5501,-77.8607 107,-84.8608 109.4501,-77.8608 104.5501,-77.8607" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
+                <div id="diagram-controls" class="hiddenContent">
+                  <button id="diagram-zoom-out" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button id="diagram-zoom-in" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button title="Toggle full-screen" id="diagram-fs" class="diagram-btn to-full"><i class="material-icons"></i></button>
+                </div>
+              </div></div>
         
 
       <div id="mbrsel">
@@ -379,7 +401,7 @@ measurements.
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="nz.net.wand.streamevmon.Perhaps"><span>Perhaps</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="nz.net.wand.streamevmon.LoggingConfigurationFactory"><span>LoggingConfigurationFactory</span></li><li class="in" name="org.apache.logging.log4j.core.config.ConfigurationFactory"><span>ConfigurationFactory</span></li><li class="in" name="org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory"><span>ConfigurationBuilderFactory</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -397,7 +419,26 @@ measurements.
 
       <div id="template">
         <div id="allMembers">
-        
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="nz.net.wand.streamevmon.LoggingConfigurationFactory#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;():nz.net.wand.streamevmon.LoggingConfigurationFactory"></a><a id="&lt;init&gt;:LoggingConfigurationFactory"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#&lt;init&gt;():nz.net.wand.streamevmon.LoggingConfigurationFactory" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">LoggingConfigurationFactory</span><span class="params">()</span>
+      </span>
+      
+      
+    </li></ol>
+            </div>
 
         
 
@@ -409,7 +450,7 @@ measurements.
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#!=(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#!=(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -425,7 +466,7 @@ measurements.
     </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html###():Int" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html###():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -441,7 +482,7 @@ measurements.
     </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#==(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#==(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -457,7 +498,7 @@ measurements.
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#asInstanceOf[T0]:T0" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#asInstanceOf[T0]:T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -473,7 +514,7 @@ measurements.
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#clone():Object" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#clone():Object" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -499,7 +540,7 @@ measurements.
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#eq(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -515,7 +556,7 @@ measurements.
     </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#equals(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#equals(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -531,7 +572,7 @@ measurements.
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#getClass():Class[_]" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#getClass():Class[_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -549,10 +590,154 @@ measurements.
                 <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.LoggingConfigurationFactory#getConfiguration" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getConfiguration(loggerContext:org.apache.logging.log4j.core.LoggerContext,source:org.apache.logging.log4j.core.config.ConfigurationSource):org.apache.logging.log4j.core.config.composite.CompositeConfiguration"></a><a id="getConfiguration(LoggerContext,ConfigurationSource):CompositeConfiguration"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#getConfiguration(loggerContext:org.apache.logging.log4j.core.LoggerContext,source:org.apache.logging.log4j.core.config.ConfigurationSource):org.apache.logging.log4j.core.config.composite.CompositeConfiguration" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getConfiguration</span><span class="params">(<span name="loggerContext">loggerContext: <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/LoggerContext.html#org.apache.logging.log4j.core.LoggerContext" class="extype" name="org.apache.logging.log4j.core.LoggerContext">LoggerContext</a></span>, <span name="source">source: <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/config/ConfigurationSource.html#org.apache.logging.log4j.core.config.ConfigurationSource" class="extype" name="org.apache.logging.log4j.core.config.ConfigurationSource">ConfigurationSource</a></span>)</span><span class="result">: <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/config/composite/CompositeConfiguration.html#org.apache.logging.log4j.core.config.composite.CompositeConfiguration" class="extype" name="org.apache.logging.log4j.core.config.composite.CompositeConfiguration">CompositeConfiguration</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Creates the
+<a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/config/composite/CompositeConfiguration.html" class="extype" name="org.apache.logging.log4j.core.config.composite.CompositeConfiguration">CompositeConfiguration</a>
+that we want Log4j2 to use, regardless of the ConfigurationSource we got
+passed.</p><div class="fullcomment"><div class="comment cmt"><p>Creates the
+<a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/config/composite/CompositeConfiguration.html" class="extype" name="org.apache.logging.log4j.core.config.composite.CompositeConfiguration">CompositeConfiguration</a>
+that we want Log4j2 to use, regardless of the ConfigurationSource we got
+passed.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.LoggingConfigurationFactory">LoggingConfigurationFactory</a> → ConfigurationFactory</dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.LoggingConfigurationFactory#getConfiguration" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getConfiguration(loggerContext:org.apache.logging.log4j.core.LoggerContext,name:String,configLocation:java.net.URI):org.apache.logging.log4j.core.config.Configuration"></a><a id="getConfiguration(LoggerContext,String,URI):Configuration"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#getConfiguration(loggerContext:org.apache.logging.log4j.core.LoggerContext,name:String,configLocation:java.net.URI):org.apache.logging.log4j.core.config.Configuration" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getConfiguration</span><span class="params">(<span name="loggerContext">loggerContext: <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/LoggerContext.html#org.apache.logging.log4j.core.LoggerContext" class="extype" name="org.apache.logging.log4j.core.LoggerContext">LoggerContext</a></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="configLocation">configLocation: <span class="extype" name="java.net.URI">URI</span></span>)</span><span class="result">: <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/config/Configuration.html#org.apache.logging.log4j.core.config.Configuration" class="extype" name="org.apache.logging.log4j.core.config.Configuration">Configuration</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">When Log4j2 finds a factory that supports all types, it calls this
+function with the configLocation it's trying to load.</p><div class="fullcomment"><div class="comment cmt"><p>When Log4j2 finds a factory that supports all types, it calls this
+function with the configLocation it's trying to load. In our case, it's
+null, so the method from ConfigurationFactory returns null. We don't want
+that behaviour, so we ignore the parameter and redirect straight to the
+other getConfiguration implementation.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.LoggingConfigurationFactory">LoggingConfigurationFactory</a> → ConfigurationFactory</dd></dl></div>
+    </li><li name="org.apache.logging.log4j.core.config.ConfigurationFactory#getConfiguration" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getConfiguration(loggerContext:org.apache.logging.log4j.core.LoggerContext,name:String,configLocation:java.net.URI,loader:ClassLoader):org.apache.logging.log4j.core.config.Configuration"></a><a id="getConfiguration(LoggerContext,String,URI,ClassLoader):Configuration"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#getConfiguration(loggerContext:org.apache.logging.log4j.core.LoggerContext,name:String,configLocation:java.net.URI,loader:ClassLoader):org.apache.logging.log4j.core.config.Configuration" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getConfiguration</span><span class="params">(<span name="loggerContext">loggerContext: <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/LoggerContext.html#org.apache.logging.log4j.core.LoggerContext" class="extype" name="org.apache.logging.log4j.core.LoggerContext">LoggerContext</a></span>, <span name="name">name: <span class="extype" name="java.lang.String">String</span></span>, <span name="configLocation">configLocation: <span class="extype" name="java.net.URI">URI</span></span>, <span name="loader">loader: <span class="extype" name="java.lang.ClassLoader">ClassLoader</span></span>)</span><span class="result">: <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/config/Configuration.html#org.apache.logging.log4j.core.config.Configuration" class="extype" name="org.apache.logging.log4j.core.config.Configuration">Configuration</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ConfigurationFactory</dd></dl></div>
+    </li><li name="org.apache.logging.log4j.core.config.ConfigurationFactory#getDefaultPrefix" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getDefaultPrefix():String"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#getDefaultPrefix():String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getDefaultPrefix</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="org.apache.logging.log4j.core.config">config</span>] </dd><dt>Definition Classes</dt><dd>ConfigurationFactory</dd></dl></div>
+    </li><li name="org.apache.logging.log4j.core.config.ConfigurationFactory#getInputFromString" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getInputFromString(config:String,loader:ClassLoader):org.apache.logging.log4j.core.config.ConfigurationSource"></a><a id="getInputFromString(String,ClassLoader):ConfigurationSource"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#getInputFromString(config:String,loader:ClassLoader):org.apache.logging.log4j.core.config.ConfigurationSource" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getInputFromString</span><span class="params">(<span name="config">config: <span class="extype" name="java.lang.String">String</span></span>, <span name="loader">loader: <span class="extype" name="java.lang.ClassLoader">ClassLoader</span></span>)</span><span class="result">: <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/config/ConfigurationSource.html#org.apache.logging.log4j.core.config.ConfigurationSource" class="extype" name="org.apache.logging.log4j.core.config.ConfigurationSource">ConfigurationSource</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="org.apache.logging.log4j.core.config">config</span>] </dd><dt>Definition Classes</dt><dd>ConfigurationFactory</dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.LoggingConfigurationFactory#getSupportedTypes" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getSupportedTypes():Array[String]"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#getSupportedTypes():Array[String]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getSupportedTypes</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Array.html#scala.Array" class="extype" name="scala.Array">Array</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Log4j2 treats factories that support all types specially, allowing them
+to fully override all other factory methods.</p><div class="fullcomment"><div class="comment cmt"><p>Log4j2 treats factories that support all types specially, allowing them
+to fully override all other factory methods.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.LoggingConfigurationFactory">LoggingConfigurationFactory</a> → ConfigurationFactory</dd></dl></div>
+    </li><li name="org.apache.logging.log4j.core.config.ConfigurationFactory#getTestPrefix" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getTestPrefix():String"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#getTestPrefix():String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getTestPrefix</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="org.apache.logging.log4j.core.config">config</span>] </dd><dt>Definition Classes</dt><dd>ConfigurationFactory</dd></dl></div>
+    </li><li name="org.apache.logging.log4j.core.config.ConfigurationFactory#getVersion" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getVersion():String"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#getVersion():String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getVersion</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="org.apache.logging.log4j.core.config">config</span>] </dd><dt>Definition Classes</dt><dd>ConfigurationFactory</dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#hashCode():Int" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#hashCode():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -570,10 +755,26 @@ measurements.
                 <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="org.apache.logging.log4j.core.config.ConfigurationFactory#isActive" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isActive():Boolean"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#isActive():Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isActive</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="org.apache.logging.log4j.core.config">config</span>] </dd><dt>Definition Classes</dt><dd>ConfigurationFactory</dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#isInstanceOf[T0]:Boolean" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#isInstanceOf[T0]:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -589,7 +790,7 @@ measurements.
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#ne(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -605,7 +806,7 @@ measurements.
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#notify():Unit" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#notify():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -626,7 +827,7 @@ measurements.
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#notifyAll():Unit" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#notifyAll():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -644,26 +845,10 @@ measurements.
                 <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.Perhaps#perhaps" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="perhaps[F](implicitev:F):nz.net.wand.streamevmon.Perhaps[F]"></a><a id="perhaps[F](F):Perhaps[F]"></a>
-      <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#perhaps[F](implicitev:F):nz.net.wand.streamevmon.Perhaps[F]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">perhaps</span><span class="tparams">[<span name="F">F</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="nz.net.wand.streamevmon.Perhaps.perhaps.F">F</span> = <span class="symbol">null</span></span>)</span><span class="result">: <a href="Perhaps.html" class="extype" name="nz.net.wand.streamevmon.Perhaps">Perhaps</a>[<span class="extype" name="nz.net.wand.streamevmon.Perhaps.perhaps.F">F</span>]</span>
-      </span>
-      
-      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -679,7 +864,7 @@ measurements.
     </li><li name="scala.AnyRef#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#toString():String" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#toString():String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -695,7 +880,7 @@ measurements.
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -717,7 +902,7 @@ measurements.
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#wait(x$1:Long):Unit" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#wait(x$1:Long):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -741,7 +926,7 @@ measurements.
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#wait():Unit" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#wait():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -771,7 +956,7 @@ measurements.
               <ol><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#finalize():Unit" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html#finalize():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -797,10 +982,10 @@ measurements.
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+        <div class="parent" name="org.apache.logging.log4j.core.config.ConfigurationFactory">
+              <h3>Inherited from <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/config/ConfigurationFactory.html#org.apache.logging.log4j.core.config.ConfigurationFactory" class="extype" name="org.apache.logging.log4j.core.config.ConfigurationFactory">ConfigurationFactory</a></h3>
+            </div><div class="parent" name="org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory">
+              <h3>Inherited from <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/config/builder/api/ConfigurationBuilderFactory.html#org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory" class="extype" name="org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory">ConfigurationBuilderFactory</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">

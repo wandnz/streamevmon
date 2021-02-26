@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title>streamevmon 0.1-SNAPSHOT - nz.net.wand.streamevmon.Perhaps</title>
-          <meta name="description" content="streamevmon 0.1 - SNAPSHOT - nz.net.wand.streamevmon.Perhaps" />
-          <meta name="keywords" content="streamevmon 0.1 SNAPSHOT nz.net.wand.streamevmon.Perhaps" />
+          <title>streamevmon 0.1-SNAPSHOT - nz.net.wand.streamevmon.LoggingConfigurationFactory</title>
+          <meta name="description" content="streamevmon 0.1 - SNAPSHOT - nz.net.wand.streamevmon.LoggingConfigurationFactory" />
+          <meta name="keywords" content="streamevmon 0.1 SNAPSHOT nz.net.wand.streamevmon.LoggingConfigurationFactory" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -312,11 +312,11 @@ measurements.
                         <a class="trait" href="Logging.html" title="Allows globally configurable logging."></a>
                         <a href="Logging.html" title="Allows globally configurable logging.">Logging</a>
                       </li><li class="current-entities indented4">
-                        <a class="object" href="LoggingConfigurationFactory$.html" title="Config file discovery utilities."></a>
+                        <a class="object" href="" title="Config file discovery utilities."></a>
                         <a class="class" href="LoggingConfigurationFactory.html" title="Forcibly overrides Log4j2 config file lookup."></a>
                         <a href="LoggingConfigurationFactory.html" title="Forcibly overrides Log4j2 config file lookup.">LoggingConfigurationFactory</a>
                       </li><li class="current-entities indented4">
-                        <a class="object" href="" title=""></a>
+                        <a class="object" href="Perhaps$.html" title=""></a>
                         <a class="class" href="Perhaps.html" title="Allows for optional implicit evidence of additional type parameters."></a>
                         <a href="Perhaps.html" title="Allows for optional implicit evidence of additional type parameters.">Perhaps</a>
                       </li>
@@ -326,15 +326,15 @@ measurements.
           <div id="content">
             <body class="object value">
       <div id="definition">
-        <a href="Perhaps.html" title="See companion class"><div class="big-circle object-companion-class">o</div></a>
+        <a href="LoggingConfigurationFactory.html" title="See companion class"><div class="big-circle object-companion-class">o</div></a>
         <p id="owner"><a href="../../../index.html" class="extype" name="nz">nz</a>.<a href="../../index.html" class="extype" name="nz.net">net</a>.<a href="../index.html" class="extype" name="nz.net.wand">wand</a>.<a href="index.html" class="extype" name="nz.net.wand.streamevmon">streamevmon</a></p>
-        <h1><a href="Perhaps.html" title="See companion class">Perhaps</a><span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html" title="Permalink">
+        <h1><a href="LoggingConfigurationFactory.html" title="See companion class">LoggingConfigurationFactory</a><span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
         <h3><span class="morelinks"><div>
-            Companion <a href="Perhaps.html" title="See companion class">class Perhaps</a>
+            Companion <a href="LoggingConfigurationFactory.html" title="See companion class">class LoggingConfigurationFactory</a>
           </div></span></h3>
       </div>
 
@@ -344,16 +344,19 @@ measurements.
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">Perhaps</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <span class="name">LoggingConfigurationFactory</span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Config file discovery utilities.</p><p>It would be better for these to be in <a href="Configuration$.html" class="extype" name="nz.net.wand.streamevmon.Configuration">Configuration</a>, but that class
+depends on Logging, so a circular dependency would arise. This means we
+duplicate the <code>baseConfigDirectory</code> val.
+</p></div><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
         </div></div>
         
 
@@ -379,7 +382,7 @@ measurements.
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="nz.net.wand.streamevmon.Perhaps"><span>Perhaps</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="nz.net.wand.streamevmon.LoggingConfigurationFactory"><span>LoggingConfigurationFactory</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -409,7 +412,7 @@ measurements.
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#!=(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#!=(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -425,7 +428,7 @@ measurements.
     </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html###():Int" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html###():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -441,7 +444,7 @@ measurements.
     </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#==(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#==(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -457,7 +460,7 @@ measurements.
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#asInstanceOf[T0]:T0" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#asInstanceOf[T0]:T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -470,10 +473,26 @@ measurements.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.LoggingConfigurationFactory#baseConfigDirectory" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="baseConfigDirectory:String"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#baseConfigDirectory:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">baseConfigDirectory</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#clone():Object" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#clone():Object" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -499,7 +518,7 @@ measurements.
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#eq(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -515,7 +534,7 @@ measurements.
     </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#equals(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#equals(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -528,10 +547,42 @@ measurements.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.LoggingConfigurationFactory#flinkConfigDirectory" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="flinkConfigDirectory:String"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#flinkConfigDirectory:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">flinkConfigDirectory</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
+    </li><li name="nz.net.wand.streamevmon.LoggingConfigurationFactory#flinkLoggerConfigFile" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="flinkLoggerConfigFile:String"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#flinkLoggerConfigFile:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">flinkLoggerConfigFile</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#getClass():Class[_]" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#getClass():Class[_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -549,10 +600,52 @@ measurements.
                 <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.LoggingConfigurationFactory#getFlinkLoggerConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getFlinkLoggerConfig:org.apache.logging.log4j.core.config.ConfigurationSource"></a><a id="getFlinkLoggerConfig:ConfigurationSource"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#getFlinkLoggerConfig:org.apache.logging.log4j.core.config.ConfigurationSource" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getFlinkLoggerConfig</span><span class="result">: <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/config/ConfigurationSource.html#org.apache.logging.log4j.core.config.ConfigurationSource" class="extype" name="org.apache.logging.log4j.core.config.ConfigurationSource">ConfigurationSource</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Gets a log4j ConfigurationSource representing the system's Flink logging
+config, or the bundled one as fallback.</p><div class="fullcomment"><div class="comment cmt"><p>Gets a log4j ConfigurationSource representing the system's Flink logging
+config, or the bundled one as fallback.</p><p>Inspects the <code>log4j.configurationFile</code> environment variable first, since
+that's what flink-console.sh uses. Secondly, checks
+<code>/usr/share/flink/conf/flink-log4j-console.properties</code>. Finally loads the
+internal config.
+</p></div></div>
+    </li><li name="nz.net.wand.streamevmon.LoggingConfigurationFactory#getLoggerConfig" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getLoggerConfig:org.apache.logging.log4j.core.config.ConfigurationSource"></a><a id="getLoggerConfig:ConfigurationSource"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#getLoggerConfig:org.apache.logging.log4j.core.config.ConfigurationSource" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getLoggerConfig</span><span class="result">: <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/config/ConfigurationSource.html#org.apache.logging.log4j.core.config.ConfigurationSource" class="extype" name="org.apache.logging.log4j.core.config.ConfigurationSource">ConfigurationSource</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Gets a log4j ConfigurationSource representing the system configuration for
+this program's logging.</p><div class="fullcomment"><div class="comment cmt"><p>Gets a log4j ConfigurationSource representing the system configuration for
+this program's logging. /etc/streamevmon is tried first, then ./conf, then
+the bundled config as fallback.
+</p></div></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#hashCode():Int" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#hashCode():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -573,7 +666,7 @@ measurements.
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#isInstanceOf[T0]:Boolean" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#isInstanceOf[T0]:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -586,10 +679,26 @@ measurements.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.LoggingConfigurationFactory#log4jConfigFile" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="log4jConfigFile:String"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#log4jConfigFile:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">log4jConfigFile</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#ne(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -605,7 +714,7 @@ measurements.
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#notify():Unit" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#notify():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -626,7 +735,7 @@ measurements.
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#notifyAll():Unit" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#notifyAll():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -644,26 +753,10 @@ measurements.
                 <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.Perhaps#perhaps" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="perhaps[F](implicitev:F):nz.net.wand.streamevmon.Perhaps[F]"></a><a id="perhaps[F](F):Perhaps[F]"></a>
-      <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#perhaps[F](implicitev:F):nz.net.wand.streamevmon.Perhaps[F]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">perhaps</span><span class="tparams">[<span name="F">F</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="nz.net.wand.streamevmon.Perhaps.perhaps.F">F</span> = <span class="symbol">null</span></span>)</span><span class="result">: <a href="Perhaps.html" class="extype" name="nz.net.wand.streamevmon.Perhaps">Perhaps</a>[<span class="extype" name="nz.net.wand.streamevmon.Perhaps.perhaps.F">F</span>]</span>
-      </span>
-      
-      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -679,7 +772,7 @@ measurements.
     </li><li name="scala.AnyRef#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#toString():String" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#toString():String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -695,7 +788,7 @@ measurements.
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -717,7 +810,7 @@ measurements.
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#wait(x$1:Long):Unit" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#wait(x$1:Long):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -741,7 +834,7 @@ measurements.
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#wait():Unit" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#wait():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -771,7 +864,7 @@ measurements.
               <ol><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
-      <a href="../../../../nz/net/wand/streamevmon/Perhaps$.html#finalize():Unit" title="Permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html#finalize():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -797,11 +890,7 @@ measurements.
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>

@@ -312,6 +312,10 @@ measurements.
                         <a class="trait" href="Logging.html" title="Allows globally configurable logging."></a>
                         <a href="Logging.html" title="Allows globally configurable logging.">Logging</a>
                       </li><li class="current-entities indented4">
+                        <a class="object" href="LoggingConfigurationFactory$.html" title="Config file discovery utilities."></a>
+                        <a class="class" href="LoggingConfigurationFactory.html" title="Forcibly overrides Log4j2 config file lookup."></a>
+                        <a href="LoggingConfigurationFactory.html" title="Forcibly overrides Log4j2 config file lookup.">LoggingConfigurationFactory</a>
+                      </li><li class="current-entities indented4">
                         <a class="object" href="Perhaps$.html" title=""></a>
                         <a class="class" href="Perhaps.html" title="Allows for optional implicit evidence of additional type parameters."></a>
                         <a href="Perhaps.html" title="Allows for optional implicit evidence of additional type parameters.">Perhaps</a>
@@ -501,6 +505,34 @@ which evaluates only once and only when needed.
 logger.error(<span class="lit">"An error message!"</span>)</pre></li></ol>
             </div><dt>See also</dt><dd><span class="cmt"><p><code>simplelogger.properties</code> file for the current configuration.</p></span><span class="cmt"><p><a href="https://www.slf4j.org/api/org/slf4j/Logger.html" target="_blank">https://www.slf4j.org/api/org/slf4j/Logger.html</a> for details on
      usage and output configuration.</p></span></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.LoggingConfigurationFactory" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="LoggingConfigurationFactoryextendsConfigurationFactory"></a><a id="LoggingConfigurationFactory:LoggingConfigurationFactory"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a title="Forcibly overrides Log4j2 config file lookup." href="LoggingConfigurationFactory.html"><span class="name">LoggingConfigurationFactory</span></a><span class="result"> extends <a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/config/ConfigurationFactory.html#org.apache.logging.log4j.core.config.ConfigurationFactory" class="extype" name="org.apache.logging.log4j.core.config.ConfigurationFactory">ConfigurationFactory</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Forcibly overrides Log4j2 config file lookup.</p><div class="fullcomment"><div class="comment cmt"><p>Forcibly overrides Log4j2 config file lookup.</p><p>By registering a Log4j2 Plugin of type ConfigurationFactory with a high
+priority, we can override the default behaviour of searching environment
+variables for logging configuration files.</p><p>We do still end out using the configuration that Flink would load, but we
+create a
+<a href="https://logging.apache.org/log4j/2.x/log4j-core/apidocs/org/apache/logging/log4j/core/config/composite/CompositeConfiguration.html" class="extype" name="org.apache.logging.log4j.core.config.composite.CompositeConfiguration">CompositeConfiguration</a>
+which allows streamevmon config files to
+override anything set by the Flink config files.
+</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@Plugin</span><span class="args">()</span>
+              
+                <span class="name">@Order</span><span class="args">()</span>
+              
+        </dd><dt>See also</dt><dd><span class="cmt"><p><a href="https://logging.apache.org/log4j/2.x/manual/customconfig.html" target="_blank">https://logging.apache.org/log4j/2.x/manual/customconfig.html</a></p></span></dd></dl></div>
     </li><li name="nz.net.wand.streamevmon.Perhaps" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="Perhaps[E]extendsProductwithSerializable"></a><a id="Perhaps[E]:Perhaps[E]"></a>
       <span class="permalink">
@@ -559,6 +591,25 @@ logger.error(<span class="lit">"An error message!"</span>)</pre></li></ol>
       
       <p class="shortcomment cmt">Common configuration setup for Flink jobs.</p><div class="fullcomment"><div class="comment cmt"><p>Common configuration setup for Flink jobs. The result of get should be
 set as the global job parameters.
+</p></div></div>
+    </li><li name="nz.net.wand.streamevmon.LoggingConfigurationFactory" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="LoggingConfigurationFactory"></a><a id="LoggingConfigurationFactory:LoggingConfigurationFactory"></a>
+      <span class="permalink">
+      <a href="../../../../nz/net/wand/streamevmon/LoggingConfigurationFactory$.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="Config file discovery utilities." href="LoggingConfigurationFactory$.html"><span class="name">LoggingConfigurationFactory</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Config file discovery utilities.</p><div class="fullcomment"><div class="comment cmt"><p>Config file discovery utilities.</p><p>It would be better for these to be in <a href="Configuration$.html" class="extype" name="nz.net.wand.streamevmon.Configuration">Configuration</a>, but that class
+depends on Logging, so a circular dependency would arise. This means we
+duplicate the <code>baseConfigDirectory</code> val.
 </p></div></div>
     </li><li name="nz.net.wand.streamevmon.Perhaps" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Perhaps"></a><a id="Perhaps:Perhaps"></a>
