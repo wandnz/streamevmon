@@ -34,7 +34,18 @@ object DebianStreamevmonPlugin extends AutoPlugin {
     // Set some basic metadata
     debianRevision := "1",
     version in Debian := s"${version.value}-${debianRevision.value}",
-    debianPackageDependencies := Seq("openjdk-11-jre-headless | java11-runtime-headless", "flink-scala2.12"),
+    debianPackageDependencies := Seq(
+      // Enforce a Java 11 dependency, but also provide a default package for it
+      "openjdk-11-jre-headless | java11-runtime-headless",
+      // Declare the Flink package dependency. This must match our Scala binary
+      // version, as well as have the right Flink minor version. We accept any
+      // patch version, since they're all binary compatible.
+      s"flink-scala${scalaBinaryVersion.value} (>= " +
+        s"${VersionNumber(Dependencies.flinkVersion).numbers.take(2).mkString(".")})",
+      s"flink-scala${scalaBinaryVersion.value} (<< " +
+        s"${VersionNumber(Dependencies.flinkVersion)._1.get}." +
+        s"${VersionNumber(Dependencies.flinkVersion)._2.get + 1})"
+    ),
     debianPackageProvides := Seq(name.value),
     // deb packages aren't compressed by default by sbt-native-packager since
     // jars are already compressed, but that makes lintian complain and we'd prefer
