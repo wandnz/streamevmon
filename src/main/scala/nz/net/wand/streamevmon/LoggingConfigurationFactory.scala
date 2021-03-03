@@ -112,7 +112,7 @@ object LoggingConfigurationFactory {
     }
   }
 
-  lazy val flinkConfigDirectory: String = "/usr/share/flink/conf"
+  lazy val flinkConfigDirectory: String = "/etc/flink"
 
   lazy val log4jConfigFile: String = "streamevmon-log4j.properties"
 

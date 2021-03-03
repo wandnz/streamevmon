@@ -13,10 +13,15 @@ User=flink
 Group=flink
 
 Type=simple
-Environment=FLINK_LOG_DIR=/var/log/flink
-Environment=FLINK_PID_DIR=/run/flink
+
+RuntimeDirectory=streamevmon
+LogsDirectory=streamevmon
+
 Environment=FLINK_IDENT_STRING=streamevmon
-PIDFile=/run/flink/flink-streamevmon-standalonejob.pid
+Environment=FLINK_LOG_DIR=/var/log/streamevmon
+Environment=FLINK_PID_DIR=/run/streamevmon
+PIDFile=/run/streamevmon/flink-streamevmon-standalonejob.pid
+
 ExecStart=/usr/share/flink/bin/standalone-job.sh start-foreground --job-classname nz.net.wand.streamevmon.runners.examples.MetricGatherer
 ExecStop=/usr/share/flink/bin/standalone-job.sh stop
 ExecStopPost=/usr/share/flink/bin/taskmanager.sh stop

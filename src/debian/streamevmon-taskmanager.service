@@ -11,11 +11,16 @@ User=flink
 Group=flink
 
 Type=simple
-Environment=FLINK_LOG_DIR=/var/log/flink
-Environment=FLINK_PID_DIR=/run/flink
+
+RuntimeDirectory=streamevmon
+LogsDirectory=streamevmon
+
 Environment=FLINK_IDENT_STRING=streamevmon
-PIDFile=/run/flink/flink-streamevmon-taskexecutor.pid
-ExecStart=/usr/share/flink/bin/taskmanager.sh start-foreground
+Environment=FLINK_LOG_DIR=/var/log/streamevmon
+Environment=FLINK_PID_DIR=/run/streamevmon
+PIDFile=/run/streamevmon/flink-streamevmon-taskexecutor.pid
+
+ExecStart=bash -ac 'export FLINK_LOG_DIR=$LOGS_DIRECTORY FLINK_PID_DIR=$RUNTIME_DIRECTORY && /usr/share/flink/bin/taskmanager.sh start-foreground'
 SuccessExitStatus=143
 
 Restart=on-failure

@@ -54,9 +54,6 @@ object DebianPackageMappings {
       file(s"$baseDirectory/src/main/resources/streamevmon-log4j.properties") -> "/etc/streamevmon/streamevmon-log4j.properties"
     ).withPerms("0644").withConfig(),
     packageMapping(
-      file(s"$baseDirectory/src/main/resources/flink-log4j-console.properties") -> "/etc/streamevmon/flink-log4j-console.properties"
-    ).withPerms("0644").withConfig(),
-    packageMapping(
       file(s"$baseDirectory/src/main/resources/connectorSettings.yaml") -> "/etc/streamevmon/connectorSettings.yaml"
     ).withPerms("0644").withConfig(),
     packageMapping(
