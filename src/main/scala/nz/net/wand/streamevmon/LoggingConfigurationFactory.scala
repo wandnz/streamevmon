@@ -112,11 +112,12 @@ object LoggingConfigurationFactory {
     }
   }
 
-  lazy val flinkConfigDirectory: String = "/etc/flink"
-
   lazy val log4jConfigFile: String = "streamevmon-log4j.properties"
 
-  lazy val flinkLoggerConfigFile: String = "flink-log4j-console.properties"
+  lazy val flinkConfigDirectory: String = "/etc/flink"
+
+  lazy val flinkLoggerConfigFile: String = "log4j-console.properties"
+  lazy val flinkLoggerConfigFileInternalName: String = "flink-log4j-console.properties"
 
   /** Gets a log4j ConfigurationSource representing the system's Flink logging
     * config, or the bundled one as fallback.
@@ -128,13 +129,18 @@ object LoggingConfigurationFactory {
     */
   def getFlinkLoggerConfig: ConfigurationSource = {
     if (sys.env.get("log4j.configurationFile").exists(f => Files.exists(Path.of(f)))) {
+      println(s"Loading Flink log config file from ${sys.env("log4j.configurationFile")}")
       ConfigurationSource.fromUri(Path.of(sys.env("log4j.configurationFile")).toUri)
     }
     else if (Files.exists(Path.of(flinkConfigDirectory, flinkLoggerConfigFile))) {
+      println(s"Loading Flink log config file from ${Path.of(flinkConfigDirectory, flinkLoggerConfigFile)}")
       ConfigurationSource.fromUri(Path.of(flinkConfigDirectory, flinkLoggerConfigFile).toUri)
     }
     else {
-      ConfigurationSource.fromResource(flinkLoggerConfigFile, getClass.getClassLoader)
+      println(s"env:log4j.configurationFile = ${sys.env.get("log4j.configurationFile")}")
+      println(s"Could not find file ${Path.of(flinkConfigDirectory, flinkLoggerConfigFile)}")
+      println(s"Loading Flink log config file from streamevmon-internal defaults")
+      ConfigurationSource.fromResource(flinkLoggerConfigFileInternalName, getClass.getClassLoader)
     }
   }
 
@@ -145,9 +151,11 @@ object LoggingConfigurationFactory {
   def getLoggerConfig: ConfigurationSource = {
     val configFileLocation = Path.of(baseConfigDirectory, log4jConfigFile)
     if (Files.exists(configFileLocation)) {
+      println(s"Loading log config file from $configFileLocation")
       ConfigurationSource.fromUri(configFileLocation.toUri)
     }
     else {
+      println("Loading log config file from defaults")
       ConfigurationSource.fromResource(log4jConfigFile, getClass.getClassLoader)
     }
   }
