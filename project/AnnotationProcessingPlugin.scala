@@ -75,7 +75,7 @@ object AnnotationProcessor {
         }
       }
 
-      log.info(s"Running $command")
+      log.debug(s"Running $command")
       val result = command.!
       if (result != 0) {
         log.error(s"Failed to process annotations using $processor for ${classesToProcess.mkString(" ")}")
