@@ -99,19 +99,21 @@ object ChangepointGraphs {
   }
 
   def main(args: Array[String]): Unit = {
-    for (file <- getListOfFiles("data/latency-ts-i/ampicmp/series")) {
-      doIt(file, 20, 10, 30)
+    for (file <- getListOfFiles("data/latency-ts-i/ampicmp")) {
+      if (file.endsWith(".series")) {
+        doIt(file, 20, 10, 30)
 
-      /*
-      for (maxhist <- Seq(20, 40, 60)) {
-        for (triggerCount <- Seq(10, 20, 30, 40)) {
-          for (severity <- Seq(15, 20, 25, 30)) {
-            doIt(file, maxhist, triggerCount, severity)
+        /*
+        for (maxhist <- Seq(20, 40, 60)) {
+          for (triggerCount <- Seq(10, 20, 30, 40)) {
+            for (severity <- Seq(15, 20, 25, 30)) {
+              doIt(file, maxhist, triggerCount, severity)
+            }
           }
         }
-      }
 
-     */
+       */
+      }
     }
   }
 }

@@ -45,7 +45,7 @@ object BaselineRunner {
     env.setParallelism(1)
 
     val source = env
-      .readFile(new LatencyTSAmpFileInputFormat, "data/latency-ts-i/ampicmp/series/waikato-arin-ipv6.series")
+      .readFile(new LatencyTSAmpFileInputFormat, "data/latency-ts-i/ampicmp/waikato-arin-ipv6.series")
       .setParallelism(1)
       .name("Latency TS AMP Input")
       .keyBy(new MeasurementKeySelector[LatencyTSAmpICMP])

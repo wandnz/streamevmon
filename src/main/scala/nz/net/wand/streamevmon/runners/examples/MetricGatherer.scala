@@ -80,7 +80,8 @@ object MetricGatherer {
     env.disableOperatorChaining()
 
     env
-      .readFile(new LatencyTSAmpFileInputFormat, "/usr/share/flink/data/latency-ts-i/ampicmp/series/waikato-xero-ipv4.series")
+      // using the .deb install location... a lot of these runners need to be tidied up
+      .readFile(new LatencyTSAmpFileInputFormat, "/usr/share/flink/data/latency-ts-i/ampicmp/waikato-xero-ipv4.series")
       .setParallelism(1)
       .assignAscendingTimestamps(_.time.toEpochMilli)
       .keyBy(_.stream)

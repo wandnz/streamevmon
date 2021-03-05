@@ -58,7 +58,7 @@ object SpikeRunner {
     env.enableCheckpointing(Duration.ofSeconds(10).toMillis, CheckpointingMode.EXACTLY_ONCE)
 
     val source = env
-      .readFile(new LatencyTSAmpFileInputFormat, "data/latency-ts-i/ampicmp/series/waikato-xero-ipv4.series")
+      .readFile(new LatencyTSAmpFileInputFormat, "data/latency-ts-i/ampicmp/waikato-xero-ipv4.series")
       .setParallelism(1)
       .name("Latency TS AMP Input")
       .keyBy(new MeasurementKeySelector[LatencyTSAmpICMP])

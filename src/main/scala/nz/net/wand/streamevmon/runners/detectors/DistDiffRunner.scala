@@ -51,7 +51,7 @@ object DistDiffRunner {
     env.setMaxParallelism(1)
 
     val source = env
-      .readFile(new LatencyTSAmpFileInputFormat, "data/latency-ts-i/ampicmp/series/waikato-xero-ipv4.series")
+      .readFile(new LatencyTSAmpFileInputFormat, "data/latency-ts-i/ampicmp/waikato-xero-ipv4.series")
       .setParallelism(1)
       .name("Latency TS AMP ICMP")
       .uid("distdiff-source")
@@ -61,7 +61,7 @@ object DistDiffRunner {
 
     lazy val window = source.countWindow(config.getInt("detector.distdiff.recentsCount") * 2, 1)
 
-    val process = if (config.getBoolean("detector.distdiff.useFlinkWindow")) {
+    val process = if (config.getBoolean("detector.distdiff.useFlinkTimeWindow")) {
       val detector = new WindowedDistDiffDetector[LatencyTSAmpICMP, GlobalWindow]
       window
         .process(detector)

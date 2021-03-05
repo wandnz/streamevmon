@@ -33,6 +33,7 @@ import nz.net.wand.streamevmon.measurements.latencyts.LatencyTSAmpICMP
 import java.io.OutputStream
 import java.time.{Duration, Instant}
 
+import org.apache.flink.api.common.io.GlobFilePathFilter
 import org.apache.flink.api.common.restartstrategy.RestartStrategies
 import org.apache.flink.core.fs.Path
 import org.apache.flink.core.io.SimpleVersionedSerializer
@@ -44,6 +45,8 @@ import org.apache.flink.streaming.api.functions.sink.filesystem.bucketassigners.
 import org.apache.flink.streaming.api.functions.sink.filesystem.rollingpolicies.DefaultRollingPolicy
 import org.apache.flink.streaming.api.functions.source.{FileProcessingMode, SourceFunction}
 import org.apache.flink.streaming.api.scala._
+
+import scala.collection.JavaConverters._
 
 /** Shows saving measurements that implement
   * [[nz.net.wand.streamevmon.measurements.traits.CsvOutputable CsvOutputable]] to a
@@ -88,8 +91,10 @@ object AmpMeasurementsToCsv {
             AmpMeasurementsToCsv.lastRecordTime = Instant.now()
             super.readRecord(reuse, bytes, offset, numBytes)
           }
+
+          setFilesFilter(new GlobFilePathFilter(Seq("**/*.series").asJava, Seq().asJava))
         },
-        "data/latency-ts-i/ampicmp/series",
+        "data/latency-ts-i/ampicmp",
         // We process continually so that the sourcefunction keeps running after
         // it's done. We don't expect any updated files.
         FileProcessingMode.PROCESS_CONTINUOUSLY,

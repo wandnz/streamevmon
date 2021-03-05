@@ -58,7 +58,7 @@ object LatencyTSToCsvPrinter {
     val tupleStream = env
       // We just read one file for simplicity here. You can specify a folder to
       // read all the files in that folder, if you choose.
-      .readFile(input, "data/latency-ts-i/ampicmp/series/waikato-xero-ipv4.series")
+      .readFile(input, "data/latency-ts-i/ampicmp/waikato-xero-ipv4.series")
       .map(_.toCsvFormat match {
         case Seq(a, b, c, d, e, f, g) => (a, b, c, d, e, f, g)
       })

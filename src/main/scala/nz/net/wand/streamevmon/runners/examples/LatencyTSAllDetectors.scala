@@ -132,7 +132,7 @@ object LatencyTSAllDetectors {
 
     // Use all the series files, making sure we don't get anything else like
     // .events files or READMEs.
-    new File("data/latency-ts-i/ampicmp/series/")
+    new File("data/latency-ts-i/ampicmp/")
       .listFiles(_.getName.endsWith(".series"))
       .foreach(runTest)
   }

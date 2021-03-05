@@ -36,8 +36,8 @@ package nz.net.wand.streamevmon.detectors
   * This package includes two versions of the detector: One takes a keyed stream,
   * and the other takes a windowed keyed stream. They are configured identically.
   * When using the UnifiedRunner or the DistDiffRunner, the configuration option
-  * `detector.distdiff.useFlinkWindow` can be used to choose the windowed variant
-  * (true) or the sequential variant (false).
+  * `detector.distdiff.useFlinkTimeWindow` can be used to choose the windowed
+  * variant (true) or the sequential variant (false).
   *
   * ==Configuration==
   *

@@ -46,8 +46,8 @@ on [their website](https://ci.apache.org/projects/flink/flink-docs-release-1.12/
 A number of the entrypoints, including most of the single-detector example
 runners, rely on the Latency TS I dataset. This can be downloaded for free at
 WAND's [WITS](https://wand.net.nz/wits/latency/1/) project. It should be
-extracted into the `data/` directory such that it contains the `latency-ts-i`
-directory.
+extracted into the `data/` directory, and the `latency-groundtruth/` directory
+renamed to `latency-ts-i`.
 
 This is a simple dataset without a well-studied set of labels to make it useful
 for anomaly detection benchmarks, but it has a number of interesting attributes

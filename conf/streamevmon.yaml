@@ -6,6 +6,6 @@ source:
     serverName: localhost
   latencyts:
     ampicmp:
-      location: ./data/latency-ts-i/ampicmp/series
+      location: ./data/latency-ts-i/ampicmp
     smokepoing:
-      location: ./data/latency-ts-i/smokeping/series
+      location: ./data/latency-ts-i/smokeping

@@ -39,7 +39,7 @@ import org.apache.flink.streaming.api.scala._
   */
 object ModeRunner {
   def main(args: Array[String]): Unit = {
-    val filename = "data/latency-ts-i/ampicmp/series/waikato-xero-ipv4.series"
+    val filename = "data/latency-ts-i/ampicmp/waikato-xero-ipv4.series"
     val env = StreamExecutionEnvironment.getExecutionEnvironment
 
     System.setProperty("source.influx.subscriptionName", "ModeDetector")
