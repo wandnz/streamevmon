@@ -11,39 +11,46 @@ This document describes how to provide your own pipeline configuration.
 
 Any file with a `.yaml` or `.yml` extension in the `./conf/` folder except
 `flows.yaml` and `flows.yml` will be read as a config file. Configuration
-options are described throughout this project's ScalaDoc, but a summary is 
+options are described throughout this project's Scaladoc, but a summary is
 provided here.
 
 All config comes under a few top-level keys, depending on the category of the
 module you're configuring.
 
-* `caching`: See ScalaDoc for `Caching`.
+* `caching`:
+  See [Scaladoc](https://wanduow.github.io/streamevmon/nz/net/wand/streamevmon/Caching.html)
+  .
 * `flink`: This key group is mainly used by the YamlDagRunner, but certain
   options may also be used to inform behaviour in other places.
   * `flink.maxLateness`: The number of seconds a measurement may be out-of-order
     by before it is determined to be late, and dropped. This is used to assign
     watermarks so Flink can process them correctly. Default 20.
-  * `flink.checkpointInterval`: How often, in seconds, to snapshot the current 
+  * `flink.checkpointInterval`: How often, in seconds, to snapshot the current
     state to allow failures to be resumed. Default 600.
-    
-* `source`: Configuration for SourceFunctions and FileInputFormats. See ScalaDoc 
-  for `flink.sources`.
-* `sink`: Configuration for SinkFunctions. See ScalaDoc for `flink.sinks`.
-* `detector`: Configuration for detectors. See ScalaDoc `detectors`.
+
+* `source`: Configuration for SourceFunctions and FileInputFormats. See
+  [Scaladoc](https://wanduow.github.io/streamevmon/nz/net/wand/streamevmon/flink/sources/index.html)
+  .
+* `sink`: Configuration for SinkFunctions. See
+  [Scaladoc](https://wanduow.github.io/streamevmon/nz/net/wand/streamevmon/flink/sinks/index.html)
+  .
+* `detector`: Configuration for detectors. See
+  [Scaladoc](https://wanduow.github.io/streamevmon/nz/net/wand/streamevmon/detectors/index.html)
+  .
 
 Note that none of these keys are pluralised, which differs from the `flows.yaml`
 configuration format.
 
 ## Configuring the Pipeline
 
-First, create a new file at `conf/flows.yaml`. Not that `conf/flows.yml`, with
-the extension `.yml` instead of `.yaml`, will not work. Any files in this folder 
-other than those two are considered general config settings, and the [above
-section](#configuring-defaults) applies to them.
+First, create a new file at `conf/flows.yaml`. Note that `conf/flows.yml`, with
+the extension `.yml` instead of `.yaml`, will not work. Any files in this folder
+other than those two are considered general config settings, and
+the [above section](#configuring-defaults) applies to them.
 
 `flows.yaml` represents a Directed Acyclic Graph (DAG) describing the flow of
-measurements from sources, through detectors, and into sinks. For a config to
-make sense, there must be at least one item of each category. All the following
+data from sources, through detectors, and into sinks. For a config to make
+sense, there must be at least one item of each category. All the following
 sections can have as many keys as desired.
 
 Sources and sinks are only constructed if they are required by a detector. As
