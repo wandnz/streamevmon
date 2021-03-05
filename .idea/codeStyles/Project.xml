@@ -29,6 +29,9 @@
       <option name="SD_BLANK_LINE_AFTER_RETURN_COMMENTS" value="true" />
       <option name="SD_BLANK_LINE_BEFORE_PARAMETERS" value="true" />
     </ScalaCodeStyleSettings>
+    <codeStyleSettings language="Markdown">
+      <option name="RIGHT_MARGIN" value="80" />
+    </codeStyleSettings>
     <codeStyleSettings language="Scala">
       <option name="ELSE_ON_NEW_LINE" value="true" />
       <option name="CATCH_ON_NEW_LINE" value="true" />
