@@ -73,9 +73,10 @@ include the following:
   [Obtaining Datasets](#obtaining-datasets) for more details, and the
   [Scaladocs](https://wanduow.github.io/streamevmon/nz/net/wand/streamevmon/runners/index.html)
   for up-to-date information on available entrypoints.
-- `sbt test` will run all tests on the main project. Note that many of these
-  tests require access to a Docker daemon, so if it is not installed or not
-  accessible, some tests will fail.
+- `sbt test` will run all tests on the main project.
+  - Some of these tests require access to a Docker daemon. If it is not
+    installed or not accessible, you can skip them by instead running
+    `sbt noDocker:test`.
 - `sbt doc` will produce API documentation in the `target/scala-2.12/api`
   directory. This can be opened with a web browser, or
   [viewed online](https://wanduow.github.io/streamevmon/nz/net/wand/streamevmon/index.html)
