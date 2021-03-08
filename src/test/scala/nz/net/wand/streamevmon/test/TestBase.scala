@@ -24,21 +24,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.wand.streamevmon.connectors
+package nz.net.wand.streamevmon.test
 
-import nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath
-import nz.net.wand.streamevmon.test.{PostgresContainerSpec, SeedData}
+import org.scalatest.BeforeAndAfter
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class AsInetPathTest extends PostgresContainerSpec {
-  "AsInetPath" should {
-    "be created correctly" in {
-      val inetPath = SeedData.traceroute.expectedPath
-      val asPath = SeedData.traceroute.expectedAsPath
-      val measurement = SeedData.traceroute.expected
-      val meta = SeedData.traceroute.expectedMeta
-
-      AsInetPath(inetPath.path, Some(asPath.aspath), measurement, meta) shouldBe SeedData.traceroute.expectedAsInetPath
-      AsInetPath(inetPath.path, None, measurement, meta) shouldBe SeedData.traceroute.expectedAsInetPathWithoutAsPath
-    }
-  }
-}
+trait TestBase
+  extends AnyWordSpec
+          with Matchers
+          with BeforeAndAfter {}

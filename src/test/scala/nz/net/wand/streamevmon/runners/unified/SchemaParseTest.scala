@@ -26,7 +26,8 @@
 
 package nz.net.wand.streamevmon.runners.unified
 
-import nz.net.wand.streamevmon.{Configuration, SeedData, TestBase}
+import nz.net.wand.streamevmon.Configuration
+import nz.net.wand.streamevmon.test.{SeedData, TestBase}
 
 class SchemaParseTest extends TestBase {
   "Yaml Dag Schema" should {

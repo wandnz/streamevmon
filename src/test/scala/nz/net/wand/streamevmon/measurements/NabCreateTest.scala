@@ -26,8 +26,8 @@
 
 package nz.net.wand.streamevmon.measurements
 
-import nz.net.wand.streamevmon.{SeedData, TestBase}
 import nz.net.wand.streamevmon.measurements.nab.NabMeasurement
+import nz.net.wand.streamevmon.test.{SeedData, TestBase}
 
 class NabCreateTest extends TestBase {
   "Nab measurements" should {

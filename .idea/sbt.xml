@@ -5,6 +5,7 @@
     <option name="linkedExternalProjectsSettings">
       <SbtProjectSettings>
         <option name="allowSbtVersionOverride" value="false" />
+        <option name="enableDebugSbtShell" value="true" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>

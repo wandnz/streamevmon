@@ -26,8 +26,8 @@
 
 package nz.net.wand.streamevmon.connectors
 
-import nz.net.wand.streamevmon.{PostgresContainerSpec, SeedData}
 import nz.net.wand.streamevmon.connectors.postgres.PostgresConnection
+import nz.net.wand.streamevmon.test.{PostgresContainerSpec, SeedData}
 
 import java.sql.DriverManager
 

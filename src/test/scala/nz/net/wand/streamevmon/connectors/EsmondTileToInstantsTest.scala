@@ -26,8 +26,8 @@
 
 package nz.net.wand.streamevmon.connectors
 
-import nz.net.wand.streamevmon.TestBase
 import nz.net.wand.streamevmon.connectors.esmond.EsmondAPI
+import nz.net.wand.streamevmon.test.TestBase
 
 import java.time._
 

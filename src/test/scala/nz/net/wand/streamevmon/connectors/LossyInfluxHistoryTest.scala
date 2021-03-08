@@ -26,7 +26,7 @@
 
 package nz.net.wand.streamevmon.connectors
 
-import nz.net.wand.streamevmon.{InfluxContainerSpec, SeedData}
+import nz.net.wand.streamevmon.test.{InfluxContainerSpec, SeedData}
 
 import com.github.fsanaulla.chronicler.ahc.io.InfluxIO
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials

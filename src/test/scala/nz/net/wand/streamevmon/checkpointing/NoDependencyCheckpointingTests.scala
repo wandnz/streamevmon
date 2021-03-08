@@ -26,7 +26,6 @@
 
 package nz.net.wand.streamevmon.checkpointing
 
-import nz.net.wand.streamevmon.{HarnessingTest, SeedData}
 import nz.net.wand.streamevmon.detectors.baseline.BaselineDetector
 import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, NormalDistribution}
 import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
@@ -36,6 +35,7 @@ import nz.net.wand.streamevmon.detectors.spike.SpikeDetector
 import nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.amp.ICMP
+import nz.net.wand.streamevmon.test.{HarnessingTest, SeedData}
 
 import java.time.Instant
 

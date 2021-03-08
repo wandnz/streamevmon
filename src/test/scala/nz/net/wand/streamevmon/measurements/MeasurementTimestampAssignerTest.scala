@@ -26,7 +26,7 @@
 
 package nz.net.wand.streamevmon.measurements
 
-import nz.net.wand.streamevmon.{SeedData, TestBase}
+import nz.net.wand.streamevmon.test.{SeedData, TestBase}
 
 class MeasurementTimestampAssignerTest extends TestBase {
   "Correct timestamp should be assigned" in {

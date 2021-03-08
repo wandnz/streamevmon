@@ -26,10 +26,11 @@
 
 package nz.net.wand.streamevmon.checkpointing
 
-import nz.net.wand.streamevmon.{Configuration, TestBase}
+import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.flink.FailingSource
 import nz.net.wand.streamevmon.measurements.amp.ICMP
 import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
+import nz.net.wand.streamevmon.test.TestBase
 
 import java.time.Duration
 

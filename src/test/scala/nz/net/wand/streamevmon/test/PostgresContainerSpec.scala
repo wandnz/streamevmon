@@ -24,19 +24,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.wand.streamevmon
+package nz.net.wand.streamevmon.test
 
 import nz.net.wand.streamevmon.connectors.postgres.PostgresConnection
+import nz.net.wand.streamevmon.Configuration
 
 import java.sql.DriverManager
 
-import com.dimafeng.testcontainers.{ForAllTestContainer, PostgreSQLContainer}
+import com.dimafeng.testcontainers.PostgreSQLContainer
 import org.squeryl.{Session, SessionFactory}
 import org.squeryl.adapters.PostgreSqlAdapter
 import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy
 import org.testcontainers.utility.DockerImageName
 
-trait PostgresContainerSpec extends TestBase with ForAllTestContainer {
+abstract class PostgresContainerSpec extends TaggedForAllTestContainer with TestBase {
 
   // We know that NNTSC uses postgres 10, so we might as well stick with
   // that version. Alpine for size benefits.

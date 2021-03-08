@@ -26,7 +26,7 @@
 
 package nz.net.wand.streamevmon.parameters
 
-import nz.net.wand.streamevmon.TestBase
+import nz.net.wand.streamevmon.test.TestBase
 
 class ParameterInstanceTest extends TestBase {
   "ParameterInstance" should {

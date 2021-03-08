@@ -26,7 +26,7 @@
 
 package nz.net.wand.streamevmon.tuner
 
-import nz.net.wand.streamevmon.TestBase
+import nz.net.wand.streamevmon.test.TestBase
 import nz.net.wand.streamevmon.tuner.jobs.{Job, JobResult, SimpleJob}
 import nz.net.wand.streamevmon.tuner.ActorManager.{JobResultHook, RemoveJobResultHook}
 

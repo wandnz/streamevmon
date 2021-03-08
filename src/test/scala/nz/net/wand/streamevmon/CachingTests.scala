@@ -28,10 +28,11 @@ package nz.net.wand.streamevmon
 
 import nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath
 import nz.net.wand.streamevmon.measurements.amp.ICMPMeta
+import nz.net.wand.streamevmon.test.{SeedData, TaggedForEachTestContainer, TestBase}
 
 import java.nio.file.{Files, Path}
 
-import com.dimafeng.testcontainers.{ForEachTestContainer, GenericContainer}
+import com.dimafeng.testcontainers.GenericContainer
 import org.apache.commons.io.FileUtils
 import org.apache.flink.api.java.utils.ParameterTool
 import org.testcontainers.containers.wait.strategy.Wait
@@ -128,8 +129,8 @@ class CachingCaffeineBackendTest extends CachingBehaviours {
   * or on the same instance.
   */
 class CachingMemcachedBackendTest
-  extends CachingBehaviours
-          with ForEachTestContainer {
+  extends TaggedForEachTestContainer
+          with CachingBehaviours {
 
   /** Docker needs a directory to use as the build context. */
   val tempDir = Files.createTempDirectory(Path.of("/tmp"), "memcached-Docker")

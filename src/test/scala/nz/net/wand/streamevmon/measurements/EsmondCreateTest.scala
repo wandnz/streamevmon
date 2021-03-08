@@ -26,8 +26,8 @@
 
 package nz.net.wand.streamevmon.measurements
 
-import nz.net.wand.streamevmon.{SeedData, TestBase}
 import nz.net.wand.streamevmon.measurements.esmond.{EsmondMeasurement, RichEsmondMeasurement}
+import nz.net.wand.streamevmon.test.{SeedData, TestBase}
 
 class EsmondCreateTest extends TestBase {
   "Esmond Measurements" should {

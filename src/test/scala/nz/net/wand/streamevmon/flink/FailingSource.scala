@@ -27,7 +27,7 @@
 package nz.net.wand.streamevmon.flink
 
 import nz.net.wand.streamevmon.measurements.amp.ICMP
-import nz.net.wand.streamevmon.SeedData
+import nz.net.wand.streamevmon.test.SeedData
 
 import java.time.Instant
 

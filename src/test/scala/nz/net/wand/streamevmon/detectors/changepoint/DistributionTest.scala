@@ -26,8 +26,8 @@
 
 package nz.net.wand.streamevmon.detectors.changepoint
 
-import nz.net.wand.streamevmon.TestBase
 import nz.net.wand.streamevmon.measurements.traits.{HasDefault, Measurement}
+import nz.net.wand.streamevmon.test.TestBase
 
 import java.time.Instant
 

@@ -26,7 +26,7 @@
 
 package nz.net.wand.streamevmon.events.grouping.graph
 
-import nz.net.wand.streamevmon.TestBase
+import nz.net.wand.streamevmon.test.TestBase
 
 import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.io.{ByteBufferInput, ByteBufferOutput}

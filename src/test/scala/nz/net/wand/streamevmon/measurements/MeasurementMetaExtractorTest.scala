@@ -26,8 +26,8 @@
 
 package nz.net.wand.streamevmon.measurements
 
-import nz.net.wand.streamevmon.{HarnessingTest, PostgresContainerSpec, SeedData}
 import nz.net.wand.streamevmon.measurements.traits.{Measurement, PostgresMeasurementMeta}
+import nz.net.wand.streamevmon.test.{HarnessingTest, PostgresContainerSpec, SeedData}
 
 import org.apache.flink.streaming.api.scala._
 

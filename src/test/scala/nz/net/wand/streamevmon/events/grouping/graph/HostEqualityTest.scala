@@ -26,8 +26,8 @@
 
 package nz.net.wand.streamevmon.events.grouping.graph
 
-import nz.net.wand.streamevmon.TestBase
 import nz.net.wand.streamevmon.connectors.postgres.schema.AsNumber
+import nz.net.wand.streamevmon.test.TestBase
 
 import java.net.InetAddress
 

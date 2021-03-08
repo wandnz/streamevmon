@@ -26,7 +26,7 @@
 
 package nz.net.wand.streamevmon.detectors.spike
 
-import nz.net.wand.streamevmon.TestBase
+import nz.net.wand.streamevmon.test.TestBase
 
 /** This is the data from the original stack overflow question, linked in
   * [[SmoothedZScore]]'s description. The test simply ensures it works the

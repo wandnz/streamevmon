@@ -26,7 +26,6 @@
 
 package nz.net.wand.streamevmon.runners.unified
 
-import nz.net.wand.streamevmon.TestBase
 import nz.net.wand.streamevmon.detectors.baseline.BaselineDetector
 import nz.net.wand.streamevmon.detectors.changepoint.{ChangepointDetector, Distribution}
 import nz.net.wand.streamevmon.detectors.distdiff.{DistDiffDetector, WindowedDistDiffDetector}
@@ -38,6 +37,7 @@ import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.amp.ICMP
 import nz.net.wand.streamevmon.runners.unified.schema._
+import nz.net.wand.streamevmon.test.TestBase
 
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction

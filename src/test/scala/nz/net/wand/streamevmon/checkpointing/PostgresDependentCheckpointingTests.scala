@@ -26,15 +26,15 @@
 
 package nz.net.wand.streamevmon.checkpointing
 
-import nz.net.wand.streamevmon.{HarnessingTest, PostgresContainerSpec, SeedData}
 import nz.net.wand.streamevmon.events.grouping.graph.TracerouteAsInetPathExtractor
 import nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor
 import nz.net.wand.streamevmon.measurements.amp.{Traceroute, TracerouteMeta}
+import nz.net.wand.streamevmon.test.{HarnessingTest, PostgresContainerSpec, SeedData}
 
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.runtime.streamrecord.StreamRecord
 
-class PostgresDependentCheckpointingTests extends HarnessingTest with PostgresContainerSpec {
+class PostgresDependentCheckpointingTests extends PostgresContainerSpec with HarnessingTest {
   "ProcessFunctions that require PostgreSQL" should {
     "restore from checkpoints correctly" when {
       "type is TracerouteAsInetPathExtractor" in {

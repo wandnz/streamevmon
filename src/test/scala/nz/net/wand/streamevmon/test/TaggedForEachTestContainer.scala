@@ -24,13 +24,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.wand.streamevmon
+package nz.net.wand.streamevmon.test
 
-import org.scalatest.BeforeAndAfter
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import com.dimafeng.testcontainers.ForEachTestContainer
 
-trait TestBase
-  extends AnyWordSpec
-          with Matchers
-          with BeforeAndAfter {}
+@TestContainersTest
+abstract class TaggedForEachTestContainer extends TestBase with ForEachTestContainer {}

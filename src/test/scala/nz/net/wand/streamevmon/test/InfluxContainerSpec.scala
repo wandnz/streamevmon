@@ -24,12 +24,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.wand.streamevmon
+package nz.net.wand.streamevmon.test
 
 import nz.net.wand.streamevmon.connectors.influx.{InfluxConnection, InfluxHistoryConnection}
 import nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction
 
-import com.dimafeng.testcontainers.{ForAllTestContainer, InfluxDBContainer}
+import com.dimafeng.testcontainers.InfluxDBContainer
 import com.github.fsanaulla.chronicler.ahc.management.InfluxMng
 import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
 import org.apache.flink.api.java.utils.ParameterTool
@@ -40,7 +40,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class InfluxContainerSpec extends TestBase with ForAllTestContainer {
+class InfluxContainerSpec extends TaggedForAllTestContainer with TestBase {
 
   // We're turning off auth because we don't really care.
   override val container: InfluxDBContainer = InfluxDBContainer(tag = s"${InfluxDBContainer.defaultTag}-alpine", authEnabled = false)

@@ -24,10 +24,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.wand.streamevmon
+package nz.net.wand.streamevmon.test
 
 import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
 import nz.net.wand.streamevmon.measurements.traits.Measurement
+import nz.net.wand.streamevmon.Configuration
 
 import org.apache.flink.streaming.api.functions.{KeyedProcessFunction, ProcessFunction}
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction

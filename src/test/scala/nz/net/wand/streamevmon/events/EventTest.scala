@@ -26,7 +26,7 @@
 
 package nz.net.wand.streamevmon.events
 
-import nz.net.wand.streamevmon.{SeedData, TestBase}
+import nz.net.wand.streamevmon.test.{SeedData, TestBase}
 
 class EventTest extends TestBase {
 

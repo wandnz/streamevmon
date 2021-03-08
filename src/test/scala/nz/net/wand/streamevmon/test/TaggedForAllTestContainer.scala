@@ -24,21 +24,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.wand.streamevmon.connectors
+package nz.net.wand.streamevmon.test
 
-import nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath
-import nz.net.wand.streamevmon.test.{PostgresContainerSpec, SeedData}
+import com.dimafeng.testcontainers.ForAllTestContainer
 
-class AsInetPathTest extends PostgresContainerSpec {
-  "AsInetPath" should {
-    "be created correctly" in {
-      val inetPath = SeedData.traceroute.expectedPath
-      val asPath = SeedData.traceroute.expectedAsPath
-      val measurement = SeedData.traceroute.expected
-      val meta = SeedData.traceroute.expectedMeta
-
-      AsInetPath(inetPath.path, Some(asPath.aspath), measurement, meta) shouldBe SeedData.traceroute.expectedAsInetPath
-      AsInetPath(inetPath.path, None, measurement, meta) shouldBe SeedData.traceroute.expectedAsInetPathWithoutAsPath
-    }
-  }
-}
+@TestContainersTest
+abstract class TaggedForAllTestContainer extends TestBase with ForAllTestContainer {}

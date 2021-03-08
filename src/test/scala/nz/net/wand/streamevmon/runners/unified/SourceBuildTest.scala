@@ -26,9 +26,9 @@
 
 package nz.net.wand.streamevmon.runners.unified
 
-import nz.net.wand.streamevmon.TestBase
 import nz.net.wand.streamevmon.flink.sources._
 import nz.net.wand.streamevmon.runners.unified.schema.{SourceInstance, SourceSubtype, SourceType}
+import nz.net.wand.streamevmon.test.TestBase
 
 import org.apache.flink.api.java.utils.ParameterTool
 

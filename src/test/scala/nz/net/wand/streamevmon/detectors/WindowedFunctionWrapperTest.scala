@@ -26,12 +26,13 @@
 
 package nz.net.wand.streamevmon.detectors
 
-import nz.net.wand.streamevmon.{Configuration, TestBase}
+import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.amp.TraceroutePathlen
 import nz.net.wand.streamevmon.measurements.traits.InfluxMeasurement
 import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
+import nz.net.wand.streamevmon.test.TestBase
 
 import java.time.Instant
 import java.util.concurrent.TimeUnit

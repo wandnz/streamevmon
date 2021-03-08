@@ -26,10 +26,10 @@
 
 package nz.net.wand.streamevmon.measurements
 
-import nz.net.wand.streamevmon.{SeedData, TestBase}
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow
 import nz.net.wand.streamevmon.measurements.traits.InfluxMeasurementFactory
+import nz.net.wand.streamevmon.test.{SeedData, TestBase}
 
 class MeasurementCreateTest extends TestBase {
   "Children of Measurement.create" should {

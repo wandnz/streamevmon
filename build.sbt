@@ -1,3 +1,4 @@
+
 ThisBuild / resolvers ++= Seq(
   "Apache Development Snapshot Repository" at "https://repository.apache.org/content/repositories/snapshots/",
   Resolver.mavenLocal
@@ -87,3 +88,14 @@ lazy val parameterTuner = (project in file("parameterTuner"))
     ) ++ sharedSettings ++ parameterTunerLicensing: _*
   )
   .enablePlugins(AutomateHeaderPlugin)
+
+// We make a configuration that lets us run `noDocker:test` to skip tests that
+// require Docker.
+lazy val NoDockerTests = config("noDocker") extend Test
+// This is done by supplying arguments to testOnly, which is the only way to
+// pass the `-l` argument to the underlying scalatest invocation. We do *
+// instead of filtering the tests at all, since we just want to run everything
+// that isn't annotated with TestContainersTest.
+test in NoDockerTests := {
+  (testOnly in Test).toTask(s" * -- -l nz.net.wand.streamevmon.test.TestContainersTest").value
+}

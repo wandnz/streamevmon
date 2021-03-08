@@ -26,9 +26,9 @@
 
 package nz.net.wand.streamevmon.parameters
 
-import nz.net.wand.streamevmon.TestBase
 import nz.net.wand.streamevmon.parameters.constraints.{ParameterConstraint, ParameterSpecModifier}
 import nz.net.wand.streamevmon.parameters.constraints.ParameterSpecModifier.ModifiedSpec
+import nz.net.wand.streamevmon.test.TestBase
 
 class ParameterConstraintTest extends TestBase {
   val zeroSpec = ParameterSpec("zero", 0, Some(-1), Some(1))

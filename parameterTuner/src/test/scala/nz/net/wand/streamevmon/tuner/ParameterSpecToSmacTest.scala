@@ -26,10 +26,10 @@
 
 package nz.net.wand.streamevmon.tuner
 
-import nz.net.wand.streamevmon.TestBase
 import nz.net.wand.streamevmon.parameters.ParameterSpec
 import nz.net.wand.streamevmon.parameters.constraints.{ParameterConstraint, ParameterSpecModifier}
 import nz.net.wand.streamevmon.parameters.constraints.ParameterSpecModifier.ModifiedSpec
+import nz.net.wand.streamevmon.test.TestBase
 
 import java.io.StringReader
 
