@@ -188,9 +188,51 @@ make each type of event unique within InfluxDB or another storage system.
 on placing Events on a directed graph of known network topology.</p><div class="fullcomment"><div class="comment cmt"><p>This package is for the implementation of an event-grouping algorithm based
 on placing Events on a directed graph of known network topology. This will
 allow us to determine the topological distance of two events from one
-another.
+another. See <a href="" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph">TraceroutePathGraph</a>
+for an entry point.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping">grouping</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.itdk" visbl="pub" class="indented8 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="itdk"></a><a id="itdk:itdk"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/itdk/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Contains classes and methods which allow use of a CAIDA ITDK dataset, which contains router aliases, topologies, AS, and geo information." href="itdk/index.html"><span class="name">itdk</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Contains classes and methods which allow use of a
+<a href="https://www.caida.org/data/internet-topology-data-kit/" target="_blank">CAIDA ITDK</a>
+dataset, which contains router aliases, topologies, AS, and geo information.</p><div class="fullcomment"><div class="comment cmt"><p>Contains classes and methods which allow use of a
+<a href="https://www.caida.org/data/internet-topology-data-kit/" target="_blank">CAIDA ITDK</a>
+dataset, which contains router aliases, topologies, AS, and geo information.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph">graph</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.pruning" visbl="pub" class="indented8 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="pruning"></a><a id="pruning:pruning"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/pruning/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Pruning algorithms for host graphs." href="pruning/index.html"><span class="name">pruning</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Pruning algorithms for host graphs.</p><div class="fullcomment"><div class="comment cmt"><p>Pruning algorithms for host graphs.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph">graph</a></dd></dl></div>
     </li><li class="current-entities indented7">
+                        <a class="object" href="AliasResolver$.html" title=""></a>
+                        <a class="class" href="AliasResolver.html" title="Worker class for alias resolution, which finds duplicate entries for hosts."></a>
+                        <a href="AliasResolver.html" title="Worker class for alias resolution, which finds duplicate entries for hosts.">AliasResolver</a>
+                      </li><li class="current-entities indented7">
                         <span class="separator"></span>
                         <a class="object" href="AmpletGraphDotExporter$.html" title="Exports a graph to a .dot file, with the vertexes coloured according to what AS they belong to."></a>
                         <a href="AmpletGraphDotExporter$.html" title="Exports a graph to a .dot file, with the vertexes coloured according to what AS they belong to.">AmpletGraphDotExporter</a>
@@ -200,20 +242,20 @@ another.
                         <a href="DefaultWeightedEdgeSupplier.html" title="The built-in default edge supplier uses reflection to generate an instance of the type parameter passed to the graph.">DefaultWeightedEdgeSupplier</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="trait" href="Host.html" title="Represents hosts that are part of a Traceroute path."></a>
-                        <a href="Host.html" title="Represents hosts that are part of a Traceroute path.">Host</a>
+                        <a class="class" href="EdgeWithLastSeen.html" title="A simple edge type that holds an Instant, used to keep track of when the edge was last seen to allow edge expiry."></a>
+                        <a href="EdgeWithLastSeen.html" title="A simple edge type that holds an Instant, used to keep track of when the edge was last seen to allow edge expiry.">EdgeWithLastSeen</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="HostWithKnownHostname.html" title="This is the case where we know one hostname of a host."></a>
-                        <a href="HostWithKnownHostname.html" title="This is the case where we know one hostname of a host.">HostWithKnownHostname</a>
+                        <a class="trait" href="GraphConstructionLogic.html" title="Contains the logic for constructing and pruning the graph for the TraceroutePathGraph."></a>
+                        <a href="GraphConstructionLogic.html" title="Contains the logic for constructing and pruning the graph for the TraceroutePathGraph.">GraphConstructionLogic</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="HostWithUnknownAddress.html" title="If we know no addresses, we are reduced to this UID tuple."></a>
-                        <a href="HostWithUnknownAddress.html" title="If we know no addresses, we are reduced to this UID tuple.">HostWithUnknownAddress</a>
+                        <a class="class" href="Host.html" title="Represents known single hosts in a network."></a>
+                        <a href="Host.html" title="Represents known single hosts in a network.">Host</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="HostWithUnknownHostname.html" title="If we don't know a host's hostname, then we can only ever know a single one of its addresses."></a>
-                        <a href="HostWithUnknownHostname.html" title="If we don't know a host's hostname, then we can only ever know a single one of its addresses.">HostWithUnknownHostname</a>
+                        <a class="class" href="NoReflectionUnusableEdgeSupplier.html" title="Any Edge type needs a supplier to avoid issues discussed in DefaultWeightedEdgeSupplier, but we never want this one to be called."></a>
+                        <a href="NoReflectionUnusableEdgeSupplier.html" title="Any Edge type needs a supplier to avoid issues discussed in DefaultWeightedEdgeSupplier, but we never want this one to be called.">NoReflectionUnusableEdgeSupplier</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="SerializableInetAddress$.html" title="Implicit conversions between SerializableInetAddress and InetAddress."></a>
                         <a class="class" href="SerializableInetAddress.html" title="InetAddress can't be serialized by Kryo, meaning we can't use it in any situation that it would be serialized by Flink, such as as a field in an operator output, or as part of the persistent state of an operator."></a>
@@ -249,24 +291,31 @@ another.
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">TraceroutePathGraph</span><span class="tparams">[<span name="EventT">EventT &lt;: <a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a></span>]</span><span class="result"> extends <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/co/CoProcessFunction.html#org.apache.flink.streaming.api.functions.co.CoProcessFunction" class="extype" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction">CoProcessFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.EventT">EventT</span>, <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a>, <a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>] with <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a> with <a href="../../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a> with <a href="../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></span>
+        <span class="name">TraceroutePathGraph</span><span class="tparams">[<span name="EventT">EventT &lt;: <a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a></span>]</span><span class="result"> extends <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/co/CoProcessFunction.html#org.apache.flink.streaming.api.functions.co.CoProcessFunction" class="extype" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction">CoProcessFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.EventT">EventT</span>, <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a>, <a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>] with <a href="GraphConstructionLogic.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic">GraphConstructionLogic</a> with <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a> with <a href="../../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a> with <a href="../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></span>
       </span>
       </h4>
 
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Attempts to place events on a topological network graph.</p><p>The first input is the stream of new events which should be grouped.</p><p>The second input is a stream of new AsInetPaths which are generated from
 Traceroute measurements. Duplicates are acceptable,</p><p>Currently, the &quot;placing events&quot; functionality is unimplemented, and this
-just acts as a passthrough function for Events that takes up a lot of memory.
-</p></div><div class="toggleContainer block">
+just acts as a passthrough function for Events that takes up a lot of memory.</p><h4>Configuration</h4><p>This ProcessFunction is configured by the <code>eventGrouping.graph</code> config key
+group.</p><p>If any of the prune interval conditions are fulfilled, a prune will occur.
+When a prune occurs, all the condition counters are reset.</p><p>- <code>pruneIntervalCount</code>: Once this many new paths are received, the graph
+will be pruned.
+- <code>pruneIntervalTime</code>: This many seconds must pass between graph prunings.
+This is based on the event time of events and paths that are received.
+- <code>pruneAge</code>: An edge must be this many seconds old before it gets pruned.
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="GraphConstructionLogic.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic">GraphConstructionLogic</a>
+     for a description of the pruning methods used.</p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="../../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/co/CoProcessFunction.html#org.apache.flink.streaming.api.functions.co.CoProcessFunction" class="extype" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction">CoProcessFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.EventT">EventT</span>, <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a>, <a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>], <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/AbstractRichFunction.html#org.apache.flink.api.common.functions.AbstractRichFunction" class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RichFunction.html#org.apache.flink.api.common.functions.RichFunction" class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/Function.html#org.apache.flink.api.common.functions.Function" class="extype" name="org.apache.flink.api.common.functions.Function">Function</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="../../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a>, <a href="GraphConstructionLogic.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic">GraphConstructionLogic</a>, <a href="../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/co/CoProcessFunction.html#org.apache.flink.streaming.api.functions.co.CoProcessFunction" class="extype" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction">CoProcessFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.EventT">EventT</span>, <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a>, <a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>], <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/AbstractRichFunction.html#org.apache.flink.api.common.functions.AbstractRichFunction" class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RichFunction.html#org.apache.flink.api.common.functions.RichFunction" class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/Function.html#org.apache.flink.api.common.functions.Function" class="extype" name="org.apache.flink.api.common.functions.Function">Function</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
         </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
                 <span class="toggle diagram-link">
                   Type Hierarchy
                 </span>
-                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 610.00 118.00" height="118pt" width="610pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 114)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-114 606,-114 606,4 -4,4" stroke="transparent" fill="white"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this class" id="graph1_0"><g id="a_this class|graph1_0"><a xlink:title="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph (this class)" xlink:href="#inheritance-diagram"><path d="M459.67,-49C459.67,-49 311.33,-49 311.33,-49 307.17,-49 303,-44.83 303,-40.67 303,-40.67 303,-32.33 303,-32.33 303,-28.17 307.17,-24 311.33,-24 311.33,-24 459.67,-24 459.67,-24 463.83,-24 468,-28.17 468,-32.33 468,-32.33 468,-40.67 468,-40.67 468,-44.83 463.83,-49 459.67,-49" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../../lib/class_diagram.png" y="-43.5" x="313.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-34.1" x="334.5" text-anchor="start">TraceroutePathGraph[EventT]</text></a></g></g><!-- node1 --><g class="node class" id="graph1_1"><g id="a_class|graph1_1"><a xlink:title="org.apache.flink.streaming.api.functions.co.CoProcessFunction"><path d="M222.67,-110C222.67,-110 8.33,-110 8.33,-110 4.17,-110 0,-105.83 0,-101.67 0,-101.67 0,-93.33 0,-93.33 0,-89.17 4.17,-85 8.33,-85 8.33,-85 222.67,-85 222.67,-85 226.83,-85 231,-89.17 231,-93.33 231,-93.33 231,-101.67 231,-101.67 231,-105.83 226.83,-110 222.67,-110" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../../lib/class_diagram.png" y="-104.5" x="10.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="31.5" text-anchor="start">CoProcessFunction[EventT, AsInetPath, Event]</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph1_1_0"><g id="a_inheritance|graph1_1_0"><a xlink:title="TraceroutePathGraph[EventT] is a subtype of CoProcessFunction[EventT, AsInetPath, Event]"><path d="M175.3,-83.43C222.34,-73.15 287.27,-58.96 332.47,-49.09" stroke="#d4d4d4" fill="none"></path><polygon points="174.52,-81.1 168.2,-84.98 175.56,-85.88 174.52,-81.1" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node trait" id="graph1_2"><g id="a_trait|graph1_2"><a xlink:title="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction"><path d="M375.67,-110C375.67,-110 257.33,-110 257.33,-110 253.17,-110 249,-105.83 249,-101.67 249,-101.67 249,-93.33 249,-93.33 249,-89.17 253.17,-85 257.33,-85 257.33,-85 375.67,-85 375.67,-85 379.83,-85 384,-89.17 384,-93.33 384,-93.33 384,-101.67 384,-101.67 384,-105.83 379.83,-110 375.67,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../../lib/trait_diagram.png" y="-104.5" x="259.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="280.5" text-anchor="start">CheckpointedFunction</text></a></g></g><!-- node2&#45;&gt;node0 --><g class="edge inheritance" id="graph1_2_0"><g id="a_inheritance|graph1_2_0"><a xlink:title="TraceroutePathGraph[EventT] is a subtype of CheckpointedFunction"><path d="M335.53,-80.23C347.06,-70.37 361.51,-58.01 371.9,-49.13" stroke="#d4d4d4" fill="none"></path><polygon points="333.86,-78.43 330.13,-84.84 337.04,-82.16 333.86,-78.43" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node3 --><g class="node trait" id="graph1_3"><g id="a_trait|graph1_3"><a xlink:title="nz.net.wand.streamevmon.flink.HasFlinkConfig" xlink:href="../../../flink/HasFlinkConfig.html#inheritance-diagram"><path d="M498.67,-110C498.67,-110 410.33,-110 410.33,-110 406.17,-110 402,-105.83 402,-101.67 402,-101.67 402,-93.33 402,-93.33 402,-89.17 406.17,-85 410.33,-85 410.33,-85 498.67,-85 498.67,-85 502.83,-85 507,-89.17 507,-93.33 507,-93.33 507,-101.67 507,-101.67 507,-105.83 502.83,-110 498.67,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../../lib/trait_diagram.png" y="-104.5" x="412.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="433.5" text-anchor="start">HasFlinkConfig</text></a></g></g><!-- node3&#45;&gt;node0 --><g class="edge inheritance" id="graph1_3_0"><g id="a_inheritance|graph1_3_0"><a xlink:title="TraceroutePathGraph[EventT] is a subtype of HasFlinkConfig"><path d="M435.47,-80.23C423.94,-70.37 409.49,-58.01 399.1,-49.13" stroke="#d4d4d4" fill="none"></path><polygon points="433.96,-82.16 440.87,-84.84 437.14,-78.43 433.96,-82.16" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node4 --><g class="node trait" id="graph1_4"><g id="a_trait|graph1_4"><a xlink:title="nz.net.wand.streamevmon.Logging" xlink:href="../../../Logging.html#inheritance-diagram"><path d="M593.67,-110C593.67,-110 533.33,-110 533.33,-110 529.17,-110 525,-105.83 525,-101.67 525,-101.67 525,-93.33 525,-93.33 525,-89.17 529.17,-85 533.33,-85 533.33,-85 593.67,-85 593.67,-85 597.83,-85 602,-89.17 602,-93.33 602,-93.33 602,-101.67 602,-101.67 602,-105.83 597.83,-110 593.67,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../../lib/trait_diagram.png" y="-104.5" x="535.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="556.5" text-anchor="start">Logging</text></a></g></g><!-- node4&#45;&gt;node0 --><g class="edge inheritance" id="graph1_4_0"><g id="a_inheritance|graph1_4_0"><a xlink:title="TraceroutePathGraph[EventT] is a subtype of Logging"><path d="M521.96,-82.73C491.14,-72.51 449.59,-58.74 420.46,-49.09" stroke="#d4d4d4" fill="none"></path><polygon points="521.34,-85.11 528.76,-84.98 522.88,-80.46 521.34,-85.11" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
+                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 771.00 118.00" height="118pt" width="771pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 114)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-114 767,-114 767,4 -4,4" stroke="transparent" fill="white"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this class" id="graph1_0"><g id="a_this class|graph1_0"><a xlink:title="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph (this class)" xlink:href="#inheritance-diagram"><path d="M551.67,-49C551.67,-49 403.33,-49 403.33,-49 399.17,-49 395,-44.83 395,-40.67 395,-40.67 395,-32.33 395,-32.33 395,-28.17 399.17,-24 403.33,-24 403.33,-24 551.67,-24 551.67,-24 555.83,-24 560,-28.17 560,-32.33 560,-32.33 560,-40.67 560,-40.67 560,-44.83 555.83,-49 551.67,-49" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../../lib/class_diagram.png" y="-43.5" x="405.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-34.1" x="426.5" text-anchor="start">TraceroutePathGraph[EventT]</text></a></g></g><!-- node1 --><g class="node class" id="graph1_1"><g id="a_class|graph1_1"><a xlink:title="org.apache.flink.streaming.api.functions.co.CoProcessFunction"><path d="M222.67,-110C222.67,-110 8.33,-110 8.33,-110 4.17,-110 0,-105.83 0,-101.67 0,-101.67 0,-93.33 0,-93.33 0,-89.17 4.17,-85 8.33,-85 8.33,-85 222.67,-85 222.67,-85 226.83,-85 231,-89.17 231,-93.33 231,-93.33 231,-101.67 231,-101.67 231,-105.83 226.83,-110 222.67,-110" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../../lib/class_diagram.png" y="-104.5" x="10.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="31.5" text-anchor="start">CoProcessFunction[EventT, AsInetPath, Event]</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph1_1_0"><g id="a_inheritance|graph1_1_0"><a xlink:title="TraceroutePathGraph[EventT] is a subtype of CoProcessFunction[EventT, AsInetPath, Event]"><path d="M193.36,-83.81C256.71,-73.48 345.36,-59.04 406.71,-49.04" stroke="#d4d4d4" fill="none"></path><polygon points="192.67,-81.44 186.16,-84.98 193.46,-86.28 192.67,-81.44" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node trait" id="graph1_2"><g id="a_trait|graph1_2"><a xlink:title="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic" xlink:href="GraphConstructionLogic.html#inheritance-diagram"><path d="M383.17,-110C383.17,-110 257.83,-110 257.83,-110 253.67,-110 249.5,-105.83 249.5,-101.67 249.5,-101.67 249.5,-93.33 249.5,-93.33 249.5,-89.17 253.67,-85 257.83,-85 257.83,-85 383.17,-85 383.17,-85 387.33,-85 391.5,-89.17 391.5,-93.33 391.5,-93.33 391.5,-101.67 391.5,-101.67 391.5,-105.83 387.33,-110 383.17,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../../lib/trait_diagram.png" y="-104.5" x="259.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="280.5" text-anchor="start">GraphConstructionLogic</text></a></g></g><!-- node2&#45;&gt;node0 --><g class="edge inheritance" id="graph1_2_0"><g id="a_inheritance|graph1_2_0"><a xlink:title="TraceroutePathGraph[EventT] is a subtype of GraphConstructionLogic"><path d="M357.83,-82.47C384.94,-72.28 421.19,-58.66 446.67,-49.09" stroke="#d4d4d4" fill="none"></path><polygon points="356.83,-80.23 351.14,-84.98 358.56,-84.82 356.83,-80.23" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node3 --><g class="node trait" id="graph1_3"><g id="a_trait|graph1_3"><a xlink:title="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction"><path d="M536.67,-110C536.67,-110 418.33,-110 418.33,-110 414.17,-110 410,-105.83 410,-101.67 410,-101.67 410,-93.33 410,-93.33 410,-89.17 414.17,-85 418.33,-85 418.33,-85 536.67,-85 536.67,-85 540.83,-85 545,-89.17 545,-93.33 545,-93.33 545,-101.67 545,-101.67 545,-105.83 540.83,-110 536.67,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../../lib/trait_diagram.png" y="-104.5" x="420.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="441.5" text-anchor="start">CheckpointedFunction</text></a></g></g><!-- node3&#45;&gt;node0 --><g class="edge inheritance" id="graph1_3_0"><g id="a_inheritance|graph1_3_0"><a xlink:title="TraceroutePathGraph[EventT] is a subtype of CheckpointedFunction"><path d="M477.5,-77.76C477.5,-68.37 477.5,-57.29 477.5,-49.13" stroke="#d4d4d4" fill="none"></path><polygon points="475.05,-77.84 477.5,-84.84 479.95,-77.84 475.05,-77.84" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node4 --><g class="node trait" id="graph1_4"><g id="a_trait|graph1_4"><a xlink:title="nz.net.wand.streamevmon.flink.HasFlinkConfig" xlink:href="../../../flink/HasFlinkConfig.html#inheritance-diagram"><path d="M659.67,-110C659.67,-110 571.33,-110 571.33,-110 567.17,-110 563,-105.83 563,-101.67 563,-101.67 563,-93.33 563,-93.33 563,-89.17 567.17,-85 571.33,-85 571.33,-85 659.67,-85 659.67,-85 663.83,-85 668,-89.17 668,-93.33 668,-93.33 668,-101.67 668,-101.67 668,-105.83 663.83,-110 659.67,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../../lib/trait_diagram.png" y="-104.5" x="573.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="594.5" text-anchor="start">HasFlinkConfig</text></a></g></g><!-- node4&#45;&gt;node0 --><g class="edge inheritance" id="graph1_4_0"><g id="a_inheritance|graph1_4_0"><a xlink:title="TraceroutePathGraph[EventT] is a subtype of HasFlinkConfig"><path d="M582.1,-82.22C558.42,-72.1 527.03,-58.68 504.84,-49.19" stroke="#d4d4d4" fill="none"></path><polygon points="581.17,-84.49 588.56,-84.98 583.09,-79.98 581.17,-84.49" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node5 --><g class="node trait" id="graph1_5"><g id="a_trait|graph1_5"><a xlink:title="nz.net.wand.streamevmon.Logging" xlink:href="../../../Logging.html#inheritance-diagram"><path d="M754.67,-110C754.67,-110 694.33,-110 694.33,-110 690.17,-110 686,-105.83 686,-101.67 686,-101.67 686,-93.33 686,-93.33 686,-89.17 690.17,-85 694.33,-85 694.33,-85 754.67,-85 754.67,-85 758.83,-85 763,-89.17 763,-93.33 763,-93.33 763,-101.67 763,-101.67 763,-105.83 758.83,-110 754.67,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../../lib/trait_diagram.png" y="-104.5" x="696.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="717.5" text-anchor="start">Logging</text></a></g></g><!-- node5&#45;&gt;node0 --><g class="edge inheritance" id="graph1_5_0"><g id="a_inheritance|graph1_5_0"><a xlink:title="TraceroutePathGraph[EventT] is a subtype of Logging"><path d="M678.77,-85.31C678.34,-85.2 677.92,-85.1 677.5,-85 625.98,-72.58 566.93,-58.59 526.43,-49.02" stroke="#d4d4d4" fill="none"></path><polygon points="678.4,-87.74 685.78,-87 679.55,-82.97 678.4,-87.74" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
                 <div id="diagram-controls" class="hiddenContent">
                   <button id="diagram-zoom-out" class="diagram-btn"><i class="material-icons"></i></button>
                   <button id="diagram-zoom-in" class="diagram-btn"><i class="material-icons"></i></button>
@@ -297,7 +346,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph"><span>TraceroutePathGraph</span></li><li class="in" name="nz.net.wand.streamevmon.Logging"><span>Logging</span></li><li class="in" name="nz.net.wand.streamevmon.flink.HasFlinkConfig"><span>HasFlinkConfig</span></li><li class="in" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction"><span>CheckpointedFunction</span></li><li class="in" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction"><span>CoProcessFunction</span></li><li class="in" name="org.apache.flink.api.common.functions.AbstractRichFunction"><span>AbstractRichFunction</span></li><li class="in" name="org.apache.flink.api.common.functions.RichFunction"><span>RichFunction</span></li><li class="in" name="org.apache.flink.api.common.functions.Function"><span>Function</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph"><span>TraceroutePathGraph</span></li><li class="in" name="nz.net.wand.streamevmon.flink.HasFlinkConfig"><span>HasFlinkConfig</span></li><li class="in" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction"><span>CheckpointedFunction</span></li><li class="in" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic"><span>GraphConstructionLogic</span></li><li class="in" name="nz.net.wand.streamevmon.Logging"><span>Logging</span></li><li class="in" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction"><span>CoProcessFunction</span></li><li class="in" name="org.apache.flink.api.common.functions.AbstractRichFunction"><span>AbstractRichFunction</span></li><li class="in" name="org.apache.flink.api.common.functions.RichFunction"><span>RichFunction</span></li><li class="in" name="org.apache.flink.api.common.functions.Function"><span>Function</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -354,10 +403,10 @@ just acts as a passthrough function for Events that takes up a lot of memory.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CoProcessFunction</dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.EdgeT" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="EdgeT=org.jgrapht.graph.DefaultWeightedEdge"></a><a id="EdgeT:EdgeT"></a>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.EdgeT" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="EdgeT=nz.net.wand.streamevmon.events.grouping.graph.EdgeWithLastSeen"></a><a id="EdgeT:EdgeT"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#EdgeT=org.jgrapht.graph.DefaultWeightedEdge" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#EdgeT=nz.net.wand.streamevmon.events.grouping.graph.EdgeWithLastSeen" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -366,14 +415,14 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">EdgeT</span><span class="result alias"> = <span class="extype" name="org.jgrapht.graph.DefaultWeightedEdge">DefaultWeightedEdge</span></span>
+        <span class="name">EdgeT</span><span class="result alias"> = <a href="EdgeWithLastSeen.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.EdgeWithLastSeen">EdgeWithLastSeen</a></span>
       </span>
       
-      
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.GraphT" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[TraceroutePathGraph.this.VertexT,TraceroutePathGraph.this.EdgeT]"></a><a id="GraphT:GraphT"></a>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphConstructionLogic.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic">GraphConstructionLogic</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.GraphT" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[GraphConstructionLogic.this.VertexT,GraphConstructionLogic.this.EdgeT]"></a><a id="GraphT:GraphT"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[TraceroutePathGraph.this.VertexT,TraceroutePathGraph.this.EdgeT]" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[GraphConstructionLogic.this.VertexT,GraphConstructionLogic.this.EdgeT]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -382,10 +431,10 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">GraphT</span><span class="result alias"> = <span class="extype" name="org.jgrapht.graph.DefaultDirectedWeightedGraph">DefaultDirectedWeightedGraph</span>[<a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT">VertexT</a>, <a href="#EdgeT=org.jgrapht.graph.DefaultWeightedEdge" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.EdgeT">EdgeT</a>]</span>
+        <span class="name">GraphT</span><span class="result alias"> = <span class="extype" name="org.jgrapht.graph.DefaultDirectedWeightedGraph">DefaultDirectedWeightedGraph</span>[<a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT">VertexT</a>, <a href="#EdgeT=nz.net.wand.streamevmon.events.grouping.graph.EdgeWithLastSeen" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.EdgeT">EdgeT</a>]</span>
       </span>
       
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphConstructionLogic.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic">GraphConstructionLogic</a></dd></dl></div>
     </li><li name="org.apache.flink.streaming.api.functions.co.CoProcessFunction.OnTimerContext" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="OnTimerContextextendsCoProcessFunction[IN1,IN2,OUT]#Context"></a><a id="OnTimerContext:OnTimerContext"></a>
       <span class="permalink">
@@ -402,7 +451,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CoProcessFunction</dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.VertexT" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host"></a><a id="VertexT:VertexT"></a>
       <span class="permalink">
       <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" title="Permalink">
@@ -417,7 +466,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="name">VertexT</span><span class="result alias"> = <a href="Host.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.Host">Host</a></span>
       </span>
       
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphConstructionLogic.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic">GraphConstructionLogic</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -493,6 +542,59 @@ just acts as a passthrough function for Events that takes up a lot of memory.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic#addAsInetPathToGraph" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="addAsInetPathToGraph(graph:GraphConstructionLogic.this.GraphT,aliasResolver:nz.net.wand.streamevmon.events.grouping.graph.AliasResolver,path:nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath):Unit"></a><a id="addAsInetPathToGraph(GraphT,AliasResolver,AsInetPath):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#addAsInetPathToGraph(graph:GraphConstructionLogic.this.GraphT,aliasResolver:nz.net.wand.streamevmon.events.grouping.graph.AliasResolver,path:nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addAsInetPathToGraph</span><span class="params">(<span name="graph">graph: <a href="#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[GraphConstructionLogic.this.VertexT,GraphConstructionLogic.this.EdgeT]" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.GraphT">GraphT</a></span>, <span name="aliasResolver">aliasResolver: <a href="AliasResolver.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.AliasResolver">AliasResolver</a></span>, <span name="path">path: <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Adds an AsInetPath to the graph.</p><div class="fullcomment"><div class="comment cmt"><p>Adds an AsInetPath to the graph.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphConstructionLogic.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic">GraphConstructionLogic</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic#addOrUpdateEdge" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="addOrUpdateEdge(graph:GraphConstructionLogic.this.GraphT,source:GraphConstructionLogic.this.VertexT,destination:GraphConstructionLogic.this.VertexT,edge:GraphConstructionLogic.this.EdgeT):Unit"></a><a id="addOrUpdateEdge(GraphT,VertexT,VertexT,EdgeT):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#addOrUpdateEdge(graph:GraphConstructionLogic.this.GraphT,source:GraphConstructionLogic.this.VertexT,destination:GraphConstructionLogic.this.VertexT,edge:GraphConstructionLogic.this.EdgeT):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addOrUpdateEdge</span><span class="params">(<span name="graph">graph: <a href="#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[GraphConstructionLogic.this.VertexT,GraphConstructionLogic.this.EdgeT]" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.GraphT">GraphT</a></span>, <span name="source">source: <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT">VertexT</a></span>, <span name="destination">destination: <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT">VertexT</a></span>, <span name="edge">edge: <a href="#EdgeT=nz.net.wand.streamevmon.events.grouping.graph.EdgeWithLastSeen" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.EdgeT">EdgeT</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">If an edge is present, it is replaced with the argument.</p><div class="fullcomment"><div class="comment cmt"><p>If an edge is present, it is replaced with the argument. If not, it is
+just added.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphConstructionLogic.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic">GraphConstructionLogic</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic#addOrUpdateVertex" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="addOrUpdateVertex(graph:GraphConstructionLogic.this.GraphT,oldHost:GraphConstructionLogic.this.VertexT,newHost:GraphConstructionLogic.this.VertexT):Unit"></a><a id="addOrUpdateVertex(GraphT,VertexT,VertexT):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#addOrUpdateVertex(graph:GraphConstructionLogic.this.GraphT,oldHost:GraphConstructionLogic.this.VertexT,newHost:GraphConstructionLogic.this.VertexT):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addOrUpdateVertex</span><span class="params">(<span name="graph">graph: <a href="#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[GraphConstructionLogic.this.VertexT,GraphConstructionLogic.this.EdgeT]" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.GraphT">GraphT</a></span>, <span name="oldHost">oldHost: <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT">VertexT</a></span>, <span name="newHost">newHost: <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT">VertexT</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Replaces a vertex in a GraphT with a new vertex, retaining connected edges.</p><div class="fullcomment"><div class="comment cmt"><p>Replaces a vertex in a GraphT with a new vertex, retaining connected edges.
+If the original vertex wasn't present, just add the new vertex.</p><p>Originally from https://stackoverflow.com/a/48255973, but needed some
+additional changes to work with our equality definition for Hosts.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphConstructionLogic.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic">GraphConstructionLogic</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
@@ -706,6 +808,25 @@ just acts as a passthrough function for Events that takes up a lot of memory.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph#getMergedHosts" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getMergedHosts:scala.collection.mutable.Map[String,TraceroutePathGraph.this.VertexT]"></a><a id="getMergedHosts:Map[String,VertexT]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#getMergedHosts:scala.collection.mutable.Map[String,TraceroutePathGraph.this.VertexT]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getMergedHosts</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/collection/mutable/Map.html#scala.collection.mutable.Map" class="extype" name="scala.collection.mutable.Map">Map</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT">VertexT</a>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Must be overridden with a simple getter for a shared object for looking
+up the merged versions of hosts.</p><div class="fullcomment"><div class="comment cmt"><p>Must be overridden with a simple getter for a shared object for looking
+up the merged versions of hosts.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph">TraceroutePathGraph</a> → <a href="GraphConstructionLogic.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic">GraphConstructionLogic</a></dd></dl></div>
     </li><li name="nz.net.wand.streamevmon.flink.HasFlinkConfig#getOverrideParams" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getOverrideParams:Option[org.apache.flink.api.java.utils.ParameterTool]"></a><a id="getOverrideParams:Option[ParameterTool]"></a>
       <span class="permalink">
@@ -750,7 +871,7 @@ just acts as a passthrough function for Events that takes up a lot of memory.
         <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">graph</span><span class="result">: <a href="#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[TraceroutePathGraph.this.VertexT,TraceroutePathGraph.this.EdgeT]" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.GraphT">GraphT</a></span>
+        <span class="name">graph</span><span class="result">: <a href="#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[GraphConstructionLogic.this.VertexT,GraphConstructionLogic.this.EdgeT]" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.GraphT">GraphT</a></span>
       </span>
       
       
@@ -807,6 +928,22 @@ just acts as a passthrough function for Events that takes up a lot of memory.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph#lastPruneTime" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="lastPruneTime:java.time.Instant"></a><a id="lastPruneTime:Instant"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#lastPruneTime:java.time.Instant" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">lastPruneTime</span><span class="result">: <span class="extype" name="java.time.Instant">Instant</span></span>
+      </span>
+      
+      
     </li><li name="nz.net.wand.streamevmon.Logging#logger" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="logger:org.slf4j.Logger"></a><a id="logger:Logger"></a>
       <span class="permalink">
@@ -826,29 +963,22 @@ just acts as a passthrough function for Events that takes up a lot of memory.
                 <span class="name">@transient</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph#mergedHosts" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="mergedHosts:scala.collection.mutable.Map[String,TraceroutePathGraph.this.VertexT]"></a><a id="mergedHosts:Map[String,VertexT]"></a>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph#measurementsSinceLastPrune" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="measurementsSinceLastPrune:Long"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#mergedHosts:scala.collection.mutable.Map[String,TraceroutePathGraph.this.VertexT]" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#measurementsSinceLastPrune:Long" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">mergedHosts</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/collection/mutable/Map.html#scala.collection.mutable.Map" class="extype" name="scala.collection.mutable.Map">Map</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT">VertexT</a>]</span>
+        <span class="name">measurementsSinceLastPrune</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>
       </span>
       
-      <p class="shortcomment cmt">Multiple hosts that share attributes can be merged into a single host that
-contains multiple addresses.</p><div class="fullcomment"><div class="comment cmt"><p>Multiple hosts that share attributes can be merged into a single host that
-contains multiple addresses. This is a lookup table from the source host
-UID to the merged version of that host.</p><p>// TODO: What happens here if we have two separate source hosts that get
-merged? Does the map get updated properly? Maybe we need to look at
-a different data structure that is better at storing multiple keys
-that point to a single value.
-</p></div></div>
+      
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
@@ -993,10 +1123,10 @@ that point to a single value.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph#pathToHosts" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="pathToHosts(path:nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath):Iterable[nz.net.wand.streamevmon.events.grouping.graph.Host]"></a><a id="pathToHosts(AsInetPath):Iterable[Host]"></a>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic#pathToHosts" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="pathToHosts(path:nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath):Iterable[GraphConstructionLogic.this.VertexT]"></a><a id="pathToHosts(AsInetPath):Iterable[VertexT]"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#pathToHosts(path:nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath):Iterable[nz.net.wand.streamevmon.events.grouping.graph.Host]" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#pathToHosts(path:nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath):Iterable[GraphConstructionLogic.this.VertexT]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1005,10 +1135,10 @@ that point to a single value.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">pathToHosts</span><span class="params">(<span name="path">path: <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a></span>)</span><span class="result">: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="Host.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.Host">Host</a>]</span>
+        <span class="name">pathToHosts</span><span class="params">(<span name="path">path: <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a></span>)</span><span class="result">: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT">VertexT</a>]</span>
       </span>
       
-      <p class="shortcomment cmt">Converts an AsInetPath into a path of Hosts.</p>
+      <p class="shortcomment cmt">Converts an AsInetPath into a path of Hosts.</p><div class="fullcomment"><div class="comment cmt"><p>Converts an AsInetPath into a path of Hosts.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphConstructionLogic.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic">GraphConstructionLogic</a></dd></dl></div>
     </li><li name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph#processElement1" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="processElement1(value:EventT,ctx:org.apache.flink.streaming.api.functions.co.CoProcessFunction[EventT,nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath,nz.net.wand.streamevmon.events.Event]#Context,out:org.apache.flink.util.Collector[nz.net.wand.streamevmon.events.Event]):Unit"></a><a id="processElement1(EventT,Context,Collector[Event]):Unit"></a>
       <span class="permalink">
@@ -1041,12 +1171,13 @@ that point to a single value.
       </span>
       
       <p class="shortcomment cmt">Adds an AsInetPath to the graph.</p><div class="fullcomment"><div class="comment cmt"><p>Adds an AsInetPath to the graph. New hosts will become new vertices, and
-missing edges will be added. Gives no output.
+missing edges will be added. Gives no output. Prunes if required, so this
+function sometimes takes longer than usual.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph">TraceroutePathGraph</a> → CoProcessFunction</dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph#replaceVertex" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="replaceVertex(graph:TraceroutePathGraph.this.GraphT,oldHost:TraceroutePathGraph.this.VertexT,newHost:TraceroutePathGraph.this.VertexT):Unit"></a><a id="replaceVertex(GraphT,VertexT,VertexT):Unit"></a>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic#pruneGraphByLastSeenTime" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="pruneGraphByLastSeenTime(graph:GraphConstructionLogic.this.GraphT,pruneAge:java.time.Duration,currentTime:java.time.Instant):Unit"></a><a id="pruneGraphByLastSeenTime(GraphT,Duration,Instant):Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#replaceVertex(graph:TraceroutePathGraph.this.GraphT,oldHost:TraceroutePathGraph.this.VertexT,newHost:TraceroutePathGraph.this.VertexT):Unit" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#pruneGraphByLastSeenTime(graph:GraphConstructionLogic.this.GraphT,pruneAge:java.time.Duration,currentTime:java.time.Instant):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1055,12 +1186,57 @@ missing edges will be added. Gives no output.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">replaceVertex</span><span class="params">(<span name="graph">graph: <a href="#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[TraceroutePathGraph.this.VertexT,TraceroutePathGraph.this.EdgeT]" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.GraphT">GraphT</a></span>, <span name="oldHost">oldHost: <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT">VertexT</a></span>, <span name="newHost">newHost: <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.VertexT">VertexT</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">pruneGraphByLastSeenTime</span><span class="params">(<span name="graph">graph: <a href="#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[GraphConstructionLogic.this.VertexT,GraphConstructionLogic.this.EdgeT]" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.GraphT">GraphT</a></span>, <span name="pruneAge">pruneAge: <span class="extype" name="java.time.Duration">Duration</span></span>, <span name="currentTime">currentTime: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
-      <p class="shortcomment cmt">Replaces a vertex in a GraphT with a new vertex, retaining connected edges.</p><div class="fullcomment"><div class="comment cmt"><p>Replaces a vertex in a GraphT with a new vertex, retaining connected edges.</p><p>Originally from https://stackoverflow.com/a/48255973, but needed some
-additional changes to work with our equality definition for Hosts.
-</p></div></div>
+      <p class="shortcomment cmt">Prunes edges that are older than the configured time (<code>pruneAge</code>), and
+removes any vertices that are no longer connected to the rest of the graph.</p><div class="fullcomment"><div class="comment cmt"><p>Prunes edges that are older than the configured time (<code>pruneAge</code>), and
+removes any vertices that are no longer connected to the rest of the graph.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphConstructionLogic.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic">GraphConstructionLogic</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic#pruneGraphByParallelAnonymousHostPathMerge" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="pruneGraphByParallelAnonymousHostPathMerge(graph:GraphConstructionLogic.this.GraphT):Unit"></a><a id="pruneGraphByParallelAnonymousHostPathMerge(GraphT):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#pruneGraphByParallelAnonymousHostPathMerge(graph:GraphConstructionLogic.this.GraphT):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pruneGraphByParallelAnonymousHostPathMerge</span><span class="params">(<span name="graph">graph: <a href="#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[GraphConstructionLogic.this.VertexT,GraphConstructionLogic.this.EdgeT]" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.GraphT">GraphT</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">If there are multiple parallel paths between two hosts with the same length
+that are solely composed of anonymous hosts, then it's likely that they're
+the same hosts each time, and meaningless to retain the information of how
+many separate traceroute paths took that route.</p><div class="fullcomment"><div class="comment cmt"><p>If there are multiple parallel paths between two hosts with the same length
+that are solely composed of anonymous hosts, then it's likely that they're
+the same hosts each time, and meaningless to retain the information of how
+many separate traceroute paths took that route. This function merges that
+kind of duplicate host group.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GraphConstructionLogic.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic">GraphConstructionLogic</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph#pruneIfRequired" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="pruneIfRequired(currentTime:java.time.Instant):Unit"></a><a id="pruneIfRequired(Instant):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/TraceroutePathGraph.html#pruneIfRequired(currentTime:java.time.Instant):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pruneIfRequired</span><span class="params">(<span name="currentTime">currentTime: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Executes supported pruning methods if one of the supported conditions is
+fulfilled
+</p><div class="fullcomment"><div class="comment cmt"><p>Executes supported pruning methods if one of the supported conditions is
+fulfilled
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><code>pruneIntervalCount</code>, <code>pruneIntervalTime</code></p></span><span class="cmt"><p><a href="GraphConstructionLogic.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic">GraphConstructionLogic</a></p></span></dd></dl></div>
     </li><li name="org.apache.flink.api.common.functions.AbstractRichFunction#setRuntimeContext" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="setRuntimeContext(x$1:org.apache.flink.api.common.functions.RuntimeContext):Unit"></a><a id="setRuntimeContext(RuntimeContext):Unit"></a>
       <span class="permalink">
@@ -1230,12 +1406,14 @@ additional changes to work with our equality definition for Hosts.
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="nz.net.wand.streamevmon.Logging">
-              <h3>Inherited from <a href="../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></h3>
-            </div><div class="parent" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">
+        <div class="parent" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">
               <h3>Inherited from <a href="../../../flink/HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></h3>
             </div><div class="parent" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">
               <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a></h3>
+            </div><div class="parent" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic">
+              <h3>Inherited from <a href="GraphConstructionLogic.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic">GraphConstructionLogic</a></h3>
+            </div><div class="parent" name="nz.net.wand.streamevmon.Logging">
+              <h3>Inherited from <a href="../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></h3>
             </div><div class="parent" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction">
               <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/co/CoProcessFunction.html#org.apache.flink.streaming.api.functions.co.CoProcessFunction" class="extype" name="org.apache.flink.streaming.api.functions.co.CoProcessFunction">CoProcessFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph.EventT">EventT</span>, <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a>, <a href="../../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>]</h3>
             </div><div class="parent" name="org.apache.flink.api.common.functions.AbstractRichFunction">

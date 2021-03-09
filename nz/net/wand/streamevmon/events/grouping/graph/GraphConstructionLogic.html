@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title>streamevmon 0.1-SNAPSHOT - nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress</title>
-          <meta name="description" content="streamevmon 0.1 - SNAPSHOT - nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress" />
-          <meta name="keywords" content="streamevmon 0.1 SNAPSHOT nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress" />
+          <title>streamevmon 0.1-SNAPSHOT - nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic</title>
+          <meta name="description" content="streamevmon 0.1 - SNAPSHOT - nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic" />
+          <meta name="keywords" content="streamevmon 0.1 SNAPSHOT nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -188,9 +188,51 @@ make each type of event unique within InfluxDB or another storage system.
 on placing Events on a directed graph of known network topology.</p><div class="fullcomment"><div class="comment cmt"><p>This package is for the implementation of an event-grouping algorithm based
 on placing Events on a directed graph of known network topology. This will
 allow us to determine the topological distance of two events from one
-another.
+another. See <a href="TraceroutePathGraph.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph">TraceroutePathGraph</a>
+for an entry point.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping">grouping</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.itdk" visbl="pub" class="indented8 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="itdk"></a><a id="itdk:itdk"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/itdk/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Contains classes and methods which allow use of a CAIDA ITDK dataset, which contains router aliases, topologies, AS, and geo information." href="itdk/index.html"><span class="name">itdk</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Contains classes and methods which allow use of a
+<a href="https://www.caida.org/data/internet-topology-data-kit/" target="_blank">CAIDA ITDK</a>
+dataset, which contains router aliases, topologies, AS, and geo information.</p><div class="fullcomment"><div class="comment cmt"><p>Contains classes and methods which allow use of a
+<a href="https://www.caida.org/data/internet-topology-data-kit/" target="_blank">CAIDA ITDK</a>
+dataset, which contains router aliases, topologies, AS, and geo information.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph">graph</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.pruning" visbl="pub" class="indented8 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="pruning"></a><a id="pruning:pruning"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/pruning/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Pruning algorithms for host graphs." href="pruning/index.html"><span class="name">pruning</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Pruning algorithms for host graphs.</p><div class="fullcomment"><div class="comment cmt"><p>Pruning algorithms for host graphs.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph">graph</a></dd></dl></div>
     </li><li class="current-entities indented7">
+                        <a class="object" href="AliasResolver$.html" title=""></a>
+                        <a class="class" href="AliasResolver.html" title="Worker class for alias resolution, which finds duplicate entries for hosts."></a>
+                        <a href="AliasResolver.html" title="Worker class for alias resolution, which finds duplicate entries for hosts.">AliasResolver</a>
+                      </li><li class="current-entities indented7">
                         <span class="separator"></span>
                         <a class="object" href="AmpletGraphDotExporter$.html" title="Exports a graph to a .dot file, with the vertexes coloured according to what AS they belong to."></a>
                         <a href="AmpletGraphDotExporter$.html" title="Exports a graph to a .dot file, with the vertexes coloured according to what AS they belong to.">AmpletGraphDotExporter</a>
@@ -200,20 +242,20 @@ another.
                         <a href="DefaultWeightedEdgeSupplier.html" title="The built-in default edge supplier uses reflection to generate an instance of the type parameter passed to the graph.">DefaultWeightedEdgeSupplier</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="trait" href="Host.html" title="Represents hosts that are part of a Traceroute path."></a>
-                        <a href="Host.html" title="Represents hosts that are part of a Traceroute path.">Host</a>
+                        <a class="class" href="EdgeWithLastSeen.html" title="A simple edge type that holds an Instant, used to keep track of when the edge was last seen to allow edge expiry."></a>
+                        <a href="EdgeWithLastSeen.html" title="A simple edge type that holds an Instant, used to keep track of when the edge was last seen to allow edge expiry.">EdgeWithLastSeen</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="HostWithKnownHostname.html" title="This is the case where we know one hostname of a host."></a>
-                        <a href="HostWithKnownHostname.html" title="This is the case where we know one hostname of a host.">HostWithKnownHostname</a>
+                        <a class="trait" href="" title="Contains the logic for constructing and pruning the graph for the TraceroutePathGraph."></a>
+                        <a href="" title="Contains the logic for constructing and pruning the graph for the TraceroutePathGraph.">GraphConstructionLogic</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="" title="If we know no addresses, we are reduced to this UID tuple."></a>
-                        <a href="" title="If we know no addresses, we are reduced to this UID tuple.">HostWithUnknownAddress</a>
+                        <a class="class" href="Host.html" title="Represents known single hosts in a network."></a>
+                        <a href="Host.html" title="Represents known single hosts in a network.">Host</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="HostWithUnknownHostname.html" title="If we don't know a host's hostname, then we can only ever know a single one of its addresses."></a>
-                        <a href="HostWithUnknownHostname.html" title="If we don't know a host's hostname, then we can only ever know a single one of its addresses.">HostWithUnknownHostname</a>
+                        <a class="class" href="NoReflectionUnusableEdgeSupplier.html" title="Any Edge type needs a supplier to avoid issues discussed in DefaultWeightedEdgeSupplier, but we never want this one to be called."></a>
+                        <a href="NoReflectionUnusableEdgeSupplier.html" title="Any Edge type needs a supplier to avoid issues discussed in DefaultWeightedEdgeSupplier, but we never want this one to be called.">NoReflectionUnusableEdgeSupplier</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="SerializableInetAddress$.html" title="Implicit conversions between SerializableInetAddress and InetAddress."></a>
                         <a class="class" href="SerializableInetAddress.html" title="InetAddress can't be serialized by Kryo, meaning we can't use it in any situation that it would be serialized by Flink, such as as a field in an operator output, or as part of the persistent state of an operator."></a>
@@ -231,12 +273,12 @@ another.
             </div>
           </div>
           <div id="content">
-            <body class="class type">
+            <body class="trait type">
       <div id="definition">
-        <div class="big-circle class">c</div>
+        <div class="big-circle trait">t</div>
         <p id="owner"><a href="../../../../../../index.html" class="extype" name="nz">nz</a>.<a href="../../../../../index.html" class="extype" name="nz.net">net</a>.<a href="../../../../index.html" class="extype" name="nz.net.wand">wand</a>.<a href="../../../index.html" class="extype" name="nz.net.wand.streamevmon">streamevmon</a>.<a href="../../index.html" class="extype" name="nz.net.wand.streamevmon.events">events</a>.<a href="../index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping">grouping</a>.<a href="index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph">graph</a></p>
-        <h1>HostWithUnknownAddress<span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html" title="Permalink">
+        <h1>GraphConstructionLogic<span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
@@ -246,26 +288,31 @@ another.
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">HostWithUnknownAddress</span><span class="result"> extends <a href="Host.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.Host">Host</a></span>
+        <span class="name">GraphConstructionLogic</span><span class="result"> extends <a href="../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>If we know no addresses, we are reduced to this UID tuple. It can't be
-merged with any other hosts unless they are identical.
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Contains the logic for constructing and pruning the graph for the
+<a href="TraceroutePathGraph.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph">TraceroutePathGraph</a>.
 </p></div><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="Host.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.Host">Host</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
-        </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
+          <div class="superTypes hiddenContent"><a href="../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">
+              Known Subclasses
+            </span>
+            <div class="subClasses hiddenContent"><a href="TraceroutePathGraph.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph">TraceroutePathGraph</a></div>
+          </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
                 <span class="toggle diagram-link">
                   Type Hierarchy
                 </span>
-                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 208.00 118.00" height="118pt" width="208pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 114)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-114 204,-114 204,4 -4,4" stroke="transparent" fill="white"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this class" id="graph1_0"><g id="a_this class|graph1_0"><a xlink:title="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress (this class)" xlink:href="#inheritance-diagram"><path d="M167.67,-49C167.67,-49 32.33,-49 32.33,-49 28.17,-49 24,-44.83 24,-40.67 24,-40.67 24,-32.33 24,-32.33 24,-28.17 28.17,-24 32.33,-24 32.33,-24 167.67,-24 167.67,-24 171.83,-24 176,-28.17 176,-32.33 176,-32.33 176,-40.67 176,-40.67 176,-44.83 171.83,-49 167.67,-49" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../../lib/class_diagram.png" y="-43.5" x="34" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-34.1" x="55" text-anchor="start">HostWithUnknownAddress</text></a></g></g><!-- node1 --><g class="node trait" id="graph1_1"><g id="a_trait|graph1_1"><a xlink:title="nz.net.wand.streamevmon.events.grouping.graph.Host" xlink:href="Host.html#inheritance-diagram"><path d="M123.17,-110C123.17,-110 76.83,-110 76.83,-110 72.67,-110 68.5,-105.83 68.5,-101.67 68.5,-101.67 68.5,-93.33 68.5,-93.33 68.5,-89.17 72.67,-85 76.83,-85 76.83,-85 123.17,-85 123.17,-85 127.33,-85 131.5,-89.17 131.5,-93.33 131.5,-93.33 131.5,-101.67 131.5,-101.67 131.5,-105.83 127.33,-110 123.17,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../../lib/trait_diagram.png" y="-104.5" x="79" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="100" text-anchor="start">Host</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph1_1_0"><g id="a_inheritance|graph1_1_0"><a xlink:title="HostWithUnknownAddress is a subtype of Host"><path d="M100,-77.76C100,-68.37 100,-57.29 100,-49.13" stroke="#d4d4d4" fill="none"></path><polygon points="97.55,-77.84 100,-84.84 102.45,-77.84 97.55,-77.84" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
+                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 198.00 155.00" height="155pt" width="198pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 151)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-151 194,-151 194,4 -4,4" stroke="transparent" fill="white"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this trait" id="graph1_0"><g id="a_this trait|graph1_0"><a xlink:title="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic (this trait)" xlink:href="#inheritance-diagram"><path d="M157.67,-86C157.67,-86 32.33,-86 32.33,-86 28.17,-86 24,-81.83 24,-77.67 24,-77.67 24,-69.33 24,-69.33 24,-65.17 28.17,-61 32.33,-61 32.33,-61 157.67,-61 157.67,-61 161.83,-61 166,-65.17 166,-69.33 166,-69.33 166,-77.67 166,-77.67 166,-81.83 161.83,-86 157.67,-86" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../../lib/trait_diagram.png" y="-80.5" x="34" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-71.1" x="55" text-anchor="start">GraphConstructionLogic</text></a></g></g><!-- node1 --><g class="node class" id="graph1_1"><g id="a_class|graph1_1"><a xlink:title="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph" xlink:href="TraceroutePathGraph.html#inheritance-diagram"><path d="M169.17,-25C169.17,-25 20.83,-25 20.83,-25 16.67,-25 12.5,-20.83 12.5,-16.67 12.5,-16.67 12.5,-8.33 12.5,-8.33 12.5,-4.17 16.67,0 20.83,0 20.83,0 169.17,0 169.17,0 173.33,0 177.5,-4.17 177.5,-8.33 177.5,-8.33 177.5,-16.67 177.5,-16.67 177.5,-20.83 173.33,-25 169.17,-25" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../../lib/class_diagram.png" y="-19.5" x="23" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-10.1" x="44" text-anchor="start">TraceroutePathGraph[EventT]</text></a></g></g><!-- node0&#45;&gt;node1 --><g class="edge inheritance" id="graph1_0_1"><g id="a_inheritance|graph1_0_1"><a xlink:title="TraceroutePathGraph[EventT] is a subtype of GraphConstructionLogic"><path d="M95,-53.76C95,-44.37 95,-33.29 95,-25.13" stroke="#d4d4d4" fill="none"></path><polygon points="92.55,-53.84 95,-60.84 97.45,-53.84 92.55,-53.84" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node trait" id="graph1_2"><g id="a_trait|graph1_2"><a xlink:title="nz.net.wand.streamevmon.Logging" xlink:href="../../../Logging.html#inheritance-diagram"><path d="M125.17,-147C125.17,-147 64.83,-147 64.83,-147 60.67,-147 56.5,-142.83 56.5,-138.67 56.5,-138.67 56.5,-130.33 56.5,-130.33 56.5,-126.17 60.67,-122 64.83,-122 64.83,-122 125.17,-122 125.17,-122 129.33,-122 133.5,-126.17 133.5,-130.33 133.5,-130.33 133.5,-138.67 133.5,-138.67 133.5,-142.83 129.33,-147 125.17,-147" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../../lib/trait_diagram.png" y="-141.5" x="67" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-132.1" x="88" text-anchor="start">Logging</text></a></g></g><!-- node2&#45;&gt;node0 --><g class="edge inheritance" id="graph1_2_0"><g id="a_inheritance|graph1_2_0"><a xlink:title="GraphConstructionLogic is a subtype of Logging"><path d="M95,-114.76C95,-105.37 95,-94.29 95,-86.13" stroke="#d4d4d4" fill="none"></path><polygon points="92.55,-114.84 95,-121.84 97.45,-114.84 92.55,-114.84" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
                 <div id="diagram-controls" class="hiddenContent">
                   <button id="diagram-zoom-out" class="diagram-btn"><i class="material-icons"></i></button>
                   <button id="diagram-zoom-in" class="diagram-btn"><i class="material-icons"></i></button>
@@ -296,7 +343,7 @@ merged with any other hosts unless they are identical.
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress"><span>HostWithUnknownAddress</span></li><li class="in" name="nz.net.wand.streamevmon.events.grouping.graph.Host"><span>Host</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic"><span>GraphConstructionLogic</span></li><li class="in" name="nz.net.wand.streamevmon.Logging"><span>Logging</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -314,38 +361,90 @@ merged with any other hosts unless they are identical.
 
       <div id="template">
         <div id="allMembers">
-        <div id="constructors" class="members">
-              <h3>Instance Constructors</h3>
-              <ol><li name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(stream:Int,pathId:Int,indexInPath:Int):nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress"></a><a id="&lt;init&gt;:HostWithUnknownAddress"></a>
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.EdgeT" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="EdgeT=nz.net.wand.streamevmon.events.grouping.graph.EdgeWithLastSeen"></a><a id="EdgeT:EdgeT"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#&lt;init&gt;(stream:Int,pathId:Int,indexInPath:Int):nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#EdgeT=nz.net.wand.streamevmon.events.grouping.graph.EdgeWithLastSeen" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">new</span>
+        <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">HostWithUnknownAddress</span><span class="params">(<span name="stream">stream: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="pathId">pathId: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="indexInPath">indexInPath: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span>
+        <span class="name">EdgeT</span><span class="result alias"> = <a href="EdgeWithLastSeen.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.EdgeWithLastSeen">EdgeWithLastSeen</a></span>
+      </span>
+      
+      
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.GraphT" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[GraphConstructionLogic.this.VertexT,GraphConstructionLogic.this.EdgeT]"></a><a id="GraphT:GraphT"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[GraphConstructionLogic.this.VertexT,GraphConstructionLogic.this.EdgeT]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">GraphT</span><span class="result alias"> = <span class="extype" name="org.jgrapht.graph.DefaultDirectedWeightedGraph">DefaultDirectedWeightedGraph</span>[<a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.VertexT">VertexT</a>, <a href="#EdgeT=nz.net.wand.streamevmon.events.grouping.graph.EdgeWithLastSeen" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.EdgeT">EdgeT</a>]</span>
+      </span>
+      
+      
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.VertexT" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host"></a><a id="VertexT:VertexT"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">VertexT</span><span class="result alias"> = <a href="Host.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.Host">Host</a></span>
       </span>
       
       
     </li></ol>
             </div>
 
-        
-
-        
+        <div class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic#getMergedHosts" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="getMergedHosts:scala.collection.mutable.Map[String,GraphConstructionLogic.this.VertexT]"></a><a id="getMergedHosts:Map[String,VertexT]"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#getMergedHosts:scala.collection.mutable.Map[String,GraphConstructionLogic.this.VertexT]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getMergedHosts</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/collection/mutable/Map.html#scala.collection.mutable.Map" class="extype" name="scala.collection.mutable.Map">Map</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.VertexT">VertexT</a>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Must be overridden with a simple getter for a shared object for looking
+up the merged versions of hosts.</p>
+    </li></ol>
+            </div>
 
         <div class="values members">
-              <h3>Value Members</h3>
+              <h3>Concrete Value Members</h3>
               <ol>
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#!=(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#!=(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -361,7 +460,7 @@ merged with any other hosts unless they are identical.
     </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html###():Int" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html###():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -377,7 +476,7 @@ merged with any other hosts unless they are identical.
     </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#==(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#==(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -390,10 +489,63 @@ merged with any other hosts unless they are identical.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic#addAsInetPathToGraph" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="addAsInetPathToGraph(graph:GraphConstructionLogic.this.GraphT,aliasResolver:nz.net.wand.streamevmon.events.grouping.graph.AliasResolver,path:nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath):Unit"></a><a id="addAsInetPathToGraph(GraphT,AliasResolver,AsInetPath):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#addAsInetPathToGraph(graph:GraphConstructionLogic.this.GraphT,aliasResolver:nz.net.wand.streamevmon.events.grouping.graph.AliasResolver,path:nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addAsInetPathToGraph</span><span class="params">(<span name="graph">graph: <a href="#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[GraphConstructionLogic.this.VertexT,GraphConstructionLogic.this.EdgeT]" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.GraphT">GraphT</a></span>, <span name="aliasResolver">aliasResolver: <a href="AliasResolver.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.AliasResolver">AliasResolver</a></span>, <span name="path">path: <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Adds an AsInetPath to the graph.</p>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic#addOrUpdateEdge" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="addOrUpdateEdge(graph:GraphConstructionLogic.this.GraphT,source:GraphConstructionLogic.this.VertexT,destination:GraphConstructionLogic.this.VertexT,edge:GraphConstructionLogic.this.EdgeT):Unit"></a><a id="addOrUpdateEdge(GraphT,VertexT,VertexT,EdgeT):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#addOrUpdateEdge(graph:GraphConstructionLogic.this.GraphT,source:GraphConstructionLogic.this.VertexT,destination:GraphConstructionLogic.this.VertexT,edge:GraphConstructionLogic.this.EdgeT):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addOrUpdateEdge</span><span class="params">(<span name="graph">graph: <a href="#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[GraphConstructionLogic.this.VertexT,GraphConstructionLogic.this.EdgeT]" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.GraphT">GraphT</a></span>, <span name="source">source: <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.VertexT">VertexT</a></span>, <span name="destination">destination: <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.VertexT">VertexT</a></span>, <span name="edge">edge: <a href="#EdgeT=nz.net.wand.streamevmon.events.grouping.graph.EdgeWithLastSeen" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.EdgeT">EdgeT</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">If an edge is present, it is replaced with the argument.</p><div class="fullcomment"><div class="comment cmt"><p>If an edge is present, it is replaced with the argument. If not, it is
+just added.
+</p></div></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic#addOrUpdateVertex" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="addOrUpdateVertex(graph:GraphConstructionLogic.this.GraphT,oldHost:GraphConstructionLogic.this.VertexT,newHost:GraphConstructionLogic.this.VertexT):Unit"></a><a id="addOrUpdateVertex(GraphT,VertexT,VertexT):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#addOrUpdateVertex(graph:GraphConstructionLogic.this.GraphT,oldHost:GraphConstructionLogic.this.VertexT,newHost:GraphConstructionLogic.this.VertexT):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addOrUpdateVertex</span><span class="params">(<span name="graph">graph: <a href="#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[GraphConstructionLogic.this.VertexT,GraphConstructionLogic.this.EdgeT]" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.GraphT">GraphT</a></span>, <span name="oldHost">oldHost: <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.VertexT">VertexT</a></span>, <span name="newHost">newHost: <a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.VertexT">VertexT</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Replaces a vertex in a GraphT with a new vertex, retaining connected edges.</p><div class="fullcomment"><div class="comment cmt"><p>Replaces a vertex in a GraphT with a new vertex, retaining connected edges.
+If the original vertex wasn't present, just add the new vertex.</p><p>Originally from https://stackoverflow.com/a/48255973, but needed some
+additional changes to work with our equality definition for Hosts.
+</p></div></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#asInstanceOf[T0]:T0" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#asInstanceOf[T0]:T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -406,26 +558,10 @@ merged with any other hosts unless they are identical.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress#canEqual" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="canEqual(other:Any):Boolean"></a><a id="canEqual(Any):Boolean"></a>
-      <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#canEqual(other:Any):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">canEqual</span><span class="params">(<span name="other">other: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
-      </span>
-      
-      
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#clone():Object" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#clone():Object" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -448,31 +584,10 @@ merged with any other hosts unless they are identical.
                 <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.Host#deepEquals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="deepEquals(other:Any):Boolean"></a><a id="deepEquals(Any):Boolean"></a>
-      <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#deepEquals(other:Any):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">deepEquals</span><span class="params">(<span name="other">other: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">The existing equals() implementation mostly has traits derived from
-convenience when it comes to placing Hosts into a graph from JGraphT.</p><div class="fullcomment"><div class="comment cmt"><p>The existing equals() implementation mostly has traits derived from
-convenience when it comes to placing Hosts into a graph from JGraphT.
-This function tests if two hosts are really truly equal, without ignoring
-any fields or taking any shortcuts.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Host.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.Host">Host</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#eq(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -485,10 +600,10 @@ any fields or taking any shortcuts.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="equals(other:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
+    </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#equals(other:Any):Boolean" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#equals(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -497,14 +612,14 @@ any fields or taking any shortcuts.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="other">other: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress">HostWithUnknownAddress</a> → AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#getClass():Class[_]" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#getClass():Class[_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -522,10 +637,10 @@ any fields or taking any shortcuts.
                 <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#hashCode():Int" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#hashCode():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -537,27 +652,16 @@ any fields or taking any shortcuts.
         <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress">HostWithUnknownAddress</a> → AnyRef → Any</dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress#indexInPath" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="indexInPath:Int"></a>
-      <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#indexInPath:Int" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">indexInPath</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
-      </span>
-      
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
+                <span class="name">@native</span><span class="args">()</span>
+              
+                <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#isInstanceOf[T0]:Boolean" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#isInstanceOf[T0]:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -570,31 +674,29 @@ any fields or taking any shortcuts.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress#mergeWith" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="mergeWith(other:nz.net.wand.streamevmon.events.grouping.graph.Host):nz.net.wand.streamevmon.events.grouping.graph.Host"></a><a id="mergeWith(Host):Host"></a>
+    </li><li name="nz.net.wand.streamevmon.Logging#logger" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logger:org.slf4j.Logger"></a><a id="logger:Logger"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#mergeWith(other:nz.net.wand.streamevmon.events.grouping.graph.Host):nz.net.wand.streamevmon.events.grouping.graph.Host" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#logger:org.slf4j.Logger" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">mergeWith</span><span class="params">(<span name="other">other: <a href="Host.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.Host">Host</a></span>)</span><span class="result">: <a href="Host.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.Host">Host</a></span>
+        <span class="name">logger</span><span class="result">: <span class="extype" name="org.slf4j.Logger">Logger</span></span>
       </span>
       
-      <p class="shortcomment cmt">Merges two hosts, such that the hostname is preserved, as well as all
-addresses in both Hosts.</p><div class="fullcomment"><div class="comment cmt"><p>Merges two hosts, such that the hostname is preserved, as well as all
-addresses in both Hosts. If no merge is possible, an
-IllegalArgumentException is thrown. Note that merging two
-HostWithKnownAddresses is not yet supported.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress">HostWithUnknownAddress</a> → <a href="Host.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.Host">Host</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@transient</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#ne(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -610,7 +712,7 @@ HostWithKnownAddresses is not yet supported.
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#notify():Unit" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#notify():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -631,7 +733,7 @@ HostWithKnownAddresses is not yet supported.
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#notifyAll():Unit" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#notifyAll():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -649,26 +751,10 @@ HostWithKnownAddresses is not yet supported.
                 <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress#pathId" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="pathId:Int"></a>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic#pathToHosts" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="pathToHosts(path:nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath):Iterable[GraphConstructionLogic.this.VertexT]"></a><a id="pathToHosts(AsInetPath):Iterable[VertexT]"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#pathId:Int" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">pathId</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
-      </span>
-      
-      
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress#sharesAddressesWith" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="sharesAddressesWith(other:nz.net.wand.streamevmon.events.grouping.graph.Host):Boolean"></a><a id="sharesAddressesWith(Host):Boolean"></a>
-      <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#sharesAddressesWith(other:nz.net.wand.streamevmon.events.grouping.graph.Host):Boolean" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#pathToHosts(path:nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath):Iterable[GraphConstructionLogic.this.VertexT]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -677,30 +763,55 @@ HostWithKnownAddresses is not yet supported.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">sharesAddressesWith</span><span class="params">(<span name="other">other: <a href="Host.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.Host">Host</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+        <span class="name">pathToHosts</span><span class="params">(<span name="path">path: <a href="../../../connectors/postgres/schema/AsInetPath.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath">AsInetPath</a></span>)</span><span class="result">: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="#VertexT=nz.net.wand.streamevmon.events.grouping.graph.Host" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.VertexT">VertexT</a>]</span>
       </span>
       
-      <p class="shortcomment cmt">Returns true if one hosts shares addresses with another.</p><div class="fullcomment"><div class="comment cmt"><p>Returns true if one hosts shares addresses with another.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress">HostWithUnknownAddress</a> → <a href="Host.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.Host">Host</a></dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress#stream" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="stream:Int"></a>
+      <p class="shortcomment cmt">Converts an AsInetPath into a path of Hosts.</p>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic#pruneGraphByLastSeenTime" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="pruneGraphByLastSeenTime(graph:GraphConstructionLogic.this.GraphT,pruneAge:java.time.Duration,currentTime:java.time.Instant):Unit"></a><a id="pruneGraphByLastSeenTime(GraphT,Duration,Instant):Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#stream:Int" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#pruneGraphByLastSeenTime(graph:GraphConstructionLogic.this.GraphT,pruneAge:java.time.Duration,currentTime:java.time.Instant):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">stream</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
+        <span class="name">pruneGraphByLastSeenTime</span><span class="params">(<span name="graph">graph: <a href="#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[GraphConstructionLogic.this.VertexT,GraphConstructionLogic.this.EdgeT]" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.GraphT">GraphT</a></span>, <span name="pruneAge">pruneAge: <span class="extype" name="java.time.Duration">Duration</span></span>, <span name="currentTime">currentTime: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
+      <p class="shortcomment cmt">Prunes edges that are older than the configured time (<code>pruneAge</code>), and
+removes any vertices that are no longer connected to the rest of the graph.</p>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic#pruneGraphByParallelAnonymousHostPathMerge" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="pruneGraphByParallelAnonymousHostPathMerge(graph:GraphConstructionLogic.this.GraphT):Unit"></a><a id="pruneGraphByParallelAnonymousHostPathMerge(GraphT):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#pruneGraphByParallelAnonymousHostPathMerge(graph:GraphConstructionLogic.this.GraphT):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pruneGraphByParallelAnonymousHostPathMerge</span><span class="params">(<span name="graph">graph: <a href="#GraphT=org.jgrapht.graph.DefaultDirectedWeightedGraph[GraphConstructionLogic.this.VertexT,GraphConstructionLogic.this.EdgeT]" class="extmbr" name="nz.net.wand.streamevmon.events.grouping.graph.GraphConstructionLogic.GraphT">GraphT</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
       
+      <p class="shortcomment cmt">If there are multiple parallel paths between two hosts with the same length
+that are solely composed of anonymous hosts, then it's likely that they're
+the same hosts each time, and meaningless to retain the information of how
+many separate traceroute paths took that route.</p><div class="fullcomment"><div class="comment cmt"><p>If there are multiple parallel paths between two hosts with the same length
+that are solely composed of anonymous hosts, then it's likely that they're
+the same hosts each time, and meaningless to retain the information of how
+many separate traceroute paths took that route. This function merges that
+kind of duplicate host group.
+</p></div></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -713,10 +824,10 @@ HostWithKnownAddresses is not yet supported.
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#toString():String" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#toString():String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -725,32 +836,14 @@ HostWithKnownAddresses is not yet supported.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress">HostWithUnknownAddress</a> → AnyRef → Any</dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress#uid" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="uid:String"></a>
-      <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#uid:String" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">uid</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">A unique identifier for a host.</p><div class="fullcomment"><div class="comment cmt"><p>A unique identifier for a host. Each implementation defines its own
-format for this field.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.HostWithUnknownAddress">HostWithUnknownAddress</a> → <a href="Host.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.Host">Host</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -772,7 +865,7 @@ format for this field.
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#wait(x$1:Long):Unit" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#wait(x$1:Long):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -796,7 +889,7 @@ format for this field.
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#wait():Unit" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#wait():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -826,7 +919,7 @@ format for this field.
               <ol><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/HostWithUnknownAddress.html#finalize():Unit" title="Permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/GraphConstructionLogic.html#finalize():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -852,12 +945,8 @@ format for this field.
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="nz.net.wand.streamevmon.events.grouping.graph.Host">
-              <h3>Inherited from <a href="Host.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.Host">Host</a></h3>
-            </div><div class="parent" name="scala.Serializable">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+        <div class="parent" name="nz.net.wand.streamevmon.Logging">
+              <h3>Inherited from <a href="../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">

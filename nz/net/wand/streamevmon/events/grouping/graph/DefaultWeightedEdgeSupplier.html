@@ -188,9 +188,51 @@ make each type of event unique within InfluxDB or another storage system.
 on placing Events on a directed graph of known network topology.</p><div class="fullcomment"><div class="comment cmt"><p>This package is for the implementation of an event-grouping algorithm based
 on placing Events on a directed graph of known network topology. This will
 allow us to determine the topological distance of two events from one
-another.
+another. See <a href="TraceroutePathGraph.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph">TraceroutePathGraph</a>
+for an entry point.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping">grouping</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.itdk" visbl="pub" class="indented8 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="itdk"></a><a id="itdk:itdk"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/itdk/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Contains classes and methods which allow use of a CAIDA ITDK dataset, which contains router aliases, topologies, AS, and geo information." href="itdk/index.html"><span class="name">itdk</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Contains classes and methods which allow use of a
+<a href="https://www.caida.org/data/internet-topology-data-kit/" target="_blank">CAIDA ITDK</a>
+dataset, which contains router aliases, topologies, AS, and geo information.</p><div class="fullcomment"><div class="comment cmt"><p>Contains classes and methods which allow use of a
+<a href="https://www.caida.org/data/internet-topology-data-kit/" target="_blank">CAIDA ITDK</a>
+dataset, which contains router aliases, topologies, AS, and geo information.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph">graph</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.pruning" visbl="pub" class="indented8 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="pruning"></a><a id="pruning:pruning"></a>
+      <span class="permalink">
+      <a href="../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/pruning/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Pruning algorithms for host graphs." href="pruning/index.html"><span class="name">pruning</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Pruning algorithms for host graphs.</p><div class="fullcomment"><div class="comment cmt"><p>Pruning algorithms for host graphs.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph">graph</a></dd></dl></div>
     </li><li class="current-entities indented7">
+                        <a class="object" href="AliasResolver$.html" title=""></a>
+                        <a class="class" href="AliasResolver.html" title="Worker class for alias resolution, which finds duplicate entries for hosts."></a>
+                        <a href="AliasResolver.html" title="Worker class for alias resolution, which finds duplicate entries for hosts.">AliasResolver</a>
+                      </li><li class="current-entities indented7">
                         <span class="separator"></span>
                         <a class="object" href="AmpletGraphDotExporter$.html" title="Exports a graph to a .dot file, with the vertexes coloured according to what AS they belong to."></a>
                         <a href="AmpletGraphDotExporter$.html" title="Exports a graph to a .dot file, with the vertexes coloured according to what AS they belong to.">AmpletGraphDotExporter</a>
@@ -200,20 +242,20 @@ another.
                         <a href="" title="The built-in default edge supplier uses reflection to generate an instance of the type parameter passed to the graph.">DefaultWeightedEdgeSupplier</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="trait" href="Host.html" title="Represents hosts that are part of a Traceroute path."></a>
-                        <a href="Host.html" title="Represents hosts that are part of a Traceroute path.">Host</a>
+                        <a class="class" href="EdgeWithLastSeen.html" title="A simple edge type that holds an Instant, used to keep track of when the edge was last seen to allow edge expiry."></a>
+                        <a href="EdgeWithLastSeen.html" title="A simple edge type that holds an Instant, used to keep track of when the edge was last seen to allow edge expiry.">EdgeWithLastSeen</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="HostWithKnownHostname.html" title="This is the case where we know one hostname of a host."></a>
-                        <a href="HostWithKnownHostname.html" title="This is the case where we know one hostname of a host.">HostWithKnownHostname</a>
+                        <a class="trait" href="GraphConstructionLogic.html" title="Contains the logic for constructing and pruning the graph for the TraceroutePathGraph."></a>
+                        <a href="GraphConstructionLogic.html" title="Contains the logic for constructing and pruning the graph for the TraceroutePathGraph.">GraphConstructionLogic</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="HostWithUnknownAddress.html" title="If we know no addresses, we are reduced to this UID tuple."></a>
-                        <a href="HostWithUnknownAddress.html" title="If we know no addresses, we are reduced to this UID tuple.">HostWithUnknownAddress</a>
+                        <a class="class" href="Host.html" title="Represents known single hosts in a network."></a>
+                        <a href="Host.html" title="Represents known single hosts in a network.">Host</a>
                       </li><li class="current-entities indented7">
                         <span class="separator"></span>
-                        <a class="class" href="HostWithUnknownHostname.html" title="If we don't know a host's hostname, then we can only ever know a single one of its addresses."></a>
-                        <a href="HostWithUnknownHostname.html" title="If we don't know a host's hostname, then we can only ever know a single one of its addresses.">HostWithUnknownHostname</a>
+                        <a class="class" href="NoReflectionUnusableEdgeSupplier.html" title="Any Edge type needs a supplier to avoid issues discussed in DefaultWeightedEdgeSupplier, but we never want this one to be called."></a>
+                        <a href="NoReflectionUnusableEdgeSupplier.html" title="Any Edge type needs a supplier to avoid issues discussed in DefaultWeightedEdgeSupplier, but we never want this one to be called.">NoReflectionUnusableEdgeSupplier</a>
                       </li><li class="current-entities indented7">
                         <a class="object" href="SerializableInetAddress$.html" title="Implicit conversions between SerializableInetAddress and InetAddress."></a>
                         <a class="class" href="SerializableInetAddress.html" title="InetAddress can't be serialized by Kryo, meaning we can't use it in any situation that it would be serialized by Flink, such as as a field in an operator output, or as part of the persistent state of an operator."></a>

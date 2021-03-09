@@ -230,7 +230,7 @@ FileInputFormat is specifically for reading files, usually from disk.
                         <a class="class" href="PollingInfluxSourceFunction.html" title="Gets data from InfluxDB in a polling fashion."></a>
                         <a href="PollingInfluxSourceFunction.html" title="Gets data from InfluxDB in a polling fashion.">PollingInfluxSourceFunction</a>
                       </li><li class="current-entities indented6">
-                        <span class="separator"></span>
+                        <a class="object" href="PostgresTracerouteSourceFunction$.html" title="This includes the various filter functions for refreshUsedStreams, which get configured by the filters key subgroup."></a>
                         <a class="class" href="PostgresTracerouteSourceFunction.html" title="Retrieves new Traceroute measurements from PostgreSQL in a polling fashion."></a>
                         <a href="PostgresTracerouteSourceFunction.html" title="Retrieves new Traceroute measurements from PostgreSQL in a polling fashion.">PostgresTracerouteSourceFunction</a>
                       </li>
@@ -284,7 +284,43 @@ FileInputFormat is specifically for reading files, usually from disk.
               </div></div>
         
 
-      
+      <div id="mbrsel">
+        <div class="toggle"></div>
+        <div id="memberfilter">
+          <i class="material-icons arrow"></i>
+          <span class="input">
+            <input id="mbrsel-input" placeholder="Filter all members" type="text" accesskey="/" />
+          </span>
+          <i class="clear material-icons"></i>
+        </div>
+        <div id="filterby">
+          <div id="order">
+            <span class="filtertype">Ordering</span>
+            <ol>
+              
+              <li class="alpha in"><span>Alphabetic</span></li>
+              <li class="inherit out"><span>By Inheritance</span></li>
+            </ol>
+          </div>
+          <div class="ancestors">
+                  <span class="filtertype">Inherited<br />
+                  </span>
+                  <ol id="linearization">
+                    <li class="in" name="nz.net.wand.streamevmon.flink.sources"><span>sources</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  </ol>
+                </div><div class="ancestors">
+              <span class="filtertype"></span>
+              <ol>
+                <li class="hideall out"><span>Hide All</span></li>
+                <li class="showall in"><span>Show All</span></li>
+              </ol>
+            </div>
+          <div id="visbl">
+              <span class="filtertype">Visibility</span>
+              <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+            </div>
+        </div>
+      </div>
 
       <div id="template">
         <div id="allMembers">
@@ -490,8 +526,15 @@ InfluxSourceFunction.
       
       <p class="shortcomment cmt">Retrieves new Traceroute measurements from PostgreSQL in a polling fashion.</p><div class="fullcomment"><div class="comment cmt"><p>Retrieves new Traceroute measurements from PostgreSQL in a polling fashion.</p><p>Each time a new query is constructed, this source will refresh its list of
 relevant streams. This allows any newly created streams to be picked up.</p><h4>Configuration</h4><p>See <a href="../../connectors/postgres/PostgresConnection.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.PostgresConnection">PostgresConnection</a>
-for configuration details.</p><p>Additionally, this SourceFunction will sleep for the time in seconds
-specified by <code>source.postgres.tracerouteRefreshDelay</code> after each query.</p><p>Given a <code>fetchHistory</code> of one hour, and a <code>tracerouteRefreshDelay</code> of five
+for configuration details.</p><p>Additionally, this SourceFunction uses the <code>source.postgres.traceroute</code> key
+group for extra config.</p><p>- <code>refreshDelay</code>: After each query, the SourceFunction will sleep for this
+amount of time in seconds. Default 600.
+- The <code>filters</code> subgroup allows the user to enable methods of reducing the
+number of traceroute measurement streams to be considered. These filters
+can drastically reduce memory usage and runtime for all operators that use
+the resultant Traceroute measurements, including this one.</p><ul><li><code>ampletToAmplet</code>: If true, only streams containing traces between two
+    amplets will be considered. For example, a trace from an amplet to
+    google.com will be discarded.</li></ul><p>Given a <code>fetchHistory</code> of one hour, and a <code>tracerouteRefreshDelay</code> of five
 minutes, the source will use the following procedure:</p><p>- Output the last hour's worth of measurements all at once
 - Wait for five minutes
 - Output new measurements that arrived in the last five minutes
@@ -503,7 +546,29 @@ minutes, the source will use the following procedure:</p><p>- Output the last ho
 
         
 
-        
+        <div class="values members">
+              <h3>Value Members</h3>
+              <ol>
+                <li name="nz.net.wand.streamevmon.flink.sources.PostgresTracerouteSourceFunction" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PostgresTracerouteSourceFunction"></a><a id="PostgresTracerouteSourceFunction:PostgresTracerouteSourceFunction"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/flink/sources/PostgresTracerouteSourceFunction$.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="This includes the various filter functions for refreshUsedStreams, which get configured by the filters key subgroup." href="PostgresTracerouteSourceFunction$.html"><span class="name">PostgresTracerouteSourceFunction</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">This includes the various filter functions for refreshUsedStreams, which
+get configured by the <code>filters</code> key subgroup.</p>
+    </li>
+              </ol>
+            </div>
 
         
 

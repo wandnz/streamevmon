@@ -211,7 +211,7 @@ FileInputFormat is specifically for reading files, usually from disk.
                         <a class="class" href="PollingInfluxSourceFunction.html" title="Gets data from InfluxDB in a polling fashion."></a>
                         <a href="PollingInfluxSourceFunction.html" title="Gets data from InfluxDB in a polling fashion.">PollingInfluxSourceFunction</a>
                       </li><li class="current-entities indented6">
-                        <span class="separator"></span>
+                        <a class="object" href="PostgresTracerouteSourceFunction$.html" title="This includes the various filter functions for refreshUsedStreams, which get configured by the filters key subgroup."></a>
                         <a class="class" href="" title="Retrieves new Traceroute measurements from PostgreSQL in a polling fashion."></a>
                         <a href="" title="Retrieves new Traceroute measurements from PostgreSQL in a polling fashion.">PostgresTracerouteSourceFunction</a>
                       </li>
@@ -221,14 +221,16 @@ FileInputFormat is specifically for reading files, usually from disk.
           <div id="content">
             <body class="class type">
       <div id="definition">
-        <div class="big-circle class">c</div>
+        <a href="PostgresTracerouteSourceFunction$.html" title="See companion object"><div class="big-circle class-companion-object">c</div></a>
         <p id="owner"><a href="../../../../../index.html" class="extype" name="nz">nz</a>.<a href="../../../../index.html" class="extype" name="nz.net">net</a>.<a href="../../../index.html" class="extype" name="nz.net.wand">wand</a>.<a href="../../index.html" class="extype" name="nz.net.wand.streamevmon">streamevmon</a>.<a href="../index.html" class="extype" name="nz.net.wand.streamevmon.flink">flink</a>.<a href="index.html" class="extype" name="nz.net.wand.streamevmon.flink.sources">sources</a></p>
-        <h1>PostgresTracerouteSourceFunction<span class="permalink">
+        <h1><a href="PostgresTracerouteSourceFunction$.html" title="See companion object">PostgresTracerouteSourceFunction</a><span class="permalink">
       <a href="../../../../../../nz/net/wand/streamevmon/flink/sources/PostgresTracerouteSourceFunction.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
-        <h3><span class="morelinks"></span></h3>
+        <h3><span class="morelinks"><div>
+            Companion <a href="PostgresTracerouteSourceFunction$.html" title="See companion object">object PostgresTracerouteSourceFunction</a>
+          </div></span></h3>
       </div>
 
       <h4 id="signature" class="signature">
@@ -244,8 +246,15 @@ FileInputFormat is specifically for reading files, usually from disk.
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Retrieves new Traceroute measurements from PostgreSQL in a polling fashion.</p><p>Each time a new query is constructed, this source will refresh its list of
 relevant streams. This allows any newly created streams to be picked up.</p><h4>Configuration</h4><p>See <a href="../../connectors/postgres/PostgresConnection.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.PostgresConnection">PostgresConnection</a>
-for configuration details.</p><p>Additionally, this SourceFunction will sleep for the time in seconds
-specified by <code>source.postgres.tracerouteRefreshDelay</code> after each query.</p><p>Given a <code>fetchHistory</code> of one hour, and a <code>tracerouteRefreshDelay</code> of five
+for configuration details.</p><p>Additionally, this SourceFunction uses the <code>source.postgres.traceroute</code> key
+group for extra config.</p><p>- <code>refreshDelay</code>: After each query, the SourceFunction will sleep for this
+amount of time in seconds. Default 600.
+- The <code>filters</code> subgroup allows the user to enable methods of reducing the
+number of traceroute measurement streams to be considered. These filters
+can drastically reduce memory usage and runtime for all operators that use
+the resultant Traceroute measurements, including this one.</p><ul><li><code>ampletToAmplet</code>: If true, only streams containing traces between two
+    amplets will be considered. For example, a trace from an amplet to
+    google.com will be discarded.</li></ul><p>Given a <code>fetchHistory</code> of one hour, and a <code>tracerouteRefreshDelay</code> of five
 minutes, the source will use the following procedure:</p><p>- Output the last hour's worth of measurements all at once
 - Wait for five minutes
 - Output new measurements that arrived in the last five minutes
@@ -598,6 +607,22 @@ minutes, the source will use the following procedure:</p><p>- Output the last ho
                 <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.flink.sources.PostgresTracerouteSourceFunction#getFilterFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="getFilterFunctions(params:org.apache.flink.api.java.utils.ParameterTool):Iterable[Iterable[nz.net.wand.streamevmon.measurements.amp.TracerouteMeta]=&gt;Set[nz.net.wand.streamevmon.measurements.amp.TracerouteMeta]]"></a><a id="getFilterFunctions(ParameterTool):Iterable[(Iterable[TracerouteMeta])⇒Set[TracerouteMeta]]"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/flink/sources/PostgresTracerouteSourceFunction.html#getFilterFunctions(params:org.apache.flink.api.java.utils.ParameterTool):Iterable[Iterable[nz.net.wand.streamevmon.measurements.amp.TracerouteMeta]=&gt;Set[nz.net.wand.streamevmon.measurements.amp.TracerouteMeta]]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getFilterFunctions</span><span class="params">(<span name="params">params: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>)</span><span class="result">: <span class="extype" name="scala.Iterable">Iterable</span>[(<span class="extype" name="scala.Iterable">Iterable</span>[<a href="../../measurements/amp/TracerouteMeta.html" class="extype" name="nz.net.wand.streamevmon.measurements.amp.TracerouteMeta">TracerouteMeta</a>]) ⇒ <span class="extype" name="scala.Predef.Set">Set</span>[<a href="../../measurements/amp/TracerouteMeta.html" class="extype" name="nz.net.wand.streamevmon.measurements.amp.TracerouteMeta">TracerouteMeta</a>]]</span>
+      </span>
+      
+      
     </li><li name="org.apache.flink.api.common.functions.AbstractRichFunction#getIterationRuntimeContext" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getIterationRuntimeContext():org.apache.flink.api.common.functions.IterationRuntimeContext"></a><a id="getIterationRuntimeContext():IterationRuntimeContext"></a>
       <span class="permalink">
@@ -715,19 +740,19 @@ minutes, the source will use the following procedure:</p><p>- Output the last ho
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.flink.sources.PostgresTracerouteSourceFunction#lastMeasurementTime" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="lastMeasurementTime:java.time.Instant"></a><a id="lastMeasurementTime:Instant"></a>
+    </li><li name="nz.net.wand.streamevmon.flink.sources.PostgresTracerouteSourceFunction#lastMeasurementTimes" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="lastMeasurementTimes:scala.collection.mutable.Map[Int,java.time.Instant]"></a><a id="lastMeasurementTimes:Map[Int,Instant]"></a>
       <span class="permalink">
-      <a href="../../../../../../nz/net/wand/streamevmon/flink/sources/PostgresTracerouteSourceFunction.html#lastMeasurementTime:java.time.Instant" title="Permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/flink/sources/PostgresTracerouteSourceFunction.html#lastMeasurementTimes:scala.collection.mutable.Map[Int,java.time.Instant]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">var</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">lastMeasurementTime</span><span class="result">: <span class="extype" name="java.time.Instant">Instant</span></span>
+        <span class="name">lastMeasurementTimes</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/collection/mutable/Map.html#scala.collection.mutable.Map" class="extype" name="scala.collection.mutable.Map">Map</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>, <span class="extype" name="java.time.Instant">Instant</span>]</span>
       </span>
       
       
@@ -879,9 +904,9 @@ minutes, the source will use the following procedure:</p><p>- Output the last ho
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
     </li><li name="nz.net.wand.streamevmon.flink.sources.PostgresTracerouteSourceFunction#refreshUsedStreams" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="refreshUsedStreams(pgCon:nz.net.wand.streamevmon.connectors.postgres.PostgresConnection,ampletToAmplet:Boolean):Iterable[nz.net.wand.streamevmon.measurements.amp.TracerouteMeta]"></a><a id="refreshUsedStreams(PostgresConnection,Boolean):Iterable[TracerouteMeta]"></a>
+      <a id="refreshUsedStreams(pgCon:nz.net.wand.streamevmon.connectors.postgres.PostgresConnection,filterFunctions:Iterable[Iterable[nz.net.wand.streamevmon.measurements.amp.TracerouteMeta]=&gt;Set[nz.net.wand.streamevmon.measurements.amp.TracerouteMeta]]):Iterable[nz.net.wand.streamevmon.measurements.amp.TracerouteMeta]"></a><a id="refreshUsedStreams(PostgresConnection,Iterable[(Iterable[TracerouteMeta])⇒Set[TracerouteMeta]]):Iterable[TracerouteMeta]"></a>
       <span class="permalink">
-      <a href="../../../../../../nz/net/wand/streamevmon/flink/sources/PostgresTracerouteSourceFunction.html#refreshUsedStreams(pgCon:nz.net.wand.streamevmon.connectors.postgres.PostgresConnection,ampletToAmplet:Boolean):Iterable[nz.net.wand.streamevmon.measurements.amp.TracerouteMeta]" title="Permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/flink/sources/PostgresTracerouteSourceFunction.html#refreshUsedStreams(pgCon:nz.net.wand.streamevmon.connectors.postgres.PostgresConnection,filterFunctions:Iterable[Iterable[nz.net.wand.streamevmon.measurements.amp.TracerouteMeta]=&gt;Set[nz.net.wand.streamevmon.measurements.amp.TracerouteMeta]]):Iterable[nz.net.wand.streamevmon.measurements.amp.TracerouteMeta]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -890,7 +915,7 @@ minutes, the source will use the following procedure:</p><p>- Output the last ho
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">refreshUsedStreams</span><span class="params">(<span name="pgCon">pgCon: <a href="../../connectors/postgres/PostgresConnection.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.PostgresConnection">PostgresConnection</a></span>, <span name="ampletToAmplet">ampletToAmplet: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">true</span></span>)</span><span class="result">: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="../../measurements/amp/TracerouteMeta.html" class="extype" name="nz.net.wand.streamevmon.measurements.amp.TracerouteMeta">TracerouteMeta</a>]</span>
+        <span class="name">refreshUsedStreams</span><span class="params">(<span name="pgCon">pgCon: <a href="../../connectors/postgres/PostgresConnection.html" class="extype" name="nz.net.wand.streamevmon.connectors.postgres.PostgresConnection">PostgresConnection</a></span>, <span name="filterFunctions">filterFunctions: <span class="extype" name="scala.Iterable">Iterable</span>[(<span class="extype" name="scala.Iterable">Iterable</span>[<a href="../../measurements/amp/TracerouteMeta.html" class="extype" name="nz.net.wand.streamevmon.measurements.amp.TracerouteMeta">TracerouteMeta</a>]) ⇒ <span class="extype" name="scala.Predef.Set">Set</span>[<a href="../../measurements/amp/TracerouteMeta.html" class="extype" name="nz.net.wand.streamevmon.measurements.amp.TracerouteMeta">TracerouteMeta</a>]]</span>)</span><span class="result">: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="../../measurements/amp/TracerouteMeta.html" class="extype" name="nz.net.wand.streamevmon.measurements.amp.TracerouteMeta">TracerouteMeta</a>]</span>
       </span>
       
       
