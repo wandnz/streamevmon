@@ -22,7 +22,7 @@ Environment=FLINK_LOG_DIR=/var/log/streamevmon
 Environment=FLINK_PID_DIR=/run/streamevmon
 PIDFile=/run/streamevmon/flink-streamevmon-standalonejob.pid
 
-ExecStart=/usr/share/flink/bin/standalone-job.sh start-foreground --job-classname nz.net.wand.streamevmon.runners.examples.MetricGatherer
+ExecStart=/usr/share/flink/bin/standalone-job.sh start-foreground --job-classname nz.net.wand.streamevmon.runners.unified.YamlDagRunner
 ExecStop=/usr/share/flink/bin/standalone-job.sh stop
 ExecStopPost=/usr/share/flink/bin/taskmanager.sh stop
 SuccessExitStatus=143
