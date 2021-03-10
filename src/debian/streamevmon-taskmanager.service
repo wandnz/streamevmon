@@ -20,7 +20,7 @@ Environment=FLINK_LOG_DIR=/var/log/streamevmon
 Environment=FLINK_PID_DIR=/run/streamevmon
 PIDFile=/run/streamevmon/flink-streamevmon-taskexecutor.pid
 
-ExecStart=bash -ac 'export FLINK_LOG_DIR=$LOGS_DIRECTORY FLINK_PID_DIR=$RUNTIME_DIRECTORY && /usr/share/flink/bin/taskmanager.sh start-foreground'
+ExecStart=/usr/share/flink/bin/taskmanager.sh start-foreground
 SuccessExitStatus=143
 
 Restart=on-failure
