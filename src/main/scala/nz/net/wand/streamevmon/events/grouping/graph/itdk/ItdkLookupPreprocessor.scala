@@ -58,6 +58,7 @@ object ItdkLookupPreprocessor {
       .seq
       .foreach { line =>
         // Split the node ID and IPs
+        //noinspection RegExpRepeatedSpace
         val parts = line.split(":  ")
         // Get the associated AS number, if we know it
         val asn = {
