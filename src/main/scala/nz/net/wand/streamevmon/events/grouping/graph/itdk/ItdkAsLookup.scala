@@ -32,8 +32,8 @@ import java.io.{File, RandomAccessFile}
 
 import scala.annotation.tailrec
 
-/** Reads the geolocation annotations for an ITDK dataset. Provides a mapping
-  * from ITDK-sourced host IDs to their [[GeoInfo]].
+/** Reads the AS number annotations for an ITDK dataset. Provides a mapping
+  * from ITDK-sourced node IDs to their [[ItdkAsNumber]].
   */
 class ItdkAsLookup(asFile: File) extends Logging {
   @transient protected val reader = new RandomAccessFile(asFile, "r")

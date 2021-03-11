@@ -33,7 +33,7 @@ import java.io.{File, RandomAccessFile}
 import scala.annotation.tailrec
 
 /** Reads the geolocation annotations for an ITDK dataset. Provides a mapping
-  * from ITDK-sourced host IDs to their [[GeoInfo]].
+  * from ITDK-sourced node IDs to their [[GeoInfo]].
   */
 class ItdkGeoLookup(geoFile: File) extends Logging {
   @transient protected val reader = new RandomAccessFile(geoFile, "r")
@@ -54,7 +54,7 @@ class ItdkGeoLookup(geoFile: File) extends Logging {
   /** Returns however many GeoInfo entries we got, fully intact, from reading
     * into our buffer size. This is usually somewhere between 2 and 7 elements.
     */
-  protected def getEntriesAfterLocation(idx     : Long): Iterable[GeoInfo] = {
+  protected def getEntriesAfterLocation(idx: Long): Iterable[GeoInfo] = {
     reader.seek(idx)
     val buf = Array.ofDim[Byte](bufSize)
     reader.readFully(buf, 0, math.min(bufSize, fileSize - idx).toInt)

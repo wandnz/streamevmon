@@ -2,7 +2,7 @@
  *
  * Copyright (C) 2021  The University of Waikato, Hamilton, New Zealand
  *
- * Author: <unknown>
+ * Author: Daniel Oosterwijk
  *
  * All rights reserved.
  *

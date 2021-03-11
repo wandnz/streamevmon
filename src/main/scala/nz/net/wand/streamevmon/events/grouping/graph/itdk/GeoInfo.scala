@@ -28,11 +28,11 @@ package nz.net.wand.streamevmon.events.grouping.graph.itdk
 
 /** The geo information for one node in an ITDK dataset. */
 case class GeoInfo(
-  nodeId: Long,
-  continent: String,
-  country  : String,
-  region   : String,
-  city     : String,
+  nodeId   : Long,
+  continent: Option[String],
+  country  : Option[String],
+  region   : Option[String],
+  city     : Option[String],
   latitude : Float,
   longitude: Float
 )
@@ -43,10 +43,10 @@ object GeoInfo {
     val parts = line.split("\t")
     GeoInfo(
       parts(0).drop(10).dropRight(1).toInt,
-      parts(1),
-      parts(2),
-      parts(3),
-      parts(4),
+      if (parts(1).trim.isEmpty) None else Some(parts(1)),
+      if (parts(2).trim.isEmpty) None else Some(parts(2)),
+      if (parts(3).trim.isEmpty) None else Some(parts(3)),
+      if (parts(4).trim.isEmpty) None else Some(parts(4)),
       parts(5).toFloat,
       parts(6).toFloat
     )
