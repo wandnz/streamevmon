@@ -89,14 +89,14 @@ class ItdkAsLookup(asFile: File) extends Logging {
 
     // This shouldn't really happen, but we do need to check for it.
     if (results.isEmpty) {
-      logger.trace(s"No results obtained for target $target from guess $midpointOfGuesses because we got the same result twice")
+      logger.trace(s"No results obtained for target $target from guess $midpointOfGuesses")
       None
     }
     // If we get the same result twice, then we know we haven't found the target
     // and that nothing will change from here, since the binary chop moves less
     // and less each iteration.
     else if (lastGuess.isDefined && lastGuess.get == midpointOfGuesses) {
-      logger.trace(s"Failed to find target $target after $depth lookups")
+      logger.trace(s"Failed to find target $target after $depth lookups because we got the same result twice")
       None
     }
     else {

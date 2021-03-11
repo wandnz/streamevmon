@@ -117,7 +117,7 @@ class ItdkAliasLookup(alignedFile: File, lookupMapFile: File) extends Logging {
 
     // We terminate if the result we got is the same as the last result we found.
     if (lastResult.isDefined && compareAddresses(result._1.getAddress, lastResult.get) == 0) {
-      logger.trace(s"Failed to find result after $depth lookups")
+      logger.trace(s"Failed to find result after $depth lookups because we found the same result twice")
       None
     }
     else {
