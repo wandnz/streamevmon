@@ -98,7 +98,6 @@ class PreprocessorTest extends TestBase with GivenWhenThen {
   }
 
   "ITDK preprocessor" should {
-
     "create a valid file" when {
       "using individual steps" in {
         Given("a working environment")
