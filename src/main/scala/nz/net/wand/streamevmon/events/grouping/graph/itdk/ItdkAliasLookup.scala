@@ -47,6 +47,9 @@ import scala.annotation.tailrec
 class ItdkAliasLookup(alignedFile: File, lookupMapFile: File) extends Logging {
   // All IPv4 entries in our aligned format are 12 bytes wide
   @transient protected val entryLength = 12
+  // If we converge on a target that we don't want, check this many entries to
+  // either side of it, just in case.
+  @transient protected val checkEitherSideOnConvergenceAmount = 2
 
   @transient protected val reader = new RandomAccessFile(alignedFile, "r")
 
@@ -115,10 +118,40 @@ class ItdkAliasLookup(alignedFile: File, lookupMapFile: File) extends Logging {
     val midpointOfGuesses = (highGuess + lowGuess) / 2
     val result = getNthAddress((midpointOfGuesses * maxEntryIndex).toLong)
 
-    // We terminate if the result we got is the same as the last result we found.
+    // If the result we got is the same as the last result we found, we'll check
+    // a few entries to both sides of it in case we got really close without
+    // finding it.
+    // If we don't find it after that, we give up.
     if (lastResult.isDefined && compareAddresses(result._1.getAddress, lastResult.get) == 0) {
-      logger.trace(s"Failed to find result after $depth lookups because we found the same result twice")
-      None
+      val checkEitherSideResult = Range(
+        -checkEitherSideOnConvergenceAmount,
+        checkEitherSideOnConvergenceAmount
+      )
+        .flatMap { n =>
+          if (
+            n < 0 && (midpointOfGuesses * maxEntryIndex) + n >= 0 ||
+              n > 0 && (midpointOfGuesses * maxEntryIndex).toLong + n <= maxEntryIndex
+          ) {
+            val r = getNthAddress((midpointOfGuesses * maxEntryIndex).toLong + n)
+            if (compareAddresses(target, r._1.getAddress) == 0) {
+              Some(r._2, r._3)
+            }
+            else {
+              None
+            }
+          }
+          else {
+            None
+          }
+        }
+      if (checkEitherSideResult.isEmpty) {
+        logger.trace(s"Failed to find result after $depth lookups because we found the same result twice")
+        None
+      }
+      else {
+        logger.trace(s"Found result after $depth lookups once checking a few either side")
+        Some(checkEitherSideResult.head)
+      }
     }
     else {
       // If the result is not what we expected, we know that the midpoint
