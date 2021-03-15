@@ -9,16 +9,16 @@ sources:
     subtype: amp
     config:
       subscriptionName: YamlDagRunnerAmpSubscription
-  bigdata:
-    type: influx
-    subtype: bigdata
-    config:
-      subscriptionName: YamlDagRunnerBigdataSubscription
-  esmond:
-    type: esmond
-  latencyts:
-    type: latencyts
-    subtype: ampicmp
+  #bigdata:
+  #  type: influx
+  #  subtype: bigdata
+  #  config:
+  #    subscriptionName: YamlDagRunnerBigdataSubscription
+  #esmond:
+  #  type: esmond
+  #latencyts:
+  #  type: latencyts
+  #  subtype: ampicmp
 
 sinks:
   print:
@@ -64,11 +64,11 @@ detectors:
         sink:
           - name: influx
           - name: print
-      - source:
-          - name: latencyts
-            datatype: ampicmp
-        sink:
-          - name: influx
+      #- source:
+      #    - name: latencyts
+      #      datatype: ampicmp
+      #  sink:
+      #    - name: influx
 
   loss:
     type: loss
