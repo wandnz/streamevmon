@@ -222,8 +222,8 @@ dataset, which contains router aliases, topologies, AS, and geo information.
                         <a href="ItdkAliasLookup.html" title="Reads an ITDK dataset.">ItdkAliasLookup</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
-                        <a class="class" href="ItdkAsLookup.html" title="Reads the geolocation annotations for an ITDK dataset."></a>
-                        <a href="ItdkAsLookup.html" title="Reads the geolocation annotations for an ITDK dataset.">ItdkAsLookup</a>
+                        <a class="class" href="ItdkAsLookup.html" title="Reads the AS number annotations for an ITDK dataset."></a>
+                        <a href="ItdkAsLookup.html" title="Reads the AS number annotations for an ITDK dataset.">ItdkAsLookup</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
                         <a class="object" href="ItdkAsMethod$.html" title=""></a>
@@ -351,7 +351,7 @@ dataset, which contains router aliases, topologies, AS, and geo information.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="The geo information for one node in an ITDK dataset." href="GeoInfo.html"><span class="name">GeoInfo</span></a><span class="params">(<span name="nodeId">nodeId: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="continent">continent: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="country">country: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="region">region: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="city">city: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="latitude">latitude: <a href="https://www.scala-lang.org/api/2.12.13/scala/Float.html#scala.Float" class="extype" name="scala.Float">Float</a></span>, <span name="longitude">longitude: <a href="https://www.scala-lang.org/api/2.12.13/scala/Float.html#scala.Float" class="extype" name="scala.Float">Float</a></span>)</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="The geo information for one node in an ITDK dataset." href="GeoInfo.html"><span class="name">GeoInfo</span></a><span class="params">(<span name="nodeId">nodeId: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="continent">continent: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="country">country: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="region">region: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="city">city: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="latitude">latitude: <a href="https://www.scala-lang.org/api/2.12.13/scala/Float.html#scala.Float" class="extype" name="scala.Float">Float</a></span>, <span name="longitude">longitude: <a href="https://www.scala-lang.org/api/2.12.13/scala/Float.html#scala.Float" class="extype" name="scala.Float">Float</a></span>)</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">The geo information for one node in an ITDK dataset.</p>
@@ -386,11 +386,11 @@ complete.</p><p>Note that this dataset only includes IPv4 addresses.
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="Reads the geolocation annotations for an ITDK dataset." href="ItdkAsLookup.html"><span class="name">ItdkAsLookup</span></a><span class="result"> extends <a href="../../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></span>
+        <a title="Reads the AS number annotations for an ITDK dataset." href="ItdkAsLookup.html"><span class="name">ItdkAsLookup</span></a><span class="result"> extends <a href="../../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></span>
       </span>
       
-      <p class="shortcomment cmt">Reads the geolocation annotations for an ITDK dataset.</p><div class="fullcomment"><div class="comment cmt"><p>Reads the geolocation annotations for an ITDK dataset. Provides a mapping
-from ITDK-sourced host IDs to their <a href="GeoInfo.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.itdk.GeoInfo">GeoInfo</a>.
+      <p class="shortcomment cmt">Reads the AS number annotations for an ITDK dataset.</p><div class="fullcomment"><div class="comment cmt"><p>Reads the AS number annotations for an ITDK dataset. Provides a mapping
+from ITDK-sourced node IDs to their <a href="ItdkAsNumber.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.itdk.ItdkAsNumber">ItdkAsNumber</a>.
 </p></div></div>
     </li><li name="nz.net.wand.streamevmon.events.grouping.graph.itdk.ItdkAsNumber" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ItdkAsNumberextendsAsNumber"></a><a id="ItdkAsNumber:ItdkAsNumber"></a>
@@ -426,7 +426,7 @@ because they're there in the file, but we don't really need either of them.
       </span>
       
       <p class="shortcomment cmt">Reads the geolocation annotations for an ITDK dataset.</p><div class="fullcomment"><div class="comment cmt"><p>Reads the geolocation annotations for an ITDK dataset. Provides a mapping
-from ITDK-sourced host IDs to their <a href="GeoInfo.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.itdk.GeoInfo">GeoInfo</a>.
+from ITDK-sourced node IDs to their <a href="GeoInfo.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.itdk.GeoInfo">GeoInfo</a>.
 </p></div></div>
     </li></ol>
             </div>
