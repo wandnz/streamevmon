@@ -18,7 +18,7 @@ jobs:
             ~/.m2/repository
             ~/.sbt
           key: streamevmon-${{ hashFiles('**/build.sbt', '**/Dependencies.scala') }}
-      - run: sudo apt install -y graphviz
+      - run: sudo apt-get install -y graphviz
       - run: sbt doc
       - uses: JamesIves/github-pages-deploy-action@4.0.0
         with:
