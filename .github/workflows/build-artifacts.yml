@@ -27,7 +27,10 @@ jobs:
           key: streamevmon-${{ hashFiles('**/build.sbt', '**/Dependencies.scala') }}
 
       - name: Install apt dependencies
-        run: sudo apt install -y dpkg-dev dpkg-sig lintian
+        run: |
+          sudo apt-get update
+          sudo apt-get upgrade -y
+          sudo apt-get install -y dpkg-dev dpkg-sig lintian
 
       - name: Package as .jar and .deb
         run: sbt update clean debian:packageBin
