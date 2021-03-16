@@ -1,13 +1,19 @@
 # Streamevmon
 
+[![OSS Hosting for .deb @ Cloudsmith](https://api-prd.cloudsmith.io/v1/badges/version/wand/streamevmon/deb/streamevmon/latest/a=all;d=any-distro%252Fany-version;t=binary/?render=true&badge_token=gAAAAABgUSmJ0N_vsK932t1c5yMeumjfpBUBcGVt6ebVKaKQUlEbXN8PYJG8H7JwTv9B6m5dT-HvhLXibacZnnGfJFtLCdJGlKcIB3QLFUMCPpc7JNNw1BU%3D)](https://cloudsmith.io/~wand/repos/streamevmon/packages/detail/deb/streamevmon/latest/a=all;d=any-distro%252Fany-version;t=binary/)
+[![API documentation](https://img.shields.io/github/v/tag/wanduow/streamevmon?label=API%20documentation&logo=read-the-docs&logoColor=white&style=flat-square)](https://wanduow.github.io/streamevmon/nz/net/wand/streamevmon/index.html)
+[![Licensed GPL-3.0 Or Later](https://img.shields.io/github/license/wanduow/streamevmon?logo=GNU&style=flat-square)](COPYING)
+![Build Status](https://img.shields.io/github/workflow/status/wanduow/streamevmon/build-artifacts?logo=scala&style=flat-square)
+![Test Status](https://img.shields.io/github/workflow/status/wanduow/streamevmon/tests?label=tests&logo=github&style=flat-square)
+
 This project is designed as a framework to ingest and process live or historical
 time series data, such as the network measurements produced by
 [AMP](https://github.com/wanduow/amplet2), and detect anomalies that may be
 signs of issues in the network or other data source.
 
-Streamevmon runs as a custom job
-within [Apache Flink](https://flink.apache.org/). Flink gives us support for
-highly parallel, high-performance computation in a streaming or batch manner, if
+Streamevmon runs as a custom job within
+[Apache Flink](https://flink.apache.org/). Flink gives us support for highly
+parallel, high-performance computation in a streaming or batch manner, if
 desired, while still running effectively on a single host. Custom Flink sources
 and sinks have been created to support input and output from files, InfluxDB,
 and other locations.
