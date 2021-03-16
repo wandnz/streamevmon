@@ -41,8 +41,8 @@ If you are using the .deb, you should just need to edit the configuration in
 
 If you are using the JAR, you should have a Flink cluster running, and upload it
 using the Web UI or command-line tools. Information on deploying Flink can be
-found
-on [their website](https://ci.apache.org/projects/flink/flink-docs-release-1.12/deployment/)
+found on
+[their website](https://ci.apache.org/projects/flink/flink-docs-release-1.12/deployment/)
 .
 
 ## Obtaining datasets
@@ -92,7 +92,7 @@ include the following:
   assembly configurations are provided for varying levels of included
   dependencies, or run `sbt assemblyAll` to produce all of them. Supported
   configurations are defined in
-  [AssemblyStreamevmonPlugin.autoImport](project/AssemblyStreamevmonPlugin.scala)
+  [`AssemblyStreamevmonPlugin.autoImport`](project/AssemblyStreamevmonPlugin.scala)
   .
 - To build a Debian package, use `sbt debian:packageBin`. Note that the
   resulting package depends on our packaged version of Flink, with a matching

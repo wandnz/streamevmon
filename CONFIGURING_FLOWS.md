@@ -17,8 +17,8 @@ provided here.
 All config comes under a few top-level keys, depending on the category of the
 module you're configuring.
 
-* `caching`:
-  See [Scaladoc](https://wanduow.github.io/streamevmon/nz/net/wand/streamevmon/Caching.html)
+* `caching`: See
+  [Scaladoc](https://wanduow.github.io/streamevmon/nz/net/wand/streamevmon/Caching.html)
   .
 * `flink`: This key group is mainly used by the YamlDagRunner, but certain
   options may also be used to inform behaviour in other places.

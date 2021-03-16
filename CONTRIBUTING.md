@@ -61,7 +61,9 @@ You should define a companion object which extends
 . The companion object should override `columnNames` as follows if it produces
 the correct results, where `T` is your measurement type:
 
-`override def columnNames: Seq[String] = getColumnNames[T]`
+```scala
+override def columnNames: Seq[String] = getColumnNames[T]
+```
 
 `create` is the function which produces your measurement from an InfluxDB
 subscription, so it is important to keep it reasonably light. For examples, see
@@ -81,7 +83,7 @@ character from either side.
 Once this is complete, add a reference to your new function in the
 `InfluxMeasurementFactory` object's `createMeasurement` method, and write some
 tests. Most of the existing measurement-creation tests store examples in
-[`SeedData`](src/test/scala/nz/net/wand/streamevmon/SeedData.scala).
+[`SeedData`](src/test/scala/nz/net/wand/streamevmon/test/SeedData.scala).
 
 ### Supporting historical InfluxDB measurements
 
