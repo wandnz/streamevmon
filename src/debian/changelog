@@ -1,3 +1,9 @@
+streamevmon (0.1.0-1) unstable; urgency=low
+
+  * Initial versioned release. Should be ready for real usage.
+
+ -- Daniel Oosterwijk <doosterw@waikato.ac.nz>  Thu, 18 Mar 2021 12:25:06 +1300
+
 streamevmon (0.1-SNAPSHOT-1) UNRELEASED; urgency=low
 
   * Initial release.
