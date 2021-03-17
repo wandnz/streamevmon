@@ -7,25 +7,25 @@ import sbt.Keys._
   */
 object Dependencies {
   // Major library
-  val flinkVersion = "1.12.1"
+  val flinkVersion = "1.12.2"
 
   // Used in multiple library declarations
   val chroniclerVersion = "0.6.5"
   val retrofitVersion = "2.9.0"
   val scalaCacheVersion = "0.28.0"
-  val log4jVersion = "2.14.0"
+  val log4jVersion = "2.14.1"
 
   // Used in a single declaration each
   val slf4jVersion = "1.7.30"
-  val postgresqlVersion = "42.2.18"
+  val postgresqlVersion = "42.2.19"
   val squerylVersion = "0.9.16"
   val snakeyamlVersion = "2.2.1"
-  val jacksonVersion = "2.11.3"
+  val jacksonVersion = "2.12.2"
   val jgraphtVersion = "1.5.0"
 
   // Used in tests - scalactic in coreDependencies shares a version with scalatest
-  val scalatestVersion = "3.2.3"
-  val testcontainersScalaVersion = "0.39.0"
+  val scalatestVersion = "3.2.6"
+  val testcontainersScalaVersion = "0.39.3"
 
   val providedDependencies: Seq[ModuleID] = Seq(
     // Flink
