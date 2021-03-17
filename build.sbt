@@ -44,7 +44,7 @@ lazy val sharedSettings = Seq(
   // Settings for `sbt doc`
   scalacOptions in(Compile, doc) ++= Seq(
     "-doc-title", name.value,
-    "-doc-version", version.value,
+    "-doc-version", s"v${version.value}",
     "-diagrams"
   ),
   autoAPIMappings := true,
