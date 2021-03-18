@@ -45,13 +45,13 @@ jobs:
           path: target/streamevmon_*.deb
 
       - name: Prepare directory for Cloudsmith (if running because of a tag and not in a fork)
-        if: github.repository_name == 'wanduow/streamevmon' && github.event_name == 'create'
+        if: github.repository == 'wanduow/streamevmon' && github.event_name == 'create'
         run: |
           mkdir -p packages/any-distro_any-version
           mv target/streamevmon_*.deb packages/any-distro_any-version
 
       - name: Upload to Cloudsmith (if running because of a tag)
-        if: github.repository_name == 'wanduow/streamevmon' && github.event_name == 'create'
+        if: github.repository == 'wanduow/streamevmon' && github.event_name == 'create'
         uses: wanduow/action-cloudsmith-upload-packages@v1
         with:
           path: packages/
