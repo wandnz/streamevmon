@@ -24,7 +24,7 @@ import sbtassembly.AssemblyPlugin.autoImport._
 object AssemblyStreamevmonPlugin extends AutoPlugin {
   override def requires = plugins.JvmPlugin && AssemblyPlugin
 
-  override def trigger = allRequirements
+  override def trigger = noTrigger
 
   /** Our global settings. We stop tests from being run before assembly, and
     * define an assemblyMergeStrategy so the resulting JAR is functional.

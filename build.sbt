@@ -58,7 +58,7 @@ lazy val root = (project in file("."))
     Seq(
       name := "streamevmon",
       libraryDependencies ++= providedDependencies ++ coreDependencies ++ testDependencies,
-      mainClass in assembly := Some("nz.net.wand.streamevmon.runners.unified.YamlDagRunner"),
+      mainClass := Some("nz.net.wand.streamevmon.runners.unified.YamlDagRunner"),
       annotationProcessingMapping := Map(
         "org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor" -> Seq(
           "nz.net.wand.streamevmon.LoggingConfigurationFactory"
@@ -69,6 +69,7 @@ lazy val root = (project in file("."))
   .enablePlugins(
     AnnotationProcessingPlugin,
     AutomateHeaderPlugin,
+    AssemblyStreamevmonPlugin,
     DebianStreamevmonPlugin
   )
 
@@ -85,7 +86,7 @@ lazy val parameterTuner = (project in file("parameterTuner"))
       mainClass in assembly := Some("nz.net.wand.streamevmon.tuner.ParameterTuner"),
       fullClasspath in assembly := (fullClasspath in Compile).value,
       assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = true, includeDependency = true)
-    ) ++ sharedSettings ++ parameterTunerLicensing: _*
+    ) ++ sharedSettings ++ AssemblyStreamevmonPlugin.assemblyStreamevmonSettings ++ parameterTunerLicensing: _*
   )
   .enablePlugins(AutomateHeaderPlugin)
 
