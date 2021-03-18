@@ -150,7 +150,7 @@ case class PostgresConnection(
           )
         }.fold(
           e => {
-            logger.error(s"Could not initialise PostgreSQL session! $e")
+            logger.error(s"Could not initialise PostgreSQL session for $jdbcUrl with user $user! $e")
             None
           },
           sess => Some(sess)
