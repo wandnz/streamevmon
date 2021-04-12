@@ -62,7 +62,6 @@ class BuildsGraphTest extends TestBase {
 
     "build graphs from GraphChangeEvents" in {
       val harness = new Harness()
-      harness.initialiseNewGraph()
 
       val cachedEdge = new EdgeT(Instant.ofEpochMilli(1000))
 
@@ -78,7 +77,7 @@ class BuildsGraphTest extends TestBase {
         AddVertex(v3),
         DoNothing(),
         AddEdge(v3, v1, cachedEdge),
-        UpdateVertex.create(v3, v2), // edge should not go away
+        UpdateVertex.create(v3, v2), // edge should not go away yet
         DoNothing(),
         RemoveEdge(cachedEdge),
         AddVertex(v3),

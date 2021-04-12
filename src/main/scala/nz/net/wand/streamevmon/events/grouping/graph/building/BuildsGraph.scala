@@ -38,6 +38,9 @@ trait BuildsGraph {
   }
 
   def receiveGraphChangeEvent(event: GraphChangeEvent): Unit = {
+    if (graph == null) {
+      initialiseNewGraph()
+    }
     event.apply(graph)
   }
 }
