@@ -27,6 +27,7 @@
 package nz.net.wand.streamevmon.events.grouping.graph.pruning
 
 import nz.net.wand.streamevmon.events.grouping.graph._
+import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
 import nz.net.wand.streamevmon.test.TestBase
 
 import java.time.Instant

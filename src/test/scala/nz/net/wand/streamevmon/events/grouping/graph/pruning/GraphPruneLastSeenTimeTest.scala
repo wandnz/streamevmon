@@ -26,7 +26,8 @@
 
 package nz.net.wand.streamevmon.events.grouping.graph.pruning
 
-import nz.net.wand.streamevmon.events.grouping.graph.{GraphConstructionLogic, Host, NoReflectionUnusableEdgeSupplier}
+import nz.net.wand.streamevmon.events.grouping.graph.{Host, NoReflectionUnusableEdgeSupplier}
+import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
 import nz.net.wand.streamevmon.test.TestBase
 
 import java.time.{Duration, Instant}
@@ -39,10 +40,6 @@ import scala.collection.JavaConverters._
 class GraphPruneLastSeenTimeTest extends TestBase {
 
   val now = Instant.ofEpochMilli(1000000000000L)
-
-  type VertexT = GraphConstructionLogic#VertexT
-  type EdgeT = GraphConstructionLogic#EdgeT
-  type GraphT = GraphConstructionLogic#GraphT
 
   def getHost(id: Int): VertexT = {
     Host(

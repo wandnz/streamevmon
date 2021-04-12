@@ -29,10 +29,9 @@ package nz.net.wand.streamevmon.events.grouping.graph
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath
 import nz.net.wand.streamevmon.events.grouping.graph.pruning.{GraphPruneLastSeenTime, GraphPruneParallelAnonymousHost}
+import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
 
 import java.time.{Duration, Instant}
-
-import org.jgrapht.graph.DefaultDirectedWeightedGraph
 
 import scala.collection.mutable
 import scala.collection.JavaConverters._
@@ -41,9 +40,6 @@ import scala.collection.JavaConverters._
   * [[TraceroutePathGraph]].
   */
 trait GraphConstructionLogic extends Logging {
-  type VertexT = Host
-  type EdgeT = EdgeWithLastSeen
-  type GraphT = DefaultDirectedWeightedGraph[VertexT, EdgeT]
 
   /** Must be overridden with a simple getter for a shared object for looking
     * up the merged versions of hosts.

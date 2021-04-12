@@ -29,6 +29,7 @@ package nz.net.wand.streamevmon.events.grouping.graph
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath
+import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 
 import java.time.{Duration, Instant}
