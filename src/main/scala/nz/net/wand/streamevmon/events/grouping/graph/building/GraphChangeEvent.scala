@@ -34,7 +34,12 @@ import scala.collection.JavaConverters._
   * the graph they're given.
   */
 abstract class GraphChangeEvent {
-  def apply(graph: GraphT): Unit
+  def apply(graph: GraphT): GraphT = {
+    applyInternal(graph)
+    graph
+  }
+
+  protected def applyInternal(graph: GraphT): Unit
 }
 
 /** Declares various types of graph change event. Each of them should apply a
@@ -42,20 +47,20 @@ abstract class GraphChangeEvent {
   */
 object GraphChangeEvent {
   case class AddVertex(vertex: VertexT) extends GraphChangeEvent {
-    override def apply(graph: GraphT): Unit = graph.addVertex(vertex)
+    override protected def applyInternal(graph: GraphT): Unit = graph.addVertex(vertex)
   }
 
   case class RemoveVertex(vertex: VertexT) extends GraphChangeEvent {
-    override def apply(graph: GraphT): Unit = graph.removeVertex(vertex)
+    override protected def applyInternal(graph: GraphT): Unit = graph.removeVertex(vertex)
   }
 
   /** Originally from https://stackoverflow.com/a/48255973, but needed some
     * additional changes to work with our equality definition for Hosts.
     */
-  class UpdateVertex(before     : VertexT, after: VertexT) extends GraphChangeEvent {
-    override def apply(graph: GraphT): Unit = {
+  class UpdateVertex(before: VertexT, after: VertexT) extends GraphChangeEvent {
+    override protected def applyInternal(graph: GraphT): Unit = {
       val outEdges = graph.outgoingEdgesOf(before).asScala.map(edge => (graph.getEdgeTarget(edge), edge))
-      val inEdges = graph.incomingEdgesOf(after).asScala.map(edge => (graph.getEdgeSource(edge), edge))
+      val inEdges = graph.incomingEdgesOf(before).asScala.map(edge => (graph.getEdgeSource(edge), edge))
       graph.removeVertex(before)
       graph.addVertex(after)
 
@@ -86,20 +91,24 @@ object GraphChangeEvent {
       }
     }
 
-    def flatApply(before: VertexT, after: VertexT): GraphChangeEvent = {
+    def create(before: VertexT, after: VertexT): GraphChangeEvent = {
       apply(before, after).fold(l => l, r => r)
     }
   }
 
   case class AddEdge(start: VertexT, end: VertexT, edge: EdgeT) extends GraphChangeEvent {
-    override def apply(graph: GraphT): Unit = graph.addEdge(start, end, edge)
+    override protected def applyInternal(graph: GraphT): Unit = graph.addEdge(start, end, edge)
   }
 
   case class RemoveEdge(edge: EdgeT) extends GraphChangeEvent {
-    override def apply(graph: GraphT): Unit = graph.removeEdge(edge)
+    override protected def applyInternal(graph: GraphT): Unit = graph.removeEdge(edge)
+  }
+
+  case class RemoveEdgeByVertices(start: VertexT, end: VertexT) extends GraphChangeEvent {
+    override protected def applyInternal(graph: GraphT): Unit = graph.removeEdge(start, end)
   }
 
   case class DoNothing() extends GraphChangeEvent {
-    override def apply(graph: GraphT): Unit = {}
+    override protected def applyInternal(graph: GraphT): Unit = {}
   }
 }
