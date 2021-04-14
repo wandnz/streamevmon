@@ -63,7 +63,7 @@ class BuildsGraphTest extends TestBase {
     "build graphs from GraphChangeEvents" in {
       val harness = new Harness()
 
-      val cachedEdge = new EdgeT(Instant.ofEpochMilli(1000))
+      val cachedEdge = new EdgeT(Instant.ofEpochMilli(1000), "1000")
 
       // We apply a bunch of events, which should use all the options.
       // This progressively builds and tears down parts of the graph,
@@ -72,7 +72,7 @@ class BuildsGraphTest extends TestBase {
         AddVertex(v1),
         AddVertex(v2),
         DoNothing(),
-        AddEdge(v1, v2, new EdgeT(Instant.EPOCH)),
+        AddEdge(v1, v2, new EdgeT(Instant.EPOCH, "1")),
         RemoveVertex(v2), // edge goes away as well
         AddVertex(v3),
         DoNothing(),
@@ -81,11 +81,11 @@ class BuildsGraphTest extends TestBase {
         DoNothing(),
         RemoveEdge(cachedEdge),
         AddVertex(v3),
-        AddEdge(v1, v3, new EdgeT(Instant.EPOCH)),
+        AddEdge(v1, v3, new EdgeT(Instant.EPOCH, "2")),
         RemoveEdgeByVertices(v1, v3),
-        AddEdge(v1, v2, new EdgeT(Instant.EPOCH)),
-        AddEdge(v2, v3, new EdgeT(Instant.EPOCH)),
-        AddEdge(v3, v1, new EdgeT(Instant.EPOCH)),
+        AddEdge(v1, v2, new EdgeT(Instant.EPOCH, "3")),
+        AddEdge(v2, v3, new EdgeT(Instant.EPOCH, "4")),
+        AddEdge(v3, v1, new EdgeT(Instant.EPOCH, "5")),
         DoNothing()
       )
         .foreach(harness.receiveGraphChangeEvent)

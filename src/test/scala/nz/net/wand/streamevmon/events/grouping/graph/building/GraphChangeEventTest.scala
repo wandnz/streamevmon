@@ -69,7 +69,7 @@ class GraphChangeEventTest extends TestBase {
         graph.setEdgeSupplier(new NoReflectionUnusableEdgeSupplier[EdgeT])
         graph.addVertex(v1)
         graph.addVertex(v2)
-        graph.addEdge(v1, v2, new EdgeT(Instant.EPOCH))
+        graph.addEdge(v1, v2, new EdgeT(Instant.EPOCH, ""))
         graph
       }
 
@@ -112,7 +112,7 @@ class GraphChangeEventTest extends TestBase {
 
       "type is AddEdge" in {
         val g = edgelessGraph
-        AddEdge(v1, v2, new EdgeT(Instant.EPOCH)).apply(g)
+        AddEdge(v1, v2, new EdgeT(Instant.EPOCH, "")).apply(g)
         g.outgoingEdgesOf(v1) should have size 1
         g.incomingEdgesOf(v2) should have size 1
         g.vertexSet shouldBe edgelessGraph.vertexSet
@@ -144,7 +144,7 @@ class GraphChangeEventTest extends TestBase {
         MeasurementEndMarker(Instant.EPOCH).apply(nonEmptyGraph).edgeSet should have size 1
       }
 
-      "type is RemoveUnconnectedVertices" in ???
+      "type is RemoveUnconnectedVertices" ignore ???
     }
   }
 }

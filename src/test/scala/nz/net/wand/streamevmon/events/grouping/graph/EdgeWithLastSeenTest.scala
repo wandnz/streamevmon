@@ -37,7 +37,7 @@ class EdgeWithLastSeenTest extends TestBase {
   "EdgeWithLastSeen" should {
     "serialize via Kryo" in {
       val time = Instant.now()
-      val original = new EdgeWithLastSeen(time)
+      val original = new EdgeWithLastSeen(time, "uid")
 
       val inst = new ScalaKryoInstantiator()
       inst.setRegistrationRequired(false)

@@ -165,7 +165,7 @@ trait GraphConstructionLogic extends Logging {
             graph,
             mergedHosts(source._2.uid),
             mergedHosts(d._2.uid),
-            new EdgeWithLastSeen(path.measurement.time)
+            new EdgeWithLastSeen(path.measurement.time, source._2, d._2)
           )
         }
       }

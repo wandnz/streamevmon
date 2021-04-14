@@ -93,7 +93,7 @@ class TracerouteAsInetToGraphChangeEvent
           AddEdge(
             source,
             dst,
-            new EdgeT(value.measurement.time)
+            new EdgeT(value.measurement.time, source, dst)
           )
         }
       }

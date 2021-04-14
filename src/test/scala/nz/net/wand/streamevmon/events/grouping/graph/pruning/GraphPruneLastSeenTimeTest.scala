@@ -51,7 +51,7 @@ class GraphPruneLastSeenTimeTest extends TestBase {
   }
 
   def getEdge(age: Duration): EdgeT = {
-    new EdgeT(now.minus(age))
+    new EdgeT(now.minus(age), now.toEpochMilli.toHexString)
   }
 
   def constructTestGraph: GraphT = {

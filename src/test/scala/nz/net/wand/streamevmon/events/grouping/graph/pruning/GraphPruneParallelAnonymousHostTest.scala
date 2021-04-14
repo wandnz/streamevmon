@@ -71,7 +71,12 @@ class GraphPruneParallelAnonymousHostTest extends TestBase with GraphConstructio
     )
   }
 
-  def getEdge: EdgeT = new EdgeT(Instant.now())
+  var edgeCounter = 0
+
+  def getEdge: EdgeT = {
+    edgeCounter += 1
+    new EdgeT(Instant.now(), edgeCounter.toString)
+  }
 
   def constructTestGraph: GraphT = {
     val graph = new GraphT(classOf[EdgeT])
