@@ -66,8 +66,8 @@ class GraphChangeAliasResolution
       case event: UpdateVertex => out.collect(
         UpdateVertex.create(aliasResolver.resolve(event.before), aliasResolver.resolve(event.after))
       )
-      case AddEdge(start, end, edge) => out.collect(
-        AddEdge(aliasResolver.resolve(start), aliasResolver.resolve(end), edge)
+      case AddOrUpdateEdge(start, end, edge) => out.collect(
+        AddOrUpdateEdge(aliasResolver.resolve(start), aliasResolver.resolve(end), edge)
       )
       case RemoveEdgeByVertices(start, end) => out.collect(
         RemoveEdgeByVertices(aliasResolver.resolve(start), aliasResolver.resolve(end))

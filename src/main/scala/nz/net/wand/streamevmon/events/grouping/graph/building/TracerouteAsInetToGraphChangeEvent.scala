@@ -90,7 +90,7 @@ class TracerouteAsInetToGraphChangeEvent
         val source = elems.head
         val dest = elems.drop(1).headOption
         dest.foreach { dst =>
-          AddEdge(
+          AddOrUpdateEdge(
             source,
             dst,
             new EdgeT(value.measurement.time, source, dst)

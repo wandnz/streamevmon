@@ -110,12 +110,25 @@ class GraphChangeEventTest extends TestBase {
         }
       }
 
-      "type is AddEdge" in {
+      "type is AddOrUpdateEdge" in {
         val g = edgelessGraph
-        AddEdge(v1, v2, new EdgeT(Instant.EPOCH, "")).apply(g)
+        val e1 = new EdgeT(Instant.EPOCH, "")
+        AddOrUpdateEdge(v1, v2, e1).apply(g)
         g.outgoingEdgesOf(v1) should have size 1
         g.incomingEdgesOf(v2) should have size 1
+        g.edgeSet should have size 1
+        g.edgeSet.asScala.head shouldBe e1
         g.vertexSet shouldBe edgelessGraph.vertexSet
+
+        // make sure updating edges works too
+        val e2 = new EdgeT(Instant.ofEpochMilli(1000), "asd")
+        AddOrUpdateEdge(v1, v2, e2).apply(g)
+        g.outgoingEdgesOf(v1) should have size 1
+        g.incomingEdgesOf(v2) should have size 1
+        g.edgeSet should have size 1
+        g.edgeSet.asScala.head shouldBe e2
+        g.vertexSet shouldBe edgelessGraph.vertexSet
+
       }
 
       "type is RemoveEdge" in {

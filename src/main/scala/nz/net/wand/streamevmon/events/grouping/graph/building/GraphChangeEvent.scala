@@ -104,8 +104,14 @@ object GraphChangeEvent {
     }
   }
 
-  case class AddEdge(start: VertexT, end: VertexT, edge: EdgeT) extends GraphChangeEvent {
-    override protected def applyInternal(graph: GraphT): Unit = graph.addEdge(start, end, edge)
+  case class AddOrUpdateEdge(start: VertexT, end: VertexT, edge: EdgeT) extends GraphChangeEvent {
+    override protected def applyInternal(graph: GraphT): Unit = {
+      val oldEdge = graph.getEdge(start, end)
+      if (oldEdge != null) {
+        graph.removeEdge(oldEdge)
+      }
+      graph.addEdge(start, end, edge)
+    }
   }
 
   case class RemoveEdge(edge: EdgeT) extends GraphChangeEvent {

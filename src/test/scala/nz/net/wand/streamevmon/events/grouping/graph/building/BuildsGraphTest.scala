@@ -72,20 +72,20 @@ class BuildsGraphTest extends TestBase {
         AddVertex(v1),
         AddVertex(v2),
         DoNothing(),
-        AddEdge(v1, v2, new EdgeT(Instant.EPOCH, "1")),
+        AddOrUpdateEdge(v1, v2, new EdgeT(Instant.EPOCH, "1")),
         RemoveVertex(v2), // edge goes away as well
         AddVertex(v3),
         DoNothing(),
-        AddEdge(v3, v1, cachedEdge),
+        AddOrUpdateEdge(v3, v1, cachedEdge),
         UpdateVertex.create(v3, v2), // edge should not go away yet
         DoNothing(),
         RemoveEdge(cachedEdge),
         AddVertex(v3),
-        AddEdge(v1, v3, new EdgeT(Instant.EPOCH, "2")),
+        AddOrUpdateEdge(v1, v3, new EdgeT(Instant.EPOCH, "2")),
         RemoveEdgeByVertices(v1, v3),
-        AddEdge(v1, v2, new EdgeT(Instant.EPOCH, "3")),
-        AddEdge(v2, v3, new EdgeT(Instant.EPOCH, "4")),
-        AddEdge(v3, v1, new EdgeT(Instant.EPOCH, "5")),
+        AddOrUpdateEdge(v1, v2, new EdgeT(Instant.EPOCH, "3")),
+        AddOrUpdateEdge(v2, v3, new EdgeT(Instant.EPOCH, "4")),
+        AddOrUpdateEdge(v3, v1, new EdgeT(Instant.EPOCH, "5")),
         DoNothing()
       )
         .foreach(harness.receiveGraphChangeEvent)
