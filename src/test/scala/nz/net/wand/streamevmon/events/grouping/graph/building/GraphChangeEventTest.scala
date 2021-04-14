@@ -145,6 +145,16 @@ class GraphChangeEventTest extends TestBase {
         g.vertexSet shouldBe nonEmptyGraph.vertexSet
       }
 
+      "type is RemoveOldEdges" in {
+        val g = nonEmptyGraph
+        val newEdge = new EdgeT(Instant.ofEpochMilli(1000), "newer")
+        g.addVertex(v3)
+        g.addEdge(v1, v3, newEdge)
+        RemoveOldEdges(Instant.ofEpochMilli(500)).apply(g)
+        g.edgeSet should have size 1
+        g.edgeSet.asScala.head shouldBe newEdge
+      }
+
       "type is DoNothing" in {
         DoNothing().apply(emptyGraph) shouldBe emptyGraph
         DoNothing().apply(nonEmptyGraph).vertexSet shouldBe nonEmptyGraph.vertexSet
@@ -157,7 +167,12 @@ class GraphChangeEventTest extends TestBase {
         MeasurementEndMarker(Instant.EPOCH).apply(nonEmptyGraph).edgeSet should have size 1
       }
 
-      "type is RemoveUnconnectedVertices" ignore ???
+      "type is RemoveUnconnectedVertices" in {
+        val g = nonEmptyGraph
+        g.addVertex(v3)
+        RemoveUnconnectedVertices().apply(g)
+        g.vertexSet shouldBe nonEmptyGraph.vertexSet
+      }
     }
   }
 }

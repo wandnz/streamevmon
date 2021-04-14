@@ -130,6 +130,20 @@ object GraphChangeEvent {
     override protected def applyInternal(graph: GraphT): Unit = {}
   }
 
+  case class RemoveOldEdges(ageCutoff: Instant) extends GraphChangeEvent {
+    override protected def applyInternal(graph: GraphT): Unit = {
+      graph
+        .edgeSet
+        .asScala
+        .toList
+        .foreach { edge =>
+          if (edge.lastSeen.isBefore(ageCutoff)) {
+            RemoveEdge(edge).apply(graph)
+          }
+        }
+    }
+  }
+
   sealed abstract class NoArgumentGraphChangeEvent extends GraphChangeEvent
 
   case class DoNothing() extends NoArgumentGraphChangeEvent {
