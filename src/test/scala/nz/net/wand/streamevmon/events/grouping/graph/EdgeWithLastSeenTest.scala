@@ -51,5 +51,25 @@ class EdgeWithLastSeenTest extends TestBase {
       output shouldBe an[EdgeWithLastSeen]
       output.asInstanceOf[EdgeWithLastSeen].lastSeen shouldBe time
     }
+
+    val a = new EdgeWithLastSeen(Instant.EPOCH, "a")
+    val aa = new EdgeWithLastSeen(Instant.EPOCH, "a")
+    val b = new EdgeWithLastSeen(Instant.EPOCH, "b")
+    val c = new EdgeWithLastSeen(Instant.ofEpochMilli(1000), "a")
+    val d = new EdgeWithLastSeen(Instant.ofEpochMilli(1000), "b")
+
+    "have good equals()" in {
+      assert(a.equals(aa))
+      assert(!a.equals(b))
+      assert(!a.equals(c))
+      assert(!a.equals(d))
+    }
+
+    "have good hashCode()" in {
+      a.hashCode shouldBe aa.hashCode
+      a.hashCode shouldNot be(b.hashCode())
+      a.hashCode shouldNot be(c.hashCode())
+      a.hashCode shouldNot be(d.hashCode())
+    }
   }
 }
