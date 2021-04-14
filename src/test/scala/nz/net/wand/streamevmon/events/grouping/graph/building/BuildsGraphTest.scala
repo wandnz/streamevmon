@@ -65,7 +65,9 @@ class BuildsGraphTest extends TestBase {
 
       val cachedEdge = new EdgeT(Instant.ofEpochMilli(1000), "1000")
 
-      // We apply a bunch of events, which should use all the options.
+      // We apply a bunch of events, which uses most of the basic options.
+      // We don't need to try all of them here, since they're tested over
+      // in GraphChangeEventTest.
       // This progressively builds and tears down parts of the graph,
       // resulting in a single-directional loop between v1 -> v2 -> v3 -> v1.
       Seq(
