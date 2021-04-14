@@ -36,6 +36,9 @@ import scala.collection.mutable
 
 /** Worker class for alias resolution, which finds duplicate entries for hosts.
   *
+  * Note that the `mergedHosts` field has no way of pruning itself, and will
+  * grow endlessly.
+  *
   * ==Configuration==
   *
   * This class configures the construction of a new [[nz.net.wand.streamevmon.events.grouping.graph.itdk.ItdkAliasLookup ItdkAliasLookup]] object
@@ -76,8 +79,8 @@ class AliasResolver(
     */
   def resolve(
     host        : HostT,
-    onNewHost   : HostT => Unit,
-    onUpdateHost: (HostT, HostT) => Unit
+    onNewHost   : HostT => Unit = _ => Unit,
+    onUpdateHost: (HostT, HostT) => Unit = (_, _) => Unit
   ): HostT = {
     // Naive resolution. If we've seen it before, it'll be in the mergedHosts
     // map. We merge it with the new host to retain all the information. If we

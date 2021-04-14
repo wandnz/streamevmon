@@ -137,6 +137,14 @@ class GraphChangeEventTest extends TestBase {
         DoNothing().apply(nonEmptyGraph).vertexSet shouldBe nonEmptyGraph.vertexSet
         DoNothing().apply(nonEmptyGraph).edgeSet should have size 1
       }
+
+      "type is MeasurementEndMarker" in {
+        MeasurementEndMarker(Instant.EPOCH).apply(emptyGraph) shouldBe emptyGraph
+        MeasurementEndMarker(Instant.EPOCH).apply(nonEmptyGraph).vertexSet shouldBe nonEmptyGraph.vertexSet
+        MeasurementEndMarker(Instant.EPOCH).apply(nonEmptyGraph).edgeSet should have size 1
+      }
+
+      "type is RemoveUnconnectedVertices" in ???
     }
   }
 }

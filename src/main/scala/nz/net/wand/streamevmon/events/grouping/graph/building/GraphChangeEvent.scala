@@ -28,12 +28,16 @@ package nz.net.wand.streamevmon.events.grouping.graph.building
 
 import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
 
+import java.time.Instant
+
+import org.jgrapht.alg.connectivity.ConnectivityInspector
+
 import scala.collection.JavaConverters._
 
 /** Parent class for change events. All they need to do is apply themselves to
   * the graph they're given.
   */
-abstract class GraphChangeEvent {
+sealed abstract class GraphChangeEvent {
   def apply(graph: GraphT): GraphT = {
     applyInternal(graph)
     graph
@@ -46,6 +50,10 @@ abstract class GraphChangeEvent {
   * simple operation to an existing graph, and should be fully self-contained.
   */
 object GraphChangeEvent {
+  // TODO: Some of these may be flawed by using by-reference comparisons.
+  //  Additionally, edges can't be compared, so passing around RemoveEdge might
+  //  not work once multiple JVMs are involved. We might need to rethink how
+  //  we store these events, and we definitely need to rethink edge handling.
   case class AddVertex(vertex: VertexT) extends GraphChangeEvent {
     override protected def applyInternal(graph: GraphT): Unit = graph.addVertex(vertex)
   }
@@ -57,7 +65,7 @@ object GraphChangeEvent {
   /** Originally from https://stackoverflow.com/a/48255973, but needed some
     * additional changes to work with our equality definition for Hosts.
     */
-  class UpdateVertex(before: VertexT, after: VertexT) extends GraphChangeEvent {
+  class UpdateVertex(val before: VertexT, val after: VertexT) extends GraphChangeEvent {
     override protected def applyInternal(graph: GraphT): Unit = {
       val outEdges = graph.outgoingEdgesOf(before).asScala.map(edge => (graph.getEdgeTarget(edge), edge))
       val inEdges = graph.incomingEdgesOf(before).asScala.map(edge => (graph.getEdgeSource(edge), edge))
@@ -108,7 +116,32 @@ object GraphChangeEvent {
     override protected def applyInternal(graph: GraphT): Unit = graph.removeEdge(start, end)
   }
 
-  case class DoNothing() extends GraphChangeEvent {
+  /** Meta-event that marks the end of an input measurement to the graph
+    * building system. Some downstream graph-building operators want to know
+    * how many measurements have been processed, so this lets them keep count.
+    */
+  case class MeasurementEndMarker(timeOfMeasurement: Instant) extends GraphChangeEvent {
     override protected def applyInternal(graph: GraphT): Unit = {}
+  }
+
+  sealed abstract class NoArgumentGraphChangeEvent extends GraphChangeEvent
+
+  case class DoNothing() extends NoArgumentGraphChangeEvent {
+    override protected def applyInternal(graph: GraphT): Unit = {}
+  }
+
+  case class RemoveUnconnectedVertices() extends NoArgumentGraphChangeEvent {
+    override protected def applyInternal(graph: GraphT): Unit = {
+      graph.removeAllVertices(
+        new ConnectivityInspector(graph)
+          .connectedSets
+          .asScala
+          .sortBy(_.size)
+          .dropRight(1)
+          .flatMap(_.asScala)
+          .toSet
+          .asJavaCollection
+      )
+    }
   }
 }
