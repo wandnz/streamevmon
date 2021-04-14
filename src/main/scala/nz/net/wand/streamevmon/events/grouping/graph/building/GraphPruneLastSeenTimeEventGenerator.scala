@@ -32,6 +32,9 @@ import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.{
 
 import java.time.{Duration, Instant}
 
+import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
+import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
+import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.ProcessFunction
 import org.apache.flink.util.Collector
 
@@ -40,6 +43,7 @@ import org.apache.flink.util.Collector
   */
 class GraphPruneLastSeenTimeEventGenerator
   extends ProcessFunction[GraphChangeEvent, GraphChangeEvent]
+          with CheckpointedFunction
           with HasFlinkConfig
           with Logging {
   override val flinkName: String = "Graph Pruner"
@@ -47,8 +51,10 @@ class GraphPruneLastSeenTimeEventGenerator
   override val configKeyGroup: String = "eventGrouping.graph"
 
   var lastPruneTime: Instant = Instant.EPOCH
-  var lastSeenTime: Instant = Instant.EPOCH
   var measurementsSinceLastPrune: Long = 0
+
+  private var lastPruneTimeState: ListState[Instant] = _
+  private var measurementsSinceLastPruneState: ListState[Long] = _
 
   /** How often we prune, in measurement count */
   @transient private lazy val pruneIntervalCount: Long =
@@ -97,6 +103,28 @@ class GraphPruneLastSeenTimeEventGenerator
           }
         }
       case _ =>
+    }
+  }
+
+  override def snapshotState(context: FunctionSnapshotContext): Unit = {
+    lastPruneTimeState.clear()
+    lastPruneTimeState.add(lastPruneTime)
+    measurementsSinceLastPruneState.clear()
+    measurementsSinceLastPruneState.add(measurementsSinceLastPrune)
+  }
+
+  override def initializeState(context: FunctionInitializationContext): Unit = {
+    lastPruneTimeState = context
+      .getOperatorStateStore
+      .getUnionListState(new ListStateDescriptor("lastPruneTime", classOf[Instant]))
+
+    measurementsSinceLastPruneState = context
+      .getOperatorStateStore
+      .getUnionListState(new ListStateDescriptor("measurementsSinceLastPrune", classOf[Long]))
+
+    if (context.isRestored) {
+      lastPruneTimeState.get.forEach(entry => lastPruneTime = entry)
+      measurementsSinceLastPruneState.get.forEach(entry => measurementsSinceLastPrune = entry)
     }
   }
 }
