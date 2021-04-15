@@ -50,10 +50,6 @@ sealed abstract class GraphChangeEvent {
   * simple operation to an existing graph, and should be fully self-contained.
   */
 object GraphChangeEvent {
-  // TODO: Some of these may be flawed by using by-reference comparisons.
-  //  Additionally, edges can't be compared, so passing around RemoveEdge might
-  //  not work once multiple JVMs are involved. We might need to rethink how
-  //  we store these events, and we definitely need to rethink edge handling.
   case class AddVertex(vertex: VertexT) extends GraphChangeEvent {
     override protected def applyInternal(graph: GraphT): Unit = graph.addVertex(vertex)
   }
