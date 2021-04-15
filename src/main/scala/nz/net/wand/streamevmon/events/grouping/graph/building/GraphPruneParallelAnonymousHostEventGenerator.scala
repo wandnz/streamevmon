@@ -26,26 +26,16 @@
 
 package nz.net.wand.streamevmon.events.grouping.graph.building
 
-import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.{RemoveOldEdges, RemoveUnconnectedVertices}
-
-import java.time.{Duration, Instant}
+import java.time.Instant
 
 import org.apache.flink.util.Collector
 
-/** Passes through all GraphChangeEvents, but also outputs a group of events
-  * that prune the resultant graph whenever required.
-  */
-class GraphPruneLastSeenTimeEventGenerator
+class GraphPruneParallelAnonymousHostEventGenerator
   extends GraphPruneEventGenerator {
-
-  /** How old an edge must be before it gets pruned */
-  @transient private lazy val pruneAge: Duration =
-  Duration.ofSeconds(configWithOverride(getRuntimeContext).getLong(s"$configKeyGroup.pruneAge"))
 
   override def onProcessElement(value: GraphChangeEvent): Unit = {}
 
   override def doPrune(currentTime: Instant, out: Collector[GraphChangeEvent]): Unit = {
-    out.collect(RemoveOldEdges(currentTime.minus(pruneAge)))
-    out.collect(RemoveUnconnectedVertices())
+
   }
 }
