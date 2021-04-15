@@ -67,14 +67,14 @@ class GraphPruneParallelAnonymousHost[
     * we return None.
     * If there are no parents, then we return None.
     *
-    * We keep count of depth (plus a bit) so the search algorithm used later to
+    * We keep count of depth so the search algorithm used later to
     * find paths between top and bottom hosts has a limit.
     */
   @tailrec
   private def findDirectParentWithMultipleChildren(
     graph: GraphT,
     vertex: VertexT,
-    depth: Int = 3
+    depth: Int = 0
   ): Option[(VertexT, Int)] = {
     // If the current node has multiple children, we've found our target.
     if (graph.outDegreeOf(vertex) > 1) {
@@ -144,6 +144,8 @@ class GraphPruneParallelAnonymousHost[
     // For each bottom host, we have a mutable.Set[VertexT] of the common ancestors
     // of its anonymous direct parents. We find all the paths between each of
     // these ancestors and the bottom host.
+    // We also set a depth limit, which is the distance from the bottom host
+    // to the ancestor, plus a bit for good luck.
     val pathsFromCommonAncestorsToBottomHosts: Map[VertexT, Map[VertexT, mutable.Buffer[GraphPath[VertexT, EdgeT]]]] = bottomHostToCommonAncestors
       .map { case (bottomHost, commonAncestors) =>
         (
@@ -151,7 +153,7 @@ class GraphPruneParallelAnonymousHost[
           commonAncestors.map { ancestor =>
             (
               ancestor._1,
-              allPaths.getAllPaths(ancestor._1, bottomHost, true, ancestor._2).asScala
+              allPaths.getAllPaths(ancestor._1, bottomHost, true, ancestor._2 + 3).asScala
             )
           }.toMap
         )
