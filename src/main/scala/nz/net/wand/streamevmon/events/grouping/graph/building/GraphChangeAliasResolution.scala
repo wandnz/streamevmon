@@ -35,15 +35,19 @@ import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent._
 import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
 import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
-import org.apache.flink.streaming.api.functions.ProcessFunction
+import org.apache.flink.streaming.api.functions.co.CoProcessFunction
 import org.apache.flink.util.Collector
 
 import scala.collection.JavaConverters._
 
-/** Performs alias resolution on all GraphChangeEvents passed to it.
+/** Performs alias resolution on all GraphChangeEvents passed to it. You can
+  * also supply it with additional aliases that were found using other methods,
+  * and it will keep track of them. Note that anything supplied to the second
+  * input will not be passed on, as it is assumed to have been already applied
+  * to the graph. Supply it to the first input to force passthrough.
   */
 class GraphChangeAliasResolution
-  extends ProcessFunction[GraphChangeEvent, GraphChangeEvent]
+  extends CoProcessFunction[GraphChangeEvent, MergeVertices, GraphChangeEvent]
           with CheckpointedFunction
           with HasFlinkConfig
           with Logging {
@@ -55,12 +59,15 @@ class GraphChangeAliasResolution
 
   private var mergedHostsState: ListState[VertexT] = _
 
-  override def processElement(
-    value                          : GraphChangeEvent,
-    ctx                            : ProcessFunction[GraphChangeEvent, GraphChangeEvent]#Context,
-    out                            : Collector[GraphChangeEvent]
+  override def processElement1(
+    value: GraphChangeEvent,
+    ctx  : CoProcessFunction[GraphChangeEvent, MergeVertices, GraphChangeEvent]#Context,
+    out  : Collector[GraphChangeEvent]
   ): Unit = {
     value match {
+      case e: MergeVertices =>
+        processElement2(e, ctx, out)
+        out.collect(e)
       case AddVertex(vertex) => out.collect(AddVertex(aliasResolver.resolve(vertex)))
       case RemoveVertex(vertex) => out.collect(RemoveVertex(aliasResolver.resolve(vertex)))
       case event: UpdateVertex => out.collect(
@@ -76,6 +83,14 @@ class GraphChangeAliasResolution
       case MeasurementEndMarker(_) => out.collect(value)
       case _: NoArgumentGraphChangeEvent => out.collect(value)
     }
+  }
+
+  override def processElement2(
+    value                           : MergeVertices,
+    ctx                             : CoProcessFunction[GraphChangeEvent, MergeVertices, GraphChangeEvent]#Context,
+    out                             : Collector[GraphChangeEvent]
+  ): Unit = {
+    aliasResolver.addKnownAliases(value.merged, value.vertices)
   }
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {

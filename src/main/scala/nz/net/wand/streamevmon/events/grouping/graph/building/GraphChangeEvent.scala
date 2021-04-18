@@ -100,6 +100,16 @@ object GraphChangeEvent {
     }
   }
 
+  case class MergeVertices(vertices: Iterable[VertexT]) extends GraphChangeEvent {
+    lazy val merged: VertexT = vertices
+      .drop(1)
+      .foldLeft(vertices.head)((a, b) => a.mergeAnonymous(b))
+
+    override protected def applyInternal(graph: GraphT): Unit = {
+      vertices.foreach(v => UpdateVertex.create(v, merged).apply(graph))
+    }
+  }
+
   case class AddOrUpdateEdge(start: VertexT, end: VertexT, edge: EdgeT) extends GraphChangeEvent {
     override protected def applyInternal(graph: GraphT): Unit = {
       val oldEdge = graph.getEdge(start, end)
@@ -158,6 +168,12 @@ object GraphChangeEvent {
           .toSet
           .asJavaCollection
       )
+    }
+  }
+
+  case class DoPruneParallelAnonymousHosts() extends NoArgumentGraphChangeEvent {
+    override protected def applyInternal(graph: GraphT): Unit = {
+      //new GraphPruneParallelAnonymousHost[VertexT, EdgeT, GraphT]()
     }
   }
 }

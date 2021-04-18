@@ -158,6 +158,14 @@ class AliasResolver(
     }
     withItdk
   }
+
+  def addKnownAliases(merged: HostT, hosts: Iterable[HostT]): Unit = {
+    hosts
+      .foreach { host =>
+        mergedHosts.remove(host.uid)
+        mergedHosts.put(host.uid, merged)
+      }
+  }
 }
 
 object AliasResolver {
