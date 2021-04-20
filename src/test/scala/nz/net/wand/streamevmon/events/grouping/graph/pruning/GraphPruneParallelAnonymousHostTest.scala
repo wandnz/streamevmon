@@ -28,6 +28,7 @@ package nz.net.wand.streamevmon.events.grouping.graph.pruning
 
 import nz.net.wand.streamevmon.events.grouping.graph._
 import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
+import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.DoPruneParallelAnonymousHosts
 import nz.net.wand.streamevmon.test.TestBase
 
 import java.time.Instant
@@ -130,7 +131,7 @@ class GraphPruneParallelAnonymousHostTest extends TestBase with GraphConstructio
         (oldH, newH) => addOrUpdateVertex(graph, oldH, newH)
       )
 
-      pruner.prune(graph)
+      DoPruneParallelAnonymousHosts().apply(graph)
 
       def comparableEdges(g: GraphT) = {
         g.edgeSet.asScala.map { e =>

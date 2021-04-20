@@ -27,6 +27,7 @@
 package nz.net.wand.streamevmon.events.grouping.graph.building
 
 import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
+import nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneParallelAnonymousHost
 
 import java.time.Instant
 
@@ -172,8 +173,15 @@ object GraphChangeEvent {
   }
 
   case class DoPruneParallelAnonymousHosts() extends NoArgumentGraphChangeEvent {
+    def getMergeVertexEvents(graph: GraphT): Iterable[MergeVertices] = {
+      val toMerge = GraphPruneParallelAnonymousHost.getVerticesToMerge(graph)
+      toMerge.flatMap(_.map { items =>
+        MergeVertices(items)
+      })
+    }
+
     override protected def applyInternal(graph: GraphT): Unit = {
-      //new GraphPruneParallelAnonymousHost[VertexT, EdgeT, GraphT]()
+      getMergeVertexEvents(graph).foreach(_.apply(graph))
     }
   }
 }
