@@ -30,10 +30,15 @@ import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.{
 
 import java.time.{Duration, Instant}
 
+import org.apache.flink.streaming.api.functions.ProcessFunction
 import org.apache.flink.util.Collector
 
 /** Passes through all GraphChangeEvents, but also outputs a group of events
   * that prune the resultant graph whenever required.
+  *
+  * This class prunes edges which haven't been seen for a while. Use the
+  * `eventGrouping.graph.pruneAge` configuration key to change the maximum age
+  * of edges in seconds. The default is 1200.
   */
 class GraphPruneLastSeenTimeEventGenerator
   extends GraphPruneEventGenerator {
@@ -44,7 +49,11 @@ class GraphPruneLastSeenTimeEventGenerator
 
   override def onProcessElement(value: GraphChangeEvent): Unit = {}
 
-  override def doPrune(currentTime: Instant, out: Collector[GraphChangeEvent]): Unit = {
+  override def doPrune(
+    currentTime           : Instant,
+    ctx                   : ProcessFunction[GraphChangeEvent, GraphChangeEvent]#Context,
+    out                   : Collector[GraphChangeEvent]
+  ): Unit = {
     out.collect(RemoveOldEdges(currentTime.minus(pruneAge)))
     out.collect(RemoveUnconnectedVertices())
   }

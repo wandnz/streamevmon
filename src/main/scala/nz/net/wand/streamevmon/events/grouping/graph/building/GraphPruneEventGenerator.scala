@@ -40,6 +40,26 @@ import org.apache.flink.util.Collector
 
 /** Passes through all GraphChangeEvents, but also outputs a group of events
   * that prune the resultant graph whenever required.
+  *
+  * There are two potential triggers for pruning. The first one whose
+  * requirements are fulfilled will cause a prune to occur, and reset the
+  * counter for both triggers. For example, you can configure a prune to occur
+  * every 500 measurements or every 12 hours (these are the default settings).
+  * If 400 measurements had been seen after 12 hours had passed, a prune would
+  * occur on the next measurement, since the time trigger is fulfilled. Once the
+  * prune is complete, another will run in another 12 hours, or once another
+  * 500 measurements are seen before 12 hours passes.
+  *
+  * ==Configuration==
+  *
+  * This class and its children are configured by the `eventGrouping.graph`
+  * config key group.
+  *
+  * - `pruneIntervalCount`: Once this many measurements are seen, a prune is
+  * triggered. Default 500.
+  *
+  * - `pruneIntervalTime`: The number of seconds that must pass before a prune
+  * is triggered. Default 43200s (12 hours).
   */
 abstract class GraphPruneEventGenerator
   extends ProcessFunction[GraphChangeEvent, GraphChangeEvent]
@@ -67,12 +87,16 @@ abstract class GraphPruneEventGenerator
 
   def onProcessElement(value: GraphChangeEvent): Unit
 
-  def doPrune(currentTime: Instant, out: Collector[GraphChangeEvent]): Unit
+  def doPrune(
+    currentTime  : Instant,
+    ctx          : ProcessFunction[GraphChangeEvent, GraphChangeEvent]#Context,
+    out          : Collector[GraphChangeEvent]
+  ): Unit
 
   override def processElement(
     value: GraphChangeEvent,
-    ctx: ProcessFunction[GraphChangeEvent, GraphChangeEvent]#Context,
-    out: Collector[GraphChangeEvent]
+    ctx  : ProcessFunction[GraphChangeEvent, GraphChangeEvent]#Context,
+    out  : Collector[GraphChangeEvent]
   ): Unit = {
     onProcessElement(value)
     out.collect(value)
@@ -81,7 +105,7 @@ abstract class GraphPruneEventGenerator
       case MeasurementEndMarker(time) =>
         measurementsSinceLastPrune += 1
         if (measurementsSinceLastPrune >= pruneIntervalCount) {
-          doPrune(time, out)
+          doPrune(time, ctx, out)
           lastPruneTime = time
           measurementsSinceLastPrune = 0
         }
@@ -92,7 +116,7 @@ abstract class GraphPruneEventGenerator
             case Instant.EPOCH => lastPruneTime = time
             // If it's been long enough, go ahead and prune the graph.
             case _ if Duration.between(lastPruneTime, time).compareTo(pruneIntervalTime) > 0 =>
-              doPrune(time, out)
+              doPrune(time, ctx, out)
               lastPruneTime = time
               measurementsSinceLastPrune = 0
             // Otherwise, do nothing.

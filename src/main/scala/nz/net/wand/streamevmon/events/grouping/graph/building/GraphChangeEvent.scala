@@ -172,13 +172,23 @@ object GraphChangeEvent {
     }
   }
 
+  /** This is a complex algorithm, but its effects can still be broken down into
+    * a series of basic components. We allow users to get the component events
+    * separately, since there are cases where we need to pass them around
+    * with references to the vertices they affect, which this class does not
+    * provide alone.
+    */
   case class DoPruneParallelAnonymousHosts() extends NoArgumentGraphChangeEvent {
     def getMergeVertexEvents(graph: GraphT): Iterable[MergeVertices] = {
       GraphPruneParallelAnonymousHost.getMergeVertices(graph)
     }
 
+    def applyMergeVertexEvents(graph: GraphT, events: Iterable[MergeVertices]): Unit = {
+      events.foreach(_.apply(graph))
+    }
+
     override protected def applyInternal(graph: GraphT): Unit = {
-      getMergeVertexEvents(graph).foreach(_.apply(graph))
+      applyMergeVertexEvents(graph, getMergeVertexEvents(graph))
     }
   }
 }

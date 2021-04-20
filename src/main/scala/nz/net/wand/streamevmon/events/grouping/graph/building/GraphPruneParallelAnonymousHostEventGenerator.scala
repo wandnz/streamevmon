@@ -26,16 +26,46 @@
 
 package nz.net.wand.streamevmon.events.grouping.graph.building
 
+import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.{DoPruneParallelAnonymousHosts, MergeVertices}
+
 import java.time.Instant
 
+import org.apache.flink.streaming.api.functions.ProcessFunction
+import org.apache.flink.streaming.api.scala._
 import org.apache.flink.util.Collector
 
+/** Passes through all GraphChangeEvents, but also outputs a group of events
+  * that prune the resultant graph whenever required.
+  *
+  * This class prunes parallel chains of anonymous hosts. For more details, see
+  * [[nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneParallelAnonymousHost GraphPruneParallelAnonymousHost]].
+  *
+  * This class additionally sends [[MergeVertices]] events to a side output,
+  * using the tag declared as `mergeVerticesEventOutputTag`. If this class is
+  * used downstream from a
+  * [[GraphChangeAliasResolution]] module, this side output should be connected
+  * to the AliasResolution module's second input. This will create a loop, which
+  * will be handled correctly.
+  */
 class GraphPruneParallelAnonymousHostEventGenerator
-  extends GraphPruneEventGenerator {
+  extends GraphPruneEventGenerator
+          with BuildsGraph {
+  val mergeVerticesEventOutputTag = new OutputTag[MergeVertices]("merge-vertices-events")
 
-  override def onProcessElement(value: GraphChangeEvent): Unit = {}
+  override def onProcessElement(value: GraphChangeEvent): Unit = {
+    receiveGraphChangeEvent(value)
+  }
 
-  override def doPrune(currentTime: Instant, out: Collector[GraphChangeEvent]): Unit = {
-
+  override def doPrune(
+    currentTime: Instant,
+    ctx        : ProcessFunction[GraphChangeEvent, GraphChangeEvent]#Context,
+    out        : Collector[GraphChangeEvent]
+  ): Unit = {
+    val events = DoPruneParallelAnonymousHosts().getMergeVertexEvents(graph)
+    DoPruneParallelAnonymousHosts().applyMergeVertexEvents(graph, events)
+    events.foreach { e =>
+      out.collect(e)
+      ctx.output(mergeVerticesEventOutputTag, e)
+    }
   }
 }
