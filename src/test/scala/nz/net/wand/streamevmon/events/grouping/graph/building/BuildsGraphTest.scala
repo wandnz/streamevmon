@@ -29,15 +29,43 @@ package nz.net.wand.streamevmon.events.grouping.graph.building
 import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent._
 import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
 import nz.net.wand.streamevmon.test.TestBase
+import nz.net.wand.streamevmon.Configuration
 
 import java.time.Instant
+
+import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
+import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
+import org.apache.flink.streaming.api.functions.ProcessFunction
+import org.apache.flink.streaming.api.operators.ProcessOperator
+import org.apache.flink.streaming.util.OneInputStreamOperatorTestHarness
+import org.apache.flink.util.Collector
 
 import scala.collection.JavaConverters._
 
 class BuildsGraphTest extends TestBase {
-  class Harness extends BuildsGraph
+  class Impl
+    extends ProcessFunction[GraphChangeEvent, Int]
+            with BuildsGraph
+            with CheckpointedFunction {
 
-  "BuildsGraph" should {
+    override def processElement(
+      value: GraphChangeEvent,
+      ctx  : ProcessFunction[GraphChangeEvent, Int]#Context,
+      out  : Collector[Int]
+    ): Unit = {
+      receiveGraphChangeEvent(value)
+    }
+
+    override def snapshotState(context: FunctionSnapshotContext): Unit = {
+      snapshotGraphState(context)
+    }
+
+    override def initializeState(context: FunctionInitializationContext): Unit = {
+      initializeGraphState(context)
+    }
+  }
+
+  "BuildsGraph children" should {
     val v1 =
       new VertexT(
         Set("abc.example.org"),
@@ -60,50 +88,80 @@ class BuildsGraphTest extends TestBase {
       None
     )
 
-    "build graphs from GraphChangeEvents" in {
-      val harness = new Harness()
+    // We apply a bunch of events, which uses most of the basic options.
+    // We don't need to try all of them here, since they're tested over
+    // in GraphChangeEventTest.
+    // This progressively builds and tears down parts of the graph,
+    // resulting in a single-directional loop between v1 -> v2 -> v3 -> v1.
+    val cachedEdge = new EdgeT(Instant.ofEpochMilli(1000), "1000")
+    val buildSteps = Seq(
+      AddVertex(v1),
+      AddVertex(v2),
+      DoNothing(),
+      AddOrUpdateEdge(v1, v2, new EdgeT(Instant.EPOCH, "1")),
+      RemoveVertex(v2), // edge goes away as well
+      AddVertex(v3),
+      DoNothing(),
+      AddOrUpdateEdge(v3, v1, cachedEdge),
+      UpdateVertex.create(v3, v2), // edge should not go away yet
+      DoNothing(),
+      RemoveEdge(cachedEdge),
+      AddVertex(v3),
+      AddOrUpdateEdge(v1, v3, new EdgeT(Instant.EPOCH, "2")),
+      RemoveEdgeByVertices(v1, v3),
+      AddOrUpdateEdge(v1, v2, new EdgeT(Instant.EPOCH, "3")),
+      AddOrUpdateEdge(v2, v3, new EdgeT(Instant.EPOCH, "4")),
+      AddOrUpdateEdge(v3, v1, new EdgeT(Instant.EPOCH, "5")),
+      DoNothing()
+    )
 
-      val cachedEdge = new EdgeT(Instant.ofEpochMilli(1000), "1000")
-
-      // We apply a bunch of events, which uses most of the basic options.
-      // We don't need to try all of them here, since they're tested over
-      // in GraphChangeEventTest.
-      // This progressively builds and tears down parts of the graph,
-      // resulting in a single-directional loop between v1 -> v2 -> v3 -> v1.
-      Seq(
-        AddVertex(v1),
-        AddVertex(v2),
-        DoNothing(),
-        AddOrUpdateEdge(v1, v2, new EdgeT(Instant.EPOCH, "1")),
-        RemoveVertex(v2), // edge goes away as well
-        AddVertex(v3),
-        DoNothing(),
-        AddOrUpdateEdge(v3, v1, cachedEdge),
-        UpdateVertex.create(v3, v2), // edge should not go away yet
-        DoNothing(),
-        RemoveEdge(cachedEdge),
-        AddVertex(v3),
-        AddOrUpdateEdge(v1, v3, new EdgeT(Instant.EPOCH, "2")),
-        RemoveEdgeByVertices(v1, v3),
-        AddOrUpdateEdge(v1, v2, new EdgeT(Instant.EPOCH, "3")),
-        AddOrUpdateEdge(v2, v3, new EdgeT(Instant.EPOCH, "4")),
-        AddOrUpdateEdge(v3, v1, new EdgeT(Instant.EPOCH, "5")),
-        DoNothing()
-      )
-        .foreach(harness.receiveGraphChangeEvent)
-
+    def ensureLayout(graph: GraphT): Unit = {
       // Just make sure it ended up with the right topology. All the
       // intermediary steps can be assumed to have applied.
-      harness.graph.vertexSet.asScala shouldBe Set(v1, v2, v3)
-      harness.graph.outgoingEdgesOf(v1).forEach { e =>
-        harness.graph.getEdgeTarget(e) shouldBe v2
+      graph.vertexSet.asScala shouldBe Set(v1, v2, v3)
+      graph.outgoingEdgesOf(v1).forEach { e =>
+        graph.getEdgeTarget(e) shouldBe v2
       }
-      harness.graph.outgoingEdgesOf(v2).forEach { e =>
-        harness.graph.getEdgeTarget(e) shouldBe v3
+      graph.outgoingEdgesOf(v2).forEach { e =>
+        graph.getEdgeTarget(e) shouldBe v3
       }
-      harness.graph.outgoingEdgesOf(v3).forEach { e =>
-        harness.graph.getEdgeTarget(e) shouldBe v1
+      graph.outgoingEdgesOf(v3).forEach { e =>
+        graph.getEdgeTarget(e) shouldBe v1
       }
+    }
+
+    "build graphs from GraphChangeEvents" in {
+      val impl = new Impl()
+
+      buildSteps.foreach(impl.receiveGraphChangeEvent)
+
+      ensureLayout(impl.graph)
+    }
+
+    "restore from checkpoints" in {
+      val impl = new Impl()
+      val harness = new OneInputStreamOperatorTestHarness(new ProcessOperator(impl))
+      harness.getExecutionConfig.setGlobalJobParameters(Configuration.get())
+      harness.open()
+      var currentTime = 1000
+
+      buildSteps.foreach { event =>
+        harness.processElement(event, currentTime)
+        currentTime += 1
+      }
+      ensureLayout(impl.graph)
+
+      val snapshot = harness.snapshot(1, currentTime)
+      harness.close()
+
+      val newImpl = new Impl()
+      val newHarness = new OneInputStreamOperatorTestHarness(new ProcessOperator(newImpl))
+      newHarness.getExecutionConfig.setGlobalJobParameters(Configuration.get())
+      newHarness.setup()
+      newHarness.initializeState(snapshot)
+      newHarness.open()
+
+      ensureLayout(newImpl.graph)
     }
   }
 }
