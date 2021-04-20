@@ -174,10 +174,7 @@ object GraphChangeEvent {
 
   case class DoPruneParallelAnonymousHosts() extends NoArgumentGraphChangeEvent {
     def getMergeVertexEvents(graph: GraphT): Iterable[MergeVertices] = {
-      val toMerge = GraphPruneParallelAnonymousHost.getVerticesToMerge(graph)
-      toMerge.flatMap(_.map { items =>
-        MergeVertices(items)
-      })
+      GraphPruneParallelAnonymousHost.getMergeVertices(graph)
     }
 
     override protected def applyInternal(graph: GraphT): Unit = {

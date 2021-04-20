@@ -29,6 +29,7 @@ package nz.net.wand.streamevmon.events.grouping.graph.pruning
 import nz.net.wand.streamevmon.events.grouping.graph.{EdgeWithLastSeen, Host}
 import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
 import nz.net.wand.streamevmon.Logging
+import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.MergeVertices
 
 import org.jgrapht.{Graph, GraphPath}
 import org.jgrapht.alg.shortestpath.AllDirectedPaths
@@ -238,7 +239,23 @@ class GraphPruneParallelAnonymousHost[
   }
 }
 
-/**
+/** Merges probable duplicate anonymous hosts by finding parallel paths of
+  * anonymous hosts with the same length.
+  *
+  * If a host does not respond to a traceroute query, it is represented as an
+  * anonymous host, which uses its location in a traceroute path to distinguish
+  * itself. If one of these anonymous hosts is part of multiple AMP traceroute
+  * paths, it will appear once in each of these paths.
+  *
+  * This results in cases where an identified host has many children, each of
+  * which has only one child, making a group of long straight parallel lines
+  * containing many hosts. Eventually, the lines will all converge to a single
+  * identified host. These parallel paths are very likely to be the same set
+  * of hosts, so we want to merge them into a single path.
+  *
+  * The rest of this section provides documentation from the perspective of
+  * describing how the private function `findPotentialCommonAncestor()` works.
+  *
   * {{{
   *       x
   *      / \
@@ -294,7 +311,7 @@ class GraphPruneParallelAnonymousHost[
   * along the path between `x` and `g` via `d`. `a` has another child (`c`),
   * but we have no evidence that there is a path from `b` to `c`. `a` must not
   * be merged with `b`, despite them taking the same position in the paths
-  * from `a` to `g` via `d` and `e` respectively. As such, calling this
+  * from `a` to `g` via `d` and `e` respectively. As such, calling the
   * function on `d` will return None, indicating that it should not be merged.
   */
 object GraphPruneParallelAnonymousHost {
@@ -303,20 +320,19 @@ object GraphPruneParallelAnonymousHost {
 
   /** Gets all the non-anonymous vertices from the graph.
     */
-  private def getNonAnonymousVertices(graph: GraphT): Set[VertexT] = graph
+  private def getNonAnonymousVertices(graph: GraphT): Iterable[VertexT] = graph
     .vertexSet
     .asScala
     .filter(!isAnonymous(_))
-    .toSet
 
   /** Removes those non-anonymous vertices which do not have multiple anonymous
     * direct parents. Returns a map of the non-anonymous vertex to a set of
     * its anonymous parents. The size of the set will be greater than 1.
     */
   private def filterVerticesWithMultipleAnonymousParents(
-    graph   : GraphT,
-    vertices: Set[VertexT]
-  ): Map[VertexT, Set[VertexT]] = {
+    graph: GraphT,
+    vertices: Iterable[VertexT]
+  ): Map[VertexT, Iterable[VertexT]] = {
     val verticesWithConsistentOrder = vertices.toList
     verticesWithConsistentOrder
       .map { vertex =>
@@ -374,8 +390,8 @@ object GraphPruneParallelAnonymousHost {
     */
   private def findCommonAncestorOfMergeableParents(
     graph                   : GraphT,
-    verticesAndDirectParents: Map[VertexT, Set[VertexT]]
-  ): Map[VertexT, Set[ParentWithDistance]] = {
+    verticesAndDirectParents: Map[VertexT, Iterable[VertexT]]
+  ): Map[VertexT, Iterable[ParentWithDistance]] = {
     verticesAndDirectParents
       .map { case (vertex, directParents) =>
         (
@@ -389,33 +405,24 @@ object GraphPruneParallelAnonymousHost {
     * nearest common ancestors of a number of its direct anonymous parents.
     * (see `findCommonAncestorOfMergeableParents`).
     *
-    * Returns a map of the non-anonymous vertices to a collection of paths from
-    * the provided parents to the key vertex. Uses the distance from the
-    * `ParentWithDistance` passed as a depth limit for the path search.
-    *
-    * TODO: I can remove the outer Map from this point, and probably get rid of
-    * some of the inner map from around here as well.
+    * Returns a collection of paths from the provided parents to their
+    * corresponding non-anonymous vertex. Uses the distance from the
+    * `ParentWithDistance` as a depth limit for the path search.
     */
-  private def getPathFromCommonAncestorsToVertex(
-    graph               : GraphT,
-    verticesAndAncestors: Map[VertexT, Set[ParentWithDistance]]
-  ): Map[VertexT, Map[ParentWithDistance, Iterable[GraphPath[VertexT, EdgeT]]]] = {
+  private def getPathsFromCommonAncestorsToVertex(
+    graph      : GraphT,
+    verticesAndAncestors: Map[VertexT, Iterable[ParentWithDistance]]
+  ): Iterable[GraphPath[VertexT, EdgeT]] = {
     val allPathsFinder = new AllDirectedPaths(graph)
-    verticesAndAncestors.map { case (vertex, ancestors) =>
-      (
-        vertex,
-        ancestors.map { ancestor =>
-          (
-            ancestor,
-            allPathsFinder.getAllPaths(
-              ancestor.parent,
-              vertex,
-              true,
-              ancestor.distanceFromChild + 3
-            ).asScala
-          )
-        }.toMap
-      )
+    verticesAndAncestors.flatMap { case (vertex, ancestors) =>
+      ancestors.flatMap { ancestor =>
+        allPathsFinder.getAllPaths(
+          ancestor.parent,
+          vertex,
+          true,
+          ancestor.distanceFromChild + 3
+        ).asScala
+      }
     }
   }
 
@@ -424,82 +431,56 @@ object GraphPruneParallelAnonymousHost {
     * non-anonymous, and it doesn't matter if the start is.
     */
   private def filterRelevantPaths(
-    verticesAndPaths: Map[VertexT, Map[ParentWithDistance, Iterable[GraphPath[VertexT, EdgeT]]]]
-  ): Map[VertexT, Map[ParentWithDistance, Iterable[GraphPath[VertexT, EdgeT]]]] = {
-    verticesAndPaths.map { case (vertex, mapWithPaths) =>
-      (
-        vertex,
-        mapWithPaths.map { case (ancestor, paths) =>
-          (
-            ancestor,
-            paths.filter { path =>
-              path
-                .getVertexList
-                .asScala
-                .drop(1)
-                .dropRight(1)
-                .forall(isAnonymous)
-            }
-          )
-        }
-      )
+    paths: Iterable[GraphPath[VertexT, EdgeT]]
+  ): Iterable[GraphPath[VertexT, EdgeT]] = {
+    paths.filter { path =>
+      path
+        .getVertexList
+        .asScala
+        .drop(1)
+        .dropRight(1)
+        .forall(isAnonymous)
     }
   }
 
-  /** Returns a map of non-anonymous vertices to a second map. The second map
-    * is from potential common ancestors of the direct parents of the non-
-    * anonymous vertices to a third map. The third map is a collection of paths
-    * from the potential common ancestor to the non-anonymous vertex, where the
-    * key is the length of the path. This is a map just to make it explicit that
-    * they're grouped by length. We also discard any groups with a single path.
+  /** Given a collection of paths, finds those paths which are parallel and
+    * have the same length. Returns a collection containing those groups of
+    * paths.
     */
-  private def groupPathsByLength(
-    verticesAndPaths: Map[VertexT, Map[ParentWithDistance, Iterable[GraphPath[VertexT, EdgeT]]]]
-  ): Map[VertexT, Map[ParentWithDistance, Map[Int, Iterable[GraphPath[VertexT, EdgeT]]]]] = {
-    verticesAndPaths
-      .map { case (vertex, ancestorAndPaths) =>
-        (
-          vertex,
-          ancestorAndPaths
-            .map { case (ancestor, paths) =>
-              (
-                ancestor,
-                paths
-                  .groupBy(_.getLength)
-                  .filter(_._2.size > 1)
-              )
-            }
-        )
-      }
+  private def groupSiblingPaths(
+    paths: Iterable[GraphPath[VertexT, EdgeT]]
+  ): Iterable[Iterable[GraphPath[VertexT, EdgeT]]] = {
+    paths
+      .groupBy(path => (path.getLength, path.getStartVertex, path.getEndVertex))
+      .filter(_._2.size > 1)
+      .values
   }
 
-  /** Returns a collection of vertices to merge. */
+  /** Returns a collection of groups of vertices that can be merged. */
   private def getVerticesToMerge(
-    verticesAndGroupedPaths: Map[VertexT, Map[ParentWithDistance, Map[Int, Iterable[GraphPath[VertexT, EdgeT]]]]]
-  ): Iterable[Iterable[Iterable[VertexT]]] = {
-    verticesAndGroupedPaths
-      .flatMap { case (_, ancestorAndPaths) =>
-        ancestorAndPaths.flatMap { case (_, groupedPaths) =>
-          groupedPaths
-            .map { group =>
-              group._2.map { path =>
-                path.getVertexList.asScala.drop(1).dropRight(1)
-              }.transpose
-            }
-        }
+    groupedPaths: Iterable[Iterable[GraphPath[VertexT, EdgeT]]]
+  ): Iterable[Iterable[VertexT]] = {
+    groupedPaths
+      .flatMap { group =>
+        group.map { path =>
+          path.getVertexList.asScala.drop(1).dropRight(1)
+        }.transpose
       }
   }
 
-  def getVerticesToMerge(
+  /** Given a graph, returns a collection of groups of vertices that can be
+    * merged.
+    */
+  def getMergeVertices(
     graph: GraphT
-  ): Iterable[Iterable[Iterable[VertexT]]] = {
+  ): Iterable[MergeVertices] = {
     val nonAnonymousVertices = getNonAnonymousVertices(graph)
     val verticesWithMultipleAnonymousParents = filterVerticesWithMultipleAnonymousParents(graph, nonAnonymousVertices)
     val verticesWithPotentialCommonAncestors = findCommonAncestorOfMergeableParents(graph, verticesWithMultipleAnonymousParents)
-    val verticesAndPathsFromParents = getPathFromCommonAncestorsToVertex(graph, verticesWithPotentialCommonAncestors)
+    val verticesAndPathsFromParents = getPathsFromCommonAncestorsToVertex(graph, verticesWithPotentialCommonAncestors)
     val onlyRelevantPaths = filterRelevantPaths(verticesAndPathsFromParents)
-    val pathsGroupedByLength = groupPathsByLength(onlyRelevantPaths)
+    val pathsGroupedByLength = groupSiblingPaths(onlyRelevantPaths)
     val hostsToMerge = getVerticesToMerge(pathsGroupedByLength)
-    hostsToMerge
+    hostsToMerge.map(MergeVertices)
   }
 }

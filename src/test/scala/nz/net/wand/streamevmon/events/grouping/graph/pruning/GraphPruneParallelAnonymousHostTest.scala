@@ -126,11 +126,6 @@ class GraphPruneParallelAnonymousHostTest extends TestBase with GraphConstructio
       val graph = constructTestGraph
       val expected = constructExpectedGraph
 
-      val pruner = new GraphPruneParallelAnonymousHost[VertexT, EdgeT, GraphT](
-        getMergedHosts,
-        (oldH, newH) => addOrUpdateVertex(graph, oldH, newH)
-      )
-
       DoPruneParallelAnonymousHosts().apply(graph)
 
       def comparableEdges(g: GraphT) = {
