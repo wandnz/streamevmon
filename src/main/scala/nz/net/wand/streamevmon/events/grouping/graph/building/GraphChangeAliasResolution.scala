@@ -55,7 +55,7 @@ class GraphChangeAliasResolution
   override val flinkUid: String = "graph-change-alias-resolution"
   override val configKeyGroup: String = "eventGrouping.graph"
 
-  @transient private lazy val aliasResolver: AliasResolver = AliasResolver(configWithOverride(getRuntimeContext))
+  @transient lazy val aliasResolver: AliasResolver = AliasResolver(configWithOverride(getRuntimeContext))
 
   private var mergedHostsState: ListState[VertexT] = _
 
@@ -80,6 +80,7 @@ class GraphChangeAliasResolution
         RemoveEdgeByVertices(aliasResolver.resolve(start), aliasResolver.resolve(end))
       )
       case RemoveEdge(_) => out.collect(value)
+      case RemoveOldEdges(_) => out.collect(value)
       case MeasurementEndMarker(_) => out.collect(value)
       case _: NoArgumentGraphChangeEvent => out.collect(value)
     }

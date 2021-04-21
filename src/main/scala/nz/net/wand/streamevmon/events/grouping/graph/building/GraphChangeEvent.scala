@@ -62,7 +62,7 @@ object GraphChangeEvent {
   /** Originally from https://stackoverflow.com/a/48255973, but needed some
     * additional changes to work with our equality definition for Hosts.
     */
-  class UpdateVertex(val before: VertexT, val after: VertexT) extends GraphChangeEvent {
+  case class UpdateVertex(before: VertexT, after: VertexT) extends GraphChangeEvent {
     override protected def applyInternal(graph: GraphT): Unit = {
       val outEdges = graph.outgoingEdgesOf(before).asScala.map(edge => (graph.getEdgeTarget(edge), edge))
       val inEdges = graph.incomingEdgesOf(before).asScala.map(edge => (graph.getEdgeSource(edge), edge))
