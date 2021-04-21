@@ -40,7 +40,9 @@ import org.apache.flink.util.Collector
   * This class prunes parallel chains of anonymous hosts. For more details, see
   * [[nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneParallelAnonymousHost GraphPruneParallelAnonymousHost]].
   *
-  * This class additionally sends [[MergeVertices]] events to a side output,
+  * This class additionally sends
+  * [[nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.MergeVertices MergeVertices]]
+  * events to a side output,
   * using the tag declared as `mergeVerticesEventOutputTag`. If this class is
   * used downstream from a
   * [[GraphChangeAliasResolution]] module, this side output should be connected
