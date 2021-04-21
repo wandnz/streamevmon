@@ -27,8 +27,8 @@
 package nz.net.wand.streamevmon.test
 
 import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
-import nz.net.wand.streamevmon.measurements.traits.Measurement
 import nz.net.wand.streamevmon.Configuration
+import nz.net.wand.streamevmon.measurements.traits.Measurement
 
 import org.apache.flink.streaming.api.functions.{KeyedProcessFunction, ProcessFunction}
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction
@@ -47,7 +47,7 @@ trait HarnessingTest extends TestBase {
 
   protected var checkpointId: Long = 1L
 
-  protected def newHarness[I <: Measurement : ClassTag, O](
+  protected def newHarness[I: ClassTag, O](
     function: ProcessFunction[I, O]
   ): OneInputStreamOperatorTestHarness[I, O] = {
     val h = new OneInputStreamOperatorTestHarness(
@@ -79,7 +79,7 @@ trait HarnessingTest extends TestBase {
     h
   }
 
-  protected def snapshotAndRestart[I <: Measurement : ClassTag, O](
+  protected def snapshotAndRestart[I: ClassTag, O](
     harness : OneInputStreamOperatorTestHarness[I, O],
     function: ProcessFunction[I, O]
   ): OneInputStreamOperatorTestHarness[I, O] = {
