@@ -30,6 +30,7 @@ import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.{
 
 import java.time.Instant
 
+import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
 import org.apache.flink.streaming.api.functions.ProcessFunction
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.util.Collector
@@ -69,5 +70,15 @@ class GraphPruneParallelAnonymousHostEventGenerator
       out.collect(e)
       ctx.output(mergeVerticesEventOutputTag, e)
     }
+  }
+
+  override def initializeState(context: FunctionInitializationContext): Unit = {
+    super.initializeState(context)
+    initializeGraphState(context)
+  }
+
+  override def snapshotState(context: FunctionSnapshotContext): Unit = {
+    super.snapshotState(context)
+    snapshotGraphState(context)
   }
 }
