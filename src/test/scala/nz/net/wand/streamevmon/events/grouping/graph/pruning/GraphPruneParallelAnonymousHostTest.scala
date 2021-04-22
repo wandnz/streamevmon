@@ -28,15 +28,16 @@ package nz.net.wand.streamevmon.events.grouping.graph.pruning
 
 import nz.net.wand.streamevmon.events.grouping.graph._
 import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
-import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.DoPruneParallelAnonymousHosts
-import nz.net.wand.streamevmon.test.TestBase
+import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.{DoPruneParallelAnonymousHosts, MeasurementEndMarker}
+import nz.net.wand.streamevmon.events.grouping.graph.building.GraphPruneParallelAnonymousHostEventGenerator
+import nz.net.wand.streamevmon.test.{HarnessingTest, TestBase}
 
 import java.time.Instant
 
 import scala.collection.mutable
 import scala.collection.JavaConverters._
 
-class GraphPruneParallelAnonymousHostTest extends TestBase with GraphConstructionLogic {
+class GraphPruneParallelAnonymousHostTest extends TestBase with GraphConstructionLogic with HarnessingTest {
 
   override val getMergedHosts = mutable.Map[String, VertexT]()
 
@@ -121,6 +122,12 @@ class GraphPruneParallelAnonymousHostTest extends TestBase with GraphConstructio
     graph
   }
 
+  def comparableEdges(g: GraphT) = {
+    g.edgeSet.asScala.map { e =>
+      (g.getEdgeSource(e), g.getEdgeTarget(e))
+    }
+  }
+
   "GraphPruneParallelAnonymousHost" should {
     "merge hosts correctly" in {
       val graph = constructTestGraph
@@ -128,14 +135,42 @@ class GraphPruneParallelAnonymousHostTest extends TestBase with GraphConstructio
 
       DoPruneParallelAnonymousHosts().apply(graph)
 
-      def comparableEdges(g: GraphT) = {
-        g.edgeSet.asScala.map { e =>
-          (g.getEdgeSource(e), g.getEdgeTarget(e))
-        }
-      }
-
       graph.vertexSet shouldBe expected.vertexSet
       comparableEdges(graph) shouldBe comparableEdges(expected)
+    }
+  }
+
+  "GraphPruneParallelAnonymousHostEventGenerator" should {
+    "merge hosts correctly" in {
+      val graph = constructTestGraph
+      val expected = constructExpectedGraph
+      val pruner = new GraphPruneParallelAnonymousHostEventGenerator()
+      val harness = newHarness(pruner)
+      harness.open()
+
+      pruner.graph = graph
+
+      Range(1, 505).foreach(_ => harness.processElement(MeasurementEndMarker(Instant.ofEpochMilli(100)), 100))
+
+      pruner.graph.vertexSet shouldBe expected.vertexSet
+      comparableEdges(pruner.graph) shouldBe comparableEdges(expected)
+    }
+
+    "send some events out of both pipes" in {
+      val graph = constructTestGraph
+      val pruner = new GraphPruneParallelAnonymousHostEventGenerator()
+      val harness = newHarness(pruner)
+      harness.open()
+
+      pruner.graph = graph
+
+      Range(1, 505).foreach(_ => harness.processElement(MeasurementEndMarker(Instant.ofEpochMilli(100)), 100))
+
+      harness.extractOutputValues().asScala.find {
+        case MeasurementEndMarker(_) => false
+        case _ => true
+      } shouldBe defined
+      harness.getSideOutput(pruner.mergeVerticesEventOutputTag) should not have size(0)
     }
   }
 }
