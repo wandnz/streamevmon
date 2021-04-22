@@ -28,7 +28,9 @@ package nz.net.wand.streamevmon.events.grouping.graph.pruning
 
 import nz.net.wand.streamevmon.events.grouping.graph.{Host, NoReflectionUnusableEdgeSupplier}
 import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
-import nz.net.wand.streamevmon.test.TestBase
+import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.{MeasurementEndMarker, RemoveOldEdges, RemoveUnconnectedVertices}
+import nz.net.wand.streamevmon.events.grouping.graph.building.GraphPruneLastSeenTimeEventGenerator
+import nz.net.wand.streamevmon.test.{HarnessingTest, TestBase}
 
 import java.time.{Duration, Instant}
 
@@ -37,7 +39,7 @@ import org.jgrapht.graph.AsUndirectedGraph
 
 import scala.collection.JavaConverters._
 
-class GraphPruneLastSeenTimeTest extends TestBase {
+class GraphPruneLastSeenTimeTest extends TestBase with HarnessingTest {
 
   val now = Instant.ofEpochMilli(1000000000000L)
 
@@ -91,6 +93,20 @@ class GraphPruneLastSeenTimeTest extends TestBase {
           allPaths.getPath(start, end) shouldNot be(null)
         }
       }
+    }
+  }
+
+  "GraphPruneLastSeenTimeEventGenerator" should {
+    "tell downstream actors to prune the correct items" in {
+      val pruner = new GraphPruneLastSeenTimeEventGenerator()
+      val harness = newHarness(pruner)
+      harness.open()
+
+      val currentTime = Instant.ofEpochSecond(100000L)
+      Range(1, 505).foreach(_ => harness.processElement(MeasurementEndMarker(currentTime), currentTime.toEpochMilli))
+
+      harness.extractOutputValues should contain(RemoveOldEdges(currentTime.minus(pruner.pruneAge)))
+      harness.extractOutputValues should contain(RemoveUnconnectedVertices())
     }
   }
 }

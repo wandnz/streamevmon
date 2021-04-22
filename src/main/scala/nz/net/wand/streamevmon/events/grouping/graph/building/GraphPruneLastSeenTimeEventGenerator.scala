@@ -44,7 +44,7 @@ class GraphPruneLastSeenTimeEventGenerator
   extends GraphPruneEventGenerator {
 
   /** How old an edge must be before it gets pruned */
-  @transient private lazy val pruneAge: Duration =
+  @transient lazy val pruneAge: Duration =
   Duration.ofSeconds(configWithOverride(getRuntimeContext).getLong(s"$configKeyGroup.pruneAge"))
 
   override def onProcessElement(value: GraphChangeEvent): Unit = {}
