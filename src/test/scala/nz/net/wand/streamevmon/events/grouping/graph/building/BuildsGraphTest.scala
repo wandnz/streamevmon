@@ -43,29 +43,7 @@ import org.apache.flink.util.Collector
 import scala.collection.JavaConverters._
 
 class BuildsGraphTest extends TestBase {
-  class Impl
-    extends ProcessFunction[GraphChangeEvent, Int]
-            with BuildsGraph
-            with CheckpointedFunction {
-
-    override def processElement(
-      value: GraphChangeEvent,
-      ctx  : ProcessFunction[GraphChangeEvent, Int]#Context,
-      out  : Collector[Int]
-    ): Unit = {
-      receiveGraphChangeEvent(value)
-    }
-
-    override def snapshotState(context: FunctionSnapshotContext): Unit = {
-      snapshotGraphState(context)
-    }
-
-    override def initializeState(context: FunctionInitializationContext): Unit = {
-      initializeGraphState(context)
-    }
-  }
-
-  "BuildsGraph children" should {
+  def buildsGraphBehaviours(implementationBuilder: Unit => BuildsGraph with ProcessFunction[GraphChangeEvent, GraphChangeEvent]): Unit = {
     val v1 =
       new VertexT(
         Set("abc.example.org"),
@@ -131,7 +109,7 @@ class BuildsGraphTest extends TestBase {
     }
 
     "build graphs from GraphChangeEvents" in {
-      val impl = new Impl()
+      val impl = implementationBuilder(Unit)
 
       buildSteps.foreach(impl.receiveGraphChangeEvent)
 
@@ -139,7 +117,7 @@ class BuildsGraphTest extends TestBase {
     }
 
     "restore from checkpoints" in {
-      val impl = new Impl()
+      val impl = implementationBuilder(Unit)
       val harness = new OneInputStreamOperatorTestHarness(new ProcessOperator(impl))
       harness.getExecutionConfig.setGlobalJobParameters(Configuration.get())
       harness.open()
@@ -154,7 +132,7 @@ class BuildsGraphTest extends TestBase {
       val snapshot = harness.snapshot(1, currentTime)
       harness.close()
 
-      val newImpl = new Impl()
+      val newImpl = implementationBuilder(Unit)
       val newHarness = new OneInputStreamOperatorTestHarness(new ProcessOperator(newImpl))
       newHarness.getExecutionConfig.setGlobalJobParameters(Configuration.get())
       newHarness.setup()
@@ -163,5 +141,35 @@ class BuildsGraphTest extends TestBase {
 
       ensureLayout(newImpl.graph)
     }
+  }
+
+  "Basic implementation of BuildsGraph" should {
+    class BasicImpl
+      extends ProcessFunction[GraphChangeEvent, GraphChangeEvent]
+              with BuildsGraph
+              with CheckpointedFunction {
+
+      override def processElement(
+        value: GraphChangeEvent,
+        ctx  : ProcessFunction[GraphChangeEvent, GraphChangeEvent]#Context,
+        out  : Collector[GraphChangeEvent]
+      ): Unit = {
+        receiveGraphChangeEvent(value)
+      }
+
+      override def snapshotState(context: FunctionSnapshotContext): Unit = {
+        snapshotGraphState(context)
+      }
+
+      override def initializeState(context: FunctionInitializationContext): Unit = {
+        initializeGraphState(context)
+      }
+    }
+
+    behave like buildsGraphBehaviours(_ => new BasicImpl())
+  }
+
+  "GraphPruneParallelAnonymousHostEventGenerator" should {
+    behave like buildsGraphBehaviours(_ => new GraphPruneParallelAnonymousHostEventGenerator())
   }
 }
