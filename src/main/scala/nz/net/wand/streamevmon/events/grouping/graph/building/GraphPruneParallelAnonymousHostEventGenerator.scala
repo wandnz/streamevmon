@@ -43,12 +43,7 @@ import org.apache.flink.util.Collector
   *
   * This class additionally sends
   * [[nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.MergeVertices MergeVertices]]
-  * events to a side output,
-  * using the tag declared as `mergeVerticesEventOutputTag`. If this class is
-  * used downstream from a
-  * [[GraphChangeAliasResolution]] module, this side output should be connected
-  * to the AliasResolution module's second input. This will create a loop, which
-  * will be handled correctly.
+  * events to a side output, using the tag declared as `mergeVerticesEventOutputTag`.
   */
 class GraphPruneParallelAnonymousHostEventGenerator
   extends GraphPruneEventGenerator

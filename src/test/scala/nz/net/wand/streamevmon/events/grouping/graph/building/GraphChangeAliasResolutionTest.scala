@@ -91,7 +91,7 @@ class GraphChangeAliasResolutionTest extends HarnessingTest {
         harness.open()
         var timestamp = 1000
         events.foreach { e =>
-          harness.processElement1(e, timestamp)
+          harness.processElement(e, timestamp)
           timestamp += 1
         }
 
@@ -153,7 +153,7 @@ class GraphChangeAliasResolutionTest extends HarnessingTest {
         harness.open()
         var currentTime = 1000
         vertexSendOrder.foreach { v =>
-          harness.processElement1(func(v), currentTime)
+          harness.processElement(func(v), currentTime)
           currentTime += 1
         }
 
@@ -206,7 +206,7 @@ class GraphChangeAliasResolutionTest extends HarnessingTest {
       val harness = newHarness(processFunc)
       harness.open()
       eventsToSend.foreach { v =>
-        harness.processElement1(v, currentTime)
+        harness.processElement(v, currentTime)
         currentTime += 1
       }
 
