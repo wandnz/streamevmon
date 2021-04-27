@@ -48,6 +48,10 @@ import org.apache.flink.util.Collector
 class GraphPruneParallelAnonymousHostEventGenerator
   extends GraphPruneEventGenerator
           with BuildsGraph {
+
+  override val flinkName: String = s"Graph Pruner (Parallel Anonymous Hosts)"
+  override val flinkUid: String = s"graph-prune-parallel-anonymous-hosts"
+
   val mergeVerticesEventOutputTag = new OutputTag[MergeVertices]("merge-vertices-events")
 
   override def onProcessElement(value: GraphChangeEvent): Unit = {

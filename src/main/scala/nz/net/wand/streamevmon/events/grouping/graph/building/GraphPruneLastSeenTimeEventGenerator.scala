@@ -43,6 +43,9 @@ import org.apache.flink.util.Collector
 class GraphPruneLastSeenTimeEventGenerator
   extends GraphPruneEventGenerator {
 
+  override val flinkName: String = s"Graph Pruner (Last Seen Time)"
+  override val flinkUid: String = s"graph-prune-last-seen-time"
+
   /** How old an edge must be before it gets pruned */
   @transient lazy val pruneAge: Duration =
   Duration.ofSeconds(configWithOverride(getRuntimeContext).getLong(s"$configKeyGroup.pruneAge"))
