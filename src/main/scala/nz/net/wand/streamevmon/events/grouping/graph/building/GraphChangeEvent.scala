@@ -104,7 +104,7 @@ object GraphChangeEvent {
   case class MergeVertices(vertices: Iterable[VertexT]) extends GraphChangeEvent {
     lazy val merged: VertexT = vertices
       .drop(1)
-      .foldLeft(vertices.head)((a, b) => a.mergeAnonymous(b))
+      .foldLeft(vertices.head)((a, b) => a.mergeWith(b))
 
     override protected def applyInternal(graph: GraphT): Unit = {
       vertices.foreach(v => UpdateVertex.create(v, merged).apply(graph))

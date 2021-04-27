@@ -40,28 +40,28 @@ import scala.collection.JavaConverters._
 
 class GraphChangeAliasResolutionTest extends HarnessingTest {
   "GraphChangeAliasResolution" should {
-    val v1 = new VertexT(
-      Set("abc.example.org"),
-      Set(),
-      Set(),
-      None
-    )
-
-    val v2 = new VertexT(
-      Set("xyz.example.org"),
-      Set(),
-      Set(),
-      None
-    )
-
-    val v3 = new VertexT(
-      Set("qrs.example.org"),
-      Set(),
-      Set(),
-      None
-    )
-
     "pass events through" when {
+      val v1 = new VertexT(
+        Set("abc.example.org"),
+        Set(),
+        Set(),
+        None
+      )
+
+      val v2 = new VertexT(
+        Set("xyz.example.org"),
+        Set(),
+        Set(),
+        None
+      )
+
+      val v3 = new VertexT(
+        Set("qrs.example.org"),
+        Set(),
+        Set(),
+        None
+      )
+
       "no vertices can be merged" in {
         val func = new GraphChangeAliasResolution
         val harness = newHarness(func)
@@ -103,40 +103,40 @@ class GraphChangeAliasResolutionTest extends HarnessingTest {
       }
     }
 
+    val v1 = new VertexT(
+      Set("abc.example.org"),
+      Set((InetAddress.getByName("123.123.123.123"), AsNumber.Unknown)),
+      Set(),
+      None
+    )
+
+    val v2 = new VertexT(
+      Set("xyz.example.org"),
+      Set((InetAddress.getByName("212.212.212.212"), AsNumber.Unknown)),
+      Set(),
+      None
+    )
+
+    val v3 = new VertexT(
+      Set("abc.example.org"),
+      Set(
+        (InetAddress.getByName("100.100.100.100"), AsNumber.Unknown)
+      ),
+      Set(),
+      None
+    )
+
+    val v4 = new VertexT(
+      Set("abc.example.org"),
+      Set(
+        (InetAddress.getByName("123.123.123.123"), AsNumber.Unknown),
+        (InetAddress.getByName("100.100.100.100"), AsNumber.Unknown)
+      ),
+      Set(),
+      None
+    )
+
     "alter events after an alias is spotted" in {
-      val v1 = new VertexT(
-        Set("abc.example.org"),
-        Set((InetAddress.getByName("123.123.123.123"), AsNumber.Unknown)),
-        Set(),
-        None
-      )
-
-      val v2 = new VertexT(
-        Set("xyz.example.org"),
-        Set((InetAddress.getByName("212.212.212.212"), AsNumber.Unknown)),
-        Set(),
-        None
-      )
-
-      val v3 = new VertexT(
-        Set("abc.example.org"),
-        Set(
-          (InetAddress.getByName("100.100.100.100"), AsNumber.Unknown)
-        ),
-        Set(),
-        None
-      )
-
-      val v4 = new VertexT(
-        Set("abc.example.org"),
-        Set(
-          (InetAddress.getByName("123.123.123.123"), AsNumber.Unknown),
-          (InetAddress.getByName("100.100.100.100"), AsNumber.Unknown)
-        ),
-        Set(),
-        None
-      )
-
       val buildFunctions = Seq(
         v => AddVertex(v),
         v => RemoveVertex(v),
@@ -168,6 +168,7 @@ class GraphChangeAliasResolutionTest extends HarnessingTest {
               case RemoveVertex(vertex) => vertex shouldBe expected
               case UpdateVertex(vertex1, _) =>
                 vertex1 shouldBe expected
+              // yes, vertex2 here is untested. can't figure a nice way to do it
               case AddOrUpdateEdge(start, end, _) =>
                 start shouldBe expected
                 end shouldBe expected
@@ -182,6 +183,36 @@ class GraphChangeAliasResolutionTest extends HarnessingTest {
             }
           }
       }
+    }
+
+    "interpret known aliases when given a MergeVertices" in {
+      val eventsToSend = Seq(
+        AddVertex(v1),
+        AddVertex(v2),
+        MergeVertices(Seq(v1, v2)),
+        AddVertex(v1),
+        AddVertex(v2),
+      )
+
+      val expectedResults = Seq(
+        AddVertex(v1),
+        AddVertex(v2),
+        MergeVertices(Seq(v1, v2)),
+        AddVertex(v1.mergeWith(v2)),
+        AddVertex(v1.mergeWith(v2))
+      )
+
+      val processFunc = new GraphChangeAliasResolution()
+      val harness = newHarness(processFunc)
+      harness.open()
+      eventsToSend.foreach { v =>
+        harness.processElement1(v, currentTime)
+        currentTime += 1
+      }
+
+      harness
+        .extractOutputValues()
+        .asScala shouldBe expectedResults
     }
   }
 }
