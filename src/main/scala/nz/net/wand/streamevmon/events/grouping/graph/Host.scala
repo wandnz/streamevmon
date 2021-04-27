@@ -208,9 +208,10 @@ case class Host(
     * - If there are no hostnames, addresses, or ITDK node IDs, the AMP
     * traceroute UIDs are compared. If they differ, an
     * IllegalArgumentException is thrown. If they are the same, it is
-    * preserved. If you want to merge anonymous hosts, use `mergeAnonymous`.
+    * preserved. If you want to merge anonymous hosts, use `mergeAnonymous` or
+    * pass `true` to the `forceMergeAnonymousHosts` parameter.
     */
-  def mergeWith(other: Host): Host = {
+  def mergeWith(other: Host, forceMergeAnonymousHosts: Boolean = false): Host = {
     val newItdkNodeId = if (
       this.itdkNodeId.isDefined &&
         other.itdkNodeId.isDefined &&
@@ -230,7 +231,7 @@ case class Host(
         newAddresses.isEmpty &&
         newItdkNodeId.isEmpty
     ) {
-      if (!this.sharesAmpTracerouteUidsWith(other)) {
+      if (!forceMergeAnonymousHosts && !this.sharesAmpTracerouteUidsWith(other)) {
         throw new IllegalArgumentException("Trying to merge two anonymous hosts with different traceroute UIDs!")
       }
       else {
