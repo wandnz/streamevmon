@@ -26,20 +26,17 @@
 
 package nz.net.wand.streamevmon.events.grouping.graph.pruning
 
-import nz.net.wand.streamevmon.events.grouping.graph._
-import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
 import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.{DoPruneParallelAnonymousHosts, MeasurementEndMarker}
 import nz.net.wand.streamevmon.events.grouping.graph.building.GraphPruneParallelAnonymousHostEventGenerator
+import nz.net.wand.streamevmon.events.grouping.graph.impl.{Host, NoReflectionUnusableEdgeSupplier}
+import nz.net.wand.streamevmon.events.grouping.graph.impl.GraphType._
 import nz.net.wand.streamevmon.test.{HarnessingTest, TestBase}
 
 import java.time.Instant
 
-import scala.collection.mutable
 import scala.collection.JavaConverters._
 
-class GraphPruneParallelAnonymousHostTest extends TestBase with GraphConstructionLogic with HarnessingTest {
-
-  override val getMergedHosts = mutable.Map[String, VertexT]()
+class GraphPruneParallelAnonymousHostTest extends TestBase with HarnessingTest {
 
   val topVertex: VertexT = Host(
     Set("Top"),

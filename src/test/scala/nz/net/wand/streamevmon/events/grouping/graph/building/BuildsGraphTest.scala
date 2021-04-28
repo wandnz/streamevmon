@@ -27,7 +27,7 @@
 package nz.net.wand.streamevmon.events.grouping.graph.building
 
 import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent._
-import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
+import nz.net.wand.streamevmon.events.grouping.graph.impl.GraphType._
 import nz.net.wand.streamevmon.test.TestBase
 import nz.net.wand.streamevmon.Configuration
 

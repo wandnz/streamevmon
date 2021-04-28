@@ -27,7 +27,7 @@
 package nz.net.wand.streamevmon.events.grouping.graph.building
 
 import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent._
-import nz.net.wand.streamevmon.events.grouping.graph.GraphType.{EdgeT, VertexT}
+import nz.net.wand.streamevmon.events.grouping.graph.impl.GraphType.{EdgeT, VertexT}
 import nz.net.wand.streamevmon.test.HarnessingTest
 
 import java.time.{Duration, Instant}

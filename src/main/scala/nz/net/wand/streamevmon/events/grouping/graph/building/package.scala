@@ -27,5 +27,11 @@
 package nz.net.wand.streamevmon.events.grouping.graph
 
 /** Contains logic for building a graph.
+  *
+  * If you are creating a new Flink operator that requires a topology graph,
+  * implement [[BuildsGraph]].
+  *
+  * If you are building a Flink pipeline that contains operators which implement
+  * BuildsGraph, you should use the functions declared in [[FlinkHelpers]].
   */
 package object building {}

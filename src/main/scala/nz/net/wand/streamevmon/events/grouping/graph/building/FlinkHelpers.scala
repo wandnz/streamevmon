@@ -27,7 +27,6 @@
 package nz.net.wand.streamevmon.events.grouping.graph.building
 
 import nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath
-import nz.net.wand.streamevmon.events.grouping.graph.TracerouteAsInetPathExtractor
 import nz.net.wand.streamevmon.measurements.amp.{Traceroute, TracerouteMeta}
 import nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor
 

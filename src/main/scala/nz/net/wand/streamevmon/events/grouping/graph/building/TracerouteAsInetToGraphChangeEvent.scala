@@ -29,8 +29,8 @@ package nz.net.wand.streamevmon.events.grouping.graph.building
 import nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
 import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent._
+import nz.net.wand.streamevmon.events.grouping.graph.impl.GraphType._
 
 import org.apache.flink.streaming.api.functions.ProcessFunction
 import org.apache.flink.util.Collector

@@ -27,6 +27,7 @@
 package nz.net.wand.streamevmon.events.grouping.graph
 
 import nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPath
+import nz.net.wand.streamevmon.events.grouping.graph.building.TracerouteAsInetPathExtractor
 import nz.net.wand.streamevmon.test.{HarnessingTest, PostgresContainerSpec, SeedData}
 
 import org.apache.flink.streaming.runtime.streamrecord.StreamRecord

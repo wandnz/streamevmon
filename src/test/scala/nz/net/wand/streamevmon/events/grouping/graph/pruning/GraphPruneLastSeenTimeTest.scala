@@ -26,10 +26,10 @@
 
 package nz.net.wand.streamevmon.events.grouping.graph.pruning
 
-import nz.net.wand.streamevmon.events.grouping.graph.{Host, NoReflectionUnusableEdgeSupplier}
-import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
 import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.{MeasurementEndMarker, RemoveOldEdges, RemoveUnconnectedVertices}
 import nz.net.wand.streamevmon.events.grouping.graph.building.GraphPruneLastSeenTimeEventGenerator
+import nz.net.wand.streamevmon.events.grouping.graph.impl.{Host, NoReflectionUnusableEdgeSupplier}
+import nz.net.wand.streamevmon.events.grouping.graph.impl.GraphType._
 import nz.net.wand.streamevmon.test.{HarnessingTest, TestBase}
 
 import java.time.{Duration, Instant}

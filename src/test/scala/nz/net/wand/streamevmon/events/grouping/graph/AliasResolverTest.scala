@@ -28,6 +28,7 @@ package nz.net.wand.streamevmon.events.grouping.graph
 
 import nz.net.wand.streamevmon.connectors.postgres.schema.AsNumber
 import nz.net.wand.streamevmon.events.grouping.graph.itdk.{ItdkAliasLookup, ItdkAsLookup, ItdkLookupPreprocessor}
+import nz.net.wand.streamevmon.events.grouping.graph.pruning.AliasResolver
 import nz.net.wand.streamevmon.test.TestBase
 
 import java.io.{BufferedReader, InputStreamReader}

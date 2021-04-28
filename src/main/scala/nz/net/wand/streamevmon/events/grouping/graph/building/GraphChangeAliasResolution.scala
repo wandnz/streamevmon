@@ -28,9 +28,9 @@ package nz.net.wand.streamevmon.events.grouping.graph.building
 
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.Logging
-import nz.net.wand.streamevmon.events.grouping.graph.AliasResolver
-import nz.net.wand.streamevmon.events.grouping.graph.GraphType.VertexT
 import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent._
+import nz.net.wand.streamevmon.events.grouping.graph.impl.GraphType.VertexT
+import nz.net.wand.streamevmon.events.grouping.graph.pruning.AliasResolver
 
 import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
 import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}

@@ -26,8 +26,8 @@
 
 package nz.net.wand.streamevmon.events.grouping.graph.building
 
-import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
-import nz.net.wand.streamevmon.events.grouping.graph.NoReflectionUnusableEdgeSupplier
+import nz.net.wand.streamevmon.events.grouping.graph.impl.GraphType._
+import nz.net.wand.streamevmon.events.grouping.graph.impl.NoReflectionUnusableEdgeSupplier
 
 import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
 import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}

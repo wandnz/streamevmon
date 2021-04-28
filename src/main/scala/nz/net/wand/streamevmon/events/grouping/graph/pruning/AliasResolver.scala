@@ -24,8 +24,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.wand.streamevmon.events.grouping.graph
+package nz.net.wand.streamevmon.events.grouping.graph.pruning
 
+import nz.net.wand.streamevmon.events.grouping.graph.impl.Host
 import nz.net.wand.streamevmon.events.grouping.graph.itdk._
 
 import java.io.File
@@ -41,9 +42,10 @@ import scala.collection.mutable
   *
   * ==Configuration==
   *
-  * This class configures the construction of a new [[nz.net.wand.streamevmon.events.grouping.graph.itdk.ItdkAliasLookup ItdkAliasLookup]] object
-  * if the constructor with a ParameterTool is used. As such, the default config
-  * key group is `eventGrouping.graph.itdk`.
+  * This class configures the construction of a new
+  * [[nz.net.wand.streamevmon.events.grouping.graph.itdk.ItdkAliasLookup ItdkAliasLookup]]
+  * object if the constructor with a ParameterTool is used. As such, the default
+  * config key group is `eventGrouping.graph.itdk`.
   *
   * - `alignedNodesFile`: If the file exists, the created AliasLookup will refer
   * to its contents.

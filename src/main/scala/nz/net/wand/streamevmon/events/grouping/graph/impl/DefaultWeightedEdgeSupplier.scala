@@ -24,11 +24,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.wand.streamevmon.events.grouping.graph.pruning
+package nz.net.wand.streamevmon.events.grouping.graph.impl
 
-import org.jgrapht.Graph
+import java.util.function.Supplier
 
-/** Parent trait for graph pruning algorithms. */
-trait GraphPruneApproach[VertexT, EdgeT, GraphT <: Graph[VertexT, EdgeT]] {
-  def prune(graph: GraphT): Unit
+import org.jgrapht.graph.DefaultWeightedEdge
+
+/** The built-in default edge supplier uses reflection to generate an instance
+  * of the type parameter passed to the graph. Kryo refuses to serialise this
+  * in JDK 9+ due to the new module system preventing reflective access to
+  * certain Java core modules. Bypassing the reflective solution is a much
+  * simpler approach than opening the module to reflective access.
+  */
+class DefaultWeightedEdgeSupplier extends Supplier[DefaultWeightedEdge] with Serializable {
+  override def get(): DefaultWeightedEdge = new DefaultWeightedEdge()
 }

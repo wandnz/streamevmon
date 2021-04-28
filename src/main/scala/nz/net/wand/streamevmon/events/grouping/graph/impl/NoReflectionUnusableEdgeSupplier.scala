@@ -24,18 +24,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.wand.streamevmon.events.grouping.graph
+package nz.net.wand.streamevmon.events.grouping.graph.impl
 
 import java.util.function.Supplier
 
-import org.jgrapht.graph.DefaultWeightedEdge
-
-/** The built-in default edge supplier uses reflection to generate an instance
-  * of the type parameter passed to the graph. Kryo refuses to serialise this
-  * in JDK 9+ due to the new module system preventing reflective access to
-  * certain Java core modules. Bypassing the reflective solution is a much
-  * simpler approach than opening the module to reflective access.
+/** Any Edge type needs a supplier to avoid issues discussed in [[DefaultWeightedEdgeSupplier]],
+  * but we never want this one to be called. Instead, instances of T should be
+  * constructed manually. This should be used in cases where T does not have a
+  * no-arg constructor.
   */
-class DefaultWeightedEdgeSupplier extends Supplier[DefaultWeightedEdge] with Serializable {
-  override def get(): DefaultWeightedEdge = new DefaultWeightedEdge()
+class NoReflectionUnusableEdgeSupplier[T] extends Supplier[T] with Serializable {
+  override def get(): T =
+    throw new IllegalCallerException(
+      "NoReflectionUnusableEdgeSupplier.get() should never be called. Construct edges manually instead."
+    )
 }

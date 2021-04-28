@@ -39,6 +39,10 @@ import org.apache.flink.util.Collector
   * This class prunes edges which haven't been seen for a while. Use the
   * `eventGrouping.graph.pruneAge` configuration key to change the maximum age
   * of edges in seconds. The default is 1200.
+  *
+  * Note that an implementation of this behaviour that is not comprised of
+  * GraphChangeEvents can be found in
+  * [[nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime GraphPruneLastSeenTime]].
   */
 class GraphPruneLastSeenTimeEventGenerator
   extends GraphPruneEventGenerator {

@@ -26,10 +26,10 @@
 
 package nz.net.wand.streamevmon.events.grouping.graph.pruning
 
-import nz.net.wand.streamevmon.events.grouping.graph.{EdgeWithLastSeen, Host}
-import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
+import nz.net.wand.streamevmon.events.grouping.graph.impl.GraphType._
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.MergeVertices
+import nz.net.wand.streamevmon.events.grouping.graph.impl.{EdgeWithLastSeen, Host}
 
 import org.jgrapht.{Graph, GraphPath}
 import org.jgrapht.alg.shortestpath.AllDirectedPaths
@@ -51,7 +51,7 @@ import scala.collection.mutable
   * parallel paths are very likely to be the same set of hosts, and having them
   * as multiple nodes is useless to us since their paths will never branch further.
   *
-  * @param mergedHosts  Get a reference to this from an [[nz.net.wand.streamevmon.events.grouping.graph.AliasResolver AliasResolver]].
+  * @param mergedHosts  Get a reference to this from an [[AliasResolver AliasResolver]].
   * @param onUpdateHost A function that updates the old host with the new one in the graph.
   */
 class GraphPruneParallelAnonymousHost[
@@ -59,10 +59,9 @@ class GraphPruneParallelAnonymousHost[
   EdgeT <: EdgeWithLastSeen,
   GraphT <: Graph[VertexT, EdgeT]
 ](
-  mergedHosts: mutable.Map[String, VertexT],
+  mergedHosts : mutable.Map[String, VertexT],
   onUpdateHost: (VertexT, VertexT) => Unit
-) extends GraphPruneApproach[VertexT, EdgeT, GraphT]
-          with Logging {
+) extends Logging {
 
   /** Travels up the graph until a single parent with multiple children is found.
     * If there are multiple parents, then there is no single direct parent and
@@ -98,7 +97,7 @@ class GraphPruneParallelAnonymousHost[
     }
   }
 
-  override def prune(graph: GraphT): Unit = {
+  def prune(graph: GraphT): Unit = {
     val allPaths = new AllDirectedPaths(graph)
 
     // Get all the vertices...

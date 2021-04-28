@@ -24,33 +24,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.wand.streamevmon.events.grouping.graph
+package nz.net.wand.streamevmon.events.grouping.graph.impl
 
-import java.time.Instant
-import java.util.Objects
+import org.jgrapht.graph.DefaultDirectedWeightedGraph
 
-/** A simple edge type that holds an Instant, used to keep track of when the
-  * edge was last seen to allow edge expiry.
-  */
-class EdgeWithLastSeen(val lastSeen: Instant, val uid: String) {
-  def this(
-    lastSeen: Instant,
-    source  : Object,
-    destination: Object
-  ) = {
-    this(
-      lastSeen,
-      (source.hashCode + destination.hashCode).toHexString
-    )
-  }
-
-  override def hashCode(): Int = Objects.hash(lastSeen, uid)
-
-  override def equals(obj: Any): Boolean = {
-    obj match {
-      case e: EdgeWithLastSeen => e.lastSeen == lastSeen && e.uid == uid
-      case _ => false
-    }
-  }
+/** Centralised graph type declaration. */
+object GraphType {
+  type VertexT = Host
+  type EdgeT = EdgeWithLastSeen
+  type GraphT = DefaultDirectedWeightedGraph[VertexT, EdgeT]
 }
-

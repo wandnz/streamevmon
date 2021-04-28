@@ -26,7 +26,7 @@
 
 package nz.net.wand.streamevmon.checkpointing
 
-import nz.net.wand.streamevmon.events.grouping.graph.TracerouteAsInetPathExtractor
+import nz.net.wand.streamevmon.events.grouping.graph.building.TracerouteAsInetPathExtractor
 import nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor
 import nz.net.wand.streamevmon.measurements.amp.{Traceroute, TracerouteMeta}
 import nz.net.wand.streamevmon.test.{HarnessingTest, PostgresContainerSpec, SeedData}

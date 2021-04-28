@@ -28,7 +28,7 @@ package nz.net.wand.streamevmon.events.grouping.graph.building
 
 import nz.net.wand.streamevmon.connectors.postgres.schema.AsInetPathEntry
 import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.{AddOrUpdateEdge, AddVertex, MeasurementEndMarker}
-import nz.net.wand.streamevmon.events.grouping.graph.GraphType.VertexT
+import nz.net.wand.streamevmon.events.grouping.graph.impl.GraphType.VertexT
 import nz.net.wand.streamevmon.test.{HarnessingTest, SeedData}
 
 import org.apache.flink.streaming.runtime.streamrecord.StreamRecord

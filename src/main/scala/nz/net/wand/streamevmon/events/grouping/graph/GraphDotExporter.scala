@@ -24,17 +24,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.wand.streamevmon.events.grouping.graph.building
+package nz.net.wand.streamevmon.events.grouping.graph
 
-import nz.net.wand.streamevmon.events.grouping.graph.AmpletGraphDotExporter
+import nz.net.wand.streamevmon.connectors.postgres.schema.AsNumber
+import nz.net.wand.streamevmon.events.grouping.graph.building.{BuildsGraph, GraphChangeEvent}
+import nz.net.wand.streamevmon.events.grouping.graph.impl.GraphType.{EdgeT, GraphT, VertexT}
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 
+import java.awt.Color
 import java.io.File
 
 import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.ProcessFunction
 import org.apache.flink.util.Collector
+import org.jgrapht.nio.DefaultAttribute
+import org.jgrapht.nio.dot.DOTExporter
+
+import scala.collection.JavaConverters._
 
 /** Exports the graph to a .dot file every so often.
   *
@@ -43,7 +50,7 @@ import org.apache.flink.util.Collector
   *
   * `eventGrouping.graph.exportLocation` is the file to save the graph to.
   */
-class GraphExporter
+class GraphDotExporter
   extends ProcessFunction[GraphChangeEvent, GraphChangeEvent]
           with BuildsGraph
           with CheckpointedFunction
@@ -80,7 +87,7 @@ class GraphExporter
   }
 
   def doExport(): Unit = {
-    AmpletGraphDotExporter.exportGraph(graph, exportLocation)
+    GraphDotExporter.exportGraph(graph, exportLocation)
   }
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {
@@ -89,5 +96,71 @@ class GraphExporter
 
   override def initializeState(context: FunctionInitializationContext): Unit = {
     initializeGraphState(context)
+  }
+}
+
+object GraphDotExporter {
+  /** Exports a graph to a .dot file, with the vertices coloured according to
+    * which AS they belong to.
+    */
+  def exportGraph(
+    graph: GraphT,
+    file : File
+  ): Unit = {
+    val exporter = new DOTExporter[VertexT, EdgeT]
+
+    // We want to make sure that nodes have their UIDs printed as their names.
+    exporter.setVertexIdProvider(entry => s""" "${entry.toString}" """.trim)
+
+    // We also want to give them a colour defined by AS. This gives us a lookup
+    // of AS numbers to sequential unique IDs, which lets us get reasonably-
+    // distinct colours by distributing them evenly around hue-space.
+    val asNumberIndex: Map[Int, Int] = graph.vertexSet.asScala.toList
+      .flatMap(host => host.allAsNumbers)
+      .flatMap(_.number)
+      .toSet
+      .zipWithIndex
+      .toMap
+
+    def getAsColor(asn: AsNumber): String = {
+      asn.number match {
+        case None => "#FFFFFF"
+        case Some(num) =>
+          val hue = (0.8 * (asNumberIndex(num).toDouble / asNumberIndex.size.toDouble) + 0.1) % 1
+          val color = Color.getHSBColor(hue.toFloat, 0.5f, 0.95f)
+          f"#${color.getRed}%02X${color.getGreen}%02X${color.getBlue}%02X"
+      }
+    }
+
+
+    exporter.setVertexAttributeProvider { entry =>
+      val isProbablyAmplet = entry.hostnames.exists(_.contains("amp"))
+      Map(
+        "style" -> DefaultAttribute.createAttribute("filled"),
+        // Hosts that are probably amplets are squares, while anything else is round.
+        "shape" -> DefaultAttribute.createAttribute(if (isProbablyAmplet) {
+          "box"
+        }
+        else {
+          "oval"
+        }),
+        "fillcolor" -> DefaultAttribute.createAttribute {
+          if (entry.hostnames.nonEmpty) {
+            // Hosts that have known hostnames get a unique, bright colour.
+            "#FF0000"
+          }
+          else if (entry.primaryAsNumber.nonEmpty) {
+            getAsColor(entry.primaryAsNumber.get)
+          }
+          else {
+            getAsColor(AsNumber.Missing)
+          }
+        }
+      ).asJava
+    }
+
+    exporter.setEdgeIdProvider(_.lastSeen.toString)
+
+    exporter.exportGraph(graph, file)
   }
 }
