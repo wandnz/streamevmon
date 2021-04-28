@@ -92,28 +92,29 @@ case class Host(
   }
 
   /** A unique identifier for each node, which should be used as the key for
-    * Maps containing these Hosts. It is implemented separately from hashCode
-    * because fulfilling the contract for both hashCode and equals is not
-    * possible with the behaviour we can achieve here.
+    * Maps containing these Hosts. This might be a valid implementation of
+    * equals() and hashCode() that abide by the specifics we want them to, but
+    * this hasn't been extensively tested outside the unit tests at time of
+    * writing.
     *
     * The UID follows a hierarchy depending on available information:
     * - If the ITDK node ID is present, it is used.
     * - If any hostnames are present, they are separated by ';' and used.
     * - If any addresses are present, they are separated by ';' and used.
-    * - If nothing else is present, the ampTracerouteUide are separated by ';' and used.
+    * - If nothing else is present, the ampTracerouteUids are separated by ';' and used.
     */
   val uid: String = {
     itdkNodeId match {
       case Some(value) => s"N$value"
       case None => if (hostnames.nonEmpty) {
-        hostnames.mkString(";")
+        hostnames.toList.sorted.mkString(";")
       }
       else if (addresses.nonEmpty) {
-        addresses.mkString(";")
+        addresses.toList.sortBy(_._1.address.mkString(".")).mkString(";")
       }
       else {
         if (ampTracerouteUids.nonEmpty) {
-          ampTracerouteUids.mkString(";")
+          ampTracerouteUids.toList.sorted.mkString(";")
         }
         else {
           throw new IllegalStateException("Trying to get UID for host with no data!")
@@ -121,6 +122,13 @@ case class Host(
       }
     }
   }
+
+  override def equals(obj: Any): Boolean = obj match {
+    case o: Host => uid.equals(o.uid)
+    case _ => false
+  }
+
+  override def hashCode(): Int = uid.hashCode
 
   /** A user-friendly and unique (per `uid`) name for the Host. This does not
     * need to contain all the information we have about the host, just enough
