@@ -27,11 +27,11 @@
 package nz.net.wand.streamevmon.events.grouping.graph
 
 import nz.net.wand.streamevmon.connectors.postgres.schema.AsNumber
+import nz.net.wand.streamevmon.events.grouping.graph.GraphType._
 
 import java.awt.Color
 import java.io.File
 
-import org.jgrapht.graph.DefaultDirectedWeightedGraph
 import org.jgrapht.nio.DefaultAttribute
 import org.jgrapht.nio.dot.DOTExporter
 
@@ -41,8 +41,8 @@ import scala.collection.JavaConverters._
   * AS they belong to.
   */
 object AmpletGraphDotExporter {
-  def exportGraph[VertexT <: Host, EdgeT <: EdgeWithLastSeen](
-    graph: DefaultDirectedWeightedGraph[VertexT, EdgeT],
+  def exportGraph(
+    graph: GraphT,
     file : File
   ): Unit = {
     val exporter = new DOTExporter[VertexT, EdgeT]
