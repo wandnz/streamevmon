@@ -16,3 +16,8 @@ eventGrouping:
     pruneIntervalCount: 500
     pruneIntervalTime: 43200 # 12 hours
     pruneAge: 1200
+    exportInterval: 10
+    exportLocation: /tmp/graph-export.dot
+  time:
+    maximumEventLength: 60
+    maximumEventInterval: 10
