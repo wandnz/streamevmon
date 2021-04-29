@@ -51,7 +51,8 @@ import com.github.fsanaulla.chronicler.core.model.InfluxWriter
   * @param detectionLatency The time between the event beginning and being
   *                         detected. This can be used as an approximation of
   *                         the time the event started, which is difficult to
-  *                         determine with some algorithms.
+  *                         determine with some algorithms. That approximation
+  *                         can be found in the `eventTime` field.
   * @param description      A user-facing description of the event.
   * @param tags             Additional tags allow events with the same eventType to distinguish
   *                         themselves from one another, if there are several subtypes. If
@@ -94,6 +95,8 @@ case class Event(
   }
 
   override def toCsvFormat: Seq[String] = Event.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
+
+  lazy val eventTime: Instant = time.minus(detectionLatency)
 }
 
 object Event {
