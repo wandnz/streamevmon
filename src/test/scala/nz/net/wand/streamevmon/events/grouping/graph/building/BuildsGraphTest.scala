@@ -30,6 +30,7 @@ import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent._
 import nz.net.wand.streamevmon.events.grouping.graph.impl.GraphType._
 import nz.net.wand.streamevmon.test.TestBase
 import nz.net.wand.streamevmon.Configuration
+import nz.net.wand.streamevmon.events.grouping.graph.GraphDotExporter
 
 import java.time.Instant
 
@@ -171,5 +172,9 @@ class BuildsGraphTest extends TestBase {
 
   "GraphPruneParallelAnonymousHostEventGenerator" should {
     behave like buildsGraphBehaviours(_ => new GraphPruneParallelAnonymousHostEventGenerator())
+  }
+
+  "GraphDotExporter" should {
+    behave like buildsGraphBehaviours(_ => new GraphDotExporter())
   }
 }
