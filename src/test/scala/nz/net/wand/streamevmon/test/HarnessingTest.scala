@@ -30,6 +30,8 @@ import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
 import nz.net.wand.streamevmon.measurements.traits.Measurement
 import nz.net.wand.streamevmon.Configuration
 
+import org.apache.flink.api.common.typeinfo.TypeInformation
+import org.apache.flink.api.java.functions.KeySelector
 import org.apache.flink.streaming.api.functions.{KeyedProcessFunction, ProcessFunction}
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction
 import org.apache.flink.streaming.api.operators.{KeyedProcessOperator, ProcessOperator}
@@ -57,16 +59,23 @@ trait HarnessingTest extends TestBase {
     h
   }
 
-  protected def newHarness[I <: Measurement : ClassTag, O](
-    function: KeyedProcessFunction[String, I, O]
-  ): KeyedOneInputStreamOperatorTestHarness[String, I, O] = {
+  protected def newHarness[K: TypeInformation, I, O](
+    function   : KeyedProcessFunction[K, I, O],
+    keySelector: KeySelector[I, K]
+  ): KeyedOneInputStreamOperatorTestHarness[K, I, O] = {
     val h = new KeyedOneInputStreamOperatorTestHarness(
       new KeyedProcessOperator(function),
-      new MeasurementKeySelector[I](),
-      createTypeInformation[String]
+      keySelector,
+      createTypeInformation[K]
     )
     h.getExecutionConfig.setGlobalJobParameters(Configuration.get())
     h
+  }
+
+  protected def newHarness[I <: Measurement : ClassTag, TypeInformation, O](
+    function: KeyedProcessFunction[String, I, O]
+  ): KeyedOneInputStreamOperatorTestHarness[String, I, O] = {
+    newHarness(function, new MeasurementKeySelector[I]())
   }
 
   protected def newHarness[IN1, IN2, OUT](
