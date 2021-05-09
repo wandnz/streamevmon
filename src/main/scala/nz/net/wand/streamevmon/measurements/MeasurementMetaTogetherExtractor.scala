@@ -43,17 +43,12 @@ import org.apache.flink.util.Collector
 import scala.collection.mutable
 import scala.collection.JavaConverters._
 
-/** Outputs PostgresMeasurementMeta objects for each unique measurement stream
-  * received. Note that only one Meta object will be output for each stream. If
-  * several measurements that are part of the same stream are received, a
-  * corresponding Meta object will only be output alongside the first entry.
+/** Outputs PostgresMeasurementMeta objects for each measurement received,
+  * alongside the original measurement. For an equivalent that only outputs one
+  * Meta per stream, see [[MeasurementMetaExtractor]].
   *
-  * For an equivalent that outputs a Meta alongside every measurement, see
-  * [[MeasurementMetaTogetherExtractor]].
-  *
-  * Received measurements are output unchanged through the main output. Meta
-  * objects are output through a side output, which can be accessed using the
-  * `outputTag` field.
+  * Received measurements are passed through unchanged, but will ''not'' be
+  * output if a corresponding Meta is not found.
   *
   * This ProcessFunction constructs a
   * [[nz.net.wand.streamevmon.connectors.postgres.PostgresConnection PostgresConnection]],
@@ -66,8 +61,8 @@ import scala.collection.JavaConverters._
   *               [[nz.net.wand.streamevmon.connectors.postgres.PostgresConnection.getMeta PostgresConnection.getMeta]]
   *               function are of a type which can be cast to MetaT.
   */
-class MeasurementMetaExtractor[MeasT <: Measurement, MetaT <: PostgresMeasurementMeta : TypeInformation]
-  extends ProcessFunction[MeasT, MeasT]
+class MeasurementMetaTogetherExtractor[MeasT <: Measurement, MetaT <: PostgresMeasurementMeta : TypeInformation]
+  extends ProcessFunction[MeasT, (MeasT, MetaT)]
           with CheckpointedFunction
           with HasFlinkConfig
           with Logging {
@@ -89,20 +84,21 @@ class MeasurementMetaExtractor[MeasT <: Measurement, MetaT <: PostgresMeasuremen
 
   override def processElement(
     value: MeasT,
-    ctx  : ProcessFunction[MeasT, MeasT]#Context,
-    out  : Collector[MeasT]
+    ctx  : ProcessFunction[MeasT, (MeasT, MetaT)]#Context,
+    out  : Collector[(MeasT, MetaT)]
   ): Unit = {
-    if (!seenMetas.contains(value.stream)) {
-      pgCon.getMeta(value) match {
-        case Some(meta) =>
-          val metaAsMetaT = meta.asInstanceOf[MetaT]
-          seenMetas(value.stream) = metaAsMetaT
-          ctx.output(outputTag, metaAsMetaT)
-        case None =>
+    val meta = if (!seenMetas.contains(value.stream)) {
+      pgCon.getMeta(value).map { m =>
+        val metaAsMetaT = m.asInstanceOf[MetaT]
+        seenMetas(value.stream) = metaAsMetaT
+        metaAsMetaT
       }
     }
+    else {
+      seenMetas.get(value.stream)
+    }
 
-    out.collect(value)
+    meta.foreach(m => out.collect((value, m)))
   }
 
   // == CheckpointedFunction implementation ==
