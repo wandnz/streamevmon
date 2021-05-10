@@ -27,9 +27,16 @@
 package nz.net.wand.streamevmon.runners.examples
 
 import nz.net.wand.streamevmon.Configuration
+import nz.net.wand.streamevmon.detectors.loss.LossDetector
+import nz.net.wand.streamevmon.events.grouping.{EventGroup, SingleEventGrouper}
 import nz.net.wand.streamevmon.events.grouping.graph.building.FlinkHelpers
 import nz.net.wand.streamevmon.events.grouping.graph.GraphDotExporter
+import nz.net.wand.streamevmon.events.grouping.graph.grouping.TopologicalDistanceGrouper
 import nz.net.wand.streamevmon.flink.sources.PostgresTracerouteSourceFunction
+import nz.net.wand.streamevmon.flink.ZipFunction
+import nz.net.wand.streamevmon.measurements.{MeasurementKeySelector, MeasurementMetaTogetherExtractor}
+import nz.net.wand.streamevmon.measurements.amp.{Traceroute, TracerouteMeta}
+import nz.net.wand.streamevmon.measurements.traits.MeasurementMeta
 
 import java.time.Duration
 
@@ -62,6 +69,14 @@ object GraphBuilder {
         .uid(pgSourceFunction.flinkUid)
     }
 
+    val metas = {
+      val function = new MeasurementMetaTogetherExtractor[Traceroute, TracerouteMeta]()
+      traceroutes
+        .process(function)
+        .name(function.flinkName)
+        .uid(function.flinkUid)
+    }
+
     val graphStream = FlinkHelpers.tracerouteToGraph(traceroutes)
 
     val exporter = {
@@ -72,10 +87,50 @@ object GraphBuilder {
         .uid(function.flinkUid)
     }
 
+    val events = {
+      val detector = new LossDetector[Traceroute]()
+      traceroutes
+        .keyBy(new MeasurementKeySelector[Traceroute])
+        .process(detector)
+        .name(detector.flinkName)
+        .uid(detector.flinkUid)
+    }
+
+    val eventGroups = {
+      val initialGrouper = new SingleEventGrouper()
+      events
+        .process(initialGrouper)
+        .name(initialGrouper.flinkName)
+        .uid(initialGrouper.flinkUid)
+    }
+
+    val eventsWithMetas = {
+      val zipFunc = new ZipFunction[EventGroup, MeasurementMeta]
+      eventGroups
+        .connect(
+          metas
+            .map(_._2.asInstanceOf[MeasurementMeta])
+            .name("Extract just MeasurementMeta")
+            .uid("get-just-meta")
+        )
+        .process(zipFunc)
+        .name(zipFunc.flinkName)
+        .uid(zipFunc.flinkUid)
+    }
+
+    val topoDistanceGrouper = {
+      val function = new TopologicalDistanceGrouper()
+      eventsWithMetas
+        .connect(graphStream)
+        .process(function)
+        .name(function.flinkName)
+        .uid(function.flinkUid)
+    }
+
     println(env.getExecutionPlan.replace("\n", ""))
 
     exporter.addSink(_ => Unit)
-
-    env.execute()
+    topoDistanceGrouper.addSink(_ => Unit)
+    //env.execute()
   }
 }

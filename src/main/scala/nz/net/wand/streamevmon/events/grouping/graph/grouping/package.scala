@@ -24,33 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.wand.streamevmon.events.grouping
+package nz.net.wand.streamevmon.events.grouping.graph
 
-import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.flink.HasFlinkConfig
-
-import org.apache.flink.streaming.api.functions.ProcessFunction
-import org.apache.flink.util.Collector
-
-/** Converts events into groups that only contain a single event each. */
-class SingleEventGrouper
-  extends ProcessFunction[Event, EventGroup]
-          with HasFlinkConfig {
-  override val flinkName: String = "Single Event Grouper"
-  override val flinkUid: String = "single-event-grouper"
-  override val configKeyGroup: String = ""
-
-  override def processElement(
-    value                          : Event,
-    ctx                            : ProcessFunction[Event, EventGroup]#Context,
-    out                            : Collector[EventGroup]
-  ): Unit = {
-    out.collect(
-      EventGroup(
-        value.time.minus(value.detectionLatency),
-        Some(value.time.minus(value.detectionLatency)),
-        Seq(value)
-      )
-    )
-  }
-}
+/** Contains Flink operators which do the actual graph-based event grouping. */
+package object grouping {}

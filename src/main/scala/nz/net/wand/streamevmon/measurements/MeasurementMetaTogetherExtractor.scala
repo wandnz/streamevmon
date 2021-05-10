@@ -68,8 +68,8 @@ class MeasurementMetaTogetherExtractor[MeasT <: Measurement, MetaT <: PostgresMe
           with Logging {
 
   val configKeyGroup: String = "metaextractor"
-  val flinkName: String = "MeasurementMeta Extractor"
-  val flinkUid: String = "measurement-meta-extractor"
+  val flinkName: String = "MeasurementMeta Together Extractor"
+  val flinkUid: String = "measurement-meta-together-extractor"
 
   @transient var pgCon: PostgresConnection = _
 
