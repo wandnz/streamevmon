@@ -189,7 +189,7 @@ class GraphChangeAliasResolutionTest extends HarnessingTest {
       val eventsToSend = Seq(
         AddVertex(v1),
         AddVertex(v2),
-        MergeVertices(Seq(v1, v2)),
+        MergeVertices(Set(v1, v2)),
         AddVertex(v1),
         AddVertex(v2),
       )
@@ -197,7 +197,7 @@ class GraphChangeAliasResolutionTest extends HarnessingTest {
       val expectedResults = Seq(
         AddVertex(v1),
         AddVertex(v2),
-        MergeVertices(Seq(v1, v2)),
+        MergeVertices(Set(v1, v2)),
         AddVertex(v1.mergeWith(v2)),
         AddVertex(v1.mergeWith(v2))
       )

@@ -64,6 +64,11 @@ object GraphChangeEvent {
     */
   case class UpdateVertex(before: VertexT, after: VertexT) extends GraphChangeEvent {
     override protected def applyInternal(graph: GraphT): Unit = {
+      // In some cases, we come across duplicate UpdateVertex calls. Since the
+      // "before" vertex isn't in the graph anymore, we just ignore the call.
+      if (!graph.containsVertex(before) && graph.containsVertex(after)) {
+        return
+      }
       val outEdges = graph.outgoingEdgesOf(before).asScala.map(edge => (graph.getEdgeTarget(edge), edge))
       val inEdges = graph.incomingEdgesOf(before).asScala.map(edge => (graph.getEdgeSource(edge), edge))
       graph.removeVertex(before)
@@ -101,13 +106,16 @@ object GraphChangeEvent {
     }
   }
 
-  case class MergeVertices(vertices: Iterable[VertexT]) extends GraphChangeEvent {
+  case class MergeVertices(vertices: Set[VertexT]) extends GraphChangeEvent {
     lazy val merged: VertexT = vertices
+      .toList
       .drop(1)
       .foldLeft(vertices.head)((a, b) => a.mergeWith(b, forceMergeAnonymousHosts = true))
 
     override protected def applyInternal(graph: GraphT): Unit = {
-      vertices.foreach(v => UpdateVertex.create(v, merged).apply(graph))
+      if (vertices.size > 1) {
+        vertices.foreach(v => UpdateVertex.create(v, merged).apply(graph))
+      }
     }
   }
 

@@ -173,7 +173,7 @@ case class Host(
         })"
       }
       else {
-        s"? ${ampTracerouteUids.mkString(",")}".trim
+        s"? ${ampTracerouteUids.toList.sorted.mkString(",")}".trim
       }
     }${itdkNodeId.map(id => s" (ITDK N${id._1}, ${id._2})").getOrElse("")}"""
   }

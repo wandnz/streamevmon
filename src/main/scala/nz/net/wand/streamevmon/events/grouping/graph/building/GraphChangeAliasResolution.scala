@@ -64,8 +64,14 @@ class GraphChangeAliasResolution
   ): Unit = {
     value match {
       case e: MergeVertices =>
-        aliasResolver.addKnownAliases(e.merged, e.vertices)
-        out.collect(e)
+        val resolved = e.vertices.map(aliasResolver.resolve(_))
+        aliasResolver.addKnownAliases(e.merged, resolved)
+        if (resolved.size > 1) {
+          out.collect(MergeVertices(resolved))
+        }
+      // else {
+      // out.collect(DoNothing())
+      // }
       case AddVertex(vertex) => out.collect(AddVertex(aliasResolver.resolve(vertex)))
       case RemoveVertex(vertex) => out.collect(RemoveVertex(aliasResolver.resolve(vertex)))
       case event: UpdateVertex => out.collect(

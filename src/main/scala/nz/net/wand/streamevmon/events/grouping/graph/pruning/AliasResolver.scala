@@ -111,7 +111,7 @@ class AliasResolver(
           // First, make sure that we don't end up with a single Host containing
           // addresses that ITDK believes are on different real host machines.
           // This hasn't yet been observed, so we don't handle it.
-          if (naivelyMergedHost.itdkNodeId.isDefined && naivelyMergedHost.itdkNodeId == nodesAndAsns.headOption) {
+          if (naivelyMergedHost.itdkNodeId.isDefined && naivelyMergedHost.itdkNodeId != nodesAndAsns.headOption) {
             throw new IllegalStateException("Found contradicting ITDK nodes for a single host")
           }
           // If it doesn't contradict (including if this is the first time we got ITDK info),
@@ -152,7 +152,8 @@ class AliasResolver(
 
     // Finally, make sure that our mergedHosts map is up to date and that the
     // caller is notified of the changes we've made.
-    val original = mergedHosts.remove(host.uid)
+    val original = mergedHosts.get(host.uid)
+    mergedHosts.put(host.uid, withItdk)
     mergedHosts.put(withItdk.uid, withItdk)
     original match {
       case Some(org) => onUpdateHost(org, withItdk)
@@ -164,7 +165,6 @@ class AliasResolver(
   def addKnownAliases(merged: HostT, hosts: Iterable[HostT]): Unit = {
     hosts
       .foreach { host =>
-        mergedHosts.remove(host.uid)
         mergedHosts.put(host.uid, merged)
       }
   }

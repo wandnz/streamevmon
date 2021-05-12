@@ -61,7 +61,7 @@ object GraphBuilder {
 
     val traceroutes = {
       val pgSourceFunction = new PostgresTracerouteSourceFunction(
-        fetchHistory = Duration.ofDays(1)
+        fetchHistory = Duration.ofDays(365)
       )
       env
         .addSource(pgSourceFunction)
@@ -130,7 +130,8 @@ object GraphBuilder {
     println(env.getExecutionPlan.replace("\n", ""))
 
     exporter.addSink(_ => Unit)
+    events.print("Events")
     topoDistanceGrouper.addSink(_ => Unit)
-    //env.execute()
+    env.execute()
   }
 }

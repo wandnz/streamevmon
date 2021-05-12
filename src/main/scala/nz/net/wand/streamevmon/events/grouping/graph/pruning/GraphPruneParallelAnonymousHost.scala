@@ -277,6 +277,6 @@ object GraphPruneParallelAnonymousHost {
     val onlyRelevantPaths = filterRelevantPaths(verticesAndPathsFromParents)
     val pathsGroupedByLength = groupSiblingPaths(onlyRelevantPaths)
     val hostsToMerge = getVerticesToMerge(pathsGroupedByLength)
-    hostsToMerge.map(MergeVertices)
+    hostsToMerge.map(hosts => MergeVertices(hosts.toSet))
   }
 }
