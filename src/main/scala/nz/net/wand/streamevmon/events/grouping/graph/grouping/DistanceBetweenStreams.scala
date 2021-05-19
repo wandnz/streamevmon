@@ -31,12 +31,13 @@ import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.traits.MeasurementMeta
 
 import org.jgrapht.alg.shortestpath.{ALTAdmissibleHeuristic, AStarShortestPath}
+import org.jgrapht.graph.AsUndirectedGraph
 
 import scala.collection.JavaConverters._
 
 /** Calculates the "distance" between two measurement streams. This is a
   * reasonably arbitrary heuristic, and should not be relied on to represent
-  * any useful value.
+  * any useful value. It is only designed to be compared to other distances.
   */
 object DistanceBetweenStreams {
   private case class RelevantLocations(
@@ -65,13 +66,13 @@ object DistanceBetweenStreams {
     RelevantLocations(getVertexByName(graph, source).get, getVertexByName(graph, destination).get)
   }
 
-  def get(graph: GraphT, a: MeasurementMeta, b: MeasurementMeta): Double = {
+  def get(graph: GraphT, a: MeasurementMeta, b: MeasurementMeta): StreamDistance = {
     val aLocations = getRelevantLocations(graph, a)
     val bLocations = getRelevantLocations(graph, b)
     val pathFinder = new AStarShortestPath(
-      graph,
+      new AsUndirectedGraph(graph),
       new ALTAdmissibleHeuristic[VertexT, EdgeT](
-        graph,
+        new AsUndirectedGraph(graph),
         Set[VertexT](
           aLocations.source,
           aLocations.destination,
@@ -82,6 +83,6 @@ object DistanceBetweenStreams {
     )
     val sourcesDistance = pathFinder.getPath(aLocations.source, bLocations.source).getLength
     val destsDistance = pathFinder.getPath(aLocations.source, bLocations.source).getLength
-    sourcesDistance + destsDistance
+    StreamDistance(sourcesDistance + destsDistance)
   }
 }

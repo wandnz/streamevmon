@@ -53,7 +53,7 @@ class StreamDistanceCache extends CheckpointedFunction with Serializable {
   type PairT = UnorderedPair[MetaT, MetaT]
 
   val lastSeenTimes: mutable.Map[MetaT, Instant] = mutable.Map()
-  val knownDistances: mutable.Map[PairT, Double] = mutable.Map()
+  val knownDistances: mutable.Map[PairT, StreamDistance] = mutable.Map()
 
   protected def addNewStream(graph: GraphT, meta: MetaT): Unit = {
     val knownStreams = lastSeenTimes.keys
@@ -71,7 +71,7 @@ class StreamDistanceCache extends CheckpointedFunction with Serializable {
   }
 
   private var lastSeenState: ListState[(MetaT, Instant)] = _
-  private var distancesState: ListState[(PairT, Double)] = _
+  private var distancesState: ListState[(PairT, StreamDistance)] = _
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {
     lastSeenState.clear()
@@ -86,7 +86,7 @@ class StreamDistanceCache extends CheckpointedFunction with Serializable {
       .getUnionListState(new ListStateDescriptor("lastSeen", classOf[(MetaT, Instant)]))
     distancesState = context
       .getOperatorStateStore
-      .getUnionListState(new ListStateDescriptor("distances", classOf[(PairT, Double)]))
+      .getUnionListState(new ListStateDescriptor("distances", classOf[(PairT, StreamDistance)]))
 
     if (context.isRestored) {
       lastSeenState.get.forEach(entry => lastSeenTimes.put(entry._1, entry._2))
