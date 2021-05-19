@@ -214,5 +214,46 @@ class GraphChangeAliasResolutionTest extends HarnessingTest {
         .extractOutputValues()
         .asScala shouldBe expectedResults
     }
+
+    "not output events that aren't part of the graph after a few MergeVertices" in {
+      def v(id: Int): VertexT = new VertexT(
+        Set(),
+        Set(),
+        Set((id, id, id)),
+        None
+      )
+
+      val events = Seq(
+        AddVertex(v(1)),
+        AddVertex(v(2)),
+        AddVertex(v(3)),
+        AddVertex(v(4)),
+        MergeVertices(Set(v(1), v(2))),
+        MergeVertices(Set(v(3), v(4))),
+        MergeVertices(Set(v(1), v(4))),
+        MergeVertices(Set(v(2), v(3))),
+        AddVertex(v(1)),
+        MergeVertices(Set(v(1), v(2)))
+      )
+
+      val func = new GraphChangeAliasResolution()
+      val harness = newHarness(func)
+      harness.open()
+      events.foreach { v =>
+        harness.processElement(v, currentTime)
+        currentTime += 1
+      }
+
+      val grapher = new BasicBuildsGraphImpl()
+      val grapherHarness = newHarness(grapher)
+      grapherHarness.open()
+
+      noException shouldBe thrownBy {
+        harness.extractOutputValues.forEach { v =>
+          grapherHarness.processElement(v, currentTime)
+          currentTime += 1
+        }
+      }
+    }
   }
 }

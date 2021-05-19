@@ -29,16 +29,12 @@ package nz.net.wand.streamevmon.events.grouping.graph.building
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent._
-import nz.net.wand.streamevmon.events.grouping.graph.impl.GraphType.VertexT
 import nz.net.wand.streamevmon.events.grouping.graph.pruning.AliasResolver
 
-import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
 import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.ProcessFunction
 import org.apache.flink.util.Collector
-
-import scala.collection.JavaConverters._
 
 /** Performs alias resolution on all GraphChangeEvents passed to it.
   *
@@ -55,8 +51,6 @@ class GraphChangeAliasResolution
 
   @transient lazy val aliasResolver: AliasResolver = AliasResolver(configWithOverride(getRuntimeContext))
 
-  private var mergedHostsState: ListState[VertexT] = _
-
   override def processElement(
     value: GraphChangeEvent,
     ctx: ProcessFunction[GraphChangeEvent, GraphChangeEvent]#Context,
@@ -65,8 +59,8 @@ class GraphChangeAliasResolution
     value match {
       case e: MergeVertices =>
         val resolved = e.vertices.map(aliasResolver.resolve(_))
-        aliasResolver.addKnownAliases(e.merged, resolved)
         if (resolved.size > 1) {
+          aliasResolver.addKnownAliases(e.merged, resolved)
           out.collect(MergeVertices(resolved))
         }
       // else {
@@ -91,17 +85,10 @@ class GraphChangeAliasResolution
   }
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {
-    mergedHostsState.clear()
-    mergedHostsState.addAll(aliasResolver.mergedHosts.values.toSeq.asJava)
+    aliasResolver.snapshotState(context)
   }
 
   override def initializeState(context: FunctionInitializationContext): Unit = {
-    mergedHostsState = context
-      .getOperatorStateStore
-      .getUnionListState(new ListStateDescriptor("mergedHosts", classOf[VertexT]))
-
-    if (context.isRestored) {
-      mergedHostsState.get.forEach(entry => aliasResolver.mergedHosts.put(entry.uid, entry))
-    }
+    aliasResolver.initializeState(context)
   }
 }

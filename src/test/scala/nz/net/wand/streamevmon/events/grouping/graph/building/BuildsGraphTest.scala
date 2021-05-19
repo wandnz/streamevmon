@@ -34,12 +34,9 @@ import nz.net.wand.streamevmon.events.grouping.graph.GraphDotExporter
 
 import java.time.Instant
 
-import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
-import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.ProcessFunction
 import org.apache.flink.streaming.api.operators.ProcessOperator
 import org.apache.flink.streaming.util.OneInputStreamOperatorTestHarness
-import org.apache.flink.util.Collector
 
 import scala.collection.JavaConverters._
 
@@ -145,29 +142,7 @@ class BuildsGraphTest extends TestBase {
   }
 
   "Basic implementation of BuildsGraph" should {
-    class BasicImpl
-      extends ProcessFunction[GraphChangeEvent, GraphChangeEvent]
-              with BuildsGraph
-              with CheckpointedFunction {
-
-      override def processElement(
-        value: GraphChangeEvent,
-        ctx  : ProcessFunction[GraphChangeEvent, GraphChangeEvent]#Context,
-        out  : Collector[GraphChangeEvent]
-      ): Unit = {
-        receiveGraphChangeEvent(value)
-      }
-
-      override def snapshotState(context: FunctionSnapshotContext): Unit = {
-        snapshotGraphState(context)
-      }
-
-      override def initializeState(context: FunctionInitializationContext): Unit = {
-        initializeGraphState(context)
-      }
-    }
-
-    behave like buildsGraphBehaviours(_ => new BasicImpl())
+    behave like buildsGraphBehaviours(_ => new BasicBuildsGraphImpl())
   }
 
   "GraphPruneParallelAnonymousHostEventGenerator" should {

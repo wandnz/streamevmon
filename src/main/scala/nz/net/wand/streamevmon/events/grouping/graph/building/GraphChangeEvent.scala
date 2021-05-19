@@ -69,6 +69,9 @@ object GraphChangeEvent {
       if (!graph.containsVertex(before) && graph.containsVertex(after)) {
         return
       }
+      if (!graph.containsVertex(before)) {
+        throw new IllegalArgumentException(s"no such vertex in graph: $before")
+      }
       val outEdges = graph.outgoingEdgesOf(before).asScala.map(edge => (graph.getEdgeTarget(edge), edge))
       val inEdges = graph.incomingEdgesOf(before).asScala.map(edge => (graph.getEdgeSource(edge), edge))
       graph.removeVertex(before)

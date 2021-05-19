@@ -32,8 +32,8 @@ import nz.net.wand.streamevmon.events.grouping.graph.itdk._
 import java.io.File
 
 import org.apache.flink.api.java.utils.ParameterTool
-
-import scala.collection.mutable
+import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
+import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 
 /** Worker class for alias resolution, which finds duplicate entries for hosts.
   *
@@ -61,14 +61,11 @@ import scala.collection.mutable
   */
 class AliasResolver(
   itdkAliasLookup: Option[ItdkAliasLookup]
-) extends Serializable {
+) extends Serializable with CheckpointedFunction {
 
   type HostT = Host
 
-  /** Keeps track of which hosts were replaced by merged hosts. The key is the
-    * original host's UID, and the value is the merged host.
-    */
-  val mergedHosts: mutable.Map[String, HostT] = mutable.Map()
+  val mergedHosts = new MergeMap[String, HostT]()
 
   /** Uses all available information to perform alias resolution. If no ITDK
     * data is provided, we do naive resolution based on the hostnames already
@@ -87,7 +84,7 @@ class AliasResolver(
     // Naive resolution. If we've seen it before, it'll be in the mergedHosts
     // map. We merge it with the new host to retain all the information. If we
     // haven't seen it before, just continue with the new host.
-    val naivelyMergedHost = mergedHosts.get(host.uid).map(_.mergeWith(host)).getOrElse(host)
+    val naivelyMergedHost = mergedHosts.get(host.uid).map(_.mergeWith(host, forceMergeAnonymousHosts = true)).getOrElse(host)
 
     // Now that we have all our current knowledge of the node, let's compare it
     // against the ITDK dataset.
@@ -163,11 +160,12 @@ class AliasResolver(
   }
 
   def addKnownAliases(merged: HostT, hosts: Iterable[HostT]): Unit = {
-    hosts
-      .foreach { host =>
-        mergedHosts.put(host.uid, merged)
-      }
+    mergedHosts.merge(hosts.map(_.uid), merged.uid, merged)
   }
+
+  override def snapshotState(context: FunctionSnapshotContext): Unit = mergedHosts.snapshotState(context)
+
+  override def initializeState(context: FunctionInitializationContext): Unit = mergedHosts.initializeState(context)
 }
 
 object AliasResolver {
