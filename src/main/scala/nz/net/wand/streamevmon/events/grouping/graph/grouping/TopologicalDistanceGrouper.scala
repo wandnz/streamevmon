@@ -31,6 +31,8 @@ import nz.net.wand.streamevmon.events.grouping.graph.building.{BuildsGraph, Grap
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.traits.MeasurementMeta
 
+import java.time.Instant
+
 import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.co.CoProcessFunction
@@ -46,6 +48,8 @@ class TopologicalDistanceGrouper
   override val flinkUid: String = "event-grouping-topological-distance"
   override val configKeyGroup: String = "eventGrouping.topological"
 
+  val distanceCache = new StreamDistanceCache()
+
   override def processElement1(
     value: (EventGroup, MeasurementMeta),
     ctx  : CoProcessFunction[(EventGroup, MeasurementMeta), GraphChangeEvent, EventGroup]#Context,
@@ -55,6 +59,10 @@ class TopologicalDistanceGrouper
     // belongs to.
     // If we have a cached copy of that determination, we should use it.
     // Otherwise, find a new one.
+    distanceCache.receiveStream(graph, value._2, Instant.ofEpochMilli(ctx.timestamp))
+
+    println(distanceCache.lastSeenTimes.size)
+    println(distanceCache.knownDistances.size)
 
     // Now that we know where the event occurred, we should find events that
     // occurred nearby.
@@ -85,9 +93,11 @@ class TopologicalDistanceGrouper
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {
     snapshotGraphState(context)
+    distanceCache.snapshotState(context)
   }
 
   override def initializeState(context: FunctionInitializationContext): Unit = {
     initializeGraphState(context)
+    distanceCache.initializeState(context)
   }
 }
