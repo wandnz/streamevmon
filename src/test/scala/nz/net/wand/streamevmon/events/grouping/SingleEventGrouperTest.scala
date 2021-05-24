@@ -31,6 +31,8 @@ import nz.net.wand.streamevmon.test.HarnessingTest
 
 import java.time.{Duration, Instant}
 
+import scala.collection.JavaConverters._
+
 class SingleEventGrouperTest extends HarnessingTest {
   "SingleEventGrouper" should {
     val inputs = Seq(
