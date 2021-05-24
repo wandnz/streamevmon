@@ -41,9 +41,9 @@ class SingleEventGrouper
   override val configKeyGroup: String = ""
 
   override def processElement(
-    value                          : Event,
-    ctx                            : ProcessFunction[Event, EventGroup]#Context,
-    out                            : Collector[EventGroup]
+    value: Event,
+    ctx: ProcessFunction[Event, EventGroup]#Context,
+    out: Collector[EventGroup]
   ): Unit = {
     out.collect(
       EventGroup(

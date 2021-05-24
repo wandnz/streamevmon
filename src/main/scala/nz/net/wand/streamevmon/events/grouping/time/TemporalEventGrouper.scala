@@ -112,9 +112,9 @@ class TemporalEventGrouper
     * than `maximumEventLength`.
     */
   override def onTimer(
-    timestamp                   : Long,
-    ctx                         : KeyedProcessFunction[String, EventGroup, EventGroup]#OnTimerContext,
-    out                         : Collector[EventGroup]
+    timestamp: Long,
+    ctx      : KeyedProcessFunction[String, EventGroup, EventGroup]#OnTimerContext,
+    out      : Collector[EventGroup]
   ): Unit = {
     val group = state.get(ctx.getCurrentKey)
     out.collect(group.copy(endTime = Some(group.events.maxBy(e => e.eventTime).eventTime)))
