@@ -28,6 +28,7 @@ package nz.net.wand.streamevmon.connectors
 
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.MockSinkContext
+import nz.net.wand.streamevmon.flink.sinks.InfluxEventSink
 import nz.net.wand.streamevmon.test.{InfluxContainerSpec, SeedData}
 
 import java.time.{Instant, Duration => JavaDuration}
@@ -39,10 +40,10 @@ import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{Duration => ScalaDuration}
 
-class InfluxSinkTest extends InfluxContainerSpec {
-  "InfluxSink" should {
+class InfluxEventSinkTest extends InfluxContainerSpec {
+  "InfluxEventSink" should {
     "write data to InfluxDB" in {
-      val sink = getSinkFunction("no-subscription")
+      val sink = setupSinkFunction(new InfluxEventSink, "no-subscription")
       sink.open(null)
 
       sink.invoke(SeedData.event.withTags, new MockSinkContext(SeedData.event.withTags.time))

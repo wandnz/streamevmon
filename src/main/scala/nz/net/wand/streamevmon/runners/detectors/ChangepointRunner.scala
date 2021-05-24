@@ -28,7 +28,7 @@ package nz.net.wand.streamevmon.runners.detectors
 
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.changepoint._
-import nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction
+import nz.net.wand.streamevmon.flink.sinks.InfluxEventSink
 import nz.net.wand.streamevmon.flink.sources.AmpMeasurementSourceFunction
 import nz.net.wand.streamevmon.measurements.amp.ICMP
 import nz.net.wand.streamevmon.measurements.traits.InfluxMeasurement
@@ -82,7 +82,7 @@ object ChangepointRunner {
       .name(detector.flinkName)
       .uid("changepoint-processor")
 
-    process.addSink(new InfluxSinkFunction)
+    process.addSink(new InfluxEventSink)
       .name("Influx Sink")
       .uid("changepoint-influx-sink")
 

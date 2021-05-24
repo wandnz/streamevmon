@@ -26,16 +26,17 @@
 
 package nz.net.wand.streamevmon.flink.sinks
 
-import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.Logging
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 
 import com.github.fsanaulla.chronicler.ahc.io.AhcIOClient
 import com.github.fsanaulla.chronicler.ahc.management.InfluxMng
-import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
+import com.github.fsanaulla.chronicler.core.model.{InfluxCredentials, InfluxWriter}
 import org.apache.flink.{configuration => flinkconf}
 import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
+import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.api.java.utils.ParameterTool
+import org.apache.flink.api.scala._
 import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction
@@ -46,6 +47,7 @@ import scala.collection.mutable
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
+import scala.reflect.ClassTag
 import scala.util.{Failure, Success, Try}
 
 /** A SinkFunction which stores Event objects in InfluxDB. This function makes
@@ -81,8 +83,8 @@ import scala.util.{Failure, Success, Try}
   *
   * @see [[nz.net.wand.streamevmon.connectors.influx Influx connectors package]]
   */
-class InfluxSinkFunction
-  extends RichSinkFunction[Event]
+abstract class InfluxSinkFunction[T: ClassTag : TypeInformation]
+  extends RichSinkFunction[T]
           with HasFlinkConfig
           with CheckpointedFunction
           with Logging {
@@ -105,7 +107,7 @@ class InfluxSinkFunction
 
   private var influx: AhcIOClient = _
 
-  private val bufferedEvents: mutable.Buffer[Event] = mutable.Buffer()
+  private val bufferedItems: mutable.Buffer[T] = mutable.Buffer()
 
   private def getWithFallback(parameters: ParameterTool, key: String): String = {
     var result = parameters.get(s"sink.$configKeyGroup.$key", null)
@@ -163,25 +165,29 @@ class InfluxSinkFunction
     }
   }
 
+  protected def measurementName(value: T): String
+
+  protected def getInfluxWriter(value: T): InfluxWriter[T]
+
   /** Called when new data arrives to the sink, and passes it to InfluxDB.
     *
     * @param value The data to send to InfluxDB.
     */
-  override def invoke(value: Event, context: Context): Unit = {
-    bufferedEvents.append(value)
-    val meas = influx.measurement[Event](database, value.eventType)
+  override def invoke(value: T, context: Context): Unit = {
+    bufferedItems.append(value)
+    val meas = influx.measurement[T](database, measurementName(value))
 
     var success = false
     while (!success) {
       Await.result(
-        meas.write(value, retentionPolicy = Some(retentionPolicy))(Event.getWriter).flatMap {
+        meas.write(value, retentionPolicy = Some(retentionPolicy))(getInfluxWriter(value)).flatMap {
           case Left(err) => Future {
             logger.error(s"Failed to write to InfluxDB: $err")
             Thread.sleep(500)
           }
           case Right(_) => Future {
             success = true
-            bufferedEvents.remove(bufferedEvents.indexOf(value))
+            bufferedItems.remove(bufferedItems.indexOf(value))
           }
         },
         Duration.Inf
@@ -189,20 +195,20 @@ class InfluxSinkFunction
     }
   }
 
-  private var checkpointState: ListState[Event] = _
+  private var checkpointState: ListState[T] = _
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {
     checkpointState.clear()
-    checkpointState.addAll(bufferedEvents.asJava)
+    checkpointState.addAll(bufferedItems.asJava)
   }
 
   override def initializeState(context: FunctionInitializationContext): Unit = {
     checkpointState = context
       .getOperatorStateStore
-      .getListState(new ListStateDescriptor[Event]("bufferedEvents", classOf[Event]))
+      .getListState(new ListStateDescriptor[T]("bufferedItems", createTypeInformation[T]))
 
     if (context.isRestored) {
-      checkpointState.get().forEach { item => bufferedEvents.append(item) }
+      checkpointState.get().forEach { item => bufferedItems.append(item) }
     }
   }
 }

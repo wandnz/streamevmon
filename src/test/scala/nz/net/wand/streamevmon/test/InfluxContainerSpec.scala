@@ -128,13 +128,12 @@ class InfluxContainerSpec extends TaggedForAllTestContainer with TestBase {
     ParameterTool.fromMap(getInfluxConfigMap(subscriptionName, listenAddress).asJava)
   }
 
-  protected def getSinkFunction(subscriptionName: String): InfluxSinkFunction = {
-    val sink = new InfluxSinkFunction
+  protected def setupSinkFunction[T](sinkFunction: InfluxSinkFunction[T], subscriptionName: String): InfluxSinkFunction[T] = {
     val context = new MockStreamingRuntimeContext(true, 1, 0)
     val params = getInfluxConfig(subscriptionName)
     context.getExecutionConfig.setGlobalJobParameters(params)
-    sink.overrideConfig(params)
-    sink.setRuntimeContext(context)
-    sink
+    sinkFunction.overrideConfig(params)
+    sinkFunction.setRuntimeContext(context)
+    sinkFunction
   }
 }
