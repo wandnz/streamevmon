@@ -28,7 +28,9 @@ package nz.net.wand.streamevmon.runners.unified
 
 import nz.net.wand.streamevmon.{Configuration, Lazy, Logging}
 import nz.net.wand.streamevmon.events.Event
+import nz.net.wand.streamevmon.events.grouping.EventGrouperFlinkHelper
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
+import nz.net.wand.streamevmon.flink.sinks.{InfluxEventGroupSink, InfluxEventSink}
 import nz.net.wand.streamevmon.measurements.traits.Measurement
 import nz.net.wand.streamevmon.measurements.MeasurementTimestampAssigner
 import nz.net.wand.streamevmon.parameters.HasParameterSpecs
@@ -229,6 +231,9 @@ object YamlDagRunner extends Logging {
 
     // Now that we've made all our detctors, we can go ahead and tie them to
     // their sinks.
+    // Everyone gets a free EventGrouper pipeline in here, because extending
+    // the configuration to do it properly is going to take a while and doesn't
+    // seem worth it right now.
     detectorsBySink.foreach {
       case (sinkName, dets) =>
         // We need to tie all the detector outputs together into one DataStream
@@ -244,6 +249,14 @@ object YamlDagRunner extends Logging {
             .addSink(sinks(sinkName))
             .name(s"$sinkName (${sinks(sinkName).flinkName})")
             .uid(s"${sinks(sinkName).flinkUid}-$sinkName")
+
+          if (sinks(sinkName).isInstanceOf[InfluxEventSink]) {
+            val sink = new InfluxEventGroupSink
+            EventGrouperFlinkHelper.addGrouping(config, dets)
+              .addSink(sink)
+              .name(sink.flinkName)
+              .uid(sink.flinkUid)
+          }
         }
     }
 
