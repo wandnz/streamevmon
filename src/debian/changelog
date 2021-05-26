@@ -1,3 +1,10 @@
+streamevmon (0.2.0-1) unstable; urgency=low
+
+  * Add a simple temporal event grouper which is automatically added whenever
+    a sink of events to InfluxDB is configured in the default runner.
+
+ -- Daniel Oosterwijk <doosterw@waikato.ac.nz>  Thu, 18 Mar 2021 12:25:06 +1300
+
 streamevmon (0.1.0-1) unstable; urgency=low
 
   * Initial versioned release. Should be ready for real usage.
