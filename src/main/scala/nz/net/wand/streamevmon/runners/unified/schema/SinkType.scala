@@ -28,7 +28,7 @@ package nz.net.wand.streamevmon.runners.unified.schema
 
 import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
-import nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction
+import nz.net.wand.streamevmon.flink.sinks.InfluxEventSink
 
 import org.apache.flink.streaming.api.functions.sink.{PrintSinkFunction, SinkFunction}
 
@@ -41,7 +41,7 @@ object SinkType extends Enumeration {
   class ValueBuilder(name: String) extends Val(name) {
     def build: SinkFunction[Event] with HasFlinkConfig = {
       this match {
-        case Influx => new InfluxSinkFunction
+        case Influx => new InfluxEventSink
         case Print => new PrintSinkFunction[Event] with HasFlinkConfig {
           override val flinkName: String = "Print: Std Out"
           override val flinkUid: String = "print-sink"

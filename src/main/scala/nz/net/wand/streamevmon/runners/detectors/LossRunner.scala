@@ -28,7 +28,7 @@ package nz.net.wand.streamevmon.runners.detectors
 
 import nz.net.wand.streamevmon.Configuration
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
-import nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction
+import nz.net.wand.streamevmon.flink.sinks.InfluxEventSink
 import nz.net.wand.streamevmon.flink.sources.AmpMeasurementSourceFunction
 import nz.net.wand.streamevmon.measurements.traits.InfluxMeasurement
 import nz.net.wand.streamevmon.measurements.MeasurementKeySelector
@@ -69,7 +69,7 @@ object LossRunner {
       .uid("loss-detector")
 
     process
-      .addSink(new InfluxSinkFunction)
+      .addSink(new InfluxEventSink)
       .name("Influx Sink")
       .uid("loss-influx-sink")
 

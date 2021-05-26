@@ -30,6 +30,7 @@ import nz.net.wand.streamevmon.connectors.esmond.schema._
 import nz.net.wand.streamevmon.connectors.esmond.ResponseType
 import nz.net.wand.streamevmon.connectors.postgres.schema._
 import nz.net.wand.streamevmon.events.Event
+import nz.net.wand.streamevmon.events.grouping.EventGroup
 import nz.net.wand.streamevmon.measurements.amp._
 import nz.net.wand.streamevmon.measurements.bigdata.Flow
 import nz.net.wand.streamevmon.measurements.esmond._
@@ -643,6 +644,26 @@ object SeedData {
       s"""changepoint_events,stream=1 severity=10i,detection_latency=123456789i,description="A test event :)" 1564713045000000000"""
     val withoutTagsAsLineProtocol: String = """stream=1 severity=10i,detection_latency=123456789i,description="A test event :)" 1564713045000000000"""
     val withoutTagsAsCsv: Seq[String] = Seq("changepoint_events", "1", "10", "1564713045000", "0:00:00.123", "A test event :)", "\"\"")
+  }
+
+  object eventgroup {
+    val oneEvent = EventGroup(
+      event.withoutTags.eventTime,
+      Some(event.withoutTags.eventTime),
+      Seq(event.withoutTags)
+    )
+
+    val oneEventWithNoEndTime = EventGroup(
+      event.withoutTags.eventTime,
+      None,
+      Seq(event.withoutTags)
+    )
+
+    val multipleEvents = EventGroup(
+      event.withoutTags.eventTime,
+      None,
+      Seq(event.withoutTags, event.withTags)
+    )
   }
 
   object bigdata {

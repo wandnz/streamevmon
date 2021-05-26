@@ -27,31 +27,25 @@
 package nz.net.wand.streamevmon.events.grouping
 
 import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.flink.HasFlinkConfig
+import nz.net.wand.streamevmon.events.grouping.time.TemporalEventGrouper
 
-import org.apache.flink.streaming.api.functions.ProcessFunction
-import org.apache.flink.util.Collector
+import org.apache.flink.api.java.utils.ParameterTool
+import org.apache.flink.streaming.api.scala.{DataStream, _}
 
-/** Converts events into groups that only contain a single event each. */
-class SingleEventGrouper
-  extends ProcessFunction[Event, EventGroup]
-          with HasFlinkConfig {
+object EventGrouperFlinkHelper {
+  def addGrouping(config: ParameterTool, events: DataStream[Event]): DataStream[EventGroup] = {
+    val singleEventGrouper = new SingleEventGrouper
+    val temporalGrouper = new TemporalEventGrouper
 
-  override val flinkName: String = "Single Event Grouper"
-  override val flinkUid: String = "single-event-grouper"
-  override val configKeyGroup: String = ""
+    temporalGrouper.overrideConfig(config)
 
-  override def processElement(
-    value: Event,
-    ctx: ProcessFunction[Event, EventGroup]#Context,
-    out: Collector[EventGroup]
-  ): Unit = {
-    out.collect(
-      EventGroup(
-        value.time.minus(value.detectionLatency),
-        Some(value.time.minus(value.detectionLatency)),
-        Seq(value)
-      )
-    )
+    events
+      .process(singleEventGrouper)
+      .name(singleEventGrouper.flinkName)
+      .uid(singleEventGrouper.flinkUid)
+      .keyBy(_ => "")
+      .process(temporalGrouper)
+      .name(temporalGrouper.flinkName)
+      .uid(temporalGrouper.flinkUid)
   }
 }

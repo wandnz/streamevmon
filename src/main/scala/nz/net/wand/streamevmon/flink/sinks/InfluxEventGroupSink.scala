@@ -24,34 +24,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.wand.streamevmon.events.grouping
+package nz.net.wand.streamevmon.flink.sinks
 
-import nz.net.wand.streamevmon.events.Event
-import nz.net.wand.streamevmon.flink.HasFlinkConfig
+import nz.net.wand.streamevmon.events.grouping.EventGroup
 
-import org.apache.flink.streaming.api.functions.ProcessFunction
-import org.apache.flink.util.Collector
+import com.github.fsanaulla.chronicler.core.model.InfluxWriter
+import org.apache.flink.api.scala._
 
-/** Converts events into groups that only contain a single event each. */
-class SingleEventGrouper
-  extends ProcessFunction[Event, EventGroup]
-          with HasFlinkConfig {
+class InfluxEventGroupSink extends InfluxSinkFunction[EventGroup] {
+  override protected def measurementName(value: EventGroup): String = EventGroup.getMeasurementName(value)
 
-  override val flinkName: String = "Single Event Grouper"
-  override val flinkUid: String = "single-event-grouper"
-  override val configKeyGroup: String = ""
-
-  override def processElement(
-    value: Event,
-    ctx: ProcessFunction[Event, EventGroup]#Context,
-    out: Collector[EventGroup]
-  ): Unit = {
-    out.collect(
-      EventGroup(
-        value.time.minus(value.detectionLatency),
-        Some(value.time.minus(value.detectionLatency)),
-        Seq(value)
-      )
-    )
-  }
+  override protected def getInfluxWriter(value: EventGroup): InfluxWriter[EventGroup] = EventGroup.getWriter
 }
