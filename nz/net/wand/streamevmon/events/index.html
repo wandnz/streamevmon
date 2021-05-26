@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title>streamevmon v0.1.0 - nz.net.wand.streamevmon.events</title>
-          <meta name="description" content="streamevmon v0.1.0 - nz.net.wand.streamevmon.events" />
-          <meta name="keywords" content="streamevmon v0.1.0 nz.net.wand.streamevmon.events" />
+          <title>streamevmon v0.2.0 - nz.net.wand.streamevmon.events</title>
+          <meta name="description" content="streamevmon v0.2.0 - nz.net.wand.streamevmon.events" />
+          <meta name="keywords" content="streamevmon v0.2.0 nz.net.wand.streamevmon.events" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title">streamevmon<span id="doc-version">v0.1.0</span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">v0.2.0</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -418,7 +418,8 @@ network.
                         the event where possible.</p></dd><dt class="param">severity</dt><dd class="cmt"><p>How severe the event is, usually from 0-100.</p></dd><dt class="param">time</dt><dd class="cmt"><p>The time that the event was detected at.</p></dd><dt class="param">detectionLatency</dt><dd class="cmt"><p>The time between the event beginning and being
                         detected. This can be used as an approximation of
                         the time the event started, which is difficult to
-                        determine with some algorithms.</p></dd><dt class="param">description</dt><dd class="cmt"><p>A user-facing description of the event.</p></dd><dt class="param">tags</dt><dd class="cmt"><p>Additional tags allow events with the same eventType to distinguish
+                        determine with some algorithms. That approximation
+                        can be found in the <code>eventTime</code> field.</p></dd><dt class="param">description</dt><dd class="cmt"><p>A user-facing description of the event.</p></dd><dt class="param">tags</dt><dd class="cmt"><p>Additional tags allow events with the same eventType to distinguish
                         themselves from one another, if there are several subtypes. If
                         two events have the same type, stream, tags, and time, one is
                         liable to be lost.</p></dd></dl></div>

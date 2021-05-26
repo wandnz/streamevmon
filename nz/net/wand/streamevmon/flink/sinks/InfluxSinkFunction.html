@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title>streamevmon v0.1.0 - nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction</title>
-          <meta name="description" content="streamevmon v0.1.0 - nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction" />
-          <meta name="keywords" content="streamevmon v0.1.0 nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction" />
+          <title>streamevmon v0.2.0 - nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction</title>
+          <meta name="description" content="streamevmon v0.2.0 - nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction" />
+          <meta name="keywords" content="streamevmon v0.2.0 nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title">streamevmon<span id="doc-version">v0.1.0</span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">v0.2.0</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -174,6 +174,14 @@ such as InfluxDB or a file.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.flink">flink</a></dd></dl></div>
     </li><li class="current-entities indented6">
                         <span class="separator"></span>
+                        <a class="class" href="InfluxEventGroupSink.html" title=""></a>
+                        <a href="InfluxEventGroupSink.html" title="">InfluxEventGroupSink</a>
+                      </li><li class="current-entities indented6">
+                        <span class="separator"></span>
+                        <a class="class" href="InfluxEventSink.html" title=""></a>
+                        <a href="InfluxEventSink.html" title="">InfluxEventSink</a>
+                      </li><li class="current-entities indented6">
+                        <span class="separator"></span>
                         <a class="class" href="" title="A SinkFunction which stores Event objects in InfluxDB."></a>
                         <a href="" title="A SinkFunction which stores Event objects in InfluxDB.">InfluxSinkFunction</a>
                       </li>
@@ -195,11 +203,11 @@ such as InfluxDB or a file.
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">abstract </span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">InfluxSinkFunction</span><span class="result"> extends <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/sink/RichSinkFunction.html#org.apache.flink.streaming.api.functions.sink.RichSinkFunction" class="extype" name="org.apache.flink.streaming.api.functions.sink.RichSinkFunction">RichSinkFunction</a>[<a href="../../events/Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>] with <a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a> with <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a> with <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></span>
+        <span class="name">InfluxSinkFunction</span><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/streaming/api/functions/sink/RichSinkFunction.html#org.apache.flink.streaming.api.functions.sink.RichSinkFunction" class="extype" name="org.apache.flink.streaming.api.functions.sink.RichSinkFunction">RichSinkFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction.T">T</span>] with <a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a> with <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a> with <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></span>
       </span>
       </h4>
 
@@ -220,12 +228,17 @@ Default &quot;streamevmondefault&quot;.
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a>, <a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/sink/RichSinkFunction.html#org.apache.flink.streaming.api.functions.sink.RichSinkFunction" class="extype" name="org.apache.flink.streaming.api.functions.sink.RichSinkFunction">RichSinkFunction</a>[<a href="../../events/Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>], <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/sink/SinkFunction.html#org.apache.flink.streaming.api.functions.sink.SinkFunction" class="extype" name="org.apache.flink.streaming.api.functions.sink.SinkFunction">SinkFunction</a>[<a href="../../events/Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>], <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/AbstractRichFunction.html#org.apache.flink.api.common.functions.AbstractRichFunction" class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RichFunction.html#org.apache.flink.api.common.functions.RichFunction" class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/Function.html#org.apache.flink.api.common.functions.Function" class="extype" name="org.apache.flink.api.common.functions.Function">Function</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
-        </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
+          <div class="superTypes hiddenContent"><a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a>, <a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/streaming/api/functions/sink/RichSinkFunction.html#org.apache.flink.streaming.api.functions.sink.RichSinkFunction" class="extype" name="org.apache.flink.streaming.api.functions.sink.RichSinkFunction">RichSinkFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction.T">T</span>], <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/streaming/api/functions/sink/SinkFunction.html#org.apache.flink.streaming.api.functions.sink.SinkFunction" class="extype" name="org.apache.flink.streaming.api.functions.sink.SinkFunction">SinkFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction.T">T</span>], <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/api/common/functions/AbstractRichFunction.html#org.apache.flink.api.common.functions.AbstractRichFunction" class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/api/common/functions/RichFunction.html#org.apache.flink.api.common.functions.RichFunction" class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</a>, <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/api/common/functions/Function.html#org.apache.flink.api.common.functions.Function" class="extype" name="org.apache.flink.api.common.functions.Function">Function</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">
+              Known Subclasses
+            </span>
+            <div class="subClasses hiddenContent"><a href="InfluxEventGroupSink.html" class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxEventGroupSink">InfluxEventGroupSink</a>, <a href="InfluxEventSink.html" class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxEventSink">InfluxEventSink</a></div>
+          </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
                 <span class="toggle diagram-link">
                   Type Hierarchy
                 </span>
-                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 522.00 118.00" height="118pt" width="522pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 114)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-114 518,-114 518,4 -4,4" stroke="transparent" fill="white"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this class" id="graph1_0"><g id="a_this class|graph1_0"><a xlink:title="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction (this class)" xlink:href="#inheritance-diagram"><path d="M333.67,-49C333.67,-49 231.33,-49 231.33,-49 227.17,-49 223,-44.83 223,-40.67 223,-40.67 223,-32.33 223,-32.33 223,-28.17 227.17,-24 231.33,-24 231.33,-24 333.67,-24 333.67,-24 337.83,-24 342,-28.17 342,-32.33 342,-32.33 342,-40.67 342,-40.67 342,-44.83 337.83,-49 333.67,-49" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../lib/class_diagram.png" y="-43.5" x="233.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-34.1" x="254.5" text-anchor="start">InfluxSinkFunction</text></a></g></g><!-- node1 --><g class="node class" id="graph1_1"><g id="a_class|graph1_1"><a xlink:title="org.apache.flink.streaming.api.functions.sink.RichSinkFunction"><path d="M134.67,-110C134.67,-110 8.33,-110 8.33,-110 4.17,-110 0,-105.83 0,-101.67 0,-101.67 0,-93.33 0,-93.33 0,-89.17 4.17,-85 8.33,-85 8.33,-85 134.67,-85 134.67,-85 138.83,-85 143,-89.17 143,-93.33 143,-93.33 143,-101.67 143,-101.67 143,-105.83 138.83,-110 134.67,-110" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../lib/class_diagram.png" y="-104.5" x="10.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="31.5" text-anchor="start">RichSinkFunction[Event]</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph1_1_0"><g id="a_inheritance|graph1_1_0"><a xlink:title="InfluxSinkFunction is a subtype of RichSinkFunction[Event]"><path d="M119.82,-82.99C156.45,-72.75 206.24,-58.82 241.06,-49.09" stroke="#d4d4d4" fill="none"></path><polygon points="118.77,-80.74 112.68,-84.98 120.09,-85.46 118.77,-80.74" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node trait" id="graph1_2"><g id="a_trait|graph1_2"><a xlink:title="nz.net.wand.streamevmon.flink.HasFlinkConfig" xlink:href="../HasFlinkConfig.html#inheritance-diagram"><path d="M257.67,-110C257.67,-110 169.33,-110 169.33,-110 165.17,-110 161,-105.83 161,-101.67 161,-101.67 161,-93.33 161,-93.33 161,-89.17 165.17,-85 169.33,-85 169.33,-85 257.67,-85 257.67,-85 261.83,-85 266,-89.17 266,-93.33 266,-93.33 266,-101.67 266,-101.67 266,-105.83 261.83,-110 257.67,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="171.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="192.5" text-anchor="start">HasFlinkConfig</text></a></g></g><!-- node2&#45;&gt;node0 --><g class="edge inheritance" id="graph1_2_0"><g id="a_inheritance|graph1_2_0"><a xlink:title="InfluxSinkFunction is a subtype of HasFlinkConfig"><path d="M232.53,-80.23C244.06,-70.37 258.51,-58.01 268.9,-49.13" stroke="#d4d4d4" fill="none"></path><polygon points="230.86,-78.43 227.13,-84.84 234.04,-82.16 230.86,-78.43" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node3 --><g class="node trait" id="graph1_3"><g id="a_trait|graph1_3"><a xlink:title="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction"><path d="M410.67,-110C410.67,-110 292.33,-110 292.33,-110 288.17,-110 284,-105.83 284,-101.67 284,-101.67 284,-93.33 284,-93.33 284,-89.17 288.17,-85 292.33,-85 292.33,-85 410.67,-85 410.67,-85 414.83,-85 419,-89.17 419,-93.33 419,-93.33 419,-101.67 419,-101.67 419,-105.83 414.83,-110 410.67,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="294.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="315.5" text-anchor="start">CheckpointedFunction</text></a></g></g><!-- node3&#45;&gt;node0 --><g class="edge inheritance" id="graph1_3_0"><g id="a_inheritance|graph1_3_0"><a xlink:title="InfluxSinkFunction is a subtype of CheckpointedFunction"><path d="M332.47,-80.23C320.94,-70.37 306.49,-58.01 296.1,-49.13" stroke="#d4d4d4" fill="none"></path><polygon points="330.96,-82.16 337.87,-84.84 334.14,-78.43 330.96,-82.16" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node4 --><g class="node trait" id="graph1_4"><g id="a_trait|graph1_4"><a xlink:title="nz.net.wand.streamevmon.Logging" xlink:href="../../Logging.html#inheritance-diagram"><path d="M505.67,-110C505.67,-110 445.33,-110 445.33,-110 441.17,-110 437,-105.83 437,-101.67 437,-101.67 437,-93.33 437,-93.33 437,-89.17 441.17,-85 445.33,-85 445.33,-85 505.67,-85 505.67,-85 509.83,-85 514,-89.17 514,-93.33 514,-93.33 514,-101.67 514,-101.67 514,-105.83 509.83,-110 505.67,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="447.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="468.5" text-anchor="start">Logging</text></a></g></g><!-- node4&#45;&gt;node0 --><g class="edge inheritance" id="graph1_4_0"><g id="a_inheritance|graph1_4_0"><a xlink:title="InfluxSinkFunction is a subtype of Logging"><path d="M430.88,-82.86C397.42,-72.63 352.12,-58.78 320.4,-49.09" stroke="#d4d4d4" fill="none"></path><polygon points="430.42,-85.28 437.83,-84.98 431.85,-80.59 430.42,-85.28" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
+                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 504.00 155.00" height="155pt" width="504pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 151)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-151 500,-151 500,4 -4,4" stroke="transparent" fill="white"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this class" id="graph1_0"><g id="a_this class|graph1_0"><a xlink:title="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction (this class)" xlink:href="#inheritance-diagram"><path d="M321.17,-86C321.17,-86 207.83,-86 207.83,-86 203.67,-86 199.5,-81.83 199.5,-77.67 199.5,-77.67 199.5,-69.33 199.5,-69.33 199.5,-65.17 203.67,-61 207.83,-61 207.83,-61 321.17,-61 321.17,-61 325.33,-61 329.5,-65.17 329.5,-69.33 329.5,-69.33 329.5,-77.67 329.5,-77.67 329.5,-81.83 325.33,-86 321.17,-86" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../lib/class_diagram.png" y="-80.5" x="209.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-71.1" x="230.5" text-anchor="start">InfluxSinkFunction[T]</text></a></g></g><!-- node1 --><g class="node class" id="graph1_1"><g id="a_class|graph1_1"><a xlink:title="nz.net.wand.streamevmon.flink.sinks.InfluxEventGroupSink" xlink:href="InfluxEventGroupSink.html#inheritance-diagram"><path d="M253.17,-25C253.17,-25 137.83,-25 137.83,-25 133.67,-25 129.5,-20.83 129.5,-16.67 129.5,-16.67 129.5,-8.33 129.5,-8.33 129.5,-4.17 133.67,0 137.83,0 137.83,0 253.17,0 253.17,0 257.33,0 261.5,-4.17 261.5,-8.33 261.5,-8.33 261.5,-16.67 261.5,-16.67 261.5,-20.83 257.33,-25 253.17,-25" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../lib/class_diagram.png" y="-19.5" x="139.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-10.1" x="160.5" text-anchor="start">InfluxEventGroupSink</text></a></g></g><!-- node0&#45;&gt;node1 --><g class="edge inheritance" id="graph1_0_1"><g id="a_inheritance|graph1_0_1"><a xlink:title="InfluxEventGroupSink is a subtype of InfluxSinkFunction[T]"><path d="M245.47,-56.23C233.94,-46.37 219.49,-34.01 209.1,-25.13" stroke="#d4d4d4" fill="none"></path><polygon points="243.96,-58.16 250.87,-60.84 247.14,-54.43 243.96,-58.16" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node class" id="graph1_2"><g id="a_class|graph1_2"><a xlink:title="nz.net.wand.streamevmon.flink.sinks.InfluxEventSink" xlink:href="InfluxEventSink.html#inheritance-diagram"><path d="M378.67,-25C378.67,-25 288.33,-25 288.33,-25 284.17,-25 280,-20.83 280,-16.67 280,-16.67 280,-8.33 280,-8.33 280,-4.17 284.17,0 288.33,0 288.33,0 378.67,0 378.67,0 382.83,0 387,-4.17 387,-8.33 387,-8.33 387,-16.67 387,-16.67 387,-20.83 382.83,-25 378.67,-25" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../lib/class_diagram.png" y="-19.5" x="290.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-10.1" x="311.5" text-anchor="start">InfluxEventSink</text></a></g></g><!-- node0&#45;&gt;node2 --><g class="edge inheritance" id="graph1_0_2"><g id="a_inheritance|graph1_0_2"><a xlink:title="InfluxEventSink is a subtype of InfluxSinkFunction[T]"><path d="M283.53,-56.23C295.06,-46.37 309.51,-34.01 319.9,-25.13" stroke="#d4d4d4" fill="none"></path><polygon points="281.86,-54.43 278.13,-60.84 285.04,-58.16 281.86,-54.43" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node3 --><g class="node class" id="graph1_3"><g id="a_class|graph1_3"><a xlink:title="org.apache.flink.streaming.api.functions.sink.RichSinkFunction"><path d="M116.67,-147C116.67,-147 8.33,-147 8.33,-147 4.17,-147 0,-142.83 0,-138.67 0,-138.67 0,-130.33 0,-130.33 0,-126.17 4.17,-122 8.33,-122 8.33,-122 116.67,-122 116.67,-122 120.83,-122 125,-126.17 125,-130.33 125,-130.33 125,-138.67 125,-138.67 125,-142.83 120.83,-147 116.67,-147" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../lib/class_diagram.png" y="-141.5" x="10.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-132.1" x="31.5" text-anchor="start">RichSinkFunction[T]</text></a></g></g><!-- node3&#45;&gt;node0 --><g class="edge inheritance" id="graph1_3_0"><g id="a_inheritance|graph1_3_0"><a xlink:title="InfluxSinkFunction[T] is a subtype of RichSinkFunction[T]"><path d="M108.76,-119.99C143.83,-109.75 191.5,-95.82 224.83,-86.09" stroke="#d4d4d4" fill="none"></path><polygon points="107.96,-117.67 101.93,-121.98 109.33,-122.37 107.96,-117.67" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node4 --><g class="node trait" id="graph1_4"><g id="a_trait|graph1_4"><a xlink:title="nz.net.wand.streamevmon.flink.HasFlinkConfig" xlink:href="../HasFlinkConfig.html#inheritance-diagram"><path d="M239.67,-147C239.67,-147 151.33,-147 151.33,-147 147.17,-147 143,-142.83 143,-138.67 143,-138.67 143,-130.33 143,-130.33 143,-126.17 147.17,-122 151.33,-122 151.33,-122 239.67,-122 239.67,-122 243.83,-122 248,-126.17 248,-130.33 248,-130.33 248,-138.67 248,-138.67 248,-142.83 243.83,-147 239.67,-147" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-141.5" x="153.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-132.1" x="174.5" text-anchor="start">HasFlinkConfig</text></a></g></g><!-- node4&#45;&gt;node0 --><g class="edge inheritance" id="graph1_4_0"><g id="a_inheritance|graph1_4_0"><a xlink:title="InfluxSinkFunction[T] is a subtype of HasFlinkConfig"><path d="M214.53,-117.23C226.06,-107.37 240.51,-95.01 250.9,-86.13" stroke="#d4d4d4" fill="none"></path><polygon points="212.86,-115.43 209.13,-121.84 216.04,-119.16 212.86,-115.43" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node5 --><g class="node trait" id="graph1_5"><g id="a_trait|graph1_5"><a xlink:title="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction"><path d="M392.67,-147C392.67,-147 274.33,-147 274.33,-147 270.17,-147 266,-142.83 266,-138.67 266,-138.67 266,-130.33 266,-130.33 266,-126.17 270.17,-122 274.33,-122 274.33,-122 392.67,-122 392.67,-122 396.83,-122 401,-126.17 401,-130.33 401,-130.33 401,-138.67 401,-138.67 401,-142.83 396.83,-147 392.67,-147" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-141.5" x="276.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-132.1" x="297.5" text-anchor="start">CheckpointedFunction</text></a></g></g><!-- node5&#45;&gt;node0 --><g class="edge inheritance" id="graph1_5_0"><g id="a_inheritance|graph1_5_0"><a xlink:title="InfluxSinkFunction[T] is a subtype of CheckpointedFunction"><path d="M314.47,-117.23C302.94,-107.37 288.49,-95.01 278.1,-86.13" stroke="#d4d4d4" fill="none"></path><polygon points="312.96,-119.16 319.87,-121.84 316.14,-115.43 312.96,-119.16" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node6 --><g class="node trait" id="graph1_6"><g id="a_trait|graph1_6"><a xlink:title="nz.net.wand.streamevmon.Logging" xlink:href="../../Logging.html#inheritance-diagram"><path d="M487.67,-147C487.67,-147 427.33,-147 427.33,-147 423.17,-147 419,-142.83 419,-138.67 419,-138.67 419,-130.33 419,-130.33 419,-126.17 423.17,-122 427.33,-122 427.33,-122 487.67,-122 487.67,-122 491.83,-122 496,-126.17 496,-130.33 496,-130.33 496,-138.67 496,-138.67 496,-142.83 491.83,-147 487.67,-147" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-141.5" x="429.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-132.1" x="450.5" text-anchor="start">Logging</text></a></g></g><!-- node6&#45;&gt;node0 --><g class="edge inheritance" id="graph1_6_0"><g id="a_inheritance|graph1_6_0"><a xlink:title="InfluxSinkFunction[T] is a subtype of Logging"><path d="M412.88,-119.86C379.42,-109.63 334.12,-95.78 302.4,-86.09" stroke="#d4d4d4" fill="none"></path><polygon points="412.42,-122.28 419.83,-121.98 413.85,-117.59 412.42,-122.28" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
                 <div id="diagram-controls" class="hiddenContent">
                   <button id="diagram-zoom-out" class="diagram-btn"><i class="material-icons"></i></button>
                   <button id="diagram-zoom-in" class="diagram-btn"><i class="material-icons"></i></button>
@@ -277,9 +290,9 @@ Default &quot;streamevmondefault&quot;.
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;():nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction"></a><a id="&lt;init&gt;:InfluxSinkFunction"></a>
+      <a id="&lt;init&gt;()(implicitevidence$1:scala.reflect.ClassTag[T],implicitevidence$2:org.apache.flink.api.common.typeinfo.TypeInformation[T]):nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction[T]"></a><a id="&lt;init&gt;:InfluxSinkFunction[T]"></a>
       <span class="permalink">
-      <a href="../../../../../../nz/net/wand/streamevmon/flink/sinks/InfluxSinkFunction.html#&lt;init&gt;():nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction" title="Permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/flink/sinks/InfluxSinkFunction.html#&lt;init&gt;()(implicitevidence$1:scala.reflect.ClassTag[T],implicitevidence$2:org.apache.flink.api.common.typeinfo.TypeInformation[T]):nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction[T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -288,7 +301,7 @@ Default &quot;streamevmondefault&quot;.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">InfluxSinkFunction</span><span class="params">()</span>
+        <span class="name">InfluxSinkFunction</span><span class="params">()</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/reflect/ClassTag.html#scala.reflect.ClassTag" class="extype" name="scala.reflect.ClassTag">ClassTag</a>[<span class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction.T">T</span>]</span>, <span name="arg1">arg1: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/api/common/typeinfo/TypeInformation.html#org.apache.flink.api.common.typeinfo.TypeInformation" class="extype" name="org.apache.flink.api.common.typeinfo.TypeInformation">TypeInformation</a>[<span class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction.T">T</span>]</span>)</span>
       </span>
       
       
@@ -297,10 +310,45 @@ Default &quot;streamevmondefault&quot;.
 
         
 
-        
+        <div class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction#getInfluxWriter" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="getInfluxWriter(value:T):com.github.fsanaulla.chronicler.core.model.InfluxWriter[T]"></a><a id="getInfluxWriter(T):InfluxWriter[T]"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/flink/sinks/InfluxSinkFunction.html#getInfluxWriter(value:T):com.github.fsanaulla.chronicler.core.model.InfluxWriter[T]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getInfluxWriter</span><span class="params">(<span name="value">value: <span class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction.T">T</span></span>)</span><span class="result">: <span class="extype" name="com.github.fsanaulla.chronicler.core.model.InfluxWriter">InfluxWriter</span>[<span class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction.T">T</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction#measurementName" visbl="prt" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="measurementName(value:T):String"></a><a id="measurementName(T):String"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/flink/sinks/InfluxSinkFunction.html#measurementName(value:T):String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">measurementName</span><span class="params">(<span name="value">value: <span class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction.T">T</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li></ol>
+            </div>
 
         <div class="values members">
-              <h3>Value Members</h3>
+              <h3>Concrete Value Members</h3>
               <ol>
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
@@ -436,7 +484,7 @@ Default &quot;streamevmondefault&quot;.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configWithOverride</span><span class="params">(<span name="context">context: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>)</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>
+        <span class="name">configWithOverride</span><span class="params">(<span name="context">context: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>)</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -452,7 +500,7 @@ Default &quot;streamevmondefault&quot;.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">configWithOverride</span><span class="params">(<span name="config">config: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>)</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>
+        <span class="name">configWithOverride</span><span class="params">(<span name="config">config: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>)</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -553,7 +601,7 @@ Default &quot;streamevmondefault&quot;.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getIterationRuntimeContext</span><span class="params">()</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/IterationRuntimeContext.html#org.apache.flink.api.common.functions.IterationRuntimeContext" class="extype" name="org.apache.flink.api.common.functions.IterationRuntimeContext">IterationRuntimeContext</a></span>
+        <span class="name">getIterationRuntimeContext</span><span class="params">()</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/api/common/functions/IterationRuntimeContext.html#org.apache.flink.api.common.functions.IterationRuntimeContext" class="extype" name="org.apache.flink.api.common.functions.IterationRuntimeContext">IterationRuntimeContext</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd></dl></div>
@@ -569,7 +617,7 @@ Default &quot;streamevmondefault&quot;.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getOverrideParams</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a>]</span>
+        <span class="name">getOverrideParams</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -585,7 +633,7 @@ Default &quot;streamevmondefault&quot;.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getRuntimeContext</span><span class="params">()</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>
+        <span class="name">getRuntimeContext</span><span class="params">()</span><span class="result">: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd></dl></div>
@@ -622,14 +670,14 @@ Default &quot;streamevmondefault&quot;.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">initializeState</span><span class="params">(<span name="context">context: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/runtime/state/FunctionInitializationContext.html#org.apache.flink.runtime.state.FunctionInitializationContext" class="extype" name="org.apache.flink.runtime.state.FunctionInitializationContext">FunctionInitializationContext</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">initializeState</span><span class="params">(<span name="context">context: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/runtime/state/FunctionInitializationContext.html#org.apache.flink.runtime.state.FunctionInitializationContext" class="extype" name="org.apache.flink.runtime.state.FunctionInitializationContext">FunctionInitializationContext</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction">InfluxSinkFunction</a> → CheckpointedFunction</dd></dl></div>
     </li><li name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction#invoke" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="invoke(value:nz.net.wand.streamevmon.events.Event,context:org.apache.flink.streaming.api.functions.sink.SinkFunction.Context):Unit"></a><a id="invoke(Event,Context):Unit"></a>
+      <a id="invoke(value:T,context:org.apache.flink.streaming.api.functions.sink.SinkFunction.Context):Unit"></a><a id="invoke(T,Context):Unit"></a>
       <span class="permalink">
-      <a href="../../../../../../nz/net/wand/streamevmon/flink/sinks/InfluxSinkFunction.html#invoke(value:nz.net.wand.streamevmon.events.Event,context:org.apache.flink.streaming.api.functions.sink.SinkFunction.Context):Unit" title="Permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/flink/sinks/InfluxSinkFunction.html#invoke(value:T,context:org.apache.flink.streaming.api.functions.sink.SinkFunction.Context):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -638,7 +686,7 @@ Default &quot;streamevmondefault&quot;.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">invoke</span><span class="params">(<span name="value">value: <a href="../../events/Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a></span>, <span name="context">context: <span class="extype" name="org.apache.flink.streaming.api.functions.sink.SinkFunction.Context">Context</span></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">invoke</span><span class="params">(<span name="value">value: <span class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction.T">T</span></span>, <span name="context">context: <span class="extype" name="org.apache.flink.streaming.api.functions.sink.SinkFunction.Context">Context</span></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <p class="shortcomment cmt">Called when new data arrives to the sink, and passes it to InfluxDB.</p><div class="fullcomment"><div class="comment cmt"><p>Called when new data arrives to the sink, and passes it to InfluxDB.
@@ -748,7 +796,7 @@ Default &quot;streamevmondefault&quot;.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">open</span><span class="params">(<span name="parameters">parameters: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/configuration/Configuration.html#org.apache.flink.configuration.Configuration" class="extype" name="org.apache.flink.configuration.Configuration">Configuration</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">open</span><span class="params">(<span name="parameters">parameters: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/configuration/Configuration.html#org.apache.flink.configuration.Configuration" class="extype" name="org.apache.flink.configuration.Configuration">Configuration</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <p class="shortcomment cmt">Initialisation method for RichFunctions.</p><div class="fullcomment"><div class="comment cmt"><p>Initialisation method for RichFunctions. Occurs before any calls to <code>invoke()</code>.
@@ -765,7 +813,7 @@ Default &quot;streamevmondefault&quot;.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">overrideConfig</span><span class="params">(<span name="config">config: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>)</span><span class="result">: <a href="" class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction">InfluxSinkFunction</a>.this.type</span>
+        <span class="name">overrideConfig</span><span class="params">(<span name="config">config: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a></span>)</span><span class="result">: <a href="" class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction">InfluxSinkFunction</a>.this.type</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -797,7 +845,7 @@ Default &quot;streamevmondefault&quot;.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">overrideParams</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a>]</span>
+        <span class="name">overrideParams</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/api/java/utils/ParameterTool.html#org.apache.flink.api.java.utils.ParameterTool" class="extype" name="org.apache.flink.api.java.utils.ParameterTool">ParameterTool</a>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></dd></dl></div>
@@ -813,7 +861,7 @@ Default &quot;streamevmondefault&quot;.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">setRuntimeContext</span><span class="params">(<span name="arg0">arg0: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">setRuntimeContext</span><span class="params">(<span name="arg0">arg0: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/api/common/functions/RuntimeContext.html#org.apache.flink.api.common.functions.RuntimeContext" class="extype" name="org.apache.flink.api.common.functions.RuntimeContext">RuntimeContext</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AbstractRichFunction → RichFunction</dd></dl></div>
@@ -829,7 +877,7 @@ Default &quot;streamevmondefault&quot;.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">snapshotState</span><span class="params">(<span name="context">context: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/runtime/state/FunctionSnapshotContext.html#org.apache.flink.runtime.state.FunctionSnapshotContext" class="extype" name="org.apache.flink.runtime.state.FunctionSnapshotContext">FunctionSnapshotContext</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">snapshotState</span><span class="params">(<span name="context">context: <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/runtime/state/FunctionSnapshotContext.html#org.apache.flink.runtime.state.FunctionSnapshotContext" class="extype" name="org.apache.flink.runtime.state.FunctionSnapshotContext">FunctionSnapshotContext</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction">InfluxSinkFunction</a> → CheckpointedFunction</dd></dl></div>
@@ -966,7 +1014,7 @@ Default &quot;streamevmondefault&quot;.
               
         </dd><dt>Deprecated</dt><dd class="cmt"></dd></dl></div>
     </li><li name="org.apache.flink.streaming.api.functions.sink.SinkFunction#invoke" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="invoke(x$1:IN):Unit"></a><a id="invoke(Event):Unit"></a>
+      <a id="invoke(x$1:IN):Unit"></a><a id="invoke(T):Unit"></a>
       <span class="permalink">
       <a href="../../../../../../nz/net/wand/streamevmon/flink/sinks/InfluxSinkFunction.html#invoke(x$1:IN):Unit" title="Permalink">
         <i class="material-icons"></i>
@@ -977,7 +1025,7 @@ Default &quot;streamevmondefault&quot;.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name deprecated" title="Deprecated: ">invoke</span><span class="params">(<span name="arg0">arg0: <a href="../../events/Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name deprecated" title="Deprecated: ">invoke</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction.T">T</span></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>SinkFunction</dd><dt>Annotations</dt><dd>
@@ -997,19 +1045,19 @@ Default &quot;streamevmondefault&quot;.
         <div class="parent" name="nz.net.wand.streamevmon.Logging">
               <h3>Inherited from <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></h3>
             </div><div class="parent" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">
-              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/streaming/api/checkpoint/CheckpointedFunction.html#org.apache.flink.streaming.api.checkpoint.CheckpointedFunction" class="extype" name="org.apache.flink.streaming.api.checkpoint.CheckpointedFunction">CheckpointedFunction</a></h3>
             </div><div class="parent" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">
               <h3>Inherited from <a href="../HasFlinkConfig.html" class="extype" name="nz.net.wand.streamevmon.flink.HasFlinkConfig">HasFlinkConfig</a></h3>
             </div><div class="parent" name="org.apache.flink.streaming.api.functions.sink.RichSinkFunction">
-              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/sink/RichSinkFunction.html#org.apache.flink.streaming.api.functions.sink.RichSinkFunction" class="extype" name="org.apache.flink.streaming.api.functions.sink.RichSinkFunction">RichSinkFunction</a>[<a href="../../events/Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>]</h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/streaming/api/functions/sink/RichSinkFunction.html#org.apache.flink.streaming.api.functions.sink.RichSinkFunction" class="extype" name="org.apache.flink.streaming.api.functions.sink.RichSinkFunction">RichSinkFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction.T">T</span>]</h3>
             </div><div class="parent" name="org.apache.flink.streaming.api.functions.sink.SinkFunction">
-              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/streaming/api/functions/sink/SinkFunction.html#org.apache.flink.streaming.api.functions.sink.SinkFunction" class="extype" name="org.apache.flink.streaming.api.functions.sink.SinkFunction">SinkFunction</a>[<a href="../../events/Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>]</h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/streaming/api/functions/sink/SinkFunction.html#org.apache.flink.streaming.api.functions.sink.SinkFunction" class="extype" name="org.apache.flink.streaming.api.functions.sink.SinkFunction">SinkFunction</a>[<span class="extype" name="nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction.T">T</span>]</h3>
             </div><div class="parent" name="org.apache.flink.api.common.functions.AbstractRichFunction">
-              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/AbstractRichFunction.html#org.apache.flink.api.common.functions.AbstractRichFunction" class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</a></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/api/common/functions/AbstractRichFunction.html#org.apache.flink.api.common.functions.AbstractRichFunction" class="extype" name="org.apache.flink.api.common.functions.AbstractRichFunction">AbstractRichFunction</a></h3>
             </div><div class="parent" name="org.apache.flink.api.common.functions.RichFunction">
-              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/RichFunction.html#org.apache.flink.api.common.functions.RichFunction" class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</a></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/api/common/functions/RichFunction.html#org.apache.flink.api.common.functions.RichFunction" class="extype" name="org.apache.flink.api.common.functions.RichFunction">RichFunction</a></h3>
             </div><div class="parent" name="org.apache.flink.api.common.functions.Function">
-              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.12/api/java/org/apache/flink/api/common/functions/Function.html#org.apache.flink.api.common.functions.Function" class="extype" name="org.apache.flink.api.common.functions.Function">Function</a></h3>
+              <h3>Inherited from <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/api/java/org/apache/flink/api/common/functions/Function.html#org.apache.flink.api.common.functions.Function" class="extype" name="org.apache.flink.api.common.functions.Function">Function</a></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
             </div><div class="parent" name="scala.AnyRef">
