@@ -24,3 +24,4 @@ jobs:
         with:
           branch: gh-pages
           folder: target/scala-2.12/api
+          token: ${{ secrets.PRIVILEGED_GITHUB_TOKEN }}
