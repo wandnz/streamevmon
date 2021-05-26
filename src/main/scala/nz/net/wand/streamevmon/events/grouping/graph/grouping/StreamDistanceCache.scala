@@ -43,10 +43,6 @@ import scala.collection.JavaConverters._
   * [[DistanceBetweenStreams]] to calculate the distance. When an unrecognised
   * stream is added, relevant distances are recalculated. No calculations occur
   * if a recognised stream is added.
-  *
-  * // TODO: This actually needs to be fully recalculated every so often,
-  * since the graph can change over time. We'll need to add stuff like a
-  * recalculation timer with config and all that jazz.
   */
 class StreamDistanceCache extends CheckpointedFunction with Serializable {
   type MetaT = MeasurementMeta
@@ -68,6 +64,18 @@ class StreamDistanceCache extends CheckpointedFunction with Serializable {
       addNewStream(graph, meta)
     }
     lastSeenTimes.put(meta, eventTime)
+  }
+
+  def recalculateAllDistances(graph: GraphT): Unit = {
+    knownDistances
+      .foreach { case (pair, _) =>
+        knownDistances.put(pair, DistanceBetweenStreams.get(graph, pair.getFirst, pair.getSecond))
+      }
+  }
+
+  def clear(): Unit = {
+    lastSeenTimes.clear()
+    knownDistances.clear()
   }
 
   private var lastSeenState: ListState[(MetaT, Instant)] = _
