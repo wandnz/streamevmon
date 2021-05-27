@@ -20,3 +20,6 @@ eventGrouping:
     exportLocation: /tmp/graph-export.dot
   time:
     maximumEventInterval: 10
+  topological:
+    recalculateDistancesCount: 500
+    recalculateDistancesTime: 43200

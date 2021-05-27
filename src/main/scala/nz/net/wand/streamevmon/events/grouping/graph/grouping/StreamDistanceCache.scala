@@ -78,6 +78,34 @@ class StreamDistanceCache extends CheckpointedFunction with Serializable {
     knownDistances.clear()
   }
 
+  def getDistancesFor(meta: MetaT): Map[MetaT, StreamDistance] = {
+    knownDistances
+      .filter { case (metas, _) => metas.hasElement(meta) }
+      .map { case (metas, value) =>
+        (
+          if (metas.getFirst == meta) {
+            metas.getSecond
+          }
+          else {
+            metas.getFirst
+          },
+          value
+        )
+      }
+      .toMap
+  }
+
+  def getDistanceBetween(a: MetaT, b: MetaT): Option[StreamDistance] = {
+    if (a == b) {
+      Some(StreamDistance.ZERO)
+    }
+    else {
+      knownDistances.get(new PairT(a, b))
+    }
+  }
+
+  // == CheckpointedFunction implementation ==
+
   private var lastSeenState: ListState[(MetaT, Instant)] = _
   private var distancesState: ListState[(PairT, StreamDistance)] = _
 

@@ -28,10 +28,11 @@ package nz.net.wand.streamevmon.events.grouping.graph.grouping
 
 import nz.net.wand.streamevmon.events.grouping.EventGroup
 import nz.net.wand.streamevmon.events.grouping.graph.building.{BuildsGraph, GraphChangeEvent}
+import nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.MeasurementEndMarker
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.traits.MeasurementMeta
 
-import java.time.Instant
+import java.time.{Duration, Instant}
 
 import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
@@ -48,21 +49,37 @@ class TopologicalDistanceGrouper
   override val flinkUid: String = "event-grouping-topological-distance"
   override val configKeyGroup: String = "eventGrouping.topological"
 
+  /** All distances are recalculated after this many measurements */
+  @transient lazy val recalculateDistancesCount: Long = configWithOverride(getRuntimeContext)
+    .getLong(s"$configKeyGroup.recalculateDistancesCount")
+
+  /** All distances are recalculated after this many seconds */
+  @transient lazy val recalculateDistancesTime: Duration =
+  Duration.ofSeconds(configWithOverride(getRuntimeContext).getLong(s"$configKeyGroup.recalculateDistancesTime"))
+
+  @transient var lastRecalcTime: Instant = Instant.EPOCH
+  @transient var measurementsSinceLastRecalc: Long = 0
+
   val distanceCache = new StreamDistanceCache()
+
+  protected def doRecalculateDistances(eventTime: Instant): Unit = {
+    distanceCache.recalculateAllDistances(graph)
+    lastRecalcTime = eventTime
+    measurementsSinceLastRecalc = 0
+  }
 
   override def processElement1(
     value: (EventGroup, MeasurementMeta),
     ctx  : CoProcessFunction[(EventGroup, MeasurementMeta), GraphChangeEvent, EventGroup]#Context,
     out  : Collector[EventGroup]
   ): Unit = {
+    // First, ensure the stream is in our distance cache.
+    distanceCache.receiveStream(graph, value._2, Instant.ofEpochMilli(ctx.timestamp))
+
     // First, we should approximate a location on the graph that a stream
     // belongs to.
     // If we have a cached copy of that determination, we should use it.
     // Otherwise, find a new one.
-    distanceCache.receiveStream(graph, value._2, Instant.ofEpochMilli(ctx.timestamp))
-
-    println(distanceCache.lastSeenTimes.size)
-    println(distanceCache.knownDistances.size)
 
     // Now that we know where the event occurred, we should find events that
     // occurred nearby.
@@ -89,6 +106,27 @@ class TopologicalDistanceGrouper
     out  : Collector[EventGroup]
   ): Unit = {
     receiveGraphChangeEvent(value)
+
+    value match {
+      case MeasurementEndMarker(time) =>
+        measurementsSinceLastRecalc += 1
+        if (measurementsSinceLastRecalc >= recalculateDistancesCount) {
+          doRecalculateDistances(time)
+        }
+        else {
+          lastRecalcTime match {
+            // If it's been long enough since the last time we recalculated all
+            // the distances, go ahead and do it again.
+            // This also happens on the first measurement since the operator
+            // was created or restored.
+            case _ if Duration.between(lastRecalcTime, time).compareTo(recalculateDistancesTime) > 0 =>
+              doRecalculateDistances(time)
+            // Otherwise, do nothing.
+            case _ =>
+          }
+        }
+      case _ =>
+    }
   }
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {
@@ -99,5 +137,8 @@ class TopologicalDistanceGrouper
   override def initializeState(context: FunctionInitializationContext): Unit = {
     initializeGraphState(context)
     distanceCache.initializeState(context)
+
+    // We don't restore either of the distance-recalc timers, so the next
+    // GraphChangeEvent that comes through is guaranteed to trigger one.
   }
 }

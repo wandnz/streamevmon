@@ -102,5 +102,47 @@ class DistanceCachingTest extends StreamDistanceTests with HarnessingTest {
       c.lastSeenTimes shouldBe empty
       c.knownDistances shouldBe empty
     }
+
+    "get distance entries given one key" in {
+      val g = makeGraph()
+      val c = new StreamDistanceCache
+      c.receiveStream(g, metaOf(baseSource, baseDest), Instant.ofEpochSecond(currentTime))
+      currentTime += 1
+      c.receiveStream(g, metaOf(nearSource, nearDest), Instant.ofEpochSecond(currentTime))
+      currentTime += 1
+      c.receiveStream(g, metaOf(farSource, farDest), Instant.ofEpochSecond(currentTime))
+      currentTime += 1
+
+      val result = c.getDistancesFor(metaOf(baseSource, baseDest))
+      result should have size 2
+      result.keys should contain(metaOf(nearSource, nearDest))
+      result.keys should contain(metaOf(farSource, farDest))
+
+      c.getDistancesFor(metaOf(baseSource, farDest)) shouldBe empty
+    }
+
+    "get a distance entry given two keys" in {
+      val g = makeGraph()
+      val c = new StreamDistanceCache
+      c.receiveStream(g, metaOf(baseSource, baseDest), Instant.ofEpochSecond(currentTime))
+      currentTime += 1
+      c.receiveStream(g, metaOf(nearSource, nearDest), Instant.ofEpochSecond(currentTime))
+      currentTime += 1
+      c.receiveStream(g, metaOf(farSource, farDest), Instant.ofEpochSecond(currentTime))
+      currentTime += 1
+
+      // valid
+      c.getDistanceBetween(metaOf(baseSource, baseDest), metaOf(nearSource, nearDest)) should not be None
+      // swapped
+      c.getDistanceBetween(metaOf(nearSource, nearDest), metaOf(baseSource, baseDest)) should not be None
+      // one invalid
+      c.getDistanceBetween(metaOf(baseSource, baseDest), metaOf(baseSource, farDest)) shouldBe None
+      // one invalid, swapped
+      c.getDistanceBetween(metaOf(baseSource, farDest), metaOf(baseSource, baseDest)) shouldBe None
+      // two invalid
+      c.getDistanceBetween(metaOf(baseSource, nearDest), metaOf(baseSource, farDest)) shouldBe None
+      // same
+      c.getDistanceBetween(metaOf(baseSource, baseDest), metaOf(baseSource, baseDest)) shouldBe Some(StreamDistance.ZERO)
+    }
   }
 }
