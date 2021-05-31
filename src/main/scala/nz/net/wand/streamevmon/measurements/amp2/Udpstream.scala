@@ -1,0 +1,58 @@
+/* This file is part of streamevmon.
+ *
+ * Copyright (C) 2021  The University of Waikato, Hamilton, New Zealand
+ *
+ * Author: Daniel Oosterwijk
+ *
+ * All rights reserved.
+ *
+ * This code has been developed by the University of Waikato WAND
+ * research group. For further information please see https://wand.nz,
+ * or our Github organisation at https://github.com/wanduow
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package nz.net.wand.streamevmon.measurements.amp2
+
+import java.time.Instant
+
+case class Udpstream(
+  source: String,
+  destination: String,
+  test: String,
+  time: Instant,
+  direction: Direction,
+  dscp: String,
+  family: String,
+  packet_count: Int,
+  packet_size: Int,
+  packet_spacing: Int,
+  count: Option[Int],
+  jitter: Option[Int],
+  loss: Option[Float],
+  mos: Option[Float],
+  rtt: Option[Int]
+) extends Amp2Measurement {
+  override val measurementName: String = Udpstream.measurementName
+  override val tags: Seq[Any] = Seq(direction, dscp, family, packet_count, packet_size, packet_spacing)
+
+  override var defaultValue: Option[Double] = rtt.map(_.toDouble)
+}
+
+object Udpstream {
+  val measurementName = "udpstream"
+
+  def createFromLineProtocol(line: String): Option[Udpstream] = ???
+}
