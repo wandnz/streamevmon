@@ -26,6 +26,8 @@
 
 package nz.net.wand.streamevmon.measurements.amp2
 
+import nz.net.wand.streamevmon.connectors.influx.LineProtocol
+
 import java.time.Instant
 
 case class Pathlen(
@@ -33,11 +35,11 @@ case class Pathlen(
   destination: String,
   test: String,
   time: Instant,
-  dscp  : String,
+  dscp: String,
   family: String,
-  packet_size: Int,
+  packet_size: Long,
   random: Boolean,
-  length: Option[Int],
+  length: Option[Long],
 ) extends Amp2Measurement {
   override val measurementName: String = Pathlen.measurementName
   override val tags: Seq[Any] = Seq(dscp, family, packet_size, random)
@@ -48,5 +50,22 @@ case class Pathlen(
 object Pathlen {
   val measurementName = "pathlen"
 
-  def createFromLineProtocol(line: String): Option[Pathlen] = ???
+  def create(proto: LineProtocol): Option[Pathlen] = {
+    if (proto.measurementName != measurementName) {
+      None
+    }
+    else {
+      Some(Pathlen(
+        proto.tags("source"),
+        proto.tags("destination"),
+        proto.tags("test"),
+        proto.time,
+        proto.tags("dscp"),
+        proto.tags("family"),
+        proto.getTagAsLong("packet_size"),
+        proto.getTagAsBoolean("random"),
+        proto.getFieldAsLong("length")
+      ))
+    }
+  }
 }

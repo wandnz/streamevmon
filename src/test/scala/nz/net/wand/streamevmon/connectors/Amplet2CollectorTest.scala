@@ -26,11 +26,13 @@
 
 package nz.net.wand.streamevmon.connectors
 
+import nz.net.wand.streamevmon.connectors.influx.LineProtocol
 import nz.net.wand.streamevmon.measurements.amp2.Amp2Measurement
 import nz.net.wand.streamevmon.test.TestBase
 
 import java.util.zip.GZIPInputStream
 
+import scala.collection.mutable
 import scala.compat.Platform.EOL
 import scala.io.Source
 
@@ -66,10 +68,25 @@ class Amplet2CollectorTest extends TestBase {
 
   "Amp2 entries" should {
     "be processed without errors" in {
+      val typeMap: mutable.Map[String, Int] = mutable.Map()
+
       getEntriesFromExport
-        .foreach { line =>
+        .zipWithIndex
+        .foreach { case (line, index) =>
+          if (index % 10000 == 0) {
+            println(typeMap.values.sum, typeMap.toList.sortBy(_._1))
+          }
           withClue(s"$line$EOL") {
-            Amp2Measurement.createFromLineProtocol(line) should not be None
+            val proto = LineProtocol(line)
+            val meas = Amp2Measurement.createFromLineProtocol(line)
+            meas should not be None
+
+            if (typeMap.contains(meas.get.getClass.getSimpleName)) {
+              typeMap.put(meas.get.getClass.getSimpleName, typeMap(meas.get.getClass.getSimpleName) + 1)
+            }
+            else {
+              typeMap.put(meas.get.getClass.getSimpleName, 1)
+            }
           }
         }
     }

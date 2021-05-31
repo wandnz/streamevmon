@@ -26,6 +26,7 @@
 
 package nz.net.wand.streamevmon.measurements.amp2
 
+import nz.net.wand.streamevmon.connectors.influx.LineProtocol
 import nz.net.wand.streamevmon.measurements.traits.{HasDefault, Measurement}
 
 trait Amp2Measurement extends Measurement with HasDefault {
@@ -52,12 +53,20 @@ trait Amp2Measurement extends Measurement with HasDefault {
 
 object Amp2Measurement {
   def createFromLineProtocol(line: String): Option[Amp2Measurement] = {
-    line.substring(0, line.indexOf(',')) match {
-      case Http.measurementName => Http.createFromLineProtocol(line: String)
-      case Latency.measurementName => Latency.createFromLineProtocol(line: String)
-      case Pathlen.measurementName => Pathlen.createFromLineProtocol(line: String)
-      case Traceroute.measurementName => Traceroute.createFromLineProtocol(line: String)
-      case _ => None
+    val proto = LineProtocol(line)
+    proto.flatMap { p =>
+      p.measurementName match {
+        case External.measurementName => External.create(p)
+        case Fastping.measurementName => Fastping.create(p)
+        case Http.measurementName => Http.create(p)
+        case Latency.measurementName => Latency.create(p)
+        case Pathlen.measurementName => Pathlen.create(p)
+        case Throughput.measurementName => Throughput.create(p)
+        case Traceroute.measurementName => Traceroute.create(p)
+        case Udpstream.measurementName => Udpstream.create(p)
+        case Video.measurementName => Video.create(p)
+        case _ => None
+      }
     }
   }
 }

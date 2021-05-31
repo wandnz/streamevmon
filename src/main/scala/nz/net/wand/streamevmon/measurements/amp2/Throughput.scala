@@ -26,22 +26,24 @@
 
 package nz.net.wand.streamevmon.measurements.amp2
 
+import nz.net.wand.streamevmon.connectors.influx.LineProtocol
+
 import java.time.Instant
 
 case class Throughput(
   source: String,
   destination: String,
-  test: String,
+  test  : String,
   time: Instant,
   direction: Direction,
   dscp: String,
   family: String,
   protocol: String,
-  write_size: Int,
-  bytes: Option[Int],
-  count: Option[Int],
+  write_size: Long,
+  bytes : Option[Long],
+  count : Option[Long],
   duration: Option[String],
-  runtime: Option[Float]
+  runtime: Option[Double]
 ) extends Amp2Measurement {
   override val measurementName: String = Throughput.measurementName
   override val tags: Seq[Any] = Seq(direction, dscp, family, protocol, write_size)
@@ -59,5 +61,26 @@ object Throughput {
 
   val measurementName = "throughput"
 
-  def createFromLineProtocol(line: String): Option[Throughput] = ???
+  def create(proto: LineProtocol): Option[Throughput] = {
+    if (proto.measurementName != measurementName) {
+      None
+    }
+    else {
+      Some(Throughput(
+        proto.tags("source"),
+        proto.tags("destination"),
+        proto.tags("test"),
+        proto.time,
+        proto.getTagAsDirection("direction"),
+        proto.tags("dscp"),
+        proto.tags("family"),
+        proto.tags("protocol"),
+        proto.getTagAsLong("write_size"),
+        proto.getFieldAsLong("bytes"),
+        proto.getFieldAsLong("count"),
+        proto.fields.get("duration"),
+        proto.getFieldAsDouble("runtime")
+      ))
+    }
+  }
 }

@@ -26,24 +26,26 @@
 
 package nz.net.wand.streamevmon.measurements.amp2
 
+import nz.net.wand.streamevmon.connectors.influx.LineProtocol
+
 import java.time.Instant
 
 case class Udpstream(
   source: String,
   destination: String,
-  test: String,
+  test  : String,
   time: Instant,
   direction: Direction,
   dscp: String,
   family: String,
-  packet_count: Int,
-  packet_size: Int,
-  packet_spacing: Int,
-  count: Option[Int],
-  jitter: Option[Int],
-  loss: Option[Float],
-  mos: Option[Float],
-  rtt: Option[Int]
+  packet_count: Long,
+  packet_size: Long,
+  packet_spacing: Long,
+  count : Option[Long],
+  jitter: Option[Long],
+  loss  : Option[Double],
+  mos   : Option[Double],
+  rtt   : Option[Long]
 ) extends Amp2Measurement {
   override val measurementName: String = Udpstream.measurementName
   override val tags: Seq[Any] = Seq(direction, dscp, family, packet_count, packet_size, packet_spacing)
@@ -54,5 +56,28 @@ case class Udpstream(
 object Udpstream {
   val measurementName = "udpstream"
 
-  def createFromLineProtocol(line: String): Option[Udpstream] = ???
+  def create(proto: LineProtocol): Option[Udpstream] = {
+    if (proto.measurementName != measurementName) {
+      None
+    }
+    else {
+      Some(Udpstream(
+        proto.tags("source"),
+        proto.tags("destination"),
+        proto.tags("test"),
+        proto.time,
+        proto.getTagAsDirection("direction"),
+        proto.tags("dscp"),
+        proto.tags("family"),
+        proto.getTagAsLong("packet_count"),
+        proto.getTagAsLong("packet_size"),
+        proto.getTagAsLong("packet_spacing"),
+        proto.getFieldAsLong("count"),
+        proto.getFieldAsLong("jitter"),
+        proto.getFieldAsDouble("loss"),
+        proto.getFieldAsDouble("mos"),
+        proto.getFieldAsLong("rtt")
+      ))
+    }
+  }
 }

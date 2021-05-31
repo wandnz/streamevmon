@@ -30,50 +30,46 @@ import nz.net.wand.streamevmon.connectors.influx.LineProtocol
 
 import java.time.Instant
 
-case class Fastping(
+case class LatencyDns(
   source: String,
   destination: String,
   test: String,
   time: Instant,
   dscp: String,
   family: String,
-  packet_count: Long,
-  packet_rate: Long,
-  packet_size: Long,
+  query: String,
   count: Option[Long],
-  jitter: Option[Long],
-  loss_percent: Option[Double],
-  rtt: Option[Long]
-) extends Amp2Measurement {
-  override val measurementName: String = Fastping.measurementName
-  override val tags: Seq[Any] = Seq(dscp, family, packet_count, packet_rate, packet_size)
-
-  override var defaultValue: Option[Double] = rtt.map(_.toDouble)
+  error_code: Option[Long],
+  error_type: Option[Long],
+  icmpcode: Option[Long],
+  icmptype: Option[Long],
+  loss: Option[Long],
+  rtt: Option[Long],
+) extends Latency(
+  source, destination, test, time, dscp, family, count, error_code, error_type, icmpcode, icmptype, loss, rtt
+) {
+  override val tags: Seq[Any] = Seq(dscp, family, query)
 }
 
-object Fastping {
-  val measurementName = "fastping"
+object LatencyDns {
+  val measurementName: String = Latency.measurementName
 
-  def create(proto: LineProtocol): Option[Fastping] = {
-    if (proto.measurementName != measurementName) {
-      None
-    }
-    else {
-      Some(Fastping(
-        proto.tags("source"),
-        proto.tags("destination"),
-        proto.tags("test"),
-        proto.time,
-        proto.tags("dscp"),
-        proto.tags("family"),
-        proto.getTagAsLong("packet_count"),
-        proto.getTagAsLong("packet_rate"),
-        proto.getTagAsLong("packet_size"),
-        proto.getFieldAsLong("count"),
-        proto.getFieldAsLong("jitter"),
-        proto.getFieldAsDouble("loss_percent"),
-        proto.getFieldAsLong("rtt"),
-      ))
-    }
+  def create(proto: LineProtocol): Option[LatencyDns] = {
+    Some(LatencyDns(
+      proto.tags("source"),
+      proto.tags("destination"),
+      proto.tags("test"),
+      proto.time,
+      proto.tags("dscp"),
+      proto.tags("family"),
+      proto.tags("query"),
+      proto.getFieldAsLong("count"),
+      proto.getFieldAsLong("error_code"),
+      proto.getFieldAsLong("error_type"),
+      proto.getFieldAsLong("icmpcode"),
+      proto.getFieldAsLong("icmptype"),
+      proto.getFieldAsLong("loss"),
+      proto.getFieldAsLong("rtt"),
+    ))
   }
 }

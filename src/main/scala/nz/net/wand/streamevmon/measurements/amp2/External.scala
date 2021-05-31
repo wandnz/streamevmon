@@ -26,6 +26,8 @@
 
 package nz.net.wand.streamevmon.measurements.amp2
 
+import nz.net.wand.streamevmon.connectors.influx.LineProtocol
+
 import java.time.Instant
 
 case class External(
@@ -34,8 +36,8 @@ case class External(
   test: String,
   time: Instant,
   command: String,
-  count: Option[Int],
-  value: Option[Int]
+  count: Option[Long],
+  value: Option[Long]
 ) extends Amp2Measurement {
   override val measurementName: String = External.measurementName
   override val tags: Seq[Any] = Seq(command)
@@ -46,5 +48,20 @@ case class External(
 object External {
   val measurementName = "external"
 
-  def createFromLineProtocol(line: String): Option[External] = ???
+  def create(proto: LineProtocol): Option[External] = {
+    if (proto.measurementName != measurementName) {
+      None
+    }
+    else {
+      Some(External(
+        proto.tags("source"),
+        proto.tags("destination"),
+        proto.tags("test"),
+        proto.time,
+        proto.tags("command"),
+        proto.getFieldAsLong("count"),
+        proto.getFieldAsLong("value")
+      ))
+    }
+  }
 }

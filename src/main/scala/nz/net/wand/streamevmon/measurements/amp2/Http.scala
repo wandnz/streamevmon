@@ -26,19 +26,21 @@
 
 package nz.net.wand.streamevmon.measurements.amp2
 
+import nz.net.wand.streamevmon.connectors.influx.LineProtocol
+
 import java.time.Instant
 
 case class Http(
   source: String,
   destination: String,
-  test: String,
+  test : String,
   time: Instant,
   caching: String,
-  bytes: Option[Int],
-  count: Option[Int],
-  duration: Option[Int],
-  object_count: Option[Int],
-  server_count: Option[Int],
+  bytes: Option[Long],
+  count: Option[Long],
+  duration: Option[Long],
+  object_count: Option[Long],
+  server_count: Option[Long],
 ) extends Amp2Measurement {
   override val measurementName: String = Http.measurementName
   override val tags: Seq[Any] = Seq(caching)
@@ -49,5 +51,23 @@ case class Http(
 object Http {
   val measurementName = "http"
 
-  def createFromLineProtocol(line: String): Option[Http] = ???
+  def create(proto: LineProtocol): Option[Http] = {
+    if (proto.measurementName != measurementName) {
+      None
+    }
+    else {
+      Some(Http(
+        proto.tags("source"),
+        proto.tags("destination"),
+        proto.tags("test"),
+        proto.time,
+        proto.tags("caching"),
+        proto.getFieldAsLong("bytes"),
+        proto.getFieldAsLong("count"),
+        proto.getFieldAsLong("duration"),
+        proto.getFieldAsLong("object_count"),
+        proto.getFieldAsLong("server_count"),
+      ))
+    }
+  }
 }

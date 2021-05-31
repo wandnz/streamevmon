@@ -26,21 +26,23 @@
 
 package nz.net.wand.streamevmon.measurements.amp2
 
+import nz.net.wand.streamevmon.connectors.influx.LineProtocol
+
 import java.time.Instant
 
 case class Video(
-  source : String,
+  source: String,
   destination: String,
   test: String,
   time: Instant,
   requested_quality: String,
-  actual_quality: Option[Int],
-  count: Option[Int],
-  initial_buffering: Option[Int],
-  playing_time: Option[Int],
-  pre_time: Option[Int],
-  stall_count: Option[Int],
-  stall_time: Option[Int]
+  actual_quality: Option[Long],
+  count: Option[Long],
+  initial_buffering: Option[Long],
+  playing_time: Option[Long],
+  pre_time: Option[Long],
+  stall_count: Option[Long],
+  stall_time: Option[Long]
 ) extends Amp2Measurement {
   override val measurementName: String = Video.measurementName
   override val tags: Seq[Any] = Seq(requested_quality)
@@ -51,5 +53,25 @@ case class Video(
 object Video {
   val measurementName = "video"
 
-  def createFromLineProtocol(line: String): Option[Video] = ???
+  def create(proto: LineProtocol): Option[Video] = {
+    if (proto.measurementName != measurementName) {
+      None
+    }
+    else {
+      Some(Video(
+        proto.tags("source"),
+        proto.tags("destination"),
+        proto.tags("test"),
+        proto.time,
+        proto.tags("requested_quality"),
+        proto.getFieldAsLong("actual_quality"),
+        proto.getFieldAsLong("count"),
+        proto.getFieldAsLong("initial_buffering"),
+        proto.getFieldAsLong("playing_time"),
+        proto.getFieldAsLong("pre_time"),
+        proto.getFieldAsLong("stall_count"),
+        proto.getFieldAsLong("stall_time"),
+      ))
+    }
+  }
 }

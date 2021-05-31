@@ -26,29 +26,26 @@
 
 package nz.net.wand.streamevmon.measurements.amp2
 
+import nz.net.wand.streamevmon.connectors.influx.LineProtocol
+
 import java.time.Instant
 
-case class Latency(
+abstract class Latency(
   source: String,
   destination: String,
   test: String,
   time: Instant,
   dscp: String,
   family: String,
-  packet_size: Int,
-  port: Int,
-  query: String,
-  random: String,
-  count: Option[Int],
-  error_code: Option[Int],
-  error_type: Option[Int],
-  icmpcode  : Option[Int],
-  icmptype  : Option[Int],
-  loss      : Option[Int],
-  rtt: Option[Int],
+  count: Option[Long],
+  error_code: Option[Long],
+  error_type: Option[Long],
+  icmpcode  : Option[Long],
+  icmptype  : Option[Long],
+  loss      : Option[Long],
+  rtt       : Option[Long],
 ) extends Amp2Measurement {
   override val measurementName: String = Latency.measurementName
-  override val tags: Seq[Any] = Seq(dscp, family, packet_size, port, query, random)
 
   override var defaultValue: Option[Double] = rtt.map(_.toDouble)
 }
@@ -56,5 +53,15 @@ case class Latency(
 object Latency {
   val measurementName = "latency"
 
-  def createFromLineProtocol(line: String): Option[Latency] = ???
+  def create(proto: LineProtocol): Option[Latency] =
+    if (proto.measurementName != measurementName) {
+      None
+    }
+    else {
+      proto.tags("test") match {
+        case "dns" => LatencyDns.create(proto)
+        case "icmp" => LatencyIcmp.create(proto)
+        case "tcpping" => LatencyTcpping.create(proto)
+      }
+    }
 }

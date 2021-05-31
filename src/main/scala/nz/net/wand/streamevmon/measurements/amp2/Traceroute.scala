@@ -26,20 +26,22 @@
 
 package nz.net.wand.streamevmon.measurements.amp2
 
+import nz.net.wand.streamevmon.connectors.influx.LineProtocol
+
 import java.time.Instant
 
 case class Traceroute(
   source: String,
   destination: String,
-  test: String,
-  time: Instant,
-  dscp: String,
-  family: String,
-  hop        : Int,
-  packet_size: Int,
-  random: Boolean,
-  address: Option[String],
-  rtt        : Option[Int],
+  test       : String,
+  time       : Instant,
+  dscp       : String,
+  family     : String,
+  hop: Long,
+  packet_size: Long,
+  random     : Boolean,
+  address    : Option[String],
+  rtt        : Option[Long],
 ) extends Amp2Measurement {
   override val measurementName: String = Traceroute.measurementName
   override val tags: Seq[Any] = Seq(dscp, family, hop, packet_size, random)
@@ -50,5 +52,24 @@ case class Traceroute(
 object Traceroute {
   val measurementName = "traceroute"
 
-  def createFromLineProtocol(line: String): Option[Traceroute] = ???
+  def create(proto: LineProtocol): Option[Traceroute] = {
+    if (proto.measurementName != measurementName) {
+      None
+    }
+    else {
+      Some(Traceroute(
+        proto.tags("source"),
+        proto.tags("destination"),
+        proto.tags("test"),
+        proto.time,
+        proto.tags("dscp"),
+        proto.tags("family"),
+        proto.getTagAsLong("hop"),
+        proto.getTagAsLong("packet_size"),
+        proto.getTagAsBoolean("random"),
+        proto.fields.get("address"),
+        proto.getFieldAsLong("rtt")
+      ))
+    }
+  }
 }
