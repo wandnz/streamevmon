@@ -43,7 +43,7 @@ import org.apache.flink.configuration.Configuration
 class AmpRichMeasurementSourceFunction(
   fetchHistory: Duration = Duration.ZERO
 )
-  extends InfluxSourceFunction[RichInfluxMeasurement](
+  extends InfluxAmpSourceFunction[RichInfluxMeasurement](
     "amp",
     fetchHistory
   ) {

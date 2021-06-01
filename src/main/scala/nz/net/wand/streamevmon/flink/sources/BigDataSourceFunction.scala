@@ -40,7 +40,7 @@ import java.time.Duration
 class BigDataSourceFunction(
   fetchHistory: Duration = Duration.ZERO
 )
-  extends InfluxSourceFunction[InfluxMeasurement](
+  extends InfluxAmpSourceFunction[InfluxMeasurement](
     fetchHistory = fetchHistory
   ) {
 

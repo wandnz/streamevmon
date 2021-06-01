@@ -45,7 +45,7 @@ abstract class PollingInfluxSourceFunction[T <: InfluxMeasurement](
   timeOffset     : Duration = Duration.ZERO,
   refreshInterval: Duration = Duration.ofMillis(500)
 )
-  extends InfluxSourceFunction[T] {
+  extends InfluxAmpSourceFunction[T] {
 
   lastMeasurementTime = Instant.now().minus(fetchHistory).minus(timeOffset)
 

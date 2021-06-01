@@ -27,42 +27,65 @@
 package nz.net.wand.streamevmon.runners.examples
 
 import nz.net.wand.streamevmon.Configuration
-import nz.net.wand.streamevmon.flink.sources.AmpMeasurementSourceFunction
+import nz.net.wand.streamevmon.flink.sources.Amp2SourceFunction
 
-import java.text.SimpleDateFormat
+import java.text.DecimalFormat
 import java.time.Duration
-import java.util.Date
+import java.util.concurrent.TimeUnit
 
 import org.apache.flink.api.common.restartstrategy.RestartStrategies
-import org.apache.flink.streaming.api.CheckpointingMode
 import org.apache.flink.streaming.api.scala._
+import org.apache.flink.streaming.api.CheckpointingMode
 
-/** Most basic example of using an [[nz.net.wand.streamevmon.flink.sources.InfluxAmpSourceFunction InfluxSourceFunction]],
-  * in this case an [[nz.net.wand.streamevmon.flink.sources.AmpMeasurementSourceFunction AmpMeasurementSourceFunction]].
-  *
-  * Requires `source.influx.(amp.)?serverName` to be set.
-  *
-  * This just prints the type of measurement that was received and its time.
-  */
-object InfluxSourceReceiver {
+import scala.collection.mutable
 
+object Amp2SourcePrinter {
   def main(args: Array[String]): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
 
     env.enableCheckpointing(10000, CheckpointingMode.EXACTLY_ONCE)
     env.setRestartStrategy(RestartStrategies.noRestart())
 
-    System.setProperty("source.influx.subscriptionName", "InfluxSourceReceiver")
+    env.setParallelism(1)
+
+    System.setProperty("source.influx.subscriptionName", "Amp2SourcePrinter")
 
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
-    env
-      .addSource(new AmpMeasurementSourceFunction(fetchHistory = Duration.ofHours(1)))
-      .name("Measurement Subscription")
-      .map(i =>
-        s"${i.getClass.getSimpleName}(${new SimpleDateFormat("HH:mm:ss").format(Date.from(i.time))})")
-      .print("Measurement")
+    val source = {
+      val func = new Amp2SourceFunction(fetchHistory = Duration.ofMinutes(30))
+      env
+        .addSource(func)
+        .name(func.flinkName)
+        .uid(func.flinkUid)
+    }
 
-    env.execute("InfluxDB subscription printer")
+    val typeMap: mutable.Map[String, Int] = mutable.Map()
+    var lastTime = System.nanoTime()
+    val interval = 10000
+    val format = new DecimalFormat("#####.##")
+
+    source
+      .map { meas =>
+        if (typeMap.contains(meas.getClass.getSimpleName)) {
+          typeMap.put(meas.getClass.getSimpleName, typeMap(meas.getClass.getSimpleName) + 1)
+        }
+        else {
+          typeMap.put(meas.getClass.getSimpleName, 1)
+        }
+
+        if (typeMap.values.sum % interval == 0) {
+          val time = System.nanoTime()
+          println(
+            s"${typeMap.values.sum} items, " +
+              s"${TimeUnit.NANOSECONDS.toMillis(time - lastTime)}ms, " +
+              s"${format.format((interval.toDouble * 1E9) / (time - lastTime))} item/s, " +
+              s"${typeMap.toList.sortBy(_._1)}"
+          )
+          lastTime = System.nanoTime()
+        }
+      }
+
+    env.execute("Amp2 Source Printer")
   }
 }

@@ -40,7 +40,7 @@ import java.time.Duration
 class AmpMeasurementSourceFunction(
   fetchHistory: Duration = Duration.ZERO
 )
-  extends InfluxSourceFunction[InfluxMeasurement](
+  extends InfluxAmpSourceFunction[InfluxMeasurement](
     "amp",
     fetchHistory
   ) {

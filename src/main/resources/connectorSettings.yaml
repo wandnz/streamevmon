@@ -37,6 +37,11 @@ source:
       password: ""
       databaseName: nntsc
       retentionPolicy: nntscdefault
+    amp2:
+      user: cuz
+      password: ""
+      databaseName: amp
+      retentionPolicy: grafana
     bigdata:
       user: bigdata
       password: bigdata
