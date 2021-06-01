@@ -52,6 +52,7 @@ case class Traceroute(
 object Traceroute {
   val measurementName = "traceroute"
 
+  /** @see [[Amp2Measurement `Amp2Measurement.createFromLineProtocol`]] */
   def create(proto: LineProtocol): Option[Traceroute] = {
     if (proto.measurementName != measurementName) {
       None

@@ -32,9 +32,17 @@ import java.time.Instant
 import java.util.concurrent.TimeUnit
 
 import scala.annotation.tailrec
-import scala.util.control.Breaks.{break, breakable}
 import scala.util.Try
+import scala.util.control.Breaks.{break, breakable}
 
+/** This class represents a single measurement in InfluxDB Line Protocol format.
+  * It allows users to convert tags and fields to particular types, and provides
+  * a simple interface to the data.
+  *
+  * All numeric datatypes in InfluxDB are 64-bit, so the names don't match up
+  * with Scala type names. This class uses Scala type names, so a database entry
+  * with type integer is a Scala Long, and a float is a Scala Double.
+  */
 case class LineProtocol(
   measurementName: String,
   tags           : Map[String, String],
@@ -58,7 +66,7 @@ case class LineProtocol(
   def getTagAsDirection(key: String): Direction = {
     tags.get(key).map(v => Direction(v))
       .getOrElse(throw new IllegalArgumentException(
-        s"""Could not convert tag $key with value ${tags.get(key)} to Direction - expected \"in\" or \"out\""""
+        s"""Could not convert tag $key with value ${tags.get(key)} to Direction - expected "in" or "out""""
       ))
   }
 
@@ -71,18 +79,74 @@ case class LineProtocol(
   }
 }
 
+/** Contains the apply method to convert from a line protocol string to a
+  * LineProtocol, as well as some helper functions.
+  */
 object LineProtocol {
-  /** Like string.split(), but it ignores separators that are inside double quotes.
-    *
-    * @param line              The line to split.
-    * @param precedingElements The newly discovered elements are appended to this.
-    * @param separators        The separators to split on.
+  /** Tail-recursive implementation for `splitUnlessQuoted`. This shouldn't be
+    * called directly.
     */
+  @tailrec
+  final protected def splitUnlessQuotedImpl(
+    unprocessedLine: Seq[Char],
+    quoteCount     : Int = 0,
+    lineSinceLastSplit: Seq[Char] = Seq(),
+    alreadySplitItems: Seq[String] = Seq(),
+    separators: Set[Char] = Set(',', ' ')
+  ): Seq[String] = {
+    // If there's nothing left, return the parts we calculated
+    if (unprocessedLine.isEmpty) {
+      alreadySplitItems :+ lineSinceLastSplit.mkString
+    }
+    // If we've seen an uneven number of quotes, then a quoted value is ongoing,
+    // and we shouldn't split at this character.
+    // If there's an even number of quotes, and we find a separator character,
+    // then we should split here.
+    else if (quoteCount % 2 == 0 && separators.contains(unprocessedLine.head)) {
+      splitUnlessQuotedImpl(
+        unprocessedLine.drop(1),
+        quoteCount,
+        "",
+        alreadySplitItems :+ lineSinceLastSplit.mkString,
+        separators
+      )
+    }
+    // If we're at a quote, note that we found another one.
+    else if (unprocessedLine.head == '"') {
+      splitUnlessQuotedImpl(
+        unprocessedLine.drop(1),
+        quoteCount + 1,
+        lineSinceLastSplit :+ unprocessedLine.head,
+        alreadySplitItems,
+        separators
+      )
+    }
+    // Otherwise, just keep going
+    else {
+      splitUnlessQuotedImpl(
+        unprocessedLine.drop(1),
+        quoteCount,
+        lineSinceLastSplit :+ unprocessedLine.head,
+        alreadySplitItems,
+        separators
+      )
+    }
+  }
+
+  /** Like string.split(), but ignoring separators that are contained inside "".
+    *
+    * In my opinion, this code is more readable and nicer, but unfortunately it's
+    * around 10x slower, so we're sticking with the splitLineProtocol solution.
+    */
+  final protected def splitUnlessQuoted(line: String, separators: Set[Char]): Seq[String] = {
+    splitUnlessQuotedImpl(unprocessedLine = line, separators = separators)
+  }
+
   @tailrec
   final protected def splitLineProtocol(
     line             : String,
     precedingElements: Seq[String] = Seq(),
-    separators       : Seq[Char] = Seq(',', ' ')
+    separators       : Set[Char] = Set(',', ' ')
   ): Seq[String] = {
     var splitPoint = -1
     var quoteCount = 0
@@ -125,13 +189,13 @@ object LineProtocol {
   }
 
   def apply(line: String): Option[LineProtocol] = {
-    val splitTypes = splitLineProtocol(line, separators = " ")
+    val splitTypes = splitLineProtocol(line, separators = Set(' '))
     if (splitTypes.size != 3) {
       None
     }
     else {
-      val tags = splitLineProtocol(splitTypes.head, separators = ",")
-      val fields = splitLineProtocol(splitTypes.drop(1).head, separators = ",")
+      val tags = splitLineProtocol(splitTypes.head, separators = Set(','))
+      val fields = splitLineProtocol(splitTypes.drop(1).head, separators = Set(','))
       val time = splitTypes.last
 
       val theTags = tags.drop(1).map(entryToTuple)

@@ -53,6 +53,7 @@ case class Video(
 object Video {
   val measurementName = "video"
 
+  /** @see [[Amp2Measurement `Amp2Measurement.createFromLineProtocol`]] */
   def create(proto: LineProtocol): Option[Video] = {
     if (proto.measurementName != measurementName) {
       None

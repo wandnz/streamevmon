@@ -50,6 +50,7 @@ case class Pathlen(
 object Pathlen {
   val measurementName = "pathlen"
 
+  /** @see [[Amp2Measurement `Amp2Measurement.createFromLineProtocol`]] */
   def create(proto: LineProtocol): Option[Pathlen] = {
     if (proto.measurementName != measurementName) {
       None

@@ -51,6 +51,7 @@ case class Http(
 object Http {
   val measurementName = "http"
 
+  /** @see [[Amp2Measurement `Amp2Measurement.createFromLineProtocol`]] */
   def create(proto: LineProtocol): Option[Http] = {
     if (proto.measurementName != measurementName) {
       None

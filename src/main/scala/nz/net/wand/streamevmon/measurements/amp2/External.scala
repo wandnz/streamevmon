@@ -48,6 +48,7 @@ case class External(
 object External {
   val measurementName = "external"
 
+  /** @see [[Amp2Measurement `Amp2Measurement.createFromLineProtocol`]] */
   def create(proto: LineProtocol): Option[External] = {
     if (proto.measurementName != measurementName) {
       None

@@ -24,27 +24,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.wand.streamevmon.measurements.amp2
+package nz.net.wand.streamevmon.measurements
 
-/** Certain measurements ([[Throughput]] and [[Udpstream]] at time of writing)
-  * include a `direction` tag, which can only have the values `in` and `out`.
-  * The companion object contains declarations for case objects representing
-  * those values.
+/** This package represents data gathered by [[https://amp.wand.net.nz/ AMP]],
+  * WAND's Active Measurement Project. Particularly, this package reflects the
+  * format used by the `amplet2` collector.
+  *
+  * All measurement types inherit from [[Amp2Measurement]], meaning they all
+  * implement [[nz.net.wand.streamevmon.measurements.traits.HasDefault HasDefault]].
   */
-sealed trait Direction
-
-object Direction {
-  case object In extends Direction {
-    override def toString: String = "in"
-  }
-
-  case object Out extends Direction {
-    override def toString: String = "out"
-  }
-
-  def apply(direction: String): Direction = direction.toLowerCase match {
-    case "in" => In
-    case "out" => Out
-    case _ => throw new IllegalArgumentException(s"""Unknown direction supplied. Expected "in" or "out" but got $direction""")
-  }
-}
+package object amp2 {}

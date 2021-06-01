@@ -30,6 +30,15 @@ import nz.net.wand.streamevmon.connectors.influx.LineProtocol
 
 import java.time.Instant
 
+/** The latency tests share a measurement type, and are disambiguated by the
+  * `test` tag, which declares what type of latency test they are. This class
+  * contains the shared tags and fields, while the child classes each declare
+  * the unique tags of their corresponding test type.
+  *
+  * @see `[[LatencyDns]]`
+  * @see `[[LatencyIcmp]]`
+  * @see `[[LatencyTcpping]]`
+  */
 abstract class Latency(
   source: String,
   destination: String,
@@ -53,7 +62,8 @@ abstract class Latency(
 object Latency {
   val measurementName = "latency"
 
-  def create(proto: LineProtocol): Option[Latency] =
+  /** @see [[Amp2Measurement `Amp2Measurement.createFromLineProtocol`]] */
+  def create(proto               : LineProtocol): Option[Latency] = {
     if (proto.measurementName != measurementName) {
       None
     }
@@ -64,4 +74,5 @@ object Latency {
         case "tcpping" => LatencyTcpping.create(proto)
       }
     }
+  }
 }

@@ -56,6 +56,7 @@ case class LatencyTcpping(
 object LatencyTcpping {
   val measurementName: String = Latency.measurementName
 
+  /** @see [[Amp2Measurement `Amp2Measurement.createFromLineProtocol`]] */
   def create(proto: LineProtocol): Option[LatencyTcpping] = {
     Some(LatencyTcpping(
       proto.tags("source"),

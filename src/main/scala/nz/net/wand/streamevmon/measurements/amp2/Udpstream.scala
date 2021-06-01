@@ -56,6 +56,7 @@ case class Udpstream(
 object Udpstream {
   val measurementName = "udpstream"
 
+  /** @see [[Amp2Measurement `Amp2Measurement.createFromLineProtocol`]] */
   def create(proto: LineProtocol): Option[Udpstream] = {
     if (proto.measurementName != measurementName) {
       None

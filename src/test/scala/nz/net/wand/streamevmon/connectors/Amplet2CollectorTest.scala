@@ -70,11 +70,15 @@ class Amplet2CollectorTest extends TestBase {
     "be processed without errors" in {
       val typeMap: mutable.Map[String, Int] = mutable.Map()
 
+      var lastTime = System.nanoTime()
+
       getEntriesFromExport
         .zipWithIndex
         .foreach { case (line, index) =>
           if (index % 10000 == 0) {
-            println(typeMap.values.sum, typeMap.toList.sortBy(_._1))
+            val time = System.nanoTime()
+            println(time - lastTime, typeMap.values.sum, typeMap.toList.sortBy(_._1))
+            lastTime = System.nanoTime()
           }
           withClue(s"$line$EOL") {
             val proto = LineProtocol(line)

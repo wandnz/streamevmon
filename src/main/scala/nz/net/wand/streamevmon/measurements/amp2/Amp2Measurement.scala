@@ -29,11 +29,18 @@ package nz.net.wand.streamevmon.measurements.amp2
 import nz.net.wand.streamevmon.connectors.influx.LineProtocol
 import nz.net.wand.streamevmon.measurements.traits.{HasDefault, Measurement}
 
+/** The parent class for all measurements collected by amplet2. Provides some
+  * useful defaults for subclasses, including implementing `stream` based on
+  * the tags declared by the subclass.
+  */
 trait Amp2Measurement extends Measurement with HasDefault {
+  // These three tags are present for all measurements.
   val source: String
   val destination: String
   val test: String
 
+  /** The name of the measurement as it appears in InfluxDB.
+    */
   val measurementName: String
 
   /** The unique tags for the measurement type. Do not include `source`,
@@ -51,7 +58,13 @@ trait Amp2Measurement extends Measurement with HasDefault {
   override def isLossy: Boolean = defaultValue.isEmpty
 }
 
+/** Allows creating any type of Amp2Measurement based on the data provided.
+  */
 object Amp2Measurement {
+  /** Given an InfluxDB line protocol entry, returns the corresponding
+    * Amp2Measurement, or None if any errors occurred or a matching measurement
+    * type is not supported.
+    */
   def createFromLineProtocol(line: String): Option[Amp2Measurement] = {
     val proto = LineProtocol(line)
     proto.flatMap { p =>

@@ -54,6 +54,7 @@ case class LatencyDns(
 object LatencyDns {
   val measurementName: String = Latency.measurementName
 
+  /** @see [[Amp2Measurement `Amp2Measurement.createFromLineProtocol`]] */
   def create(proto: LineProtocol): Option[LatencyDns] = {
     Some(LatencyDns(
       proto.tags("source"),

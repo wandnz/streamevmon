@@ -58,9 +58,9 @@ case class Throughput(
 }
 
 object Throughput {
-
   val measurementName = "throughput"
 
+  /** @see [[Amp2Measurement `Amp2Measurement.createFromLineProtocol`]] */
   def create(proto: LineProtocol): Option[Throughput] = {
     if (proto.measurementName != measurementName) {
       None

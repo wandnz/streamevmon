@@ -54,6 +54,7 @@ case class Fastping(
 object Fastping {
   val measurementName = "fastping"
 
+  /** @see [[Amp2Measurement `Amp2Measurement.createFromLineProtocol`]] */
   def create(proto: LineProtocol): Option[Fastping] = {
     if (proto.measurementName != measurementName) {
       None

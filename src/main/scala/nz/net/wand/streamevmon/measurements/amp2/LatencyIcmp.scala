@@ -55,6 +55,7 @@ case class LatencyIcmp(
 object LatencyIcmp {
   val measurementName: String = Latency.measurementName
 
+  /** @see [[Amp2Measurement `Amp2Measurement.createFromLineProtocol`]] */
   def create(proto: LineProtocol): Option[LatencyIcmp] = {
     Some(LatencyIcmp(
       proto.tags("source"),
