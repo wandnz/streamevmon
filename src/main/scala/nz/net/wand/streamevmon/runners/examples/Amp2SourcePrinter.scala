@@ -53,7 +53,7 @@ object Amp2SourcePrinter {
     env.getConfig.setGlobalJobParameters(Configuration.get(args))
 
     val source = {
-      val func = new Amp2SourceFunction(fetchHistory = Duration.ofMinutes(30))
+      val func = new Amp2SourceFunction(fetchHistory = Duration.ofDays(365))
       env
         .addSource(func)
         .name(func.flinkName)

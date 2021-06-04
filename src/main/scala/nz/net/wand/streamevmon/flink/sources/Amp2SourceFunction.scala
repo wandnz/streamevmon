@@ -26,7 +26,7 @@
 
 package nz.net.wand.streamevmon.flink.sources
 
-import nz.net.wand.streamevmon.connectors.influx.{InfluxConnection, InfluxHistoryConnection}
+import nz.net.wand.streamevmon.connectors.influx.{Amp2InfluxHistoryConnection, InfluxConnection}
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.measurements.amp2.Amp2Measurement
 import nz.net.wand.streamevmon.Logging
@@ -59,7 +59,7 @@ class Amp2SourceFunction(
 
   @transient protected var influxConnection: Option[InfluxConnection] = None
 
-  @transient protected var influxHistory: Option[InfluxHistoryConnection] = None
+  @transient protected var influxHistory: Option[Amp2InfluxHistoryConnection] = None
 
   var lastMeasurementTime: Instant = Instant.now().minus(fetchHistory)
 
@@ -69,7 +69,7 @@ class Amp2SourceFunction(
     // Set up config
     val params = configWithOverride(getRuntimeContext)
     influxConnection = Some(InfluxConnection(params, configKeyGroup, "amp2"))
-    influxHistory = Some(InfluxHistoryConnection(params, configKeyGroup, "amp2"))
+    influxHistory = Some(Amp2InfluxHistoryConnection(params, configKeyGroup, "amp2"))
     maxLateness = params.getLong("flink.maxLateness")
 
     if (getRuntimeContext.getNumberOfParallelSubtasks > 1) {
@@ -93,8 +93,41 @@ class Amp2SourceFunction(
     isRunning = false
   }
 
-  protected def collectHistoricalData(ctx: SourceFunction.SourceContext[Amp2Measurement]): Unit = {
+  protected def processHistoricalData(
+    ctx: SourceFunction.SourceContext[Amp2Measurement],
+    start: Instant,
+    end: Instant
+  ): Int = {
+    influxHistory match {
+      case None =>
+        logger.warn("No influxHistory was created. Skipping historical data collection.")
+        0
+      case Some(history) =>
+        logger.debug(s"Getting more history between $start and $end")
+        val data = history.getAllAmp2Data(start, end)
+        data.foreach { meas =>
+          // lastMeasurementTime could be inaccurate if this method is interrupted.
+          // It should have the value of the most recent time observed in the result set.
+          if (lastMeasurementTime.isBefore(meas.time)) {
+            lastMeasurementTime = meas.time
+          }
+          ctx.collectWithTimestamp(meas, meas.time.toEpochMilli)
+        }
+        ctx.emitWatermark(new Watermark(lastMeasurementTime.minusSeconds(maxLateness).toEpochMilli))
+        ctx.markAsTemporarilyIdle()
+        data.size
+    }
+  }
 
+  protected def collectHistoricalData(ctx: SourceFunction.SourceContext[Amp2Measurement]): Unit = {
+    var continue = true
+    while (continue) {
+      val numItems = processHistoricalData(ctx, lastMeasurementTime, Instant.now())
+      logger.debug(s"Got $numItems new items")
+      if (numItems == 0) {
+        continue = false
+      }
+    }
   }
 
   protected def listen(ctx: SourceFunction.SourceContext[Amp2Measurement]): Unit = {

@@ -181,7 +181,7 @@ case class InfluxHistoryConnection(
     getData[ICMP](
       ICMP.table_name,
       ICMP.columnNames,
-      InfluxSchema.icmpReader,
+      InfluxSchema.amp.icmpReader,
       start,
       end
     )
@@ -201,7 +201,7 @@ case class InfluxHistoryConnection(
     getData[DNS](
       DNS.table_name,
       DNS.columnNames,
-      InfluxSchema.dnsReader,
+      InfluxSchema.amp.dnsReader,
       start,
       end
     )
@@ -221,7 +221,7 @@ case class InfluxHistoryConnection(
     getData[HTTP](
       HTTP.table_name,
       HTTP.columnNames,
-      InfluxSchema.httpReader,
+      InfluxSchema.amp.httpReader,
       start,
       end
     )
@@ -241,7 +241,7 @@ case class InfluxHistoryConnection(
     getData[TCPPing](
       TCPPing.table_name,
       TCPPing.columnNames,
-      InfluxSchema.tcppingReader,
+      InfluxSchema.amp.tcppingReader,
       start,
       end
     )
@@ -261,7 +261,7 @@ case class InfluxHistoryConnection(
     getData[TraceroutePathlen](
       TraceroutePathlen.table_name,
       TraceroutePathlen.columnNames,
-      InfluxSchema.traceroutePathlenReader,
+      InfluxSchema.amp.traceroutePathlenReader,
       start,
       end
     )
@@ -281,7 +281,7 @@ case class InfluxHistoryConnection(
     getData[Flow](
       Flow.table_name,
       Flow.columnNames,
-      InfluxSchema.flowStatisticsReader,
+      InfluxSchema.bigdata.flowStatisticsReader,
       start,
       end
     )

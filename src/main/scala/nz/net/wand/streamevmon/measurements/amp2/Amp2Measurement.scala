@@ -29,6 +29,8 @@ package nz.net.wand.streamevmon.measurements.amp2
 import nz.net.wand.streamevmon.connectors.influx.LineProtocol
 import nz.net.wand.streamevmon.measurements.traits.{HasDefault, Measurement}
 
+import scala.reflect.runtime.universe._
+
 /** The parent class for all measurements collected by amplet2. Provides some
   * useful defaults for subclasses, including implementing `stream` based on
   * the tags declared by the subclass.
@@ -61,6 +63,30 @@ trait Amp2Measurement extends Measurement with HasDefault {
 /** Allows creating any type of Amp2Measurement based on the data provided.
   */
 object Amp2Measurement {
+  /** Returns a collection containing the database column names associated with
+    * a type, in the same order as the case class declares them.
+    */
+  def getColumnNames[T: TypeTag]: Seq[String] = {
+    if (typeOf[T] == typeOf[Latency]) {
+      getColumnNamesLatency
+    }
+    else {
+      "time" +: typeOf[T].members.sorted.collect {
+        case m: MethodSymbol if m.isCaseAccessor => m.name.toString
+      }.filterNot(_ == "time")
+    }
+  }
+
+  /** A special case is required here, since Latency is an abstract class with
+    * several similar implementations.
+    */
+  protected def getColumnNamesLatency: Seq[String] = {
+    val dns = getColumnNames[LatencyDns].filterNot(_ == "time")
+    val icmp = getColumnNames[LatencyIcmp].filterNot(_ == "time")
+    val tcpping = getColumnNames[LatencyTcpping].filterNot(_ == "time")
+    "time" +: dns.union(icmp).union(tcpping)
+  }
+
   /** Given an InfluxDB line protocol entry, returns the corresponding
     * Amp2Measurement, or None if any errors occurred or a matching measurement
     * type is not supported.
