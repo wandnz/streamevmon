@@ -33,6 +33,7 @@ import nz.net.wand.streamevmon.measurements.bigdata.Flow
 import nz.net.wand.streamevmon.measurements.esmond._
 import nz.net.wand.streamevmon.measurements.latencyts.{LatencyTSAmpICMP, LatencyTSSmokeping}
 import nz.net.wand.streamevmon.Perhaps._
+import nz.net.wand.streamevmon.measurements.amp2.{Traceroute => A2Traceroute, _}
 import nz.net.wand.streamevmon.measurements.nab.NabMeasurement
 import nz.net.wand.streamevmon.measurements.traits.Measurement
 
@@ -70,20 +71,39 @@ case class DetectorInstance(
     // The detector type knows how to build itself, but it needs to know what
     // type its measurements will be.
     val det = source.datatype match {
+      // Amp
       case SourceDatatype.DNS => detType.buildKeyed[DNS]
       case SourceDatatype.HTTP => detType.buildKeyed[HTTP]
       case SourceDatatype.ICMP => detType.buildKeyed[ICMP]
       case SourceDatatype.TCPPing => detType.buildKeyed[TCPPing]
       case SourceDatatype.TraceroutePathlen => detType.buildKeyed[TraceroutePathlen]
+      // Amp2
+      case SourceDatatype.External => detType.buildKeyed[External]
+      case SourceDatatype.Fastping => detType.buildKeyed[Fastping]
+      case SourceDatatype.Amp2Http => detType.buildKeyed[Http]
+      case SourceDatatype.Latency => detType.buildKeyed[Latency]
+      case SourceDatatype.LatencyDns => detType.buildKeyed[LatencyDns]
+      case SourceDatatype.LatencyIcmp => detType.buildKeyed[LatencyIcmp]
+      case SourceDatatype.LatencyTcpping => detType.buildKeyed[LatencyTcpping]
+      case SourceDatatype.Pathlen => detType.buildKeyed[Pathlen]
+      case SourceDatatype.Sip => detType.buildKeyed[Sip]
+      case SourceDatatype.Throughput => detType.buildKeyed[Throughput]
+      case SourceDatatype.Traceroute => detType.buildKeyed[A2Traceroute]
+      case SourceDatatype.Udpstream => detType.buildKeyed[Udpstream]
+      case SourceDatatype.Video => detType.buildKeyed[Video]
+      // Bigdata
       case SourceDatatype.Flow => detType.buildKeyed[Flow]
+      // Esmond
       case SourceDatatype.Failure => detType.buildKeyed[Failure]
       case SourceDatatype.Histogram => detType.buildKeyed[Histogram]
       case SourceDatatype.Href => detType.buildKeyed[Href]
       case SourceDatatype.PacketTrace => detType.buildKeyed[PacketTrace]
       case SourceDatatype.Simple => detType.buildKeyed[Simple]
       case SourceDatatype.Subinterval => detType.buildKeyed[Subinterval]
+      // Latency TS
       case SourceDatatype.LatencyTSAmp => detType.buildKeyed[LatencyTSAmpICMP]
       case SourceDatatype.LatencyTSSmokeping => detType.buildKeyed[LatencyTSSmokeping]
+      // NAB
       case SourceDatatype.NAB => detType.buildKeyed[NabMeasurement]
       case d => throw new IllegalArgumentException(s"Unknown datatype $d!")
     }
@@ -99,20 +119,39 @@ case class DetectorInstance(
     )
 
     val det = source.datatype match {
+      // Amp
       case SourceDatatype.DNS => detType.buildWindowed[DNS]
       case SourceDatatype.HTTP => detType.buildWindowed[HTTP]
       case SourceDatatype.ICMP => detType.buildWindowed[ICMP]
       case SourceDatatype.TCPPing => detType.buildWindowed[TCPPing]
       case SourceDatatype.TraceroutePathlen => detType.buildWindowed[TraceroutePathlen]
+      // Amp2
+      case SourceDatatype.External => detType.buildWindowed[External]
+      case SourceDatatype.Fastping => detType.buildWindowed[Fastping]
+      case SourceDatatype.Amp2Http => detType.buildWindowed[Http]
+      case SourceDatatype.Latency => detType.buildWindowed[Latency]
+      case SourceDatatype.LatencyDns => detType.buildWindowed[LatencyDns]
+      case SourceDatatype.LatencyIcmp => detType.buildWindowed[LatencyIcmp]
+      case SourceDatatype.LatencyTcpping => detType.buildWindowed[LatencyTcpping]
+      case SourceDatatype.Pathlen => detType.buildWindowed[Pathlen]
+      case SourceDatatype.Sip => detType.buildWindowed[Sip]
+      case SourceDatatype.Throughput => detType.buildWindowed[Throughput]
+      case SourceDatatype.Traceroute => detType.buildWindowed[A2Traceroute]
+      case SourceDatatype.Udpstream => detType.buildWindowed[Udpstream]
+      case SourceDatatype.Video => detType.buildWindowed[Video]
+      // Bigdata
       case SourceDatatype.Flow => detType.buildWindowed[Flow]
+      // Esmond
       case SourceDatatype.Failure => detType.buildWindowed[Failure]
       case SourceDatatype.Histogram => detType.buildWindowed[Histogram]
       case SourceDatatype.Href => detType.buildWindowed[Href]
       case SourceDatatype.PacketTrace => detType.buildWindowed[PacketTrace]
       case SourceDatatype.Simple => detType.buildWindowed[Simple]
       case SourceDatatype.Subinterval => detType.buildWindowed[Subinterval]
+      // Latency TS
       case SourceDatatype.LatencyTSAmp => detType.buildWindowed[LatencyTSAmpICMP]
       case SourceDatatype.LatencyTSSmokeping => detType.buildWindowed[LatencyTSSmokeping]
+      // NAB
       case SourceDatatype.NAB => detType.buildWindowed[NabMeasurement]
       case d => throw new IllegalArgumentException(s"Unknown datatype $d!")
     }

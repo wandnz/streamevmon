@@ -34,6 +34,20 @@ object SourceDatatype extends Enumeration {
   val ICMP: Value = Value("icmp")
   val TCPPing: Value = Value("tcpping")
   val TraceroutePathlen: Value = Value("traceroutepathlen")
+  // AMP2
+  val External: Value = Value("external")
+  val Fastping: Value = Value("fastping")
+  val Amp2Http: Value = Value("http")
+  val Latency: Value = Value("latency")
+  val LatencyDns: Value = Value("latencydns")
+  val LatencyIcmp: Value = Value("latencyicmp")
+  val LatencyTcpping: Value = Value("latencytcpping")
+  val Pathlen: Value = Value("pathlen")
+  val Sip: Value = Value("sip")
+  val Throughput: Value = Value("throughput")
+  val Traceroute: Value = Value("traceroute")
+  val Udpstream: Value = Value("udpstream")
+  val Video: Value = Value("video")
   // Bigdata
   val Flow: Value = Value("flow")
   // Esmond

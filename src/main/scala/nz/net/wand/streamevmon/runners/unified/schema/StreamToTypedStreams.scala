@@ -28,6 +28,7 @@ package nz.net.wand.streamevmon.runners.unified.schema
 
 import nz.net.wand.streamevmon.Lazy
 import nz.net.wand.streamevmon.measurements.amp._
+import nz.net.wand.streamevmon.measurements.amp2.{Traceroute => A2Traceroute, _}
 import nz.net.wand.streamevmon.measurements.bigdata.Flow
 import nz.net.wand.streamevmon.measurements.esmond._
 import nz.net.wand.streamevmon.measurements.latencyts._
@@ -71,6 +72,22 @@ case class StreamToTypedStreams(
           case d@SourceDatatype.ICMP => Some((d, getTypedAs[ICMP]))
           case d@SourceDatatype.TCPPing => Some((d, getTypedAs[TCPPing]))
           case d@SourceDatatype.TraceroutePathlen => Some((d, getTypedAs[TraceroutePathlen]))
+          case _ => None
+        }.toMap
+        case _@Some(SourceSubtype.Amp2) => SourceDatatype.values.flatMap {
+          case d@SourceDatatype.External => Some((d, getTypedAs[External]))
+          case d@SourceDatatype.Fastping => Some((d, getTypedAs[Fastping]))
+          case d@SourceDatatype.Amp2Http => Some((d, getTypedAs[Http]))
+          case d@SourceDatatype.Latency => Some((d, getTypedAs[Latency]))
+          case d@SourceDatatype.LatencyDns => Some((d, getTypedAs[LatencyDns]))
+          case d@SourceDatatype.LatencyIcmp => Some((d, getTypedAs[LatencyIcmp]))
+          case d@SourceDatatype.LatencyTcpping => Some((d, getTypedAs[LatencyTcpping]))
+          case d@SourceDatatype.Pathlen => Some((d, getTypedAs[Pathlen]))
+          case d@SourceDatatype.Sip => Some((d, getTypedAs[Sip]))
+          case d@SourceDatatype.Throughput => Some((d, getTypedAs[Throughput]))
+          case d@SourceDatatype.Traceroute => Some((d, getTypedAs[A2Traceroute]))
+          case d@SourceDatatype.Udpstream => Some((d, getTypedAs[Udpstream]))
+          case d@SourceDatatype.Video => Some((d, getTypedAs[Video]))
           case _ => None
         }.toMap
         case _@Some(SourceSubtype.Bigdata) => SourceDatatype.values.flatMap {

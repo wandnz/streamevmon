@@ -27,6 +27,7 @@
 package nz.net.wand.streamevmon.measurements
 
 import nz.net.wand.streamevmon.measurements.amp._
+import nz.net.wand.streamevmon.measurements.amp2.Amp2Measurement
 import nz.net.wand.streamevmon.measurements.bigdata._
 import nz.net.wand.streamevmon.measurements.esmond._
 import nz.net.wand.streamevmon.measurements.latencyts._
@@ -55,6 +56,7 @@ class MeasurementKeySelector[T <: Measurement : ClassTag] extends KeySelector[T,
       case m@(_: Flow) => s"Flow-${m.stream}"
       case m@(_: EsmondMeasurement) => s"esmond-${m.stream}"
       case m@(_: NabMeasurement) => s"nab-${m.stream}"
+      case m@(_: Amp2Measurement) => m.stream
       case m => throw new IllegalArgumentException(s"Unknown measurement type ${m.getClass.getSimpleName}")
     }
 }

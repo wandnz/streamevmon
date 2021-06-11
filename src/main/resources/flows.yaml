@@ -6,7 +6,7 @@
 sources:
   amp:
     type: influx
-    subtype: amp
+    subtype: amp2
     config:
       subscriptionName: YamlDagRunnerAmpSubscription
   #bigdata:
@@ -29,7 +29,7 @@ sinks:
 instanceTemplates: &ampIcmpToAllSources
   - source:
       - name: amp
-        datatype: icmp
+        datatype: latencyicmp
         filterLossy: true
     sink:
       - name: influx
@@ -41,7 +41,7 @@ detectors:
     instances:
       - source:
           - name: amp
-            datatype: icmp
+            datatype: latencyicmp
             filterLossy: true
         sink:
           - name: influx
@@ -59,7 +59,7 @@ detectors:
     instances:
       - source:
           - name: amp
-            datatype: dns
+            datatype: latencydns
             filterLossy: true
         sink:
           - name: influx
@@ -75,14 +75,14 @@ detectors:
     instances:
       - source:
           - name: amp
-            datatype: dns
+            datatype: latencydns
         sink:
           - name: influx
           - name: print
         config:
       - source:
           - name: amp
-            datatype: icmp
+            datatype: latencyicmp
         sink:
           - name: influx
           - name: print
