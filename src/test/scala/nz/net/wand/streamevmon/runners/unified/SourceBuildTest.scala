@@ -50,6 +50,19 @@ class SourceBuildTest extends TestBase {
         built.configWithOverride(ParameterTool.fromArgs(Array())).toMap.asScala should contain(s"source.${built.configKeyGroup}.amp.extraKey" -> "true")
       }
 
+      "source type is Influx/Amp2" in {
+        val srcInstance = SourceInstance(
+          SourceType.Influx,
+          Some(SourceSubtype.Amp2),
+          config = Map("extraKey" -> "true")
+        )
+        val built = srcInstance.buildSourceFunction
+
+        built shouldBe an[Amp2SourceFunction]
+        an[UnsupportedOperationException] should be thrownBy srcInstance.buildFileInputFormat
+        built.configWithOverride(ParameterTool.fromArgs(Array())).toMap.asScala should contain(s"source.${built.configKeyGroup}.amp2.extraKey" -> "true")
+      }
+
       "source type is Influx/Bigdata" in {
         val srcInstance = SourceInstance(
           SourceType.Influx,

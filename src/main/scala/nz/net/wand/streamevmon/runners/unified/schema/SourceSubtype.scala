@@ -39,6 +39,7 @@ import org.apache.flink.streaming.api.functions.source.SourceFunction
 object SourceSubtype extends Enumeration {
 
   val Amp: ValueBuilder = new ValueBuilder("amp")
+  val Amp2: ValueBuilder = new ValueBuilder("amp2")
   val Bigdata: ValueBuilder = new ValueBuilder("bigdata")
   val LatencyTSAmp: ValueBuilder = new ValueBuilder("ampicmp")
   val LatencyTSSmokeping: ValueBuilder = new ValueBuilder("smokeping")
@@ -47,6 +48,7 @@ object SourceSubtype extends Enumeration {
     def buildSourceFunction(): SourceFunction[Measurement] with HasFlinkConfig = {
       val built = this match {
         case Amp => new AmpMeasurementSourceFunction()
+        case Amp2 => new Amp2SourceFunction()
         case Bigdata => new BigDataSourceFunction()
         case _ => throw new UnsupportedOperationException(s"Source subtype $this is not a SourceFunction")
       }

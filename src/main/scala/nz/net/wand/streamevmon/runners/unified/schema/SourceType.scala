@@ -56,7 +56,7 @@ object SourceType extends Enumeration {
       val source = this match {
         case Influx => subtype match {
           case Some(value) => value match {
-            case SourceSubtype.Amp | SourceSubtype.Bigdata => value.buildSourceFunction()
+            case SourceSubtype.Amp | SourceSubtype.Amp2 | SourceSubtype.Bigdata => value.buildSourceFunction()
             case _ => throw new IllegalArgumentException(s"Cannot build $this type source with ${subtype.getOrElse("no")} subtype!")
           }
           case None => throw new IllegalArgumentException(s"Cannot build $this type source with no subtype!")
