@@ -27,14 +27,20 @@
 package nz.net.wand.streamevmon.measurements
 
 import nz.net.wand.streamevmon.measurements.amp2.Amp2Measurement
-import nz.net.wand.streamevmon.test.TestBase
+import nz.net.wand.streamevmon.test.InfluxContainerSpec
 
 import java.util.zip.GZIPInputStream
 
-import scala.compat.Platform.EOL
+import com.github.fsanaulla.chronicler.ahc.io.InfluxIO
+import com.github.fsanaulla.chronicler.core.model.InfluxCredentials
+
+import scala.concurrent.duration.Duration
+import scala.concurrent.Await
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.io.Source
 
-class Amp2MeasurementCreateTest extends TestBase {
+class Amp2MeasurementCreateTest extends InfluxContainerSpec {
+
   def getEntriesFromExport: Iterator[String] = {
     Source
       .fromInputStream(new GZIPInputStream(
@@ -43,15 +49,59 @@ class Amp2MeasurementCreateTest extends TestBase {
       .getLines()
   }
 
+  def testLineProtocolToMeasurement(lines: Iterator[String]): Iterator[Amp2Measurement] = {
+    lines.map { line =>
+      Amp2Measurement.createFromLineProtocol(line) match {
+        case Some(meas) => meas
+        case None => fail(s"Did not create measurement from line $line")
+      }
+    }
+  }
+
   "Amp2 entries" should {
     "be processed without errors" in {
-      getEntriesFromExport
-        .foreach { line =>
-          withClue(s"$line$EOL") {
-            val meas = Amp2Measurement.createFromLineProtocol(line)
-            meas should not be None
-          }
-        }
+      testLineProtocolToMeasurement(getEntriesFromExport).toList
+    }
+  }
+
+  "InfluxDB container" should {
+    "successfully ping" in {
+      val influx =
+        InfluxIO(containerAddress, containerPort, Some(InfluxCredentials(container.username, container.password)))
+
+      Await.result(influx.ping.map {
+        case Right(_) => succeed
+        case Left(_) => fail
+      }, Duration.Inf)
+    }
+  }
+
+  "Amp2InfluxHistoryConnection" should {
+    before {
+      val influx = InfluxIO(containerAddress, containerPort, Some(InfluxCredentials(container.username, container.password)))
+
+      val items = getEntriesFromExport.toList
+
+      Await.result(influx.ping.map {
+        case Right(_) => succeed
+        case Left(_) => fail
+      }, Duration.Inf)
+
+      val result = items.sliding(items.size / 10, items.size / 10).map { some =>
+        Await.result(
+          influx.database(container.database).bulkWriteNative(some),
+          Duration.Inf
+        )
+      }.toList
+
+      result should not contain a[Left[_, _]]
+    }
+
+    "get data of various types" in {
+      val dataFromHistory = getAmp2InfluxHistory.getAllAmp2Data().toSet
+      val dataFromLineProto = testLineProtocolToMeasurement(getEntriesFromExport).toSet
+      dataFromHistory.diff(dataFromLineProto) shouldBe empty
+      dataFromLineProto.diff(dataFromHistory) shouldBe empty
     }
   }
 }

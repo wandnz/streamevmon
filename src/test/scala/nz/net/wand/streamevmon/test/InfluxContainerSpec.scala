@@ -26,7 +26,7 @@
 
 package nz.net.wand.streamevmon.test
 
-import nz.net.wand.streamevmon.connectors.influx.{InfluxConnection, InfluxHistoryConnection}
+import nz.net.wand.streamevmon.connectors.influx.{Amp2InfluxHistoryConnection, InfluxConnection, InfluxHistoryConnection}
 import nz.net.wand.streamevmon.flink.sinks.InfluxSinkFunction
 
 import com.dimafeng.testcontainers.InfluxDBContainer
@@ -85,6 +85,19 @@ class InfluxContainerSpec extends TaggedForAllTestContainer with TestBase {
 
   protected def getInfluxHistory: InfluxHistoryConnection = {
     InfluxHistoryConnection(
+      container.database,
+      "autogen",
+      "http",
+      compress = false,
+      containerAddress,
+      containerPort,
+      container.username,
+      container.password
+    )
+  }
+
+  protected def getAmp2InfluxHistory: Amp2InfluxHistoryConnection = {
+    Amp2InfluxHistoryConnection(
       container.database,
       "autogen",
       "http",

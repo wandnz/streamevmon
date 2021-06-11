@@ -85,6 +85,7 @@ case class Amp2InfluxHistoryConnection(
       (Http.measurementName, Amp2Measurement.getColumnNames[Http], InfluxSchema.amp2.http),
       (Latency.measurementName, Amp2Measurement.getColumnNames[Latency], InfluxSchema.amp2.latency),
       (Pathlen.measurementName, Amp2Measurement.getColumnNames[Pathlen], InfluxSchema.amp2.pathlen),
+      (Sip.measurementName, Amp2Measurement.getColumnNames[Sip], InfluxSchema.amp2.sip),
       (Throughput.measurementName, Amp2Measurement.getColumnNames[Throughput], InfluxSchema.amp2.throughput),
       (Traceroute.measurementName, Amp2Measurement.getColumnNames[Traceroute], InfluxSchema.amp2.traceroute),
       (Udpstream.measurementName, Amp2Measurement.getColumnNames[Udpstream], InfluxSchema.amp2.udpstream),

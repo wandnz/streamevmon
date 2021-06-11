@@ -68,7 +68,7 @@ object Traceroute {
         proto.getTagAsLong("hop"),
         proto.getTagAsLong("packet_size"),
         proto.getTagAsBoolean("random"),
-        proto.fields.get("address"),
+        proto.fields.get("address").map(_.drop(1).dropRight(1)),
         proto.getFieldAsLong("rtt")
       ))
     }

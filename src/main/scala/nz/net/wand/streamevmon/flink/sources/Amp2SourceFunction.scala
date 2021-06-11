@@ -42,6 +42,18 @@ import org.apache.flink.streaming.api.watermark.Watermark
 
 import scala.io.Source
 
+/** Retrieves amp2 data from InfluxDB as a streaming source function. Supports
+  * fetching historical data (amount configured using fetchHistory), and then
+  * subscribing to new data, emitting that data as it arrives.
+  *
+  * ==Configuration==
+  *
+  * See [[nz.net.wand.streamevmon.connectors.influx Influx connectors]] package
+  * object for configuration details. Any configuration given to `overrideConfig`
+  * from [[HasFlinkConfig]] will also be passed to the Influx connectors.
+  *
+  * @see [[InfluxAmpSourceFunction]]
+  */
 class Amp2SourceFunction(
   fetchHistory: Duration = Duration.ZERO
 ) extends RichSourceFunction[Amp2Measurement]

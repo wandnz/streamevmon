@@ -58,6 +58,8 @@ import org.apache.flink.streaming.api.watermark.Watermark
   * See [[nz.net.wand.streamevmon.connectors.influx Influx connectors]] package
   * object for configuration details. Any configuration given to `overrideConfig`
   * from [[HasFlinkConfig]] will also be passed to the Influx connectors.
+  *
+  * @see [[Amp2SourceFunction]]
   */
 abstract class InfluxAmpSourceFunction[T <: InfluxMeasurement](
   datatype    : String = "amp",

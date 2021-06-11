@@ -30,56 +30,55 @@ import nz.net.wand.streamevmon.connectors.influx.LineProtocol
 
 import java.time.Instant
 
-case class Throughput(
+case class Sip(
   source: String,
   destination: String,
-  test  : String,
+  test: String,
   time: Instant,
-  direction: Direction,
   dscp: String,
   family: String,
-  protocol: String,
-  write_size: Long,
-  bytes : Option[Long],
-  count : Option[Long],
-  duration: Option[String],
-  runtime: Option[Double]
+  uri: String,
+  connect_time: Option[Long],
+  count: Option[Long],
+  duration: Option[Long],
+  response_time: Option[Long],
+  rtt: Option[Long],
+  rx_jitter: Option[Long],
+  rx_loss_percent: Option[Double],
+  tx_jitter: Option[Long],
+  tx_loss_percent: Option[Double],
 ) extends Amp2Measurement {
-  override val measurementName: String = Throughput.measurementName
-  override val tags: Seq[Any] = Seq(direction, dscp, family, protocol, write_size)
+  override val measurementName: String = Sip.measurementName
+  override val tags: Seq[Any] = Seq(dscp, family, uri)
 
-  override var defaultValue: Option[Double] = bytes.map(_.toDouble)
-
-  lazy val bytesPerRuntime: Option[Double] = bytes.flatMap { b =>
-    runtime.map { r =>
-      b.toDouble / r
-    }
-  }
+  override var defaultValue: Option[Double] = rtt.map(_.toDouble)
 }
 
-object Throughput {
-  val measurementName = "throughput"
+object Sip {
+  val measurementName = "sip"
 
-  /** @see [[Amp2Measurement `Amp2Measurement.createFromLineProtocol`]] */
-  def create(proto: LineProtocol): Option[Throughput] = {
+  def create(proto: LineProtocol): Option[Sip] = {
     if (proto.measurementName != measurementName) {
       None
     }
     else {
-      Some(Throughput(
+      Some(Sip(
         proto.tags("source"),
         proto.tags("destination"),
         proto.tags("test"),
         proto.time,
-        proto.getTagAsDirection("direction"),
         proto.tags("dscp"),
         proto.tags("family"),
-        proto.tags("protocol"),
-        proto.getTagAsLong("write_size"),
-        proto.getFieldAsLong("bytes"),
+        proto.tags("uri"),
+        proto.getFieldAsLong("connect_time"),
         proto.getFieldAsLong("count"),
-        proto.fields.get("duration").map(_.drop(1).dropRight(1)),
-        proto.getFieldAsDouble("runtime")
+        proto.getFieldAsLong("duration"),
+        proto.getFieldAsLong("response_time"),
+        proto.getFieldAsLong("rtt"),
+        proto.getFieldAsLong("rx_jitter"),
+        proto.getFieldAsDouble("rx_loss_percent"),
+        proto.getFieldAsLong("tx_jitter"),
+        proto.getFieldAsDouble("tx_loss_percent"),
       ))
     }
   }

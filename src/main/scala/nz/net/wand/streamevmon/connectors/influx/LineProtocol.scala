@@ -77,6 +77,14 @@ case class LineProtocol(
   def getFieldAsDouble(key: String): Option[Double] = {
     fields.get(key).map(_.toDouble)
   }
+
+  override def toString: String = {
+    def mapToKeyPairString(map: Map[String, String]): String = {
+      map.map(kv => s"${kv._1}=${kv._2}").mkString(",")
+    }
+
+    s"$measurementName,${mapToKeyPairString(tags)} ${mapToKeyPairString(fields)} ${TimeUnit.MILLISECONDS.toNanos(time.toEpochMilli)}"
+  }
 }
 
 /** Contains the apply method to convert from a line protocol string to a

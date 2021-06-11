@@ -193,6 +193,27 @@ object InfluxSchema {
           nullToOption(js.get(cols.indexOf("length"))).map(_.asLong),
         )
     }
+    val sip: InfluxReader[Sip] = new Amp2ReaderParent[Sip] {
+      override def interpretJArray(cols: Seq[String], js: JArray): Sip =
+        Sip(
+          js.get(cols.indexOf("source")).asString,
+          js.get(cols.indexOf("destination")).asString,
+          js.get(cols.indexOf("test")).asString,
+          Instant.parse(js.get(cols.indexOf("time")).asString),
+          js.get(cols.indexOf("dscp")).asString,
+          js.get(cols.indexOf("family")).asString,
+          js.get(cols.indexOf("uri")).asString,
+          nullToOption(js.get(cols.indexOf("connect_time"))).map(_.asLong),
+          nullToOption(js.get(cols.indexOf("count"))).map(_.asLong),
+          nullToOption(js.get(cols.indexOf("duration"))).map(_.asLong),
+          nullToOption(js.get(cols.indexOf("response_time"))).map(_.asLong),
+          nullToOption(js.get(cols.indexOf("rtt"))).map(_.asLong),
+          nullToOption(js.get(cols.indexOf("rx_jitter"))).map(_.asLong),
+          nullToOption(js.get(cols.indexOf("rx_loss_percent"))).map(_.asDouble),
+          nullToOption(js.get(cols.indexOf("tx_jitter"))).map(_.asLong),
+          nullToOption(js.get(cols.indexOf("tx_loss_percent"))).map(_.asDouble),
+        )
+    }
     val throughput: InfluxReader[Throughput] = new Amp2ReaderParent[Throughput] {
       override def interpretJArray(cols: Seq[String], js: JArray): Throughput =
         Throughput(

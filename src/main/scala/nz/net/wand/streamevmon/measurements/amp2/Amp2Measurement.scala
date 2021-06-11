@@ -100,6 +100,7 @@ object Amp2Measurement {
         case Http.measurementName => Http.create(p)
         case Latency.measurementName => Latency.create(p)
         case Pathlen.measurementName => Pathlen.create(p)
+        case Sip.measurementName => Sip.create(p)
         case Throughput.measurementName => Throughput.create(p)
         case Traceroute.measurementName => Traceroute.create(p)
         case Udpstream.measurementName => Udpstream.create(p)
