@@ -347,7 +347,7 @@ object InfluxSchema {
       override def read(js: JArray): ErrorOr[HTTP] = {
         val cols = HTTP.columnNames
 
-        val r = Try(
+        Try(
           HTTP(
             js.get(cols.indexOf("stream")).asString,
             nullToOption(js.get(cols.indexOf("bytes"))).map(_.asInt),
@@ -357,10 +357,6 @@ object InfluxSchema {
             Instant.parse(js.get(cols.indexOf("time")).asString)
           )
         ).toEither
-        if (r.isLeft) {
-          val b = 1
-        }
-        r
       }
 
       override def readUnsafe(js: JArray): HTTP = ???
