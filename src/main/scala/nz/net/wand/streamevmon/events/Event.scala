@@ -26,6 +26,7 @@
 
 package nz.net.wand.streamevmon.events
 
+import nz.net.wand.streamevmon.measurements.amp2.Amp2Measurement
 import nz.net.wand.streamevmon.measurements.traits.CsvOutputable
 
 import java.time.{Duration, Instant}
@@ -97,6 +98,21 @@ case class Event(
   override def toCsvFormat: Seq[String] = Event.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 
   lazy val eventTime: Instant = time.minus(detectionLatency)
+
+  lazy val amp2Tags: Option[Map[String, String]] = {
+    val split = stream.split(Amp2Measurement.streamTagSeparator)
+    if (split.size < 4) {
+      None
+    }
+    else {
+      Some(Map(
+        "measurementType" -> split(0),
+        "source" -> split(1),
+        "destination" -> split(2),
+        "test" -> split(3)
+      ))
+    }
+  }
 }
 
 object Event {

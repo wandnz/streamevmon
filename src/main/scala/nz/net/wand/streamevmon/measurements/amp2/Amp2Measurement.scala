@@ -55,7 +55,7 @@ trait Amp2Measurement extends Measurement with HasDefault {
   override lazy val stream: String = (
     Seq(measurementName, source, destination, test) ++
       tags.map(_.toString)
-    ).mkString("-")
+    ).mkString(Amp2Measurement.streamTagSeparator)
 
   override def isLossy: Boolean = defaultValue.isEmpty
 }
@@ -63,6 +63,8 @@ trait Amp2Measurement extends Measurement with HasDefault {
 /** Allows creating any type of Amp2Measurement based on the data provided.
   */
 object Amp2Measurement {
+  val streamTagSeparator = "--"
+
   /** Returns a collection containing the database column names associated with
     * a type, in the same order as the case class declares them.
     */

@@ -93,19 +93,19 @@ abstract class InfluxSinkFunction[T: ClassTag : TypeInformation]
   override val flinkUid: String = "influx-sink"
   override val configKeyGroup: String = "influx"
 
-  private var host: String = _
+  @transient private var host: String = _
 
-  private var port: Int = _
+  @transient private var port: Int = _
 
-  private var username: String = _
+  @transient private var username: String = _
 
-  private var password: String = _
+  @transient private var password: String = _
 
-  private var database: String = _
+  @transient private var database: String = _
 
-  private var retentionPolicy: String = _
+  @transient private var retentionPolicy: String = _
 
-  private var influx: AhcIOClient = _
+  @transient private var influx: AhcIOClient = _
 
   private val bufferedItems: mutable.Buffer[T] = mutable.Buffer()
 
