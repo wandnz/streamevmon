@@ -21,8 +21,8 @@ sources:
   #  subtype: ampicmp
 
 sinks:
-  print:
-    type: print
+  #print:
+  #  type: print
   influx:
     type: influx
 
@@ -33,7 +33,7 @@ instanceTemplates: &ampIcmpToAllSources
         filterLossy: true
     sink:
       - name: influx
-      - name: print
+      #- name: print
 
 detectors:
   baseline-icmp:
@@ -45,7 +45,7 @@ detectors:
             filterLossy: true
         sink:
           - name: influx
-          - name: print
+          #- name: print
         config:
           threshold: 60
           useFlinkTimeWindow: false
@@ -63,7 +63,7 @@ detectors:
             filterLossy: true
         sink:
           - name: influx
-          - name: print
+          #- name: print
       #- source:
       #    - name: latencyts
       #      datatype: ampicmp
@@ -78,14 +78,14 @@ detectors:
             datatype: latencydns
         sink:
           - name: influx
-          - name: print
+          #- name: print
         config:
       - source:
           - name: amp
             datatype: latencyicmp
         sink:
           - name: influx
-          - name: print
+          #- name: print
 
   mode-icmp:
     type: mode

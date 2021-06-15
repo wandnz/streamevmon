@@ -41,7 +41,7 @@ case class EventGroup(
   events   : Iterable[Event]
 ) {
   lazy val modeEventType: String = events.groupBy(_.eventType).maxBy(_._2.size)._1
-  lazy val streams: Iterable[String] = events.map(_.stream)
+  lazy val streams: Iterable[String] = events.map(_.stream).toSet
   lazy val meanSeverity: Int = events.map(_.severity).sum / events.size
   lazy val meanDetectionLatency: Duration = Duration.ofNanos(events.map(_.detectionLatency.toNanos).sum / events.size)
 
