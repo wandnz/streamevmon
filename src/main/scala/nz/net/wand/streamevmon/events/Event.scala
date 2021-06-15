@@ -103,8 +103,7 @@ case class Event(
 
     val timeString = s"${TimeUnit.MILLISECONDS.toNanos(time.toEpochMilli)}"
 
-    val r = s"${allTags.mkString(",")} ${fields.mkString(",")} $timeString"
-    r
+    s"${allTags.mkString(",")} ${fields.mkString(",")} $timeString"
   }
 
   override def toString: String = toLineProtocol
@@ -120,7 +119,7 @@ case class Event(
     }
     else {
       Some(Map(
-        "measurementType" -> split(0),
+        "measurement_type" -> split(0),
         "source" -> split(1),
         "destination" -> split(2),
         "test" -> split(3)

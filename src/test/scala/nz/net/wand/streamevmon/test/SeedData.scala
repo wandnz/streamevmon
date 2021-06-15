@@ -644,6 +644,12 @@ object SeedData {
       s"""event_type=changepoint_events,stream=1 description="A test event :)",detection_latency=123456789i,severity=10i 1564713045000000000"""
     val withoutTagsAsLineProtocol: String = s"""event_type=changepoint_events,stream=1 description="A test event :)",detection_latency=123456789i,severity=10i 1564713045000000000"""
     val withoutTagsAsCsv: Seq[String] = Seq("changepoint_events", "1", "10", "1564713045000", "0:00:00.123", "A test event :)", "\"\"")
+
+    val amp2Event: Event = withoutTags.copy(
+      eventType = "baseline_events",
+      stream = "traceroute--waikato.amp.wand.net.nz--www.tv3.co.nz--traceroute--Default--ipv4--10--60--false"
+    )
+    val amp2EventAsLineProtocol: String = s"""destination=www.tv3.co.nz,event_type=baseline_events,measurement_type=traceroute,source=waikato.amp.wand.net.nz,stream=traceroute--waikato.amp.wand.net.nz--www.tv3.co.nz--traceroute--Default--ipv4--10--60--false,test=traceroute description="A test event :)",detection_latency=123456789i,severity=10i 1564713045000000000"""
   }
 
   object eventgroup {

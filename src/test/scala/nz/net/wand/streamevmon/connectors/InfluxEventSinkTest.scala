@@ -48,6 +48,7 @@ class InfluxEventSinkTest extends InfluxContainerSpec {
 
       sink.invoke(SeedData.event.withTags, new MockSinkContext(SeedData.event.withTags.time))
       sink.invoke(SeedData.event.withoutTags, new MockSinkContext(SeedData.event.withoutTags.time))
+      sink.invoke(SeedData.event.amp2Event, new MockSinkContext(SeedData.event.amp2Event.time))
 
       sink.close()
 
@@ -97,6 +98,30 @@ class InfluxEventSinkTest extends InfluxContainerSpec {
                 "secondTag" -> arr.get(3).asString
               )
             ) shouldBe SeedData.event.withTags
+          }),
+        ScalaDuration.Inf
+      )
+
+      Await.result(
+        db.readJson(
+          s"SELECT time,event_type,stream,severity,detection_latency,description,source,destination,test FROM events WHERE event_type='${SeedData.event.amp2Event.eventType}'")
+          .map(e => {
+            if (e.isLeft) {
+              fail(e.left.get)
+            }
+            val arr = e.right.get.head
+
+            val result = Event(
+              eventType = arr.get(1).toString.drop(1).dropRight(1),
+              stream = arr.get(2).toString.drop(1).dropRight(1),
+              severity = arr.get(3).asInt,
+              time = Instant.parse(arr.get(0).toString.drop(1).dropRight(1)),
+              detectionLatency = JavaDuration.ofNanos(arr.get(4).asInt),
+              description = arr.get(5).asString,
+              tags = Map()
+            )
+
+            result shouldBe SeedData.event.amp2Event
           }),
         ScalaDuration.Inf
       )

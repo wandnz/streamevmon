@@ -40,6 +40,10 @@ class EventTest extends TestBase {
       SeedData.event.withoutTags.toString shouldBe SeedData.event.withoutTagsAsString
       SeedData.event.withoutTags.toLineProtocol shouldBe SeedData.event.withoutTagsAsLineProtocol
     }
+
+    "an amp2-style stream ID is present" in {
+      SeedData.event.amp2Event.toLineProtocol shouldBe SeedData.event.amp2EventAsLineProtocol
+    }
   }
 
   "Events should become CSVs properly" in {
