@@ -55,9 +55,9 @@ case class EventGroup(
     ).filterNot(_ == "")
 
     val fields = Seq(
-      s"""modeEventType=\"$modeEventType\"""",
+      s"meanDetectionLatency=${meanDetectionLatency.toNanos}i",
       s"meanSeverity=${meanSeverity}i",
-      s"meanDetectionLatency=${meanDetectionLatency.toNanos}i"
+      s"""modeEventType=\"$modeEventType\""""
     )
 
     val time = s"${TimeUnit.MILLISECONDS.toNanos(startTime.toEpochMilli)}"

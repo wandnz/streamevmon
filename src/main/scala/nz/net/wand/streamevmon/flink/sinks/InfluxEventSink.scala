@@ -32,7 +32,7 @@ import com.github.fsanaulla.chronicler.core.model.InfluxWriter
 import org.apache.flink.api.scala._
 
 class InfluxEventSink extends InfluxSinkFunction[Event] {
-  override protected def measurementName(value: Event): String = value.eventType
+  override protected def measurementName(value: Event): String = "events"
 
   override protected def getInfluxWriter(value: Event): InfluxWriter[Event] = Event.getWriter
 }

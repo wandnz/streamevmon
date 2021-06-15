@@ -626,8 +626,8 @@ object SeedData {
     )
 
     val withTagsAsString: String =
-      s"""threshold_events,type=test,secondTag=alsoTest,stream=1 severity=10i,detection_latency=123456789i,description="A test event :)" 1564713045000000000"""
-    val withTagsAsLineProtocol: String = """type=test,secondTag=alsoTest,stream=1 severity=10i,detection_latency=123456789i,description="A test event :)" 1564713045000000000"""
+      s"""event_type=threshold_events,secondTag=alsoTest,stream=1,type=test description="A test event :)",detection_latency=123456789i,severity=10i 1564713045000000000"""
+    val withTagsAsLineProtocol: String = """event_type=threshold_events,secondTag=alsoTest,stream=1,type=test description="A test event :)",detection_latency=123456789i,severity=10i 1564713045000000000"""
     val withTagsAsCsv: Seq[String] = Seq("threshold_events", "1", "10", "1564713045000", "0:00:00.123", "A test event :)", "\"(type,test);(secondTag,alsoTest)\"")
 
     val withoutTags: Event = Event(
@@ -641,8 +641,8 @@ object SeedData {
     )
 
     val withoutTagsAsString: String =
-      s"""changepoint_events,stream=1 severity=10i,detection_latency=123456789i,description="A test event :)" 1564713045000000000"""
-    val withoutTagsAsLineProtocol: String = """stream=1 severity=10i,detection_latency=123456789i,description="A test event :)" 1564713045000000000"""
+      s"""event_type=changepoint_events,stream=1 description="A test event :)",detection_latency=123456789i,severity=10i 1564713045000000000"""
+    val withoutTagsAsLineProtocol: String = s"""event_type=changepoint_events,stream=1 description="A test event :)",detection_latency=123456789i,severity=10i 1564713045000000000"""
     val withoutTagsAsCsv: Seq[String] = Seq("changepoint_events", "1", "10", "1564713045000", "0:00:00.123", "A test event :)", "\"\"")
   }
 

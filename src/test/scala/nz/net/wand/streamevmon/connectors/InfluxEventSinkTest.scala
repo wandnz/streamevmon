@@ -56,7 +56,7 @@ class InfluxEventSinkTest extends InfluxContainerSpec {
 
       Await.result(
         db.readJson(
-          s"SELECT time,stream,severity,detection_latency,description FROM ${SeedData.event.withoutTags.eventType}")
+          s"SELECT time,event_type,stream,severity,detection_latency,description FROM events WHERE event_type='${SeedData.event.withoutTags.eventType}'")
           .map(e => {
             if (e.isLeft) {
               fail(e.left.get)
@@ -64,12 +64,12 @@ class InfluxEventSinkTest extends InfluxContainerSpec {
             val arr = e.right.get.head
 
             Event(
-              eventType = SeedData.event.withoutTags.eventType,
-              stream = arr.get(1).toString.drop(1).dropRight(1),
-              severity = arr.get(2).asInt,
+              eventType = arr.get(1).toString.drop(1).dropRight(1),
+              stream = arr.get(2).toString.drop(1).dropRight(1),
+              severity = arr.get(3).asInt,
               time = Instant.parse(arr.get(0).toString.drop(1).dropRight(1)),
-              detectionLatency = JavaDuration.ofNanos(arr.get(3).asInt),
-              description = arr.get(4).asString,
+              detectionLatency = JavaDuration.ofNanos(arr.get(4).asInt),
+              description = arr.get(5).asString,
               tags = Map()
             ) shouldBe SeedData.event.withoutTags
           }),
@@ -78,7 +78,7 @@ class InfluxEventSinkTest extends InfluxContainerSpec {
 
       Await.result(
         db.readJson(
-          s"SELECT time,type,secondTag,stream,severity,detection_latency,description FROM ${SeedData.event.withTags.eventType}")
+          s"SELECT time,event_type,type,secondTag,stream,severity,detection_latency,description FROM events WHERE event_type='${SeedData.event.withTags.eventType}'")
           .map(e => {
             if (e.isLeft) {
               fail(e.left.get)
@@ -86,15 +86,15 @@ class InfluxEventSinkTest extends InfluxContainerSpec {
             val arr = e.right.get.head
 
             Event(
-              eventType = SeedData.event.withTags.eventType,
-              stream = arr.get(3).toString.drop(1).dropRight(1),
-              severity = arr.get(4).asInt,
+              eventType = arr.get(1).toString.drop(1).dropRight(1),
+              stream = arr.get(4).toString.drop(1).dropRight(1),
+              severity = arr.get(5).asInt,
               time = Instant.parse(arr.get(0).toString.drop(1).dropRight(1)),
-              detectionLatency = JavaDuration.ofNanos(arr.get(5).asInt),
-              description = arr.get(6).asString,
+              detectionLatency = JavaDuration.ofNanos(arr.get(6).asInt),
+              description = arr.get(7).asString,
               tags = Map(
-                "type" -> arr.get(1).asString,
-                "secondTag" -> arr.get(2).asString
+                "type" -> arr.get(2).asString,
+                "secondTag" -> arr.get(3).asString
               )
             ) shouldBe SeedData.event.withTags
           }),

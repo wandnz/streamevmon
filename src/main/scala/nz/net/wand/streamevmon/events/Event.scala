@@ -80,20 +80,34 @@ case class Event(
   protected def getTagString(t: Map[String, String]): String =
     t.map({ case (k, v) => s"$k=$v" }).mkString(",")
 
+  protected def makeTagStrings(t: Map[String, String]): Seq[String] =
+    t.map({ case (k, v) => s"$k=$v" }).toSeq
+
   /** Converts the Event into InfluxDB Line Protocol Format.
     *
     * @see [[https://docs.influxdata.com/influxdb/v1.7/write_protocols/line_protocol_reference/]]
     */
   def toLineProtocol: String = {
-    s"${getTagString(tags + ("stream" -> stream))} " +
-      s"severity=${severity}i,detection_latency=${detectionLatency.toNanos}i," +
-      s"""description="$description" """ +
-      TimeUnit.MILLISECONDS.toNanos(time.toEpochMilli)
+    val allTags = makeTagStrings(
+      tags ++ Seq(
+        "stream" -> stream,
+        "event_type" -> eventType
+      ) ++ amp2Tags.getOrElse(Seq())
+    ).sorted
+
+    val fields = Seq(
+      s"severity=${severity}i",
+      s"detection_latency=${detectionLatency.toNanos}i",
+      s"""description="$description""""
+    ).sorted
+
+    val timeString = s"${TimeUnit.MILLISECONDS.toNanos(time.toEpochMilli)}"
+
+    val r = s"${allTags.mkString(",")} ${fields.mkString(",")} $timeString"
+    r
   }
 
-  override def toString: String = {
-    s"$eventType,$toLineProtocol"
-  }
+  override def toString: String = toLineProtocol
 
   override def toCsvFormat: Seq[String] = Event.unapply(this).get.productIterator.toSeq.map(toCsvEntry)
 
