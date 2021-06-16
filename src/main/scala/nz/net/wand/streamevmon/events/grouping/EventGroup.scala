@@ -35,10 +35,12 @@ import java.util.UUID
 import com.github.fsanaulla.chronicler.core.alias.ErrorOr
 import com.github.fsanaulla.chronicler.core.model.InfluxWriter
 
+import scala.compat.Platform
+
 /** A group of events. If `endTime` is none, then the event is still ongoing. */
 case class EventGroup(
   startTime: Instant,
-  endTime: Option[Instant],
+  endTime   : Option[Instant],
   private val memberEvents: Iterable[Event],
   uuid: UUID = UUID.randomUUID()
 ) {
@@ -46,7 +48,17 @@ case class EventGroup(
   lazy val streams: Iterable[String] = memberEvents.map(_.stream).toSet
   lazy val meanSeverity: Int = memberEvents.map(_.severity).sum / memberEvents.size
   lazy val meanDetectionLatency: Duration = Duration.ofNanos(memberEvents.map(_.detectionLatency.toNanos).sum / memberEvents.size)
-  lazy val description: String = ""
+  lazy val description: String = {
+    endTime match {
+      case Some(eTime) =>
+        s"""Group of ${memberEvents.size} events over ${streams.size} measurement
+           |streams with duration ${Duration.between(startTime, eTime)},
+           |most common event type \"$modeEventType\",
+           |mean severity $meanSeverity,
+           |and mean detection latency $meanDetectionLatency""".stripMargin.replace(Platform.EOL, " ")
+      case None => "Event group still in progress."
+    }
+  }
 
   def toLineProtocol: String = {
     val tags = Seq(

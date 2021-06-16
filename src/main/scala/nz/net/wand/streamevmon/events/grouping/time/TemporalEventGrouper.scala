@@ -29,7 +29,7 @@ package nz.net.wand.streamevmon.events.grouping.time
 import nz.net.wand.streamevmon.events.grouping.EventGroup
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 
-import java.time.Duration
+import java.time.{Duration, Instant}
 
 import org.apache.flink.api.common.state.{MapState, MapStateDescriptor}
 import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
@@ -101,8 +101,9 @@ class TemporalEventGrouper
       }
       // Otherwise, we should merge the two groups together.
       else {
+        val earlierTime = Instant.ofEpochMilli(Math.min(entry.startTime.toEpochMilli, value.startTime.toEpochMilli))
         state.put(ctx.getCurrentKey, EventGroup(
-          entry.startTime, None, entry.events ++ value.events
+          earlierTime, None, entry.events ++ value.events
         ))
       }
     }
