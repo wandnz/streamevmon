@@ -42,8 +42,16 @@ case class EventGroup(
   startTime: Instant,
   endTime   : Option[Instant],
   private val memberEvents: Iterable[Event],
-  uuid: UUID = UUID.randomUUID()
+  uuid: Option[UUID] = None
 ) {
+  /** Returns a new EventGroup with a fresh UUID. Applies the supplied UUID, or
+    * generates a new one by default.
+    */
+  def withUuid(id: Option[UUID] = None): EventGroup = id match {
+    case Some(_) => EventGroup(startTime, endTime, memberEvents, id)
+    case None => EventGroup(startTime, endTime, memberEvents, Some(UUID.randomUUID()))
+  }
+
   lazy val modeEventType: String = memberEvents.groupBy(_.eventType).maxBy(_._2.size)._1
   lazy val streams: Iterable[String] = memberEvents.map(_.stream).toSet
   lazy val meanSeverity: Int = memberEvents.map(_.severity).sum / memberEvents.size
@@ -65,7 +73,7 @@ case class EventGroup(
       endTime.map { t =>
         s"endTime=${TimeUnit.MILLISECONDS.toNanos(t.toEpochMilli)}i"
       }.getOrElse(""),
-      s"""uid=\"${uuid.toString}\""""
+      uuid.map(u => s"""uid=${u.toString}""").getOrElse(""),
     ).filterNot(_ == "")
 
     val fields = Seq(
@@ -78,24 +86,35 @@ case class EventGroup(
 
     val time = s"${TimeUnit.MILLISECONDS.toNanos(startTime.toEpochMilli)}"
 
-    val r = s"${tags.mkString(",")} ${fields.mkString(",")} $time"
+    val r = if (tags.isEmpty) {
+      // This case shouldn't happen outside tests, but if it does, chronicler generates invalid line protocol.
+      s"still_ongoing=true ${fields.mkString(",")} $time"
+    }
+    else {
+      s"${tags.mkString(",")} ${fields.mkString(",")} $time"
+    }
     r
   }
 
   /** The underlying group of events is private. We instead expose a new group
     * where each event has an additional tag `in_group` which declares group
     * membership. This is mainly used to write membership-rich events to InfluxDB.
+    *
+    * If no UUID is defined, this just passes the events with no group.
     */
-  def events: Iterable[Event] = memberEvents.map { e =>
-    Event(
-      e.eventType,
-      e.stream,
-      e.severity,
-      e.time,
-      e.detectionLatency,
-      e.description,
-      e.tags + ("in_group" -> uuid.toString)
-    )
+  def events: Iterable[Event] = uuid match {
+    case Some(uid) => memberEvents.map { e =>
+      Event(
+        e.eventType,
+        e.stream,
+        e.severity,
+        e.time,
+        e.detectionLatency,
+        e.description,
+        e.tags + ("in_group" -> uid.toString)
+      )
+    }
+    case None => memberEvents
   }
 }
 

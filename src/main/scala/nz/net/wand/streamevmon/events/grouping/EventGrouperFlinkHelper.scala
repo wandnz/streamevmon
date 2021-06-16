@@ -47,5 +47,8 @@ object EventGrouperFlinkHelper {
       .process(temporalGrouper)
       .name(temporalGrouper.flinkName)
       .uid(temporalGrouper.flinkUid)
+      .map(_.withUuid())
+      .name("Add UUID")
+      .uid("add-uuid-to-finalised-event-group")
   }
 }

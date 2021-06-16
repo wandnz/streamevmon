@@ -62,7 +62,7 @@ class InfluxEventGroupSinkTest extends InfluxContainerSpec {
 
       Await.result(
         db.readJson(
-          s"SELECT time,endTime,streams,modeEventType,meanSeverity,meanDetectionLatency FROM ${EventGroup.getMeasurementName(groups.head)}"
+          s"SELECT time,endTime,modeEventType,meanSeverity,meanDetectionLatency FROM ${EventGroup.getMeasurementName(groups.head)}"
         )
           .map {
             case Left(err) => fail(err)
@@ -79,14 +79,11 @@ class InfluxEventGroupSinkTest extends InfluxContainerSpec {
                   ) shouldBe expected.endTime.get.truncatedTo(ChronoUnit.MILLIS)
                 }
 
-                val streams = got.get(2).asString.drop(2).dropRight(2).split(";")
-                streams.toSet shouldBe expected.events.map(_.stream).toSet
+                expected.events.map(_.eventType) should contain(got.get(2).asString)
 
-                expected.events.map(_.eventType) should contain(got.get(3).asString)
+                got.get(3).asInt shouldBe expected.events.head.severity
 
-                got.get(4).asInt shouldBe expected.events.head.severity
-
-                got.get(5).asInt shouldBe expected.events.head.detectionLatency.toNanos
+                got.get(4).asInt shouldBe expected.events.head.detectionLatency.toNanos
               }
           },
         ScalaDuration.Inf
