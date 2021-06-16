@@ -8,7 +8,7 @@ sources:
     type: influx
     subtype: amp2
     config:
-      subscriptionName: YamlDagRunnerAmpSubscription
+      subscriptionName: YamlDagRunnerAmp2Subscription
   #bigdata:
   #  type: influx
   #  subtype: bigdata

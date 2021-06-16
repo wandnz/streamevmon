@@ -251,11 +251,21 @@ object YamlDagRunner extends Logging {
             .uid(s"${sinks(sinkName).flinkUid}-$sinkName")
 
           if (sinks(sinkName).isInstanceOf[InfluxEventSink]) {
-            val sink = new InfluxEventGroupSink
-            EventGrouperFlinkHelper.addGrouping(config, dets)
-              .addSink(sink)
-              .name(sink.flinkName)
-              .uid(sink.flinkUid)
+            val grouping = EventGrouperFlinkHelper.addGrouping(config, dets)
+            val groupSink = new InfluxEventGroupSink
+            val groupedEventSink = new InfluxEventSink
+
+            grouping.addSink(groupSink)
+              .name(groupSink.flinkName)
+              .uid(s"${groupSink.flinkUid}-eventgroups")
+
+            grouping
+              .flatMap(_.events)
+              .name(s"${groupSink.flinkName} - Extract Grouped Events")
+              .uid(s"${groupSink.flinkUid}-grouped-events-extractor")
+              .addSink(groupedEventSink)
+              .name(s"${groupedEventSink.flinkName} - Sink Grouped Events")
+              .uid(s"${groupedEventSink.flinkUid}-grouped-events-sink")
           }
         }
     }

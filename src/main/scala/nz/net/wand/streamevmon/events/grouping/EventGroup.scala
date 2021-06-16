@@ -30,6 +30,7 @@ import nz.net.wand.streamevmon.events.Event
 
 import java.time.{Duration, Instant}
 import java.util.concurrent.TimeUnit
+import java.util.UUID
 
 import com.github.fsanaulla.chronicler.core.alias.ErrorOr
 import com.github.fsanaulla.chronicler.core.model.InfluxWriter
@@ -37,27 +38,30 @@ import com.github.fsanaulla.chronicler.core.model.InfluxWriter
 /** A group of events. If `endTime` is none, then the event is still ongoing. */
 case class EventGroup(
   startTime: Instant,
-  endTime  : Option[Instant],
-  events   : Iterable[Event]
+  endTime: Option[Instant],
+  private val memberEvents: Iterable[Event],
+  uuid: UUID = UUID.randomUUID()
 ) {
-  lazy val modeEventType: String = events.groupBy(_.eventType).maxBy(_._2.size)._1
-  lazy val streams: Iterable[String] = events.map(_.stream).toSet
-  lazy val meanSeverity: Int = events.map(_.severity).sum / events.size
-  lazy val meanDetectionLatency: Duration = Duration.ofNanos(events.map(_.detectionLatency.toNanos).sum / events.size)
+  lazy val modeEventType: String = memberEvents.groupBy(_.eventType).maxBy(_._2.size)._1
+  lazy val streams: Iterable[String] = memberEvents.map(_.stream).toSet
+  lazy val meanSeverity: Int = memberEvents.map(_.severity).sum / memberEvents.size
+  lazy val meanDetectionLatency: Duration = Duration.ofNanos(memberEvents.map(_.detectionLatency.toNanos).sum / memberEvents.size)
+  lazy val description: String = ""
 
   def toLineProtocol: String = {
-
     val tags = Seq(
       endTime.map { t =>
         s"endTime=${TimeUnit.MILLISECONDS.toNanos(t.toEpochMilli)}i"
       }.getOrElse(""),
-      s"""streams=\"[${streams.mkString(";")}]\""""
+      s"""uid=\"${uuid.toString}\""""
     ).filterNot(_ == "")
 
     val fields = Seq(
       s"meanDetectionLatency=${meanDetectionLatency.toNanos}i",
       s"meanSeverity=${meanSeverity}i",
-      s"""modeEventType=\"$modeEventType\""""
+      s"""modeEventType=\"$modeEventType\"""",
+      s"event_count=${memberEvents.size}i",
+      s"""description=\"$description\""""
     )
 
     val time = s"${TimeUnit.MILLISECONDS.toNanos(startTime.toEpochMilli)}"
@@ -65,10 +69,26 @@ case class EventGroup(
     val r = s"${tags.mkString(",")} ${fields.mkString(",")} $time"
     r
   }
+
+  /** The underlying group of events is private. We instead expose a new group
+    * where each event has an additional tag `in_group` which declares group
+    * membership. This is mainly used to write membership-rich events to InfluxDB.
+    */
+  def events: Iterable[Event] = memberEvents.map { e =>
+    Event(
+      e.eventType,
+      e.stream,
+      e.severity,
+      e.time,
+      e.detectionLatency,
+      e.description,
+      e.tags + ("in_group" -> uuid.toString)
+    )
+  }
 }
 
 object EventGroup {
-  def getMeasurementName(value: EventGroup): String = "event_group"
+  def getMeasurementName(value: EventGroup): String = "event_groups"
 
   def getWriter[T <: EventGroup]: InfluxWriter[T] = EventGroupWriter[T]()
 
