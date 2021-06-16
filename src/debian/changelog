@@ -1,3 +1,9 @@
+streamevmon (0.3.0-RC2-1) unstable; urgency=low
+
+  * Change in InfluxDB schema for events and event groups.
+
+ -- Daniel Oosterwijk <doosterw@waikato.ac.nz>  Mon, 14 June 2021 16:40:20 +1200
+
 streamevmon (0.3.0-RC1-1) unstable; urgency=low
 
   * Support for amp2 measurements.
