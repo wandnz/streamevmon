@@ -34,6 +34,8 @@ import java.time.{Duration, Instant}
 
 import org.apache.flink.api.scala._
 
+import scala.collection.JavaConverters._
+
 class TemporalEventGrouperTest extends HarnessingTest {
   "TemporalEventGrouper" should {
     def getHarness = {
@@ -85,29 +87,41 @@ class TemporalEventGrouperTest extends HarnessingTest {
     )
 
     val kindaLongAfter = EventGroup(
-      Instant.ofEpochMilli(3500L),
-      Some(Instant.ofEpochMilli(3500L)),
+      Instant.ofEpochMilli(25000L),
+      Some(Instant.ofEpochMilli(25000L)),
       Seq(Event(
         "test_event",
         "1",
         65,
-        Instant.ofEpochMilli(4000L),
+        Instant.ofEpochMilli(30000L),
         Duration.ofSeconds(5),
         "Test event kinda long after the first one",
         Map()
       ))
     )
 
-    val kindaLongAfterGroups = Seq(firstGroup, kindaLongAfter)
+    def groupWithTimestamp(stamp: Long): EventGroup = EventGroup(
+      Instant.ofEpochSecond(stamp),
+      Some(Instant.ofEpochSecond(stamp)),
+      Seq(Event(
+        "test_event",
+        "1",
+        65,
+        Instant.ofEpochSecond(stamp),
+        Duration.ZERO,
+        s"generated event at stamp $stamp",
+        Map()
+      ))
+    )
 
     val aVeryLongTimeAfter = EventGroup(
-      Instant.ofEpochMilli(995000L),
-      Some(Instant.ofEpochMilli(995000L)),
+      Instant.ofEpochSecond(99995L),
+      Some(Instant.ofEpochSecond(99995L)),
       Seq(Event(
         "test_event",
         "1",
         50,
-        Instant.ofEpochMilli(1000000L),
+        Instant.ofEpochSecond(100000L),
         Duration.ofSeconds(5),
         "Test event that happens way after the original one",
         Map()
@@ -136,7 +150,7 @@ class TemporalEventGrouperTest extends HarnessingTest {
     }
 
     "make separate groups" when {
-      "events are further apart than the maximumEventLength" in {
+      "interval between events would be larger than maximumEventInterval" in {
         val (_, harness) = getHarness
         harness.open()
 
@@ -147,6 +161,25 @@ class TemporalEventGrouperTest extends HarnessingTest {
 
         harness.extractOutputValues should contain(shortlyAfterGroup)
         harness.extractOutputValues should contain(aVeryLongTimeAfter)
+      }
+
+      "duration would be longer than the maximumGroupDuration" in {
+        val (_, harness) = getHarness
+        harness.open()
+
+        harness.processElement(firstGroup, firstGroup.startTime.toEpochMilli)
+
+        Range(firstGroup.startTime.getEpochSecond.toInt, 7300, 5)
+          .map(s => groupWithTimestamp(s.toLong))
+          .foreach { g =>
+            harness.processElement(g, g.startTime.toEpochMilli)
+          }
+
+        harness.extractOutputValues().iterator.asScala.exists { g =>
+          g.events.exists { e =>
+            e.time.isAfter(firstGroup.startTime.plusSeconds(7200))
+          }
+        } shouldBe false
       }
     }
 

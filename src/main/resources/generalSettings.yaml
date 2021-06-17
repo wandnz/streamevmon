@@ -20,3 +20,4 @@ eventGrouping:
     exportLocation: /tmp/graph-export.dot
   time:
     maximumEventInterval: 10
+    maximumGroupDuration: 7200 # 2 hours

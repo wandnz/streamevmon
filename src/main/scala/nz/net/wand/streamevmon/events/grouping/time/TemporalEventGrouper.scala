@@ -48,6 +48,8 @@ import org.apache.flink.util.Collector
   *
   * - `maximumEventInterval`: The maximum time, in seconds, between two events
   * before a new group is started. Default 10.
+  * - `maximumGroupDuration`: The maximum time, in seconds, that an event group
+  * can span. Default 7200 (2 hours).
   */
 class TemporalEventGrouper
   extends KeyedProcessFunction[String, EventGroup, EventGroup]
@@ -62,6 +64,9 @@ class TemporalEventGrouper
   @transient lazy val maximumEventInterval: Duration =
   Duration.ofSeconds(configWithOverride(getRuntimeContext).getLong(s"$configKeyGroup.maximumEventInterval"))
 
+  @transient lazy val maximumGroupDuration: Duration =
+    Duration.ofSeconds(configWithOverride(getRuntimeContext).getLong(s"$configKeyGroup.maximumGroupDuration"))
+
   var state: MapState[String, EventGroup] = _
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {}
@@ -74,15 +79,27 @@ class TemporalEventGrouper
       ))
   }
 
+  def createTimers(value: EventGroup, ctx: KeyedProcessFunction[String, EventGroup, EventGroup]#Context): Unit = {
+    val biggestEventTime = value.events.maxBy(_.eventTime).eventTime
+    ctx.timerService.registerEventTimeTimer(biggestEventTime.plus(maximumEventInterval).toEpochMilli)
+    ctx.timerService.registerEventTimeTimer(value.startTime.plus(maximumGroupDuration).toEpochMilli)
+  }
+
+  def deleteTimers(value: EventGroup, ctx: KeyedProcessFunction[String, EventGroup, EventGroup]#Context): Unit = {
+    val biggestEventTime = value.events.maxBy(_.eventTime).eventTime
+    ctx.timerService.deleteEventTimeTimer(biggestEventTime.plus(maximumEventInterval).toEpochMilli)
+    ctx.timerService.deleteEventTimeTimer(value.startTime.plus(maximumGroupDuration).toEpochMilli)
+  }
+
   override def processElement(
-    value: EventGroup,
-    ctx  : KeyedProcessFunction[String, EventGroup, EventGroup]#Context,
-    out  : Collector[EventGroup]
+    value               : EventGroup,
+    ctx                 : KeyedProcessFunction[String, EventGroup, EventGroup]#Context,
+    out                 : Collector[EventGroup]
   ): Unit = {
     // If we don't have an ongoing event for this stream, make one.
     if (!state.contains(ctx.getCurrentKey)) {
       state.put(ctx.getCurrentKey, value)
-      ctx.timerService.registerEventTimeTimer(value.startTime.plus(maximumEventInterval).toEpochMilli)
+      createTimers(value, ctx)
     }
     // If there is an ongoing stream, we should try merge the group we just
     // received into it.
@@ -96,15 +113,26 @@ class TemporalEventGrouper
       if (value.startTime.isAfter(biggestTime.plus(maximumEventInterval))) {
         out.collect(state.get(ctx.getCurrentKey).copy(endTime = Some(biggestTime)))
         state.put(ctx.getCurrentKey, value)
-        ctx.timerService.deleteEventTimeTimer(entry.startTime.plus(maximumEventInterval).toEpochMilli)
-        ctx.timerService.registerEventTimeTimer(value.startTime.plus(maximumEventInterval).toEpochMilli)
+        deleteTimers(entry, ctx)
+        createTimers(value, ctx)
+      }
+      // If the end of the new group is late enough that it would bring the
+      // total duration over the maximum group duration, we should finalise the
+      // group and replace it with the new group.
+      else if (Duration.between(entry.startTime, value.events.maxBy(_.eventTime).eventTime).compareTo(maximumGroupDuration) > 0) {
+        out.collect(state.get(ctx.getCurrentKey).copy(endTime = Some(biggestTime)))
+        state.put(ctx.getCurrentKey, value)
+        deleteTimers(entry, ctx)
+        createTimers(value, ctx)
       }
       // Otherwise, we should merge the two groups together.
       else {
+        deleteTimers(state.get(ctx.getCurrentKey), ctx)
         val earlierTime = Instant.ofEpochMilli(Math.min(entry.startTime.toEpochMilli, value.startTime.toEpochMilli))
         state.put(ctx.getCurrentKey, EventGroup(
           earlierTime, None, entry.events ++ value.events
         ))
+        createTimers(state.get(ctx.getCurrentKey), ctx)
       }
     }
   }
@@ -120,5 +148,6 @@ class TemporalEventGrouper
     val group = state.get(ctx.getCurrentKey)
     out.collect(group.copy(endTime = Some(group.events.maxBy(e => e.eventTime).eventTime)))
     state.remove(ctx.getCurrentKey)
+    deleteTimers(group, ctx)
   }
 }
