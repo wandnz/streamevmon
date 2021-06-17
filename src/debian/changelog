@@ -1,3 +1,10 @@
+streamevmon (0.3.0-RC3-1) unstable; urgency=low
+
+  * Temporal event grouping has new configuration field maximumGroupDuration.
+  * Durations in event group descriptions are now truncated to second precision.
+
+ -- Daniel Oosterwijk <doosterw@waikato.ac.nz>  Mon, 14 June 2021 16:40:20 +1200
+
 streamevmon (0.3.0-RC2-1) unstable; urgency=low
 
   * Change in InfluxDB schema for events and event groups.
