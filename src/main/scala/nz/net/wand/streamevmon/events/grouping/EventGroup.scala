@@ -29,6 +29,7 @@ package nz.net.wand.streamevmon.events.grouping
 import nz.net.wand.streamevmon.events.Event
 
 import java.time.{Duration, Instant}
+import java.time.temporal.ChronoUnit
 import java.util.concurrent.TimeUnit
 import java.util.UUID
 
@@ -60,10 +61,11 @@ case class EventGroup(
     endTime match {
       case Some(eTime) =>
         s"""Group of ${memberEvents.size} events over ${streams.size} measurement
-           |streams with duration ${Duration.between(startTime, eTime)},
+           |streams with duration ${Duration.between(startTime, eTime).truncatedTo(ChronoUnit.SECONDS)},
            |most common event type \"$modeEventType\",
            |mean severity $meanSeverity,
-           |and mean detection latency $meanDetectionLatency""".stripMargin.replace(Platform.EOL, " ")
+           |and mean detection latency ${meanDetectionLatency.truncatedTo(ChronoUnit.SECONDS)}"""
+          .stripMargin.replace(Platform.EOL, " ")
       case None => "Event group still in progress."
     }
   }
