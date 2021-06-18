@@ -21,3 +21,13 @@ eventGrouping:
   time:
     maximumEventInterval: 10
     maximumGroupDuration: 7200 # 2 hours
+  frequentFilter:
+    small:
+      interval: 60
+      count: 5
+    medium:
+      interval: 120
+      count: 15
+    large:
+      interval: 360
+      count: 100

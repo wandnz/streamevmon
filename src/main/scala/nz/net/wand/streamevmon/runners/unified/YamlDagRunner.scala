@@ -27,7 +27,7 @@
 package nz.net.wand.streamevmon.runners.unified
 
 import nz.net.wand.streamevmon.{Configuration, Lazy, Logging}
-import nz.net.wand.streamevmon.events.Event
+import nz.net.wand.streamevmon.events.{Event, FrequentEventFilter}
 import nz.net.wand.streamevmon.events.grouping.EventGrouperFlinkHelper
 import nz.net.wand.streamevmon.flink.HasFlinkConfig
 import nz.net.wand.streamevmon.flink.sinks.{InfluxEventGroupSink, InfluxEventSink}
@@ -144,7 +144,7 @@ object YamlDagRunner extends Logging {
           // Each instance can have several sources...
           val sourcesList = detInstance.sources.map(s => (s, sources(s.name)))
           // ... but there's only one per detector for now.
-          val eventStream: DataStream[Event] = sourcesList.headOption
+          val eventStream = sourcesList.headOption
             .map {
               case (srcReference, stream) =>
                 // The best way to get the new detector with its correctly
@@ -196,10 +196,14 @@ object YamlDagRunner extends Logging {
                     )
 
                   // ... and hook it into the detector.
-                  windowedStream
-                    .process(windowedDetector)
-                    .name(s"$name (${windowedDetector.flinkName})")
-                    .uid(s"${windowedDetector.flinkUid}-$name-$index")
+                  (
+                    windowedStream
+                      .process(windowedDetector)
+                      .name(s"$name (${windowedDetector.flinkName})")
+                      .uid(s"${windowedDetector.flinkUid}-$name-$index"),
+                    name,
+                    s"${windowedDetector.flinkUid}-$name-$index"
+                  )
                 }
                 else {
                   // We only grab the appropriate stream. The unused ones don't
@@ -212,19 +216,32 @@ object YamlDagRunner extends Logging {
                   }
 
                   // Hook in the source.
-                  selectedStream
-                    .process(keyedDetector)
-                    .name(s"$name (${keyedDetector.flinkName})")
-                    .uid(s"${keyedDetector.flinkUid}-$name-$index")
+                  (
+                    selectedStream
+                      .process(keyedDetector)
+                      .name(s"$name (${keyedDetector.flinkName})")
+                      .uid(s"${keyedDetector.flinkUid}-$name-$index"),
+                    name,
+                    s"${keyedDetector.flinkUid}-$name-$index"
+                  )
                 }
             }
             .getOrElse(
               throw new IllegalArgumentException("Detector instance must have at least one source!")
             )
 
+          // Slap a filtering step in to quiet down all those noisy detectors
+          val filteredEventStream = {
+            val func = new FrequentEventFilter[Event]
+            eventStream._1
+              .process(func)
+              .name(s"${func.flinkName} (${eventStream._2})")
+              .uid(s"${func.flinkUid}-${eventStream._3}")
+          }
+
           // Register the instance for the sinks it wants.
           detInstance.sinks.foreach { sink =>
-            detectorsBySink(sink.name).append(eventStream)
+            detectorsBySink(sink.name).append(filteredEventStream)
           }
         }
     }
