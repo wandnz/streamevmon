@@ -79,17 +79,29 @@ class FrequentEventFilter[T <: Event]
   case class FrequencyConfig(
     name    : String,
     interval: Int,
-    count   : Int
+    count   : Int,
+    cooldown: Int
   )
 
   object FrequencyConfig {
-    val configKeyNames = Seq("interval", "count")
+    val configKeyNames = Seq("interval", "count", "cooldown")
 
-    def apply(name: String, conf: ParameterTool): FrequencyConfig = FrequencyConfig(
-      name,
-      conf.getInt(s"eventGrouping.$configKeyGroup.$name.interval"),
-      conf.getInt(s"eventGrouping.$configKeyGroup.$name.count")
-    )
+    def apply(name: String, getDefaults: Boolean, conf: ParameterTool): FrequencyConfig = if (getDefaults) {
+      FrequencyConfig(
+        name,
+        conf.getInt(s"eventGrouping.$configKeyGroup.defaults.$name.interval"),
+        conf.getInt(s"eventGrouping.$configKeyGroup.defaults.$name.count"),
+        conf.getInt(s"eventGrouping.$configKeyGroup.defaults.$name.cooldown"),
+      )
+    }
+    else {
+      FrequencyConfig(
+        name,
+        conf.getInt(s"eventGrouping.$configKeyGroup.$name.interval"),
+        conf.getInt(s"eventGrouping.$configKeyGroup.$name.count"),
+        conf.getInt(s"eventGrouping.$configKeyGroup.$name.cooldown"),
+      )
+    }
   }
 
   var configs: Iterable[FrequencyConfig] = _
@@ -98,16 +110,31 @@ class FrequentEventFilter[T <: Event]
     * throw an IllegalArgumentException (or possibly other types, depending on
     * the issue) if anything is wrong with the format of the configuration.
     */
-  def parseConfig(): Iterable[FrequencyConfig] = {
+  protected def parseConfig(getDefaults: Boolean = false): Iterable[FrequencyConfig] = {
     val conf = configWithOverride(getRuntimeContext)
-    conf
+    val result = conf
       .toMap
       .asScala
       .keySet
       // Grab the config keys for just this operator
-      .filter(_.startsWith(s"eventGrouping.$configKeyGroup"))
+      .filter { item =>
+        if (getDefaults) {
+          item.startsWith(s"eventGrouping.$configKeyGroup.defaults")
+        }
+        else {
+          item.startsWith(s"eventGrouping.$configKeyGroup") &&
+            !item.startsWith(s"eventGrouping.$configKeyGroup.defaults")
+        }
+      }
       // Trim off the common section
-      .map(_.drop(s"eventGrouping.$configKeyGroup.".length))
+      .map { item =>
+        if (getDefaults) {
+          item.drop(s"eventGrouping.$configKeyGroup.defaults.".length)
+        }
+        else {
+          item.drop(s"eventGrouping.$configKeyGroup.".length)
+        }
+      }
       .map { i =>
         // The rest of the config key should just be two parts...
         val parts = i.split('.')
@@ -134,9 +161,23 @@ class FrequentEventFilter[T <: Event]
         else {
           // Now we know all the keys are there, we can go ahead and construct
           // a config for this group.
-          FrequencyConfig(groupName, conf)
+          FrequencyConfig(groupName, getDefaults, conf)
         }
       }
+
+    if (result.isEmpty) {
+      if (getDefaults) {
+        throw new IllegalStateException(
+          s"No configurations specified under `eventGrouping.$configKeyGroup, " +
+            s"and couldn't find defaults under `eventGrouping.$configKeyGroup.defaults!")
+      }
+      else {
+        parseConfig(getDefaults = true)
+      }
+    }
+    else {
+      result
+    }
   }
 
   override def open(parameters: Configuration): Unit = {
@@ -149,6 +190,12 @@ class FrequentEventFilter[T <: Event]
     out                            : Collector[T]
   ): Unit = {
     out.collect(value)
+
+    // Keep track of the timestamps of a few recent events
+    // If there are more than `count` events within `interval` seconds, don't
+    // pass any more through.
+    // Mark the filter as inactive, until `cooldown` seconds have passed.
+    // We can use a timer for this, if there's enough distinguishing information.
   }
 
   override def snapshotState(context: FunctionSnapshotContext): Unit = {

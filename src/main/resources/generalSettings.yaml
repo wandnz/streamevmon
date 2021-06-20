@@ -21,13 +21,19 @@ eventGrouping:
   time:
     maximumEventInterval: 10
     maximumGroupDuration: 7200 # 2 hours
-  frequentFilter:
-    small:
-      interval: 60
-      count: 5
-    medium:
-      interval: 120
-      count: 15
-    large:
-      interval: 360
-      count: 100
+### Example of configuration for frequentFilter.
+### Uncomment to customise
+#  frequentFilter:
+#    small:
+#      interval: 60
+#      count: 5
+#      cooldown: 120
+#    medium:
+#      interval: 120
+#      count: 15
+#      cooldown: 240
+#    large:
+#      interval: 360
+#      count: 100
+#      cooldown: 720
+###

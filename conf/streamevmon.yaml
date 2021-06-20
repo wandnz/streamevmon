@@ -7,5 +7,5 @@ source:
   latencyts:
     ampicmp:
       location: ./data/latency-ts-i/ampicmp
-    smokepoing:
+    smokeping:
       location: ./data/latency-ts-i/smokeping

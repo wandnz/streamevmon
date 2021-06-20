@@ -160,6 +160,7 @@ object Configuration extends Logging {
 
     val defaultSettingsFiles = Seq(
       "generalSettings.yaml",
+      "eventGrouping-frequentFilter-defaults.yaml",
       "connectorSettings.yaml",
       "detectorSettings.yaml"
     ).map(getClass.getClassLoader.getResourceAsStream)
