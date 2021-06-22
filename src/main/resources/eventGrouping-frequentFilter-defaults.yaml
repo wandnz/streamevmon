@@ -5,11 +5,14 @@ eventGrouping:
         interval: 60
         count: 5
         cooldown: 120
+        severity: 25
       medium:
         interval: 120
         count: 15
         cooldown: 240
+        severity: 50
       large:
         interval: 360
         count: 100
         cooldown: 720
+        severity: 75

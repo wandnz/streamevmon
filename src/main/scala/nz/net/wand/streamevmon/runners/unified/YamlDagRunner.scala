@@ -232,7 +232,7 @@ object YamlDagRunner extends Logging {
 
           // Slap a filtering step in to quiet down all those noisy detectors
           val filteredEventStream = {
-            val func = new FrequentEventFilter[Event]
+            val func = new FrequentEventFilter
             eventStream._1
               .process(func)
               .name(s"${func.flinkName} (${eventStream._2})")
