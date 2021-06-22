@@ -63,7 +63,7 @@ class FrequentEventFilterTest extends HarnessingTest {
 
       def checkValidState(value: FrequentEventFilter): Unit = {
         withClue("One config should be disabled") {
-          value.configEnabledMap.foreach { case (conf, time) =>
+          value.configEnabledMap("1").foreach { case (conf, time) =>
             if (conf.count <= sendThisManyEvents) {
               time shouldBe defined
             }
@@ -74,7 +74,7 @@ class FrequentEventFilterTest extends HarnessingTest {
         }
 
         withClue("all the measurements should be logged") {
-          value.recentTimestamps should have size sendThisManyEvents
+          value.recentTimestamps("1") should have size sendThisManyEvents
         }
       }
 
@@ -111,7 +111,7 @@ class FrequentEventFilterTest extends HarnessingTest {
           harness.processElement(ev, ev.time.toEpochMilli)
         }
 
-      func.recentTimestamps.foreach { item =>
+      func.recentTimestamps("1").foreach { item =>
         withClue(s"$item should not be before $earliestExpectedTime:") {
           item.isBefore(earliestExpectedTime) shouldBe false
         }
@@ -153,18 +153,20 @@ class FrequentEventFilterTest extends HarnessingTest {
       val harness = newHarness(func, keySelector)
       harness.open()
 
-      func.configEnabledMap.foreach { case (k, _) =>
-        func.configEnabledMap.put(k, Some(Instant.ofEpochSecond(10)))
+      val firstEv = eventWithTimestamp(10)
+      harness.processElement(firstEv, firstEv.time.toEpochMilli)
+      func.configEnabledMap("1").foreach { case (k, _) =>
+        func.configEnabledMap("1").put(k, Some(Instant.ofEpochSecond(10)))
       }
 
-      func.configEnabledMap.values shouldNot contain(None)
+      func.configEnabledMap("1").values shouldNot contain(None)
 
       func.configs.map(_.cooldown).toList.sorted
         .foreach { cd =>
           val ev = eventWithTimestamp(15 + cd)
           harness.processElement(ev, ev.time.toEpochMilli)
 
-          func.configEnabledMap
+          func.configEnabledMap("1")
             .filter(_._1.cooldown == cd)
             .foreach { case (_, v) =>
               v shouldNot be(defined)
