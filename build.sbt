@@ -4,7 +4,7 @@ ThisBuild / resolvers ++= Seq(
   Resolver.mavenLocal
 )
 
-ThisBuild / scalaVersion := "2.12.13"
+ThisBuild / scalaVersion := "2.12.14"
 
 import Dependencies._
 import Licensing._
