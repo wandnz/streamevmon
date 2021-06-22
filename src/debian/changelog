@@ -1,3 +1,10 @@
+streamevmon (0.3.0-RC4-1) unstable; urgency=low
+
+  * New FrequentEventFilter operator applied to all detectors, which
+    configurably blocks frequent events from making a mess of the database.
+
+ -- Daniel Oosterwijk <doosterw@waikato.ac.nz>  Mon, 14 June 2021 16:40:20 +1200
+
 streamevmon (0.3.0-RC3-1) unstable; urgency=low
 
   * Temporal event grouping has new configuration field maximumGroupDuration.
