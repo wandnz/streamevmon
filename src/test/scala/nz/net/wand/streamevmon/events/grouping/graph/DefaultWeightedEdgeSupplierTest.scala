@@ -26,6 +26,7 @@
 
 package nz.net.wand.streamevmon.events.grouping.graph
 
+import nz.net.wand.streamevmon.events.grouping.graph.impl.DefaultWeightedEdgeSupplier
 import nz.net.wand.streamevmon.test.TestBase
 
 import com.esotericsoftware.kryo.Kryo

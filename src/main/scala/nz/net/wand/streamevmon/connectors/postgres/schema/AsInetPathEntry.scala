@@ -26,7 +26,7 @@
 
 package nz.net.wand.streamevmon.connectors.postgres.schema
 
-import nz.net.wand.streamevmon.events.grouping.graph.SerializableInetAddress
+import nz.net.wand.streamevmon.events.grouping.graph.impl.SerializableInetAddress
 
 /** One entry in an [[AsInetPath]]. `address` is optional, as the address of a
   * hop may be unknown. AsNumber can be part of any of its categories, including

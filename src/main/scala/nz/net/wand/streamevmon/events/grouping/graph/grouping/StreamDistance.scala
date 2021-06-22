@@ -24,11 +24,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.wand.streamevmon.events.grouping.graph.pruning
+package nz.net.wand.streamevmon.events.grouping.graph.grouping
 
-import org.jgrapht.Graph
+case class StreamDistance(private val distance: Double) extends Ordered[StreamDistance] {
+  override def compare(that: StreamDistance): Int = distance.compare(that.distance)
+}
 
-/** Parent trait for graph pruning algorithms. */
-trait GraphPruneApproach[VertexT, EdgeT, GraphT <: Graph[VertexT, EdgeT]] {
-  def prune(graph: GraphT): Unit
+object StreamDistance {
+  val ZERO: StreamDistance = StreamDistance(0)
 }

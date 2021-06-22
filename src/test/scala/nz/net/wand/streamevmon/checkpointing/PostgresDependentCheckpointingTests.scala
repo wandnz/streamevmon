@@ -26,13 +26,15 @@
 
 package nz.net.wand.streamevmon.checkpointing
 
-import nz.net.wand.streamevmon.events.grouping.graph.TracerouteAsInetPathExtractor
-import nz.net.wand.streamevmon.measurements.MeasurementMetaExtractor
+import nz.net.wand.streamevmon.events.grouping.graph.building.TracerouteAsInetPathExtractor
+import nz.net.wand.streamevmon.measurements.{MeasurementMetaExtractor, MeasurementMetaTogetherExtractor}
 import nz.net.wand.streamevmon.measurements.amp.{Traceroute, TracerouteMeta}
 import nz.net.wand.streamevmon.test.{HarnessingTest, PostgresContainerSpec, SeedData}
 
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.runtime.streamrecord.StreamRecord
+
+import scala.collection.JavaConverters._
 
 class PostgresDependentCheckpointingTests extends PostgresContainerSpec with HarnessingTest {
   "ProcessFunctions that require PostgreSQL" should {
@@ -105,6 +107,31 @@ class PostgresDependentCheckpointingTests extends PostgresContainerSpec with Har
         if (newSideOutput != null) {
           newSideOutput should have size 0
         }
+      }
+
+      "type is MeasurementMetaTogetherExtractor" in {
+        val extractor = new MeasurementMetaTogetherExtractor[Traceroute, TracerouteMeta]()
+        var harness = newHarness(extractor)
+        harness.open()
+        extractor.pgCon = getPostgres
+
+        currentTime += 1
+        harness.processElement(SeedData.traceroute.expected, currentTime)
+        harness.extractOutputValues should have size 1
+        harness.extractOutputValues.asScala.head shouldBe(SeedData.traceroute.expected, SeedData.traceroute.expectedMeta)
+
+        currentTime += 1
+        harness.processElement(SeedData.traceroute.expected, currentTime)
+        harness.extractOutputValues should have size 2
+        harness.extractOutputValues.get(0) shouldBe harness.extractOutputValues.get(1)
+
+        val extractor2 = new MeasurementMetaTogetherExtractor[Traceroute, TracerouteMeta]()
+        harness = snapshotAndRestart(harness, extractor2)
+
+        currentTime += 1
+        harness.processElement(SeedData.traceroute.expected, currentTime)
+        harness.extractOutputValues should have size 1
+        harness.extractOutputValues.asScala.head shouldBe(SeedData.traceroute.expected, SeedData.traceroute.expectedMeta)
       }
     }
   }

@@ -26,6 +26,7 @@
 
 package nz.net.wand.streamevmon.events.grouping.graph
 
+import nz.net.wand.streamevmon.events.grouping.graph.impl.EdgeWithLastSeen
 import nz.net.wand.streamevmon.test.TestBase
 
 import java.time.Instant
@@ -37,7 +38,7 @@ class EdgeWithLastSeenTest extends TestBase {
   "EdgeWithLastSeen" should {
     "serialize via Kryo" in {
       val time = Instant.now()
-      val original = new EdgeWithLastSeen(time)
+      val original = new EdgeWithLastSeen(time, "uid")
 
       val inst = new ScalaKryoInstantiator()
       inst.setRegistrationRequired(false)
@@ -50,6 +51,26 @@ class EdgeWithLastSeenTest extends TestBase {
       val output = k.readClassAndObject(input)
       output shouldBe an[EdgeWithLastSeen]
       output.asInstanceOf[EdgeWithLastSeen].lastSeen shouldBe time
+    }
+
+    val a = new EdgeWithLastSeen(Instant.EPOCH, "a")
+    val aa = new EdgeWithLastSeen(Instant.EPOCH, "a")
+    val b = new EdgeWithLastSeen(Instant.EPOCH, "b")
+    val c = new EdgeWithLastSeen(Instant.ofEpochMilli(1000), "a")
+    val d = new EdgeWithLastSeen(Instant.ofEpochMilli(1000), "b")
+
+    "have good equals()" in {
+      assert(a.equals(aa))
+      assert(!a.equals(b))
+      assert(!a.equals(c))
+      assert(!a.equals(d))
+    }
+
+    "have good hashCode()" in {
+      a.hashCode shouldBe aa.hashCode
+      a.hashCode shouldNot be(b.hashCode())
+      a.hashCode shouldNot be(c.hashCode())
+      a.hashCode shouldNot be(d.hashCode())
     }
   }
 }

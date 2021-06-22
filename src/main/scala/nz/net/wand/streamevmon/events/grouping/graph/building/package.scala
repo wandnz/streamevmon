@@ -26,11 +26,12 @@
 
 package nz.net.wand.streamevmon.events.grouping.graph
 
-import java.time.Instant
-
-/** A simple edge type that holds an Instant, used to keep track of when the
-  * edge was last seen to allow edge expiry.
+/** Contains logic for building a graph.
+  *
+  * If you are creating a new Flink operator that requires a topology graph,
+  * implement [[BuildsGraph]].
+  *
+  * If you are building a Flink pipeline that contains operators which implement
+  * BuildsGraph, you should use the functions declared in [[FlinkHelpers]].
   */
-class EdgeWithLastSeen(val lastSeen: Instant)
-
-
+package object building {}

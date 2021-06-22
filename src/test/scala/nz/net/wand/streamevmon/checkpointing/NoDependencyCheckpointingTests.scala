@@ -32,8 +32,6 @@ import nz.net.wand.streamevmon.detectors.distdiff.DistDiffDetector
 import nz.net.wand.streamevmon.detectors.loss.LossDetector
 import nz.net.wand.streamevmon.detectors.mode.ModeDetector
 import nz.net.wand.streamevmon.detectors.spike.SpikeDetector
-import nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph
-import nz.net.wand.streamevmon.events.Event
 import nz.net.wand.streamevmon.measurements.amp.ICMP
 import nz.net.wand.streamevmon.test.{HarnessingTest, SeedData}
 
@@ -207,36 +205,6 @@ class NoDependencyCheckpointingTests extends HarnessingTest {
         sendAnomalousMeasurement(harness, times = 100)
         harness.getOutput shouldNot have size 0
       }
-    }
-  }
-
-  "TraceroutePathGraph" should {
-    "restore from checkpoints correctly" in {
-      val graph = new TraceroutePathGraph[Event]()
-      val path = SeedData.traceroute.expectedAsInetPath
-
-      var harness = newHarness(graph)
-      harness.open()
-
-      currentTime += 1
-      harness.processElement2(SeedData.traceroute.expectedAsInetPath, currentTime)
-
-      // We can do this since there are no entries that need merging in the
-      // example path.
-      graph.getMergedHosts should have size path.size
-      graph.graph.vertexSet should have size path.size
-      graph.graph.edgeSet should have size path.size - 1
-      graph.lastPruneTime shouldBe SeedData.traceroute.expectedAsInetPath.measurement.time
-      graph.measurementsSinceLastPrune shouldBe 1
-
-      val graph2 = new TraceroutePathGraph[Event]()
-      harness = snapshotAndRestart(harness, graph2)
-
-      graph2.getMergedHosts should have size path.size
-      graph2.graph.vertexSet should have size path.size
-      graph2.graph.edgeSet should have size path.size - 1
-      graph2.lastPruneTime shouldBe SeedData.traceroute.expectedAsInetPath.measurement.time
-      graph2.measurementsSinceLastPrune shouldBe 1
     }
   }
 }

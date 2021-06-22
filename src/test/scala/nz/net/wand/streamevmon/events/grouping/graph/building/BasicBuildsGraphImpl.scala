@@ -24,7 +24,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.wand.streamevmon.events.grouping.graph
+package nz.net.wand.streamevmon.events.grouping.graph.building
 
-/** Standalone pruning algorithms for host graphs. */
-package object pruning {}
+import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
+import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
+import org.apache.flink.streaming.api.functions.ProcessFunction
+import org.apache.flink.util.Collector
+
+class BasicBuildsGraphImpl
+  extends ProcessFunction[GraphChangeEvent, GraphChangeEvent]
+          with BuildsGraph
+          with CheckpointedFunction {
+
+  override def processElement(
+    value: GraphChangeEvent,
+    ctx  : ProcessFunction[GraphChangeEvent, GraphChangeEvent]#Context,
+    out  : Collector[GraphChangeEvent]
+  ): Unit = {
+    receiveGraphChangeEvent(value)
+  }
+
+  override def snapshotState(context: FunctionSnapshotContext): Unit = {
+    snapshotGraphState(context)
+  }
+
+  override def initializeState(context: FunctionInitializationContext): Unit = {
+    initializeGraphState(context)
+  }
+}

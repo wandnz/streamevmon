@@ -26,8 +26,8 @@
 
 package nz.net.wand.streamevmon.events.grouping.graph.pruning
 
-import nz.net.wand.streamevmon.events.grouping.graph.EdgeWithLastSeen
 import nz.net.wand.streamevmon.Logging
+import nz.net.wand.streamevmon.events.grouping.graph.impl.EdgeWithLastSeen
 
 import java.time.{Duration, Instant}
 
@@ -39,6 +39,11 @@ import scala.collection.JavaConverters._
 /** Pruning algorithm which removes edges when they haven't been seen in a long
   * time, then removes the now disconnected vertices.
   *
+  * This behaviour is also implemented with the two GraphChangeEvents
+  * [[nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.RemoveOldEdges RemoveOldEdges]]
+  * and
+  * [[nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.RemoveUnconnectedVertices RemoveUnconnectedVertices]]
+  *
   * @param pruneAge    How old an edge must be before it is pruned
   * @param currentTime The current event time.
   */
@@ -47,11 +52,10 @@ class GraphPruneLastSeenTime[
   EdgeT <: EdgeWithLastSeen,
   GraphT <: Graph[VertexT, EdgeT]
 ](
-  pruneAge: Duration,
+  pruneAge   : Duration,
   currentTime: Instant
-) extends GraphPruneApproach[VertexT, EdgeT, GraphT]
-          with Logging {
-  override def prune(graph: GraphT): Unit = {
+) extends Logging {
+  def prune(graph: GraphT): Unit = {
     val startTime = System.nanoTime()
 
     graph.edgeSet.asScala

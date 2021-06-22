@@ -28,6 +28,7 @@ package nz.net.wand.streamevmon.events.grouping.graph
 
 import nz.net.wand.streamevmon.connectors.postgres.schema.AsNumber
 import nz.net.wand.streamevmon.events.grouping.graph.itdk.{ItdkAliasLookup, ItdkAsLookup, ItdkLookupPreprocessor}
+import nz.net.wand.streamevmon.events.grouping.graph.pruning.AliasResolver
 import nz.net.wand.streamevmon.test.TestBase
 
 import java.io.{BufferedReader, InputStreamReader}
@@ -213,18 +214,21 @@ class AliasResolverTest extends TestBase {
       }
 
       allHosts.foreach(h => resolver.resolve(h, onNewHost, onUpdateHost))
-      val afterMerge = resolver.mergedHosts
 
-      assert(afterMerge.exists(_._2.itdkNodeId.isDefined))
+      assert(
+        resolver.mergedHosts.theMap
+          .exists {
+            case (_, Right(thatNode)) => thatNode.itdkNodeId.isDefined
+            case _ => false
+          }
+      )
     }
 
     "perform ITDK resolution" when {
       "an ITDK dataset is provided" in {
         val (tempDir, aliasLookup, _) = setupItdk
         try {
-          noException shouldBe thrownBy(
-            testItdkResolution(new AliasResolver(Some(aliasLookup)))
-          )
+          testItdkResolution(new AliasResolver(Some(aliasLookup)))
         }
         finally {
           FileUtils.deleteDirectory(tempDir.toFile)

@@ -24,23 +24,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package nz.net.wand.streamevmon.events.grouping.graph
+package nz.net.wand.streamevmon.events.grouping.graph.pruning
 
+import nz.net.wand.streamevmon.events.grouping.graph.impl.Host
 import nz.net.wand.streamevmon.events.grouping.graph.itdk._
 
 import java.io.File
 
 import org.apache.flink.api.java.utils.ParameterTool
-
-import scala.collection.mutable
+import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
+import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
 
 /** Worker class for alias resolution, which finds duplicate entries for hosts.
   *
+  * Note that the `mergedHosts` field has no way of pruning itself, and will
+  * grow endlessly.
+  *
   * ==Configuration==
   *
-  * This class configures the construction of a new [[nz.net.wand.streamevmon.events.grouping.graph.itdk.ItdkAliasLookup ItdkAliasLookup]] object
-  * if the constructor with a ParameterTool is used. As such, the default config
-  * key group is `eventGrouping.graph.itdk`.
+  * This class configures the construction of a new
+  * [[nz.net.wand.streamevmon.events.grouping.graph.itdk.ItdkAliasLookup ItdkAliasLookup]]
+  * object if the constructor with a ParameterTool is used. As such, the default
+  * config key group is `eventGrouping.graph.itdk`.
   *
   * - `alignedNodesFile`: If the file exists, the created AliasLookup will refer
   * to its contents.
@@ -56,14 +61,11 @@ import scala.collection.mutable
   */
 class AliasResolver(
   itdkAliasLookup: Option[ItdkAliasLookup]
-) extends Serializable {
+) extends Serializable with CheckpointedFunction {
 
   type HostT = Host
 
-  /** Keeps track of which hosts were replaced by merged hosts. The key is the
-    * original host's UID, and the value is the merged host.
-    */
-  val mergedHosts: mutable.Map[String, HostT] = mutable.Map()
+  val mergedHosts = new MergeMap[String, HostT]()
 
   /** Uses all available information to perform alias resolution. If no ITDK
     * data is provided, we do naive resolution based on the hostnames already
@@ -76,13 +78,13 @@ class AliasResolver(
     */
   def resolve(
     host        : HostT,
-    onNewHost   : HostT => Unit,
-    onUpdateHost: (HostT, HostT) => Unit
+    onNewHost   : HostT => Unit = _ => Unit,
+    onUpdateHost: (HostT, HostT) => Unit = (_, _) => Unit
   ): HostT = {
     // Naive resolution. If we've seen it before, it'll be in the mergedHosts
     // map. We merge it with the new host to retain all the information. If we
     // haven't seen it before, just continue with the new host.
-    val naivelyMergedHost = mergedHosts.get(host.uid).map(_.mergeWith(host)).getOrElse(host)
+    val naivelyMergedHost = mergedHosts.get(host.uid).map(_.mergeWith(host, forceMergeAnonymousHosts = true)).getOrElse(host)
 
     // Now that we have all our current knowledge of the node, let's compare it
     // against the ITDK dataset.
@@ -106,7 +108,7 @@ class AliasResolver(
           // First, make sure that we don't end up with a single Host containing
           // addresses that ITDK believes are on different real host machines.
           // This hasn't yet been observed, so we don't handle it.
-          if (naivelyMergedHost.itdkNodeId.isDefined && naivelyMergedHost.itdkNodeId == nodesAndAsns.headOption) {
+          if (naivelyMergedHost.itdkNodeId.isDefined && naivelyMergedHost.itdkNodeId != nodesAndAsns.headOption) {
             throw new IllegalStateException("Found contradicting ITDK nodes for a single host")
           }
           // If it doesn't contradict (including if this is the first time we got ITDK info),
@@ -147,7 +149,8 @@ class AliasResolver(
 
     // Finally, make sure that our mergedHosts map is up to date and that the
     // caller is notified of the changes we've made.
-    val original = mergedHosts.remove(host.uid)
+    val original = mergedHosts.get(host.uid)
+    mergedHosts.put(host.uid, withItdk)
     mergedHosts.put(withItdk.uid, withItdk)
     original match {
       case Some(org) => onUpdateHost(org, withItdk)
@@ -155,6 +158,14 @@ class AliasResolver(
     }
     withItdk
   }
+
+  def addKnownAliases(merged: HostT, hosts: Iterable[HostT]): Unit = {
+    mergedHosts.merge(hosts.map(_.uid), merged.uid, merged)
+  }
+
+  override def snapshotState(context: FunctionSnapshotContext): Unit = mergedHosts.snapshotState(context)
+
+  override def initializeState(context: FunctionInitializationContext): Unit = mergedHosts.initializeState(context)
 }
 
 object AliasResolver {

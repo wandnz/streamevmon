@@ -21,6 +21,10 @@ eventGrouping:
   time:
     maximumEventInterval: 10
     maximumGroupDuration: 7200 # 2 hours
+  topological:
+    recalculateDistancesCount: 500
+    recalculateDistancesTime: 43200
+
 ### Example of configuration for frequentFilter.
 ### Uncomment to customise
 #  frequentFilter:

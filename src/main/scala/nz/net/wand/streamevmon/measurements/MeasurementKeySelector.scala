@@ -51,6 +51,7 @@ class MeasurementKeySelector[T <: Measurement : ClassTag] extends KeySelector[T,
       case m@(_: ICMP | _: RichICMP) => s"ICMP-${m.stream}"
       case m@(_: TCPPing | _: RichTCPPing) => s"TCPPing-${m.stream}"
       case m@(_: TraceroutePathlen | _: RichTraceroutePathlen) => s"TraceroutePathlen-${m.stream}"
+      case m@(_: Traceroute | _: RichTraceroute) => s"Traceroute-${m.stream}"
       case m@(_: LatencyTSAmpICMP) => s"LatencyTSAmpICMP-${m.stream}"
       case m@(_: LatencyTSSmokeping) => s"LatencyTSSmokeping-${m.stream}"
       case m@(_: Flow) => s"Flow-${m.stream}"

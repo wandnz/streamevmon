@@ -27,7 +27,7 @@
 package nz.net.wand.streamevmon.events.grouping.graph
 
 import nz.net.wand.streamevmon.connectors.postgres.schema.AsNumber
-import nz.net.wand.streamevmon.events.grouping.graph.SerializableInetAddress._
+import nz.net.wand.streamevmon.events.grouping.graph.impl.Host
 import nz.net.wand.streamevmon.test.TestBase
 
 import java.net.InetAddress

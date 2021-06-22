@@ -37,14 +37,14 @@ class SingleEventGrouper
   extends ProcessFunction[Event, EventGroup]
           with HasFlinkConfig {
 
-  override val flinkName: String = "Event -> EventGroup"
+  override val flinkName: String = "Single Event Grouper"
   override val flinkUid: String = "single-event-grouper"
   override val configKeyGroup: String = ""
 
   override def processElement(
     value: Event,
-    ctx  : ProcessFunction[Event, EventGroup]#Context,
-    out  : Collector[EventGroup]
+    ctx: ProcessFunction[Event, EventGroup]#Context,
+    out: Collector[EventGroup]
   ): Unit = {
     out.collect(
       EventGroup(

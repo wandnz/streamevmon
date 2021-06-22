@@ -26,6 +26,7 @@
 
 package nz.net.wand.streamevmon.events.grouping.graph
 
+import nz.net.wand.streamevmon.events.grouping.graph.impl.SerializableInetAddress
 import nz.net.wand.streamevmon.test.TestBase
 
 import java.io._

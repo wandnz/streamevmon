@@ -26,5 +26,5 @@
 
 package nz.net.wand.streamevmon.events.grouping.graph
 
-/** Standalone pruning algorithms for host graphs. */
-package object pruning {}
+/** Contains Flink operators which do the actual graph-based event grouping. */
+package object grouping {}

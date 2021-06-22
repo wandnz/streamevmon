@@ -196,9 +196,8 @@ class PostgresTracerouteSourceFunction(
   * get configured by the `filters` key subgroup.
   */
 object PostgresTracerouteSourceFunction {
-
   val ampletToAmplet: Iterable[TracerouteMeta] => Set[TracerouteMeta] = { metas =>
     val knownAmplets = metas.map(_.source).toSet
-    metas.filter(meta => knownAmplets.contains(meta.destination)).toSet
+    metas.filterNot(meta => knownAmplets.contains(meta.destination)).toSet
   }
 }
