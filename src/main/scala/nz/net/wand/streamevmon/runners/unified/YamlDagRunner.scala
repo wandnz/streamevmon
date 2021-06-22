@@ -234,6 +234,7 @@ object YamlDagRunner extends Logging {
           val filteredEventStream = {
             val func = new FrequentEventFilter
             eventStream._1
+              .keyBy(_.stream)
               .process(func)
               .name(s"${func.flinkName} (${eventStream._2})")
               .uid(s"${func.flinkUid}-${eventStream._3}")

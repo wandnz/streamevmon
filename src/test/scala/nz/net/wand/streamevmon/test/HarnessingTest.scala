@@ -102,6 +102,14 @@ trait HarnessingTest extends TestBase {
     snapshotAndRestart[O, KeyedOneInputStreamOperatorTestHarness[String, I, O]](harness, newHarness(function))
   }
 
+  protected def snapshotAndRestart[I: ClassTag, O](
+    harness: KeyedOneInputStreamOperatorTestHarness[String, I, O],
+    function: KeyedProcessFunction[String, I, O],
+    keySelector: KeySelector[I, String]
+  ): KeyedOneInputStreamOperatorTestHarness[String, I, O] = {
+    snapshotAndRestart[O, KeyedOneInputStreamOperatorTestHarness[String, I, O]](harness, newHarness(function, keySelector))
+  }
+
   protected def snapshotAndRestart[IN1, IN2, OUT](
     harness : TwoInputStreamOperatorTestHarness[IN1, IN2, OUT],
     function: CoProcessFunction[IN1, IN2, OUT]
@@ -110,7 +118,7 @@ trait HarnessingTest extends TestBase {
   }
 
   protected def snapshotAndRestart[O, HarnessT <: AbstractStreamOperatorTestHarness[O]](
-    harness: HarnessT,
+    harness   : HarnessT,
     newHarness: HarnessT
   ) = {
     currentTime += 1

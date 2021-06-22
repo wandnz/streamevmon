@@ -34,7 +34,7 @@ import org.apache.flink.api.common.state.{ListState, ListStateDescriptor}
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.runtime.state.{FunctionInitializationContext, FunctionSnapshotContext}
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction
-import org.apache.flink.streaming.api.functions.ProcessFunction
+import org.apache.flink.streaming.api.functions.KeyedProcessFunction
 import org.apache.flink.util.Collector
 
 import scala.collection.JavaConverters._
@@ -79,7 +79,7 @@ import scala.collection.mutable
   * configurations are enabled.
   */
 class FrequentEventFilter
-  extends ProcessFunction[Event, Event]
+  extends KeyedProcessFunction[String, Event, Event]
           with CheckpointedFunction
           with HasFlinkConfig {
   override val flinkName: String = "Frequent Event Filter"
@@ -194,45 +194,46 @@ class FrequentEventFilter
 
   override def processElement(
     value: Event,
-    ctx: ProcessFunction[Event, Event]#Context,
+    ctx: KeyedProcessFunction[String, Event, Event]#Context,
     out: Collector[Event]
   ): Unit = {
-
     recentTimestamps.enqueue(value.time)
     recentTimestamps.dequeueAll(_.isBefore(value.time.minus(longestInterval)))
 
-    disabledConfigs.foreach { case (conf, disabledAt) =>
-      if (disabledAt.isBefore(value.time.minusSeconds(conf.cooldown))) {
-        configEnabledMap.put(conf, None)
-      }
-    }
-
-    enabledConfigs
-      .map(conf => (conf, timestampsWithinInterval(conf, value.time)))
-      .foreach { case (conf, stamps) =>
-        if (stamps.size > conf.count) {
-          out.collect(Event(
-            s"bulk_${value.eventType}",
-            value.stream,
-            conf.severity,
-            value.time,
-            Duration.ZERO,
-            s"""Frequent events of type ${value.eventType} - configuration name "${conf.name} (${conf.count} events in ${conf.interval} seconds)"""",
-            Map()
-          ))
-          configEnabledMap.put(conf, Some(value.time))
+    configEnabledMap
+      .map(conf => (conf._1, conf._2, timestampsWithinInterval(conf._1, value.time)))
+      .foreach { case (conf, disabledAt, stamps) =>
+        val isTriggered = stamps.size > conf.count
+        (disabledAt, isTriggered) match {
+          // If the conf is disabled, but still triggered, don't start the cooldown.
+          case (Some(_), true) => configEnabledMap.put(conf, Some(value.time))
+          // If the conf is disabled, but not triggered, check if the cooldown has expired.
+          case (Some(time), false) =>
+            if (time.isBefore(value.time.minusSeconds(conf.cooldown))) {
+              configEnabledMap.put(conf, None)
+            }
+          // If the conf is enabled and triggered, output a bulk event and disable the conf.
+          case (None, true) =>
+            if (stamps.size > conf.count) {
+              out.collect(Event(
+                s"bulk_${value.eventType}",
+                value.stream,
+                conf.severity,
+                value.time,
+                Duration.ZERO,
+                s"""Frequent events of type ${value.eventType} - configuration name "${conf.name} (${conf.count} events in ${conf.interval} seconds)"""",
+                Map()
+              ))
+              configEnabledMap.put(conf, Some(value.time))
+            }
+          // If the conf is enabled, but not yet triggered, do nothing.
+          case (None, false) =>
         }
       }
 
     if (disabledConfigs.isEmpty) {
       out.collect(value)
     }
-
-    // Keep track of the timestamps of a few recent events
-    // If there are more than `count` events within `interval` seconds, don't
-    // pass any more through.
-    // Mark the filter as inactive, until `cooldown` seconds have passed.
-    // We can use a timer for this, if there's enough distinguishing information.
   }
 
   var recentTimestampsState: ListState[Instant] = _

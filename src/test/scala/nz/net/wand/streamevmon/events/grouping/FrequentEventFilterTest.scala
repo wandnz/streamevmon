@@ -31,9 +31,16 @@ import nz.net.wand.streamevmon.test.HarnessingTest
 
 import java.time.{Duration, Instant}
 
+import org.apache.flink.api.java.functions.KeySelector
+import org.apache.flink.streaming.api.scala._
+
 import scala.collection.JavaConverters._
 
 class FrequentEventFilterTest extends HarnessingTest {
+  val keySelector = new KeySelector[Event, String] {
+    override def getKey(value: Event) = value.stream
+  }
+
   "FrequentEventFilter" should {
     def eventWithTimestamp(stamp: Int): Event = Event(
       "test_events",
@@ -49,7 +56,7 @@ class FrequentEventFilterTest extends HarnessingTest {
       def func = new FrequentEventFilter()
 
       val f1 = func
-      var harness = newHarness(f1)
+      var harness = newHarness(f1, keySelector)
       harness.open()
 
       val sendThisManyEvents = 30
@@ -82,13 +89,13 @@ class FrequentEventFilterTest extends HarnessingTest {
 
       val f2 = func
 
-      harness = snapshotAndRestart(harness, f2)
+      harness = snapshotAndRestart(harness, f2, keySelector)
       checkValidState(f2)
     }
 
     "retain a list of the appropriate size with recent events' timestamps" in {
       val func = new FrequentEventFilter()
-      val harness = newHarness(func)
+      val harness = newHarness(func, keySelector)
       harness.open()
 
       val longestInterval = func.longestInterval
@@ -113,10 +120,8 @@ class FrequentEventFilterTest extends HarnessingTest {
 
     "disable configs and replace events once enough events are provided" in {
       val func = new FrequentEventFilter()
-      val harness = newHarness(func)
+      val harness = newHarness(func, keySelector)
       harness.open()
-
-      val longestInterval = func.longestInterval
 
       val startOfRange = 0
       val endOfRange = 90
@@ -127,7 +132,6 @@ class FrequentEventFilterTest extends HarnessingTest {
         .foreach { ev =>
           harness.processElement(ev, ev.time.toEpochMilli)
         }
-
 
       val numberOfUnfilteredEvents = func.configs.minBy(_.count).count
       val bulkEventConfigs = func.configs.filter(_.count <= 20)
@@ -146,7 +150,7 @@ class FrequentEventFilterTest extends HarnessingTest {
 
     "re-enable disabled configs after some time passes" in {
       val func = new FrequentEventFilter()
-      val harness = newHarness(func)
+      val harness = newHarness(func, keySelector)
       harness.open()
 
       func.configEnabledMap.foreach { case (k, _) =>
@@ -166,6 +170,38 @@ class FrequentEventFilterTest extends HarnessingTest {
               v shouldNot be(defined)
             }
         }
+    }
+
+    "not re-enable disabled configs if they would be triggered the entire time" in {
+      val func = new FrequentEventFilter()
+      val harness = newHarness(func, keySelector)
+      harness.open()
+
+      val startOfRange = 0
+      val endOfRange = 240
+      val step = 5
+
+      Range(startOfRange, endOfRange + 1, step)
+        .map(eventWithTimestamp)
+        .foreach { ev =>
+          harness.processElement(ev, ev.time.toEpochMilli)
+        }
+
+      val numberOfUnfilteredEvents = func.configs.minBy(_.count).count
+      val bulkEventConfigs = func.configs.filter(_.interval <= 240)
+
+      val outputs = harness.extractOutputValues.asScala.toList
+
+      outputs.count(!_.eventType.startsWith("bulk_")) shouldBe numberOfUnfilteredEvents
+      bulkEventConfigs.foreach { conf =>
+        withClue("Only one event should be output per config, but got") {
+          outputs
+            .count(ev =>
+              ev.eventType.startsWith("bulk_") &&
+                ev.description.contains(conf.name)
+            ) shouldBe 1
+        }
+      }
     }
   }
 }
