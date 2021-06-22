@@ -61,10 +61,10 @@ class FrequentEventFilterTest extends HarnessingTest {
 
       val sendThisManyEvents = 30
 
-      def checkValidState(value: FrequentEventFilter): Unit = {
+      def checkValidState(value: FrequentEventFilter, offset: Int = 0): Unit = {
         withClue("One config should be disabled") {
-          value.configEnabledMap("1").foreach { case (conf, time) =>
-            if (conf.count <= sendThisManyEvents) {
+          value.configEnabledMapState.get("1").foreach { case (conf, time) =>
+            if (conf.count <= sendThisManyEvents + offset) {
               time shouldBe defined
             }
             else {
@@ -74,7 +74,7 @@ class FrequentEventFilterTest extends HarnessingTest {
         }
 
         withClue("all the measurements should be logged") {
-          value.recentTimestamps("1") should have size sendThisManyEvents
+          value.recentTimestampsState.get("1") should have size sendThisManyEvents + offset
         }
       }
 
@@ -90,7 +90,11 @@ class FrequentEventFilterTest extends HarnessingTest {
       val f2 = func
 
       harness = snapshotAndRestart(harness, f2, keySelector)
-      checkValidState(f2)
+
+      val sendAnotherToGetTheKeyWorkingAgain = eventWithTimestamp(sendThisManyEvents + 1)
+      harness.processElement(sendAnotherToGetTheKeyWorkingAgain, sendAnotherToGetTheKeyWorkingAgain.time.toEpochMilli)
+
+      checkValidState(f2, offset = 1)
     }
 
     "retain a list of the appropriate size with recent events' timestamps" in {
@@ -111,7 +115,7 @@ class FrequentEventFilterTest extends HarnessingTest {
           harness.processElement(ev, ev.time.toEpochMilli)
         }
 
-      func.recentTimestamps("1").foreach { item =>
+      func.recentTimestampsState.get("1").foreach { item =>
         withClue(s"$item should not be before $earliestExpectedTime:") {
           item.isBefore(earliestExpectedTime) shouldBe false
         }
@@ -155,18 +159,18 @@ class FrequentEventFilterTest extends HarnessingTest {
 
       val firstEv = eventWithTimestamp(10)
       harness.processElement(firstEv, firstEv.time.toEpochMilli)
-      func.configEnabledMap("1").foreach { case (k, _) =>
-        func.configEnabledMap("1").put(k, Some(Instant.ofEpochSecond(10)))
+      func.configEnabledMapState.get("1").foreach { case (k, _) =>
+        func.configEnabledMapState.get("1").put(k, Some(Instant.ofEpochSecond(10)))
       }
 
-      func.configEnabledMap("1").values shouldNot contain(None)
+      func.configEnabledMapState.get("1").values shouldNot contain(None)
 
       func.configs.map(_.cooldown).toList.sorted
         .foreach { cd =>
           val ev = eventWithTimestamp(15 + cd)
           harness.processElement(ev, ev.time.toEpochMilli)
 
-          func.configEnabledMap("1")
+          func.configEnabledMapState.get("1")
             .filter(_._1.cooldown == cd)
             .foreach { case (_, v) =>
               v shouldNot be(defined)

@@ -163,38 +163,33 @@ class FrequentEventFilter
     }
   }
 
-  @transient val recentTimestamps: mutable.Map[String, mutable.Queue[Instant]] = mutable.Map()
+  var recentTimestampsState: MapState[String, mutable.Queue[Instant]] = _
 
   // Value is set to None if the conf is enabled, or Some(timestamp) if it was
   // disabled at the associated stamp.
-  @transient val configEnabledMap: mutable.Map[String, mutable.Map[FrequencyConfig, Option[Instant]]] = mutable.Map()
+  var configEnabledMapState: MapState[String, mutable.Map[FrequencyConfig, Option[Instant]]] = _
 
-  def enabledConfigs(key: String): Iterable[FrequencyConfig] = configEnabledMap(key).filter(_._2.isEmpty).keys
+  @transient protected var justInitialised = false
 
-  def disabledConfigs(key: String): Map[FrequencyConfig, Instant] = configEnabledMap(key).flatMap { case (k, v) =>
+  def enabledConfigs(key: String): Iterable[FrequencyConfig] = configEnabledMapState.get(key).filter(_._2.isEmpty).keys
+
+  def disabledConfigs(key: String): Map[FrequencyConfig, Instant] = configEnabledMapState.get(key).flatMap { case (k, v) =>
     v.map(s => (k, s))
   }.toMap
 
-  def timestampsWithinInterval(key   : String, config: FrequencyConfig, currentTime: Instant): Iterable[Instant] = {
+  def timestampsWithinInterval(key: String, config: FrequencyConfig, currentTime: Instant): Iterable[Instant] = {
     val startOfInterval = currentTime.minus(Duration.ofSeconds(config.interval))
-    recentTimestamps(key).reverse.takeWhile(t => t.isAfter(startOfInterval)).reverse
+    recentTimestampsState.get(key).reverse.takeWhile(t => t.isAfter(startOfInterval)).reverse
   }
 
   def createRecordsForNewKey(key: String): Unit = {
     val configEntries: Seq[(FrequencyConfig, Option[Instant])] = configs.map(conf => (conf, None)).toSeq
-    configEnabledMap.put(key, mutable.Map(configEntries: _*))
-    recentTimestamps.put(key, mutable.Queue())
+    configEnabledMapState.put(key, mutable.Map(configEntries: _*))
+    recentTimestampsState.put(key, mutable.Queue())
   }
 
   override def open(parameters: Configuration): Unit = {
     configs = parseConfig()
-    // If the storage of which configs are enabled/disabled has configs that don't
-    // match those we just read in (this also covers the first-start case), then
-    // start fresh.
-    if (configEnabledMap.values.exists(_.keys.toList.sortBy(_.name) != configs.toList.sortBy(_.name))) {
-      configEnabledMap.clear()
-      recentTimestamps.clear()
-    }
   }
 
   override def processElement(
@@ -202,24 +197,32 @@ class FrequentEventFilter
     ctx: KeyedProcessFunction[String, Event, Event]#Context,
     out: Collector[Event]
   ): Unit = {
-    if (!recentTimestamps.keySet.contains(ctx.getCurrentKey)) {
+    // See comments in ModeDetector for info about super-null from serialising mutable.Queue
+    if (justInitialised) {
+      recentTimestampsState.keys.forEach { k =>
+        recentTimestampsState.put(k, recentTimestampsState.get(k).map(identity))
+      }
+      justInitialised = false
+    }
+
+    if (!recentTimestampsState.keys.asScala.toList.contains(ctx.getCurrentKey)) {
       createRecordsForNewKey(ctx.getCurrentKey)
     }
 
-    recentTimestamps(ctx.getCurrentKey).enqueue(value.time)
-    recentTimestamps(ctx.getCurrentKey).dequeueAll(_.isBefore(value.time.minus(longestInterval)))
+    recentTimestampsState.get(ctx.getCurrentKey).enqueue(value.time)
+    recentTimestampsState.get(ctx.getCurrentKey).dequeueAll(_.isBefore(value.time.minus(longestInterval)))
 
-    configEnabledMap(ctx.getCurrentKey)
+    configEnabledMapState.get(ctx.getCurrentKey)
       .map(conf => (conf._1, conf._2, timestampsWithinInterval(ctx.getCurrentKey, conf._1, value.time)))
       .foreach { case (conf, disabledAt, stamps) =>
         val isTriggered = stamps.size > conf.count
         (disabledAt, isTriggered) match {
           // If the conf is disabled, but still triggered, don't start the cooldown.
-          case (Some(_), true) => configEnabledMap(ctx.getCurrentKey).put(conf, Some(value.time))
+          case (Some(_), true) => configEnabledMapState.get(ctx.getCurrentKey).put(conf, Some(value.time))
           // If the conf is disabled, but not triggered, check if the cooldown has expired.
           case (Some(time), false) =>
             if (time.isBefore(value.time.minusSeconds(conf.cooldown))) {
-              configEnabledMap(ctx.getCurrentKey).put(conf, None)
+              configEnabledMapState.get(ctx.getCurrentKey).put(conf, None)
             }
           // If the conf is enabled and triggered, output a bulk event and disable the conf.
           case (None, true) =>
@@ -233,7 +236,7 @@ class FrequentEventFilter
                 s"""Frequent events of type ${value.eventType} - configuration name "${conf.name} (${conf.count} events in ${conf.interval} seconds)"""",
                 Map()
               ))
-              configEnabledMap(ctx.getCurrentKey).put(conf, Some(value.time))
+              configEnabledMapState.get(ctx.getCurrentKey).put(conf, Some(value.time))
             }
           // If the conf is enabled, but not yet triggered, do nothing.
           case (None, false) =>
@@ -245,16 +248,7 @@ class FrequentEventFilter
     }
   }
 
-  var recentTimestampsState: MapState[String, mutable.Queue[Instant]] = _
-
-  var configEnabledMapState: MapState[String, mutable.Map[FrequencyConfig, Option[Instant]]] = _
-
-  override def snapshotState(context: FunctionSnapshotContext): Unit = {
-    recentTimestampsState.clear()
-    recentTimestampsState.putAll(recentTimestamps.asJava)
-    configEnabledMapState.clear()
-    configEnabledMapState.putAll(configEnabledMap.asJava)
-  }
+  override def snapshotState(context: FunctionSnapshotContext): Unit = {}
 
   override def initializeState(context: FunctionInitializationContext): Unit = {
     recentTimestampsState = context
@@ -277,13 +271,6 @@ class FrequentEventFilter
         )
       )
 
-    if (context.isRestored) {
-      recentTimestampsState.entries.forEach { entry =>
-        recentTimestamps.put(entry.getKey, entry.getValue)
-      }
-      configEnabledMapState.entries.forEach { entry =>
-        configEnabledMap.put(entry.getKey, entry.getValue)
-      }
-    }
+    justInitialised = true
   }
 }
