@@ -1,22 +1,30 @@
+streamevmon (0.3.0-1) unstable; urgency=low
+
+  * Update dependencies, including Flink 1.13.1.
+  * Merge the unfinished topological grouping code. It's unreachable from the
+    default entrypoint.
+
+ -- Daniel Oosterwijk <doosterw@waikato.ac.nz>  Wed, 23 June 2021 16:40:20 +1200
+
 streamevmon (0.3.0-RC4-1) unstable; urgency=low
 
   * New FrequentEventFilter operator applied to all detectors, which
     configurably blocks frequent events from making a mess of the database.
 
- -- Daniel Oosterwijk <doosterw@waikato.ac.nz>  Mon, 14 June 2021 16:40:20 +1200
+ -- Daniel Oosterwijk <doosterw@waikato.ac.nz>  Tue, 22 June 2021 16:32:00 +1200
 
 streamevmon (0.3.0-RC3-1) unstable; urgency=low
 
   * Temporal event grouping has new configuration field maximumGroupDuration.
   * Durations in event group descriptions are now truncated to second precision.
 
- -- Daniel Oosterwijk <doosterw@waikato.ac.nz>  Mon, 14 June 2021 16:40:20 +1200
+ -- Daniel Oosterwijk <doosterw@waikato.ac.nz>  Thu, 17 June 2021 14:41:00 +1200
 
 streamevmon (0.3.0-RC2-1) unstable; urgency=low
 
   * Change in InfluxDB schema for events and event groups.
 
- -- Daniel Oosterwijk <doosterw@waikato.ac.nz>  Mon, 14 June 2021 16:40:20 +1200
+ -- Daniel Oosterwijk <doosterw@waikato.ac.nz>  Wed, 16 June 2021 16:25:00 +1200
 
 streamevmon (0.3.0-RC1-1) unstable; urgency=low
 

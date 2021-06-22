@@ -13,7 +13,7 @@ Licensing.applyLicenseOverrides
 // These are settings that are shared between all submodules in this project.
 lazy val sharedSettings = Seq(
   organization := "nz.net.wand",
-  version := "0.3.0-RC4",
+  version := "0.3.0",
   scalacOptions ++= Seq("-deprecation", "-feature"),
 
   maintainer := "Daniel Oosterwijk <doosterw@waikato.ac.nz>",
