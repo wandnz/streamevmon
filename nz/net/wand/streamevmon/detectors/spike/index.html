@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title>streamevmon v0.2.0 - nz.net.wand.streamevmon.detectors.spike</title>
-          <meta name="description" content="streamevmon v0.2.0 - nz.net.wand.streamevmon.detectors.spike" />
-          <meta name="keywords" content="streamevmon v0.2.0 nz.net.wand.streamevmon.detectors.spike" />
+          <title>streamevmon v0.3.0 - nz.net.wand.streamevmon.detectors.spike</title>
+          <meta name="description" content="streamevmon v0.3.0 - nz.net.wand.streamevmon.detectors.spike" />
+          <meta name="keywords" content="streamevmon v0.3.0 nz.net.wand.streamevmon.detectors.spike" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title">streamevmon<span id="doc-version">v0.2.0</span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">v0.3.0</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -410,7 +410,7 @@ Default 0.01.</p></div><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
         </div></div>
         
 
@@ -470,7 +470,7 @@ Default 0.01.</p></div><div class="toggleContainer block">
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Smoothed zero-score alogrithm shamelessly copied from https://stackoverflow.com/a/22640362/6029703" href="SmoothedZScore.html"><span class="name">SmoothedZScore</span></a><span class="params">(<span name="lag">lag: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a> = <span class="symbol">30</span></span>, <span name="threshold">threshold: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a> = <span class="symbol">5d</span></span>, <span name="influence">influence: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a> = <span class="symbol">0d</span></span>)</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="Smoothed zero-score alogrithm shamelessly copied from https://stackoverflow.com/a/22640362/6029703" href="SmoothedZScore.html"><span class="name">SmoothedZScore</span></a><span class="params">(<span name="lag">lag: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a> = <span class="symbol">30</span></span>, <span name="threshold">threshold: <a href="https://www.scala-lang.org/api/2.12.14/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a> = <span class="symbol">5d</span></span>, <span name="influence">influence: <a href="https://www.scala-lang.org/api/2.12.14/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a> = <span class="symbol">0d</span></span>)</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Smoothed zero-score alogrithm shamelessly copied from <a href="https://stackoverflow.com/a/22640362/6029703" target="_blank">https://stackoverflow.com/a/22640362/6029703</a></p><div class="fullcomment"><div class="comment cmt"><p>Smoothed zero-score alogrithm shamelessly copied from <a href="https://stackoverflow.com/a/22640362/6029703" target="_blank">https://stackoverflow.com/a/22640362/6029703</a></p><p>Scala implementation described here <a href="https://stackoverflow.com/a/48231877" target="_blank">https://stackoverflow.com/a/48231877</a></p><p>Working offline code from the linked gist at <a href="https://gist.github.com/ecopoesis/587602a39fddd7001d1ca54a16884417" target="_blank">https://gist.github.com/ecopoesis/587602a39fddd7001d1ca54a16884417</a></p><p>Online reimplementation by Daniel Oosterwijk for this project.</p><p>Uses a rolling mean and a rolling deviation (separate) to identify peaks in a vector
@@ -487,7 +487,7 @@ Default 0.01.</p></div><div class="toggleContainer block">
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Detailed output from the spike detector." href="SpikeDetail.html"><span class="name">SpikeDetail</span></a><span class="params">(<span name="inputValue">inputValue: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="mean">mean: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="lowerBound">lowerBound: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="upperBound">upperBound: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="diff">diff: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="signal">signal: <a href="SignalType$.html#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="nz.net.wand.streamevmon.detectors.spike.SignalType.Value">SignalType.Value</a></span>)</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="Detailed output from the spike detector." href="SpikeDetail.html"><span class="name">SpikeDetail</span></a><span class="params">(<span name="inputValue">inputValue: <a href="https://www.scala-lang.org/api/2.12.14/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="mean">mean: <a href="https://www.scala-lang.org/api/2.12.14/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="lowerBound">lowerBound: <a href="https://www.scala-lang.org/api/2.12.14/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="upperBound">upperBound: <a href="https://www.scala-lang.org/api/2.12.14/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="diff">diff: <a href="https://www.scala-lang.org/api/2.12.14/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="signal">signal: <a href="SignalType$.html#ValueextendsOrdered[Enumeration.this.Value]withSerializable" class="extmbr" name="nz.net.wand.streamevmon.detectors.spike.SignalType.Value">SignalType.Value</a></span>)</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Detailed output from the spike detector.</p><div class="fullcomment"><div class="comment cmt"><p>Detailed output from the spike detector. This can be used to tune the
@@ -532,7 +532,7 @@ measurement is from recent ones. See the package object for details.
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="Spike detector signal type." href="SignalType$.html"><span class="name">SignalType</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Enumeration.html#scala.Enumeration" class="extype" name="scala.Enumeration">Enumeration</a></span>
+        <a title="Spike detector signal type." href="SignalType$.html"><span class="name">SignalType</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Enumeration.html#scala.Enumeration" class="extype" name="scala.Enumeration">Enumeration</a></span>
       </span>
       
       <p class="shortcomment cmt">Spike detector signal type.</p><div class="fullcomment"><div class="comment cmt"><p>Spike detector signal type. Use the <code>id</code> field to get a numeric value.</p><p>A negative signal means that the associated measurement was lower than
@@ -551,7 +551,7 @@ within the bounds of reason.
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="SpikeDetector$.html"><span class="name">SpikeDetector</span></a><span class="result"> extends <a href="../../parameters/HasParameterSpecs.html" class="extype" name="nz.net.wand.streamevmon.parameters.HasParameterSpecs">HasParameterSpecs</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="SpikeDetector$.html"><span class="name">SpikeDetector</span></a><span class="result"> extends <a href="../../parameters/HasParameterSpecs.html" class="extype" name="nz.net.wand.streamevmon.parameters.HasParameterSpecs">HasParameterSpecs</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -566,9 +566,9 @@ within the bounds of reason.
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
             </div>
         
         </div>

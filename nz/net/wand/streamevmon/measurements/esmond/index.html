@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title>streamevmon v0.2.0 - nz.net.wand.streamevmon.measurements.esmond</title>
-          <meta name="description" content="streamevmon v0.2.0 - nz.net.wand.streamevmon.measurements.esmond" />
-          <meta name="keywords" content="streamevmon v0.2.0 nz.net.wand.streamevmon.measurements.esmond" />
+          <title>streamevmon v0.3.0 - nz.net.wand.streamevmon.measurements.esmond</title>
+          <meta name="description" content="streamevmon v0.3.0 - nz.net.wand.streamevmon.measurements.esmond" />
+          <meta name="keywords" content="streamevmon v0.3.0 nz.net.wand.streamevmon.measurements.esmond" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title">streamevmon<span id="doc-version">v0.2.0</span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">v0.3.0</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -188,6 +188,27 @@ and can be obtained separately as a
 <a href="../traits/PostgresMeasurementMeta.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.PostgresMeasurementMeta">MeasurementMeta</a>.
 The metadata is information about the test schedule which produced the
 measurement.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.measurements">measurements</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.measurements.amp2" visbl="pub" class="indented6 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="amp2"></a><a id="amp2:amp2"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/measurements/amp2/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="This package represents data gathered by AMP, WAND's Active Measurement Project." href="../amp2/index.html"><span class="name">amp2</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">This package represents data gathered by <a href="https://amp.wand.net.nz/" target="_blank">AMP</a>,
+WAND's Active Measurement Project.</p><div class="fullcomment"><div class="comment cmt"><p>This package represents data gathered by <a href="https://amp.wand.net.nz/" target="_blank">AMP</a>,
+WAND's Active Measurement Project. Particularly, this package reflects the
+format used by the <code>amplet2</code> collector.</p><p>All measurement types inherit from <a href="../amp2/Amp2Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.amp2.Amp2Measurement">Amp2Measurement</a>, meaning they all
+implement <a href="../traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a>.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.measurements">measurements</a></dd></dl></div>
     </li><li name="nz.net.wand.streamevmon.measurements.bigdata" visbl="pub" class="indented6 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="bigdata"></a><a id="bigdata:bigdata"></a>
       <span class="permalink">
@@ -415,7 +436,7 @@ which produces RichEsmondMeasurements.
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
         </div><div class="toggleContainer block diagram-container" id="content-diagram-container">
                 <span class="toggle diagram-link">
                   Content Hierarchy
@@ -504,7 +525,7 @@ isLossy for those that can't be.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Esmond can provide standalone streams of measurement failures." href="Failure.html"><span class="name">Failure</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="failureText">failureText: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="EsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.EsmondMeasurement">EsmondMeasurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="Esmond can provide standalone streams of measurement failures." href="Failure.html"><span class="name">Failure</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="failureText">failureText: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="EsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.EsmondMeasurement">EsmondMeasurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Esmond can provide standalone streams of measurement failures.</p><div class="fullcomment"><div class="comment cmt"><p>Esmond can provide standalone streams of measurement failures. These just
@@ -522,7 +543,7 @@ include a time and a description.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Shows the frequency of items in a number of continuous buckets." href="Histogram.html"><span class="name">Histogram</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="EsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.EsmondMeasurement">EsmondMeasurement</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="Shows the frequency of items in a number of continuous buckets." href="Histogram.html"><span class="name">Histogram</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="https://www.scala-lang.org/api/2.12.14/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a>, <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="EsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.EsmondMeasurement">EsmondMeasurement</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Shows the frequency of items in a number of continuous buckets.</p><div class="fullcomment"><div class="comment cmt"><p>Shows the frequency of items in a number of continuous buckets. This
@@ -540,7 +561,7 @@ measurement shows a distribution of several more specific measurements.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Just a link to another API endpoint." href="Href.html"><span class="name">Href</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="hrefLocation">hrefLocation: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="EsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.EsmondMeasurement">EsmondMeasurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="Just a link to another API endpoint." href="Href.html"><span class="name">Href</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="hrefLocation">hrefLocation: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="EsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.EsmondMeasurement">EsmondMeasurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Just a link to another API endpoint.</p>
@@ -556,7 +577,7 @@ measurement shows a distribution of several more specific measurements.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Contains a list of packet trace entries showing hops on the path from one host to another." href="PacketTrace.html"><span class="name">PacketTrace</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="../../connectors/esmond/schema/PacketTraceEntry.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.PacketTraceEntry">PacketTraceEntry</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="EsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.EsmondMeasurement">EsmondMeasurement</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="Contains a list of packet trace entries showing hops on the path from one host to another." href="PacketTrace.html"><span class="name">PacketTrace</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="../../connectors/esmond/schema/PacketTraceEntry.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.PacketTraceEntry">PacketTraceEntry</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="EsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.EsmondMeasurement">EsmondMeasurement</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Contains a list of packet trace entries showing hops on the path from one
@@ -593,7 +614,7 @@ information about the event and summary types.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="RichFailure.html"><span class="name">RichFailure</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="failureText">failureText: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="metadataKey">metadataKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="eventType">eventType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="summaryType">summaryType: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="summaryWindow">summaryWindow: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="RichFailure.html"><span class="name">RichFailure</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="failureText">failureText: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="metadataKey">metadataKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="eventType">eventType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="summaryType">summaryType: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="summaryWindow">summaryWindow: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.14/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="Failure.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.Failure">Failure</a></p></span><span class="cmt"><p><a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a></p></span></dd></dl></div>
@@ -609,7 +630,7 @@ information about the event and summary types.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="RichHistogram.html"><span class="name">RichHistogram</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>]</span>, <span name="metadataKey">metadataKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="eventType">eventType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="summaryType">summaryType: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="summaryWindow">summaryWindow: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="RichHistogram.html"><span class="name">RichHistogram</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Predef.Map">Map</span>[<a href="https://www.scala-lang.org/api/2.12.14/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a>, <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a>]</span>, <span name="metadataKey">metadataKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="eventType">eventType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="summaryType">summaryType: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="summaryWindow">summaryWindow: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.14/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="Histogram.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.Histogram">Histogram</a></p></span><span class="cmt"><p><a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a></p></span></dd></dl></div>
@@ -625,7 +646,7 @@ information about the event and summary types.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="RichHref.html"><span class="name">RichHref</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="hrefLocation">hrefLocation: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="metadataKey">metadataKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="eventType">eventType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="summaryType">summaryType: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="summaryWindow">summaryWindow: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="RichHref.html"><span class="name">RichHref</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="hrefLocation">hrefLocation: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="metadataKey">metadataKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="eventType">eventType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="summaryType">summaryType: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="summaryWindow">summaryWindow: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.14/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="Href.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.Href">Href</a></p></span><span class="cmt"><p><a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a></p></span></dd></dl></div>
@@ -641,7 +662,7 @@ information about the event and summary types.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="RichPacketTrace.html"><span class="name">RichPacketTrace</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="../../connectors/esmond/schema/PacketTraceEntry.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.PacketTraceEntry">PacketTraceEntry</a>]</span>, <span name="metadataKey">metadataKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="eventType">eventType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="summaryType">summaryType: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="summaryWindow">summaryWindow: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="RichPacketTrace.html"><span class="name">RichPacketTrace</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="../../connectors/esmond/schema/PacketTraceEntry.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.PacketTraceEntry">PacketTraceEntry</a>]</span>, <span name="metadataKey">metadataKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="eventType">eventType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="summaryType">summaryType: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="summaryWindow">summaryWindow: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.14/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="PacketTrace.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.PacketTrace">PacketTrace</a></p></span><span class="cmt"><p><a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a></p></span></dd></dl></div>
@@ -657,7 +678,7 @@ information about the event and summary types.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="RichSimple.html"><span class="name">RichSimple</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="metadataKey">metadataKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="eventType">eventType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="summaryType">summaryType: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="summaryWindow">summaryWindow: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="../traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="RichSimple.html"><span class="name">RichSimple</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <a href="https://www.scala-lang.org/api/2.12.14/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="metadataKey">metadataKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="eventType">eventType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="summaryType">summaryType: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="summaryWindow">summaryWindow: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.14/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="../traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="Simple.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.Simple">Simple</a></p></span><span class="cmt"><p><a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a></p></span></dd></dl></div>
@@ -673,7 +694,7 @@ information about the event and summary types.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="RichSubinterval.html"><span class="name">RichSubinterval</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="../../connectors/esmond/schema/SubintervalValue.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.SubintervalValue">SubintervalValue</a>]</span>, <span name="metadataKey">metadataKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="eventType">eventType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="summaryType">summaryType: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="summaryWindow">summaryWindow: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="RichSubinterval.html"><span class="name">RichSubinterval</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="../../connectors/esmond/schema/SubintervalValue.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.SubintervalValue">SubintervalValue</a>]</span>, <span name="metadataKey">metadataKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="eventType">eventType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="summaryType">summaryType: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="summaryWindow">summaryWindow: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.14/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="Subinterval.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.Subinterval">Subinterval</a></p></span><span class="cmt"><p><a href="RichEsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.RichEsmondMeasurement">RichEsmondMeasurement</a></p></span></dd></dl></div>
@@ -689,7 +710,7 @@ information about the event and summary types.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="This type can represent quite a few esmond event types for simple time series data." href="Simple.html"><span class="name">Simple</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="EsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.EsmondMeasurement">EsmondMeasurement</a> with <a href="../traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="This type can represent quite a few esmond event types for simple time series data." href="Simple.html"><span class="name">Simple</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <a href="https://www.scala-lang.org/api/2.12.14/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="EsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.EsmondMeasurement">EsmondMeasurement</a> with <a href="../traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">This type can represent quite a few esmond event types for simple time
@@ -706,7 +727,7 @@ series data.</p>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Subinterval-type measurements contain detail about values at fine-grained time intervals." href="Subinterval.html"><span class="name">Subinterval</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="../../connectors/esmond/schema/SubintervalValue.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.SubintervalValue">SubintervalValue</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="EsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.EsmondMeasurement">EsmondMeasurement</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="Subinterval-type measurements contain detail about values at fine-grained time intervals." href="Subinterval.html"><span class="name">Subinterval</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="value">value: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="../../connectors/esmond/schema/SubintervalValue.html" class="extype" name="nz.net.wand.streamevmon.connectors.esmond.schema.SubintervalValue">SubintervalValue</a>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="EsmondMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.esmond.EsmondMeasurement">EsmondMeasurement</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Subinterval-type measurements contain detail about values at fine-grained
@@ -731,7 +752,7 @@ time intervals.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="Esmond measurements can be constructed from schema objects." href="EsmondMeasurement$.html"><span class="name">EsmondMeasurement</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="Esmond measurements can be constructed from schema objects." href="EsmondMeasurement$.html"><span class="name">EsmondMeasurement</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Esmond measurements can be constructed from
@@ -748,7 +769,7 @@ time intervals.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="Failure$.html"><span class="name">Failure</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="Failure$.html"><span class="name">Failure</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -764,7 +785,7 @@ time intervals.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="Histogram$.html"><span class="name">Histogram</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="Histogram$.html"><span class="name">Histogram</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -780,7 +801,7 @@ time intervals.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="Href$.html"><span class="name">Href</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="Href$.html"><span class="name">Href</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -796,7 +817,7 @@ time intervals.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="PacketTrace$.html"><span class="name">PacketTrace</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="PacketTrace$.html"><span class="name">PacketTrace</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -812,7 +833,7 @@ time intervals.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="RichEsmondMeasurement$.html"><span class="name">RichEsmondMeasurement</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="RichEsmondMeasurement$.html"><span class="name">RichEsmondMeasurement</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -828,7 +849,7 @@ time intervals.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="RichFailure$.html"><span class="name">RichFailure</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="RichFailure$.html"><span class="name">RichFailure</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -844,7 +865,7 @@ time intervals.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="RichHistogram$.html"><span class="name">RichHistogram</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="RichHistogram$.html"><span class="name">RichHistogram</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -860,7 +881,7 @@ time intervals.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="RichHref$.html"><span class="name">RichHref</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="RichHref$.html"><span class="name">RichHref</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -876,7 +897,7 @@ time intervals.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="RichPacketTrace$.html"><span class="name">RichPacketTrace</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="RichPacketTrace$.html"><span class="name">RichPacketTrace</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -892,7 +913,7 @@ time intervals.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="RichSimple$.html"><span class="name">RichSimple</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="RichSimple$.html"><span class="name">RichSimple</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -908,7 +929,7 @@ time intervals.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="RichSubinterval$.html"><span class="name">RichSubinterval</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="RichSubinterval$.html"><span class="name">RichSubinterval</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -924,7 +945,7 @@ time intervals.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="Simple$.html"><span class="name">Simple</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="Simple$.html"><span class="name">Simple</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -940,7 +961,7 @@ time intervals.</p>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="Subinterval$.html"><span class="name">Subinterval</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="Subinterval$.html"><span class="name">Subinterval</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -955,9 +976,9 @@ time intervals.</p>
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
             </div>
         
         </div>

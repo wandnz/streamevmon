@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title>streamevmon v0.2.0 - nz.net.wand.streamevmon.events.grouping.graph.itdk</title>
-          <meta name="description" content="streamevmon v0.2.0 - nz.net.wand.streamevmon.events.grouping.graph.itdk" />
-          <meta name="keywords" content="streamevmon v0.2.0 nz.net.wand.streamevmon.events.grouping.graph.itdk" />
+          <title>streamevmon v0.3.0 - nz.net.wand.streamevmon.events.grouping.graph.itdk</title>
+          <meta name="description" content="streamevmon v0.3.0 - nz.net.wand.streamevmon.events.grouping.graph.itdk" />
+          <meta name="keywords" content="streamevmon v0.3.0 nz.net.wand.streamevmon.events.grouping.graph.itdk" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title">streamevmon<span id="doc-version">v0.2.0</span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">v0.3.0</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -188,9 +188,61 @@ make each type of event unique within InfluxDB or another storage system.
 on placing Events on a directed graph of known network topology.</p><div class="fullcomment"><div class="comment cmt"><p>This package is for the implementation of an event-grouping algorithm based
 on placing Events on a directed graph of known network topology. This will
 allow us to determine the topological distance of two events from one
-another. See <a href="../TraceroutePathGraph.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph">TraceroutePathGraph</a>
-for an entry point.
+another. See the <code>building</code> package for usage details.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping">grouping</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.building" visbl="pub" class="indented8 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="building"></a><a id="building:building"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/building/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Contains logic for building a graph." href="../building/index.html"><span class="name">building</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Contains logic for building a graph.</p><div class="fullcomment"><div class="comment cmt"><p>Contains logic for building a graph.</p><p>If you are creating a new Flink operator that requires a topology graph,
+implement <a href="../building/BuildsGraph.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.building.BuildsGraph">BuildsGraph</a>.</p><p>If you are building a Flink pipeline that contains operators which implement
+BuildsGraph, you should use the functions declared in <a href="../building/FlinkHelpers$.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.building.FlinkHelpers">FlinkHelpers</a>.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph">graph</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.grouping" visbl="pub" class="indented8 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="grouping"></a><a id="grouping:grouping"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/grouping/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Contains Flink operators which do the actual graph-based event grouping." href="../grouping/index.html"><span class="name">grouping</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Contains Flink operators which do the actual graph-based event grouping.</p><div class="fullcomment"><div class="comment cmt"><p>Contains Flink operators which do the actual graph-based event grouping.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph">graph</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.impl" visbl="pub" class="indented8 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="impl"></a><a id="impl:impl"></a>
+      <span class="permalink">
+      <a href="../../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/impl/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Types and implementations for the resulting graph." href="../impl/index.html"><span class="name">impl</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Types and implementations for the resulting graph.</p><div class="fullcomment"><div class="comment cmt"><p>Types and implementations for the resulting graph. Types are declared in
+<a href="../impl/GraphType$.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.impl.GraphType">GraphType</a>, which should have its members imported when required.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph">graph</a></dd></dl></div>
     </li><li name="nz.net.wand.streamevmon.events.grouping.graph.itdk" visbl="pub" class="indented8 current" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="itdk"></a><a id="itdk:itdk"></a>
       <span class="permalink">
@@ -252,10 +304,10 @@ dataset, which contains router aliases, topologies, AS, and geo information.
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="Pruning algorithms for host graphs." href="../pruning/index.html"><span class="name">pruning</span></a>
+        <a title="Standalone pruning algorithms for host graphs." href="../pruning/index.html"><span class="name">pruning</span></a>
       </span>
       
-      <p class="shortcomment cmt">Pruning algorithms for host graphs.</p><div class="fullcomment"><div class="comment cmt"><p>Pruning algorithms for host graphs.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph">graph</a></dd></dl></div>
+      <p class="shortcomment cmt">Standalone pruning algorithms for host graphs.</p><div class="fullcomment"><div class="comment cmt"><p>Standalone pruning algorithms for host graphs.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph">graph</a></dd></dl></div>
     </li>
               </ul>
             </div>
@@ -291,7 +343,7 @@ dataset, which contains router aliases, topologies, AS, and geo information.
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
         </div></div>
         
 
@@ -351,7 +403,7 @@ dataset, which contains router aliases, topologies, AS, and geo information.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="The geo information for one node in an ITDK dataset." href="GeoInfo.html"><span class="name">GeoInfo</span></a><span class="params">(<span name="nodeId">nodeId: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="continent">continent: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="country">country: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="region">region: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="city">city: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="latitude">latitude: <a href="https://www.scala-lang.org/api/2.12.13/scala/Float.html#scala.Float" class="extype" name="scala.Float">Float</a></span>, <span name="longitude">longitude: <a href="https://www.scala-lang.org/api/2.12.13/scala/Float.html#scala.Float" class="extype" name="scala.Float">Float</a></span>)</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="The geo information for one node in an ITDK dataset." href="GeoInfo.html"><span class="name">GeoInfo</span></a><span class="params">(<span name="nodeId">nodeId: <a href="https://www.scala-lang.org/api/2.12.14/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="continent">continent: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="country">country: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="region">region: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="city">city: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="latitude">latitude: <a href="https://www.scala-lang.org/api/2.12.14/scala/Float.html#scala.Float" class="extype" name="scala.Float">Float</a></span>, <span name="longitude">longitude: <a href="https://www.scala-lang.org/api/2.12.14/scala/Float.html#scala.Float" class="extype" name="scala.Float">Float</a></span>)</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">The geo information for one node in an ITDK dataset.</p>
@@ -448,7 +500,7 @@ from ITDK-sourced node IDs to their <a href="GeoInfo.html" class="extype" name="
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="GeoInfo$.html"><span class="name">GeoInfo</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="GeoInfo$.html"><span class="name">GeoInfo</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -480,7 +532,7 @@ from ITDK-sourced node IDs to their <a href="GeoInfo.html" class="extype" name="
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="ItdkAsMethod$.html"><span class="name">ItdkAsMethod</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Enumeration.html#scala.Enumeration" class="extype" name="scala.Enumeration">Enumeration</a></span>
+        <a title="" href="ItdkAsMethod$.html"><span class="name">ItdkAsMethod</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Enumeration.html#scala.Enumeration" class="extype" name="scala.Enumeration">Enumeration</a></span>
       </span>
       
       
@@ -496,7 +548,7 @@ from ITDK-sourced node IDs to their <a href="GeoInfo.html" class="extype" name="
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="ItdkAsNumber$.html"><span class="name">ItdkAsNumber</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="ItdkAsNumber$.html"><span class="name">ItdkAsNumber</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -527,9 +579,9 @@ from ITDK-sourced node IDs to their <a href="GeoInfo.html" class="extype" name="
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
             </div>
         
         </div>

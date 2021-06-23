@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title>streamevmon v0.2.0 - nz.net.wand.streamevmon.connectors.influx.InfluxConnection</title>
-          <meta name="description" content="streamevmon v0.2.0 - nz.net.wand.streamevmon.connectors.influx.InfluxConnection" />
-          <meta name="keywords" content="streamevmon v0.2.0 nz.net.wand.streamevmon.connectors.influx.InfluxConnection" />
+          <title>streamevmon v0.3.0 - nz.net.wand.streamevmon.connectors.influx.InfluxConnection</title>
+          <meta name="description" content="streamevmon v0.3.0 - nz.net.wand.streamevmon.connectors.influx.InfluxConnection" />
+          <meta name="keywords" content="streamevmon v0.3.0 nz.net.wand.streamevmon.connectors.influx.InfluxConnection" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title">streamevmon<span id="doc-version">v0.2.0</span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">v0.3.0</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -195,6 +195,10 @@ Default 5.
 See <a href="https://docs.oracle.com/javase/8/docs/api/java/net/ServerSocket.html" target="_blank">ServerSocket</a> documentation.</p><p>- <code>subscriptionName</code>: The name of the subscription that will be created in InfluxDB.
 <b>No default.</b> This must be set explicitly to prevent conflicts.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.connectors">connectors</a></dd></dl></div>
     </li><li class="current-entities indented6">
+                        <a class="object" href="Amp2InfluxHistoryConnection$.html" title="Additional constructors for the companion class."></a>
+                        <a class="class" href="Amp2InfluxHistoryConnection.html" title="InfluxDB connector which allows retrieving historical data."></a>
+                        <a href="Amp2InfluxHistoryConnection.html" title="InfluxDB connector which allows retrieving historical data.">Amp2InfluxHistoryConnection</a>
+                      </li><li class="current-entities indented6">
                         <a class="object" href="InfluxConnection$.html" title="Contains additional constructors and private methods for the companion class."></a>
                         <a class="class" href="" title="InfluxDB subscription manager which produces ServerSockets."></a>
                         <a href="" title="InfluxDB subscription manager which produces ServerSockets.">InfluxConnection</a>
@@ -206,6 +210,10 @@ See <a href="https://docs.oracle.com/javase/8/docs/api/java/net/ServerSocket.htm
                         <span class="separator"></span>
                         <a class="object" href="InfluxSchema$.html" title="Declares the Reader objects for measurements obtained directly from InfluxDB via Chronicler by InfluxHistoryConnection."></a>
                         <a href="InfluxSchema$.html" title="Declares the Reader objects for measurements obtained directly from InfluxDB via Chronicler by InfluxHistoryConnection.">InfluxSchema</a>
+                      </li><li class="current-entities indented6">
+                        <a class="object" href="LineProtocol$.html" title="Contains the apply method to convert from a line protocol string to a LineProtocol, as well as some helper functions."></a>
+                        <a class="class" href="LineProtocol.html" title="This class represents a single measurement in InfluxDB Line Protocol format."></a>
+                        <a href="LineProtocol.html" title="This class represents a single measurement in InfluxDB Line Protocol format.">LineProtocol</a>
                       </li>
               </ul>
             </div>
@@ -231,7 +239,7 @@ See <a href="https://docs.oracle.com/javase/8/docs/api/java/net/ServerSocket.htm
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">InfluxConnection</span><span class="params">(<span name="subscriptionName">subscriptionName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="dbName">dbName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rpName">rpName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenProtocol">listenProtocol: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenAddress">listenAddress: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenPort">listenPort: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="listenBacklog">listenBacklog: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="influxAddress">influxAddress: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPort">influxPort: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="influxUsername">influxUsername: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPassword">influxPassword: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <span class="name">InfluxConnection</span><span class="params">(<span name="subscriptionName">subscriptionName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="dbName">dbName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rpName">rpName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenProtocol">listenProtocol: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenAddress">listenAddress: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenPort">listenPort: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="listenBacklog">listenBacklog: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="influxAddress">influxAddress: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPort">influxPort: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="influxUsername">influxUsername: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPassword">influxPassword: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       </h4>
 
@@ -242,7 +250,7 @@ object for details on how to configure this class.
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Equals.html#scala.Equals" class="extype" name="scala.Equals">Equals</a>, <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a>, <a href="https://www.scala-lang.org/api/2.12.14/scala/Equals.html#scala.Equals" class="extype" name="scala.Equals">Equals</a>, <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
         </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
                 <span class="toggle diagram-link">
                   Type Hierarchy
@@ -310,7 +318,7 @@ object for details on how to configure this class.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">InfluxConnection</span><span class="params">(<span name="subscriptionName">subscriptionName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="dbName">dbName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rpName">rpName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenProtocol">listenProtocol: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenAddress">listenAddress: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenPort">listenPort: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="listenBacklog">listenBacklog: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="influxAddress">influxAddress: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPort">influxPort: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="influxUsername">influxUsername: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPassword">influxPassword: <span class="extype" name="scala.Predef.String">String</span></span>)</span>
+        <span class="name">InfluxConnection</span><span class="params">(<span name="subscriptionName">subscriptionName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="dbName">dbName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rpName">rpName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenProtocol">listenProtocol: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenAddress">listenAddress: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenPort">listenPort: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="listenBacklog">listenBacklog: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="influxAddress">influxAddress: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPort">influxPort: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="influxUsername">influxUsername: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPassword">influxPassword: <span class="extype" name="scala.Predef.String">String</span></span>)</span>
       </span>
       
       
@@ -336,7 +344,7 @@ object for details on how to configure this class.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -352,7 +360,7 @@ object for details on how to configure this class.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -368,7 +376,7 @@ object for details on how to configure this class.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -384,7 +392,7 @@ object for details on how to configure this class.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">addOrUpdateSubscription</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/concurrent/Future.html#scala.concurrent.Future" class="extype" name="scala.concurrent.Future">Future</a>[<span class="extype" name="com.github.fsanaulla.chronicler.core.alias.ErrorOr">ErrorOr</span>[<span class="extype" name="com.github.fsanaulla.chronicler.core.alias.ResponseCode">ResponseCode</span>]]</span>
+        <span class="name">addOrUpdateSubscription</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/concurrent/Future.html#scala.concurrent.Future" class="extype" name="scala.concurrent.Future">Future</a>[<span class="extype" name="com.github.fsanaulla.chronicler.core.alias.ErrorOr">ErrorOr</span>[<span class="extype" name="com.github.fsanaulla.chronicler.core.alias.ResponseCode">ResponseCode</span>]]</span>
       </span>
       
       <p class="shortcomment cmt">Forcefully creates a new InfluxDB subscription according to the current
@@ -404,7 +412,7 @@ on the same database and retention policy.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">addSubscription</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/concurrent/Future.html#scala.concurrent.Future" class="extype" name="scala.concurrent.Future">Future</a>[<span class="extype" name="com.github.fsanaulla.chronicler.core.alias.ErrorOr">ErrorOr</span>[<span class="extype" name="com.github.fsanaulla.chronicler.core.alias.ResponseCode">ResponseCode</span>]]</span>
+        <span class="name">addSubscription</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/concurrent/Future.html#scala.concurrent.Future" class="extype" name="scala.concurrent.Future">Future</a>[<span class="extype" name="com.github.fsanaulla.chronicler.core.alias.ErrorOr">ErrorOr</span>[<span class="extype" name="com.github.fsanaulla.chronicler.core.alias.ResponseCode">ResponseCode</span>]]</span>
       </span>
       
       <p class="shortcomment cmt">Creates a new InfluxDB subscription according to the current configuration.</p><div class="fullcomment"><div class="comment cmt"><p>Creates a new InfluxDB subscription according to the current configuration.
@@ -437,7 +445,7 @@ on the same database and retention policy.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">checkConnection</span><span class="params">(<span name="influx">influx: <span class="extype" name="com.github.fsanaulla.chronicler.ahc.management.AhcManagementClient">AhcManagementClient</span></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+        <span class="name">checkConnection</span><span class="params">(<span name="influx">influx: <span class="extype" name="com.github.fsanaulla.chronicler.ahc.management.AhcManagementClient">AhcManagementClient</span></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <p class="shortcomment cmt">Checks an InfluxDB connection.</p><div class="fullcomment"><div class="comment cmt"><p>Checks an InfluxDB connection.
@@ -454,7 +462,7 @@ on the same database and retention policy.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -496,7 +504,7 @@ on the same database and retention policy.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">destinations</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Array.html#scala.Array" class="extype" name="scala.Array">Array</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">destinations</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Array.html#scala.Array" class="extype" name="scala.Array">Array</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       
       <p class="shortcomment cmt">The value of the DESTINATIONS field of the subscription that is created
@@ -513,7 +521,7 @@ in InfluxDB.</p>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">disconnect</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">disconnect</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <p class="shortcomment cmt">Disconnect the InfluxDB connection.</p>
@@ -529,7 +537,7 @@ in InfluxDB.</p>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">dropSubscription</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/concurrent/Future.html#scala.concurrent.Future" class="extype" name="scala.concurrent.Future">Future</a>[<span class="extype" name="com.github.fsanaulla.chronicler.core.alias.ErrorOr">ErrorOr</span>[<span class="extype" name="com.github.fsanaulla.chronicler.core.alias.ResponseCode">ResponseCode</span>]]</span>
+        <span class="name">dropSubscription</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/concurrent/Future.html#scala.concurrent.Future" class="extype" name="scala.concurrent.Future">Future</a>[<span class="extype" name="com.github.fsanaulla.chronicler.core.alias.ErrorOr">ErrorOr</span>[<span class="extype" name="com.github.fsanaulla.chronicler.core.alias.ResponseCode">ResponseCode</span>]]</span>
       </span>
       
       <p class="shortcomment cmt">Stops an InfluxDB subscription according to the current configuration.</p><div class="fullcomment"><div class="comment cmt"><p>Stops an InfluxDB subscription according to the current configuration.
@@ -546,7 +554,7 @@ in InfluxDB.</p>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -583,7 +591,7 @@ in InfluxDB.</p>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getManagement</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="com.github.fsanaulla.chronicler.ahc.management.AhcManagementClient">AhcManagementClient</span>]</span>
+        <span class="name">getManagement</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="com.github.fsanaulla.chronicler.ahc.management.AhcManagementClient">AhcManagementClient</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Gets an InfluxDB management client according to the current configuration.</p><div class="fullcomment"><div class="comment cmt"><p>Gets an InfluxDB management client according to the current configuration.
@@ -600,7 +608,7 @@ in InfluxDB.</p>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getServerSocket</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="java.net.ServerSocket">ServerSocket</span>]</span>
+        <span class="name">getServerSocket</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="java.net.ServerSocket">ServerSocket</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Gets a new ServerSocket with the requested configuration.</p><div class="fullcomment"><div class="comment cmt"><p>Gets a new ServerSocket with the requested configuration. If the desired
@@ -618,7 +626,7 @@ port cannot be bound, tries again with an ephemeral port.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getSubscriptionListener</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="java.net.ServerSocket">ServerSocket</span>]</span>
+        <span class="name">getSubscriptionListener</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="java.net.ServerSocket">ServerSocket</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Starts a listener corresponding to a new InfluxDB subscription.</p><div class="fullcomment"><div class="comment cmt"><p>Starts a listener corresponding to a new InfluxDB subscription.</p><p>Should be closed with <a href="#stopSubscriptionListener(ssock:java.net.ServerSocket):Unit" class="extmbr" name="nz.net.wand.streamevmon.connectors.influx.InfluxConnection#stopSubscriptionListener">stopSubscriptionListener</a>.
@@ -636,7 +644,7 @@ port cannot be bound, tries again with an ephemeral port.
         <span class="kind">lazy val</span>
       </span>
       <span class="symbol">
-        <span class="name">influx</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="com.github.fsanaulla.chronicler.ahc.management.AhcManagementClient">AhcManagementClient</span>]</span>
+        <span class="name">influx</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="com.github.fsanaulla.chronicler.ahc.management.AhcManagementClient">AhcManagementClient</span>]</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../index.html" class="extype" name="nz.net.wand.streamevmon.connectors">connectors</a>] </dd></dl></div>
@@ -684,7 +692,7 @@ port cannot be bound, tries again with an ephemeral port.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">influxPort</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
+        <span class="name">influxPort</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       
@@ -716,7 +724,7 @@ port cannot be bound, tries again with an ephemeral port.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -748,7 +756,7 @@ port cannot be bound, tries again with an ephemeral port.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">listenBacklog</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
+        <span class="name">listenBacklog</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       
@@ -764,7 +772,7 @@ port cannot be bound, tries again with an ephemeral port.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">listenPort</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
+        <span class="name">listenPort</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       
@@ -815,7 +823,7 @@ port cannot be bound, tries again with an ephemeral port.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -831,7 +839,7 @@ port cannot be bound, tries again with an ephemeral port.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -852,7 +860,7 @@ port cannot be bound, tries again with an ephemeral port.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -889,7 +897,7 @@ port cannot be bound, tries again with an ephemeral port.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">stopSubscriptionListener</span><span class="params">(<span name="ssock">ssock: <span class="extype" name="java.net.ServerSocket">ServerSocket</span></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">stopSubscriptionListener</span><span class="params">(<span name="ssock">ssock: <span class="extype" name="java.net.ServerSocket">ServerSocket</span></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <p class="shortcomment cmt">Stops a listener and its corresponding InfluxDB subscription.</p><div class="fullcomment"><div class="comment cmt"><p>Stops a listener and its corresponding InfluxDB subscription.
@@ -938,7 +946,7 @@ port cannot be bound, tries again with an ephemeral port.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="arg1">arg1: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="arg1">arg1: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -960,7 +968,7 @@ port cannot be bound, tries again with an ephemeral port.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -984,7 +992,7 @@ port cannot be bound, tries again with an ephemeral port.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1014,7 +1022,7 @@ port cannot be bound, tries again with an ephemeral port.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1032,19 +1040,19 @@ port cannot be bound, tries again with an ephemeral port.
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
             </div><div class="parent" name="scala.Product">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a></h3>
             </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Equals.html#scala.Equals" class="extype" name="scala.Equals">Equals</a></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/Equals.html#scala.Equals" class="extype" name="scala.Equals">Equals</a></h3>
             </div><div class="parent" name="nz.net.wand.streamevmon.Logging">
               <h3>Inherited from <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
             </div>
         
         </div>

@@ -1,0 +1,859 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+          <title>streamevmon v0.3.0 - nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection</title>
+          <meta name="description" content="streamevmon v0.3.0 - nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection" />
+          <meta name="keywords" content="streamevmon v0.3.0 nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      
+      <link href="../../../../../../lib/index.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../../lib/jquery.min.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/jquery.panzoom.min.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/jquery.mousewheel.min.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/index.js"></script>
+      <script type="text/javascript" src="../../../../../../index.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/scheduler.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/modernizr.custom.js"></script><script type="text/javascript" src="../../../../../../lib/diagrams.js" id="diagrams-js"></script>
+      <script type="text/javascript">
+        /* this variable can be used by the JS to determine the path to the root document */
+        var toRoot = '../../../../../../';
+      </script>
+    
+        </head>
+        <body>
+      <div id="search">
+        <span id="doc-title">streamevmon<span id="doc-version">v0.3.0</span></span>
+        <span class="close-results"><span class="left">&lt;</span> Back</span>
+        <div id="textfilter">
+          <span class="input">
+            <input autocapitalize="none" placeholder="Search" id="index-input" type="text" accesskey="/" />
+            <i class="clear material-icons"></i>
+            <i id="search-icon" class="material-icons"></i>
+          </span>
+        </div>
+    </div>
+      <div id="search-results">
+        <div id="search-progress">
+          <div id="progress-fill"></div>
+        </div>
+        <div id="results-content">
+          <div id="entity-results"></div>
+          <div id="member-results"></div>
+        </div>
+      </div>
+      <div id="content-scroll-container" style="-webkit-overflow-scrolling: touch;">
+        <div id="content-container" style="-webkit-overflow-scrolling: touch;">
+          <div id="subpackage-spacer">
+            <div id="packages">
+              <h1>Packages</h1>
+              <ul>
+                <li name="_root_.root" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="_root_"></a><a id="root:_root_"></a>
+      <span class="permalink">
+      <a href="../../../../../../index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="../../../../../../index.html"><span class="name">root</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../../../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
+    </li><li name="_root_.nz" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="nz"></a><a id="nz:nz"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="../../../../../index.html"><span class="name">nz</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../../../../index.html" class="extype" name="_root_">root</a></dd></dl></div>
+    </li><li name="nz.net" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="net"></a><a id="net:net"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="../../../../index.html"><span class="name">net</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../../../index.html" class="extype" name="nz">nz</a></dd></dl></div>
+    </li><li name="nz.net.wand" visbl="pub" class="indented3 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wand"></a><a id="wand:wand"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="../../../index.html"><span class="name">wand</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../../index.html" class="extype" name="nz.net">net</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="streamevmon"></a><a id="streamevmon:streamevmon"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="../../index.html"><span class="name">streamevmon</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../index.html" class="extype" name="nz.net.wand">wand</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.connectors" visbl="pub" class="indented5 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="connectors"></a><a id="connectors:connectors"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Contains classes which interface with external systems, such as databases." href="../index.html"><span class="name">connectors</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Contains classes which interface with external systems, such as databases.</p><div class="fullcomment"><div class="comment cmt"><p>Contains classes which interface with external systems, such as databases.
+Additionally includes the schemas for those databases.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="nz.net.wand.streamevmon">streamevmon</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.connectors.influx" visbl="pub" class="indented6 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="influx"></a><a id="influx:influx"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="This package contains interfaces to InfluxDB which allow for subscription- based and historical querying." href="index.html"><span class="name">influx</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">This package contains interfaces to InfluxDB which allow for subscription-
+based and historical querying.</p><div class="fullcomment"><div class="comment cmt"><p>This package contains interfaces to InfluxDB which allow for subscription-
+based and historical querying.</p><h4>Configuration</h4><p>This module is configured by the <code>source.influx</code> config key group. This key
+group allows for type-based overrides of configuration. For example, an
+<a href="InfluxConnection.html" class="extype" name="nz.net.wand.streamevmon.connectors.influx.InfluxConnection">InfluxConnection</a> or
+<a href="InfluxHistoryConnection.html" class="extype" name="nz.net.wand.streamevmon.connectors.influx.InfluxHistoryConnection">InfluxHistoryConnection</a>
+which is constructed with a datatype of &quot;amp&quot; would get its configuration
+first from the <code>source.influx.amp</code> key group. If a key is not found in that
+group, it will look in the <code>source.influx</code> group.</p><p>This allows multiple instances of the connectors to be configured separately
+using the same ParameterTool, but also share certain configuration items.</p><p>The following keys are shared between InfluxConnection and InfluxHistoryConnection:</p><p>- <code>serverName</code>: The address that InfluxDB can be found at.
+Default &quot;localhost&quot;.</p><p>- <code>portNumber</code>: The port that InfluxDB is listening on.
+Default 8086.</p><p>- <code>user</code>: The username that should be used to connect to InfluxDB.
+Default &quot;cuz&quot;</p><p>- <code>password</code>: The password that should be used to connect to InfluxDB.
+Default &quot;&quot;.</p><p>- <code>databaseName</code>: The name of the InfluxDB database to subscribe to.
+Default &quot;nntsc&quot;.</p><p>- <code>retentionPolicy</code>: The name of the InfluxDB retention policy to subscribe to.
+Default &quot;nntscdefault&quot; for &quot;amp&quot; datatype, &quot;autogen&quot; otherwise.</p><p>The following keys are only used in InfluxConnection:</p><p>- <code>listenProtocol</code>: The transport protocol for this subscription. Can be one of
+&quot;http&quot;, &quot;https&quot;, or &quot;udp&quot;, although https and udp are unlikely to work.
+Default &quot;http&quot;.</p><p>- <code>listenAddress</code>: The address to listen on for this subscription.
+If not specified, this will be automatically generated at runtime by
+inspecting the IP addresses attached to the interfaces on the host machine.
+If a non-loopback, non-link-local address is found, the program will bind to
+it. If several are found, it will prefer any that are not in restricted
+private IP ranges. Specify this option if the automatic selection does not
+fit your needs.</p><p>- <code>listenPort</code>: The port this program should listen on.
+Defaults to an ephemeral port if no configuration is supplied or if the desired port cannot be bound.</p><p>- <code>listenBacklog</code>: The requested maximum length of the queue of incoming connections.
+Default 5.
+See <a href="https://docs.oracle.com/javase/8/docs/api/java/net/ServerSocket.html" target="_blank">ServerSocket</a> documentation.</p><p>- <code>subscriptionName</code>: The name of the subscription that will be created in InfluxDB.
+<b>No default.</b> This must be set explicitly to prevent conflicts.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.connectors">connectors</a></dd></dl></div>
+    </li><li class="current-entities indented6">
+                        <a class="object" href="Amp2InfluxHistoryConnection$.html" title="Additional constructors for the companion class."></a>
+                        <a class="class" href="" title="InfluxDB connector which allows retrieving historical data."></a>
+                        <a href="" title="InfluxDB connector which allows retrieving historical data.">Amp2InfluxHistoryConnection</a>
+                      </li><li class="current-entities indented6">
+                        <a class="object" href="InfluxConnection$.html" title="Contains additional constructors and private methods for the companion class."></a>
+                        <a class="class" href="InfluxConnection.html" title="InfluxDB subscription manager which produces ServerSockets."></a>
+                        <a href="InfluxConnection.html" title="InfluxDB subscription manager which produces ServerSockets.">InfluxConnection</a>
+                      </li><li class="current-entities indented6">
+                        <a class="object" href="InfluxHistoryConnection$.html" title="Additional constructors for the companion class."></a>
+                        <a class="class" href="InfluxHistoryConnection.html" title="InfluxDB connector which allows retrieving historical data."></a>
+                        <a href="InfluxHistoryConnection.html" title="InfluxDB connector which allows retrieving historical data.">InfluxHistoryConnection</a>
+                      </li><li class="current-entities indented6">
+                        <span class="separator"></span>
+                        <a class="object" href="InfluxSchema$.html" title="Declares the Reader objects for measurements obtained directly from InfluxDB via Chronicler by InfluxHistoryConnection."></a>
+                        <a href="InfluxSchema$.html" title="Declares the Reader objects for measurements obtained directly from InfluxDB via Chronicler by InfluxHistoryConnection.">InfluxSchema</a>
+                      </li><li class="current-entities indented6">
+                        <a class="object" href="LineProtocol$.html" title="Contains the apply method to convert from a line protocol string to a LineProtocol, as well as some helper functions."></a>
+                        <a class="class" href="LineProtocol.html" title="This class represents a single measurement in InfluxDB Line Protocol format."></a>
+                        <a href="LineProtocol.html" title="This class represents a single measurement in InfluxDB Line Protocol format.">LineProtocol</a>
+                      </li>
+              </ul>
+            </div>
+          </div>
+          <div id="content">
+            <body class="class type">
+      <div id="definition">
+        <a href="Amp2InfluxHistoryConnection$.html" title="See companion object"><div class="big-circle class-companion-object">c</div></a>
+        <p id="owner"><a href="../../../../../index.html" class="extype" name="nz">nz</a>.<a href="../../../../index.html" class="extype" name="nz.net">net</a>.<a href="../../../index.html" class="extype" name="nz.net.wand">wand</a>.<a href="../../index.html" class="extype" name="nz.net.wand.streamevmon">streamevmon</a>.<a href="../index.html" class="extype" name="nz.net.wand.streamevmon.connectors">connectors</a>.<a href="index.html" class="extype" name="nz.net.wand.streamevmon.connectors.influx">influx</a></p>
+        <h1><a href="Amp2InfluxHistoryConnection$.html" title="See companion object">Amp2InfluxHistoryConnection</a><span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span></h1>
+        <h3><span class="morelinks"><div>
+            Companion <a href="Amp2InfluxHistoryConnection$.html" title="See companion object">object Amp2InfluxHistoryConnection</a>
+          </div></span></h3>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Amp2InfluxHistoryConnection</span><span class="params">(<span name="dbName">dbName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rpName">rpName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="protocol">protocol: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="compress">compress: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>, <span name="influxAddress">influxAddress: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPort">influxPort: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="influxUsername">influxUsername: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPassword">influxPassword: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+      </span>
+      </h4>
+
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>InfluxDB connector which allows retrieving historical data. See the package
+object for details on how to configure this class.
+</p></div><div class="toggleContainer block">
+          <span class="toggle">
+            Linear Supertypes
+          </span>
+          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a>, <a href="https://www.scala-lang.org/api/2.12.14/scala/Equals.html#scala.Equals" class="extype" name="scala.Equals">Equals</a>, <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+        </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
+                <span class="toggle diagram-link">
+                  Type Hierarchy
+                </span>
+                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 288.50 118.00" height="118pt" width="289pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 114)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-114 284.5,-114 284.5,4 -4,4" stroke="transparent" fill="white"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this class" id="graph1_0"><g id="a_this class|graph1_0"><a xlink:title="nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection (this class)" xlink:href="#inheritance-diagram"><path d="M206.67,-49C206.67,-49 58.33,-49 58.33,-49 54.17,-49 50,-44.83 50,-40.67 50,-40.67 50,-32.33 50,-32.33 50,-28.17 54.17,-24 58.33,-24 58.33,-24 206.67,-24 206.67,-24 210.83,-24 215,-28.17 215,-32.33 215,-32.33 215,-40.67 215,-40.67 215,-44.83 210.83,-49 206.67,-49" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../lib/class_diagram.png" y="-43.5" x="60.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-34.1" x="81.5" text-anchor="start">Amp2InfluxHistoryConnection</text></a></g></g><!-- node1 --><g class="node trait" id="graph1_1"><g id="a_trait|graph1_1"><a xlink:title="nz.net.wand.streamevmon.Logging" xlink:href="../../Logging.html#inheritance-diagram"><path d="M68.67,-110C68.67,-110 8.33,-110 8.33,-110 4.17,-110 0,-105.83 0,-101.67 0,-101.67 0,-93.33 0,-93.33 0,-89.17 4.17,-85 8.33,-85 8.33,-85 68.67,-85 68.67,-85 72.83,-85 77,-89.17 77,-93.33 77,-93.33 77,-101.67 77,-101.67 77,-105.83 72.83,-110 68.67,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="10.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="31.5" text-anchor="start">Logging</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph1_1_0"><g id="a_inheritance|graph1_1_0"><a xlink:title="Amp2InfluxHistoryConnection is a subtype of Logging"><path d="M63.15,-81.03C79.06,-71.04 99.43,-58.26 113.97,-49.13" stroke="#d4d4d4" fill="none"></path><polygon points="61.7,-79.05 57.07,-84.84 64.3,-83.2 61.7,-79.05" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node trait" id="graph1_2"><g id="a_trait|graph1_2"><a xlink:title="scala.Product"><path d="M161.67,-110C161.67,-110 103.33,-110 103.33,-110 99.17,-110 95,-105.83 95,-101.67 95,-101.67 95,-93.33 95,-93.33 95,-89.17 99.17,-85 103.33,-85 103.33,-85 161.67,-85 161.67,-85 165.83,-85 170,-89.17 170,-93.33 170,-93.33 170,-101.67 170,-101.67 170,-105.83 165.83,-110 161.67,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="105.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="126.5" text-anchor="start">Product</text></a></g></g><!-- node2&#45;&gt;node0 --><g class="edge inheritance" id="graph1_2_0"><g id="a_inheritance|graph1_2_0"><a xlink:title="Amp2InfluxHistoryConnection is a subtype of Product"><path d="M132.5,-77.76C132.5,-68.37 132.5,-57.29 132.5,-49.13" stroke="#d4d4d4" fill="none"></path><polygon points="130.05,-77.84 132.5,-84.84 134.95,-77.84 130.05,-77.84" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node3 --><g class="node trait" id="graph1_3"><g id="a_trait|graph1_3"><a xlink:title="scala.Serializable"><path d="M272.17,-110C272.17,-110 196.83,-110 196.83,-110 192.67,-110 188.5,-105.83 188.5,-101.67 188.5,-101.67 188.5,-93.33 188.5,-93.33 188.5,-89.17 192.67,-85 196.83,-85 196.83,-85 272.17,-85 272.17,-85 276.33,-85 280.5,-89.17 280.5,-93.33 280.5,-93.33 280.5,-101.67 280.5,-101.67 280.5,-105.83 276.33,-110 272.17,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../lib/trait_diagram.png" y="-104.5" x="198.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="219.5" text-anchor="start">Serializable</text></a></g></g><!-- node3&#45;&gt;node0 --><g class="edge inheritance" id="graph1_3_0"><g id="a_inheritance|graph1_3_0"><a xlink:title="Amp2InfluxHistoryConnection is a subtype of Serializable"><path d="M208.21,-81.29C190.88,-71.27 168.52,-58.34 152.61,-49.13" stroke="#d4d4d4" fill="none"></path><polygon points="207.06,-83.46 214.35,-84.84 209.52,-79.22 207.06,-83.46" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
+                <div id="diagram-controls" class="hiddenContent">
+                  <button id="diagram-zoom-out" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button id="diagram-zoom-in" class="diagram-btn"><i class="material-icons"></i></button>
+                  <button title="Toggle full-screen" id="diagram-fs" class="diagram-btn to-full"><i class="material-icons"></i></button>
+                </div>
+              </div></div>
+        
+
+      <div id="mbrsel">
+        <div class="toggle"></div>
+        <div id="memberfilter">
+          <i class="material-icons arrow"></i>
+          <span class="input">
+            <input id="mbrsel-input" placeholder="Filter all members" type="text" accesskey="/" />
+          </span>
+          <i class="clear material-icons"></i>
+        </div>
+        <div id="filterby">
+          <div id="order">
+            <span class="filtertype">Ordering</span>
+            <ol>
+              
+              <li class="alpha in"><span>Alphabetic</span></li>
+              <li class="inherit out"><span>By Inheritance</span></li>
+            </ol>
+          </div>
+          <div class="ancestors">
+                  <span class="filtertype">Inherited<br />
+                  </span>
+                  <ol id="linearization">
+                    <li class="in" name="nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection"><span>Amp2InfluxHistoryConnection</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="nz.net.wand.streamevmon.Logging"><span>Logging</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  </ol>
+                </div><div class="ancestors">
+              <span class="filtertype"></span>
+              <ol>
+                <li class="hideall out"><span>Hide All</span></li>
+                <li class="showall in"><span>Show All</span></li>
+              </ol>
+            </div>
+          <div id="visbl">
+              <span class="filtertype">Visibility</span>
+              <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+            </div>
+        </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(dbName:String,rpName:String,protocol:String,compress:Boolean,influxAddress:String,influxPort:Int,influxUsername:String,influxPassword:String):nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection"></a><a id="&lt;init&gt;:Amp2InfluxHistoryConnection"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#&lt;init&gt;(dbName:String,rpName:String,protocol:String,compress:Boolean,influxAddress:String,influxPort:Int,influxUsername:String,influxPassword:String):nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Amp2InfluxHistoryConnection</span><span class="params">(<span name="dbName">dbName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rpName">rpName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="protocol">protocol: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="compress">compress: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>, <span name="influxAddress">influxAddress: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPort">influxPort: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="influxUsername">influxUsername: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPassword">influxPassword: <span class="extype" name="scala.Predef.String">String</span></span>)</span>
+      </span>
+      
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+
+        <div class="values members">
+              <h3>Value Members</h3>
+              <ol>
+                <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#!=(x$1:Any):Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="##():Int"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html###():Int" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#==(x$1:Any):Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#asInstanceOf[T0]:T0" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a><a id="clone():AnyRef"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#clone():Object" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
+              
+                <span class="name">@native</span><span class="args">()</span>
+              
+                <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection#compress" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="compress:Boolean"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#compress:Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compress</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+      </span>
+      
+      
+    </li><li name="nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection#dbName" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="dbName:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#dbName:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dbName</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
+    </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection#getAllAmp2Data" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getAllAmp2Data(start:java.time.Instant,end:java.time.Instant):Iterator[nz.net.wand.streamevmon.measurements.amp2.Amp2Measurement]"></a><a id="getAllAmp2Data(Instant,Instant):Iterator[Amp2Measurement]"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#getAllAmp2Data(start:java.time.Instant,end:java.time.Instant):Iterator[nz.net.wand.streamevmon.measurements.amp2.Amp2Measurement]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getAllAmp2Data</span><span class="params">(<span name="start">start: <span class="extype" name="java.time.Instant">Instant</span> = <span class="symbol">Instant.EPOCH</span></span>, <span name="end">end: <span class="extype" name="java.time.Instant">Instant</span> = <span class="symbol">Instant.now()</span></span>)</span><span class="result">: <span class="extype" name="scala.Iterator">Iterator</span>[<a href="../../measurements/amp2/Amp2Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.amp2.Amp2Measurement">Amp2Measurement</a>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Gets historical data for all supported measurement types over the specified
+time range.</p><div class="fullcomment"><div class="comment cmt"><p>Gets historical data for all supported measurement types over the specified
+time range. All measurements returned should have a time between start and
+end.
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>A collection of Measurements of varying types, or an empty collection.</p></dd></dl></div>
+    </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getClass():Class[_]"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#getClass():Class[_]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
+                <span class="name">@native</span><span class="args">()</span>
+              
+                <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection#influxAddress" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="influxAddress:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#influxAddress:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">influxAddress</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
+    </li><li name="nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection#influxPassword" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="influxPassword:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#influxPassword:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">influxPassword</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
+    </li><li name="nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection#influxPort" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="influxPort:Int"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#influxPort:Int" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">influxPort</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
+      </span>
+      
+      
+    </li><li name="nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection#influxUsername" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="influxUsername:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#influxUsername:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">influxUsername</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#isInstanceOf[T0]:Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.Logging#logger" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logger:org.slf4j.Logger"></a><a id="logger:Logger"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#logger:org.slf4j.Logger" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logger</span><span class="result">: <span class="extype" name="org.slf4j.Logger">Logger</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@transient</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notify():Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#notify():Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@native</span><span class="args">()</span>
+              
+                <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notifyAll():Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#notifyAll():Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@native</span><span class="args">()</span>
+              
+                <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection#protocol" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="protocol:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#protocol:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">protocol</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
+    </li><li name="nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection#rpName" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="rpName:String"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#rpName:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rpName</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="arg1">arg1: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#wait(x$1:Long):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+                <span class="name">@native</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait():Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#wait():Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li>
+              </ol>
+            </div>
+
+        
+
+        <div class="values members">
+              <h3>Deprecated Value Members</h3>
+              <ol><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finalize():Unit"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html#finalize():Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
+              
+                <span class="name">@Deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"></dd></dl></div>
+    </li></ol>
+            </div>
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.Serializable">
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></h3>
+            </div><div class="parent" name="java.io.Serializable">
+              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="scala.Product">
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a></h3>
+            </div><div class="parent" name="scala.Equals">
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/Equals.html#scala.Equals" class="extype" name="scala.Equals">Equals</a></h3>
+            </div><div class="parent" name="nz.net.wand.streamevmon.Logging">
+              <h3>Inherited from <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+    </body>
+          </div>
+        </div>
+      </div>
+    </body>
+      </html>

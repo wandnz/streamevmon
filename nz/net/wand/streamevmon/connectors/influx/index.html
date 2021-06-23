@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title>streamevmon v0.2.0 - nz.net.wand.streamevmon.connectors.influx</title>
-          <meta name="description" content="streamevmon v0.2.0 - nz.net.wand.streamevmon.connectors.influx" />
-          <meta name="keywords" content="streamevmon v0.2.0 nz.net.wand.streamevmon.connectors.influx" />
+          <title>streamevmon v0.3.0 - nz.net.wand.streamevmon.connectors.influx</title>
+          <meta name="description" content="streamevmon v0.3.0 - nz.net.wand.streamevmon.connectors.influx" />
+          <meta name="keywords" content="streamevmon v0.3.0 nz.net.wand.streamevmon.connectors.influx" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title">streamevmon<span id="doc-version">v0.2.0</span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">v0.3.0</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -215,6 +215,10 @@ Default 5.
 See <a href="https://docs.oracle.com/javase/8/docs/api/java/net/ServerSocket.html" target="_blank">ServerSocket</a> documentation.</p><p>- <code>subscriptionName</code>: The name of the subscription that will be created in InfluxDB.
 <b>No default.</b> This must be set explicitly to prevent conflicts.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.connectors">connectors</a></dd></dl></div>
     </li><li class="current-entities indented6">
+                        <a class="object" href="Amp2InfluxHistoryConnection$.html" title="Additional constructors for the companion class."></a>
+                        <a class="class" href="Amp2InfluxHistoryConnection.html" title="InfluxDB connector which allows retrieving historical data."></a>
+                        <a href="Amp2InfluxHistoryConnection.html" title="InfluxDB connector which allows retrieving historical data.">Amp2InfluxHistoryConnection</a>
+                      </li><li class="current-entities indented6">
                         <a class="object" href="InfluxConnection$.html" title="Contains additional constructors and private methods for the companion class."></a>
                         <a class="class" href="InfluxConnection.html" title="InfluxDB subscription manager which produces ServerSockets."></a>
                         <a href="InfluxConnection.html" title="InfluxDB subscription manager which produces ServerSockets.">InfluxConnection</a>
@@ -226,6 +230,10 @@ See <a href="https://docs.oracle.com/javase/8/docs/api/java/net/ServerSocket.htm
                         <span class="separator"></span>
                         <a class="object" href="InfluxSchema$.html" title="Declares the Reader objects for measurements obtained directly from InfluxDB via Chronicler by InfluxHistoryConnection."></a>
                         <a href="InfluxSchema$.html" title="Declares the Reader objects for measurements obtained directly from InfluxDB via Chronicler by InfluxHistoryConnection.">InfluxSchema</a>
+                      </li><li class="current-entities indented6">
+                        <a class="object" href="LineProtocol$.html" title="Contains the apply method to convert from a line protocol string to a LineProtocol, as well as some helper functions."></a>
+                        <a class="class" href="LineProtocol.html" title="This class represents a single measurement in InfluxDB Line Protocol format."></a>
+                        <a href="LineProtocol.html" title="This class represents a single measurement in InfluxDB Line Protocol format.">LineProtocol</a>
                       </li><li name="nz.net.wand.streamevmon.connectors.postgres" visbl="pub" class="indented6 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="postgres"></a><a id="postgres:postgres"></a>
       <span class="permalink">
@@ -314,7 +322,7 @@ See <a href="https://docs.oracle.com/javase/8/docs/api/java/net/ServerSocket.htm
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
         </div></div>
         
 
@@ -362,7 +370,25 @@ See <a href="https://docs.oracle.com/javase/8/docs/api/java/net/ServerSocket.htm
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="nz.net.wand.streamevmon.connectors.influx.InfluxConnection" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+              <ol><li name="nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="Amp2InfluxHistoryConnectionextendsLoggingwithProductwithSerializable"></a><a id="Amp2InfluxHistoryConnection:Amp2InfluxHistoryConnection"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="InfluxDB connector which allows retrieving historical data." href="Amp2InfluxHistoryConnection.html"><span class="name">Amp2InfluxHistoryConnection</span></a><span class="params">(<span name="dbName">dbName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rpName">rpName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="protocol">protocol: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="compress">compress: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>, <span name="influxAddress">influxAddress: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPort">influxPort: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="influxUsername">influxUsername: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPassword">influxPassword: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">InfluxDB connector which allows retrieving historical data.</p><div class="fullcomment"><div class="comment cmt"><p>InfluxDB connector which allows retrieving historical data. See the package
+object for details on how to configure this class.
+</p></div></div>
+    </li><li name="nz.net.wand.streamevmon.connectors.influx.InfluxConnection" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="InfluxConnectionextendsLoggingwithProductwithSerializable"></a><a id="InfluxConnection:InfluxConnection"></a>
       <span class="permalink">
       <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/InfluxConnection.html" title="Permalink">
@@ -374,7 +400,7 @@ See <a href="https://docs.oracle.com/javase/8/docs/api/java/net/ServerSocket.htm
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="InfluxDB subscription manager which produces ServerSockets." href="InfluxConnection.html"><span class="name">InfluxConnection</span></a><span class="params">(<span name="subscriptionName">subscriptionName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="dbName">dbName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rpName">rpName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenProtocol">listenProtocol: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenAddress">listenAddress: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenPort">listenPort: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="listenBacklog">listenBacklog: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="influxAddress">influxAddress: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPort">influxPort: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="influxUsername">influxUsername: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPassword">influxPassword: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="InfluxDB subscription manager which produces ServerSockets." href="InfluxConnection.html"><span class="name">InfluxConnection</span></a><span class="params">(<span name="subscriptionName">subscriptionName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="dbName">dbName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rpName">rpName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenProtocol">listenProtocol: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenAddress">listenAddress: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="listenPort">listenPort: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="listenBacklog">listenBacklog: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="influxAddress">influxAddress: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPort">influxPort: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="influxUsername">influxUsername: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPassword">influxPassword: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">InfluxDB subscription manager which produces ServerSockets.</p><div class="fullcomment"><div class="comment cmt"><p>InfluxDB subscription manager which produces ServerSockets. See the package
@@ -392,11 +418,32 @@ object for details on how to configure this class.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="InfluxDB connector which allows retrieving historical data." href="InfluxHistoryConnection.html"><span class="name">InfluxHistoryConnection</span></a><span class="params">(<span name="dbName">dbName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rpName">rpName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="protocol">protocol: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="compress">compress: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>, <span name="influxAddress">influxAddress: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPort">influxPort: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="influxUsername">influxUsername: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPassword">influxPassword: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="InfluxDB connector which allows retrieving historical data." href="InfluxHistoryConnection.html"><span class="name">InfluxHistoryConnection</span></a><span class="params">(<span name="dbName">dbName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rpName">rpName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="protocol">protocol: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="compress">compress: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>, <span name="influxAddress">influxAddress: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPort">influxPort: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="influxUsername">influxUsername: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="influxPassword">influxPassword: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">InfluxDB connector which allows retrieving historical data.</p><div class="fullcomment"><div class="comment cmt"><p>InfluxDB connector which allows retrieving historical data. See the package
 object for details on how to configure this class.
+</p></div></div>
+    </li><li name="nz.net.wand.streamevmon.connectors.influx.LineProtocol" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="LineProtocolextendsProductwithSerializable"></a><a id="LineProtocol:LineProtocol"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/LineProtocol.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="This class represents a single measurement in InfluxDB Line Protocol format." href="LineProtocol.html"><span class="name">LineProtocol</span></a><span class="params">(<span name="measurementName">measurementName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="tags">tags: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="fields">fields: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>)</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">This class represents a single measurement in InfluxDB Line Protocol format.</p><div class="fullcomment"><div class="comment cmt"><p>This class represents a single measurement in InfluxDB Line Protocol format.
+It allows users to convert tags and fields to particular types, and provides
+a simple interface to the data.</p><p>All numeric datatypes in InfluxDB are 64-bit, so the names don't match up
+with Scala type names. This class uses Scala type names, so a database entry
+with type integer is a Scala Long, and a float is a Scala Double.
 </p></div></div>
     </li></ol>
             </div>
@@ -406,7 +453,23 @@ object for details on how to configure this class.
         <div class="values members">
               <h3>Value Members</h3>
               <ol>
-                <li name="nz.net.wand.streamevmon.connectors.influx.InfluxConnection" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+                <li name="nz.net.wand.streamevmon.connectors.influx.Amp2InfluxHistoryConnection" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Amp2InfluxHistoryConnection"></a><a id="Amp2InfluxHistoryConnection:Amp2InfluxHistoryConnection"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/Amp2InfluxHistoryConnection$.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="Additional constructors for the companion class." href="Amp2InfluxHistoryConnection$.html"><span class="name">Amp2InfluxHistoryConnection</span></a><span class="result"> extends <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Additional constructors for the companion class.</p>
+    </li><li name="nz.net.wand.streamevmon.connectors.influx.InfluxConnection" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="InfluxConnection"></a><a id="InfluxConnection:InfluxConnection"></a>
       <span class="permalink">
       <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/InfluxConnection$.html" title="Permalink">
@@ -418,7 +481,7 @@ object for details on how to configure this class.
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="Contains additional constructors and private methods for the companion class." href="InfluxConnection$.html"><span class="name">InfluxConnection</span></a><span class="result"> extends <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="Contains additional constructors and private methods for the companion class." href="InfluxConnection$.html"><span class="name">InfluxConnection</span></a><span class="result"> extends <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Contains additional constructors and private methods for the companion class.</p>
@@ -434,7 +497,7 @@ object for details on how to configure this class.
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="Additional constructors for the companion class." href="InfluxHistoryConnection$.html"><span class="name">InfluxHistoryConnection</span></a><span class="result"> extends <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="Additional constructors for the companion class." href="InfluxHistoryConnection$.html"><span class="name">InfluxHistoryConnection</span></a><span class="result"> extends <a href="../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Additional constructors for the companion class.</p>
@@ -463,6 +526,23 @@ sorted by Influx differently. Chronicler notes that Influx sorts columns
 alphabetically, but doing it this way lets us write slightly nicer code.</p><p>We don't bother implementing the readUnsafe functions, since they haven't
 been observed to be called.
 </p></div></div>
+    </li><li name="nz.net.wand.streamevmon.connectors.influx.LineProtocol" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LineProtocol"></a><a id="LineProtocol:LineProtocol"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/connectors/influx/LineProtocol$.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="Contains the apply method to convert from a line protocol string to a LineProtocol, as well as some helper functions." href="LineProtocol$.html"><span class="name">LineProtocol</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Contains the apply method to convert from a line protocol string to a
+LineProtocol, as well as some helper functions.</p>
     </li>
               </ol>
             </div>
@@ -474,9 +554,9 @@ been observed to be called.
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
             </div>
         
         </div>

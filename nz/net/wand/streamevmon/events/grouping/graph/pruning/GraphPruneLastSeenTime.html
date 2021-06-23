@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title>streamevmon v0.2.0 - nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime</title>
-          <meta name="description" content="streamevmon v0.2.0 - nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime" />
-          <meta name="keywords" content="streamevmon v0.2.0 nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime" />
+          <title>streamevmon v0.3.0 - nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime</title>
+          <meta name="description" content="streamevmon v0.3.0 - nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime" />
+          <meta name="keywords" content="streamevmon v0.3.0 nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title">streamevmon<span id="doc-version">v0.2.0</span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">v0.3.0</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -188,8 +188,7 @@ make each type of event unique within InfluxDB or another storage system.
 on placing Events on a directed graph of known network topology.</p><div class="fullcomment"><div class="comment cmt"><p>This package is for the implementation of an event-grouping algorithm based
 on placing Events on a directed graph of known network topology. This will
 allow us to determine the topological distance of two events from one
-another. See <a href="../TraceroutePathGraph.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph">TraceroutePathGraph</a>
-for an entry point.
+another. See the <code>building</code> package for usage details.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping">grouping</a></dd></dl></div>
     </li><li name="nz.net.wand.streamevmon.events.grouping.graph.pruning" visbl="pub" class="indented8 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="pruning"></a><a id="pruning:pruning"></a>
@@ -203,22 +202,26 @@ for an entry point.
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="Pruning algorithms for host graphs." href="index.html"><span class="name">pruning</span></a>
+        <a title="Standalone pruning algorithms for host graphs." href="index.html"><span class="name">pruning</span></a>
       </span>
       
-      <p class="shortcomment cmt">Pruning algorithms for host graphs.</p><div class="fullcomment"><div class="comment cmt"><p>Pruning algorithms for host graphs.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph">graph</a></dd></dl></div>
+      <p class="shortcomment cmt">Standalone pruning algorithms for host graphs.</p><div class="fullcomment"><div class="comment cmt"><p>Standalone pruning algorithms for host graphs.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph">graph</a></dd></dl></div>
     </li><li class="current-entities indented8">
-                        <span class="separator"></span>
-                        <a class="trait" href="GraphPruneApproach.html" title="Parent trait for graph pruning algorithms."></a>
-                        <a href="GraphPruneApproach.html" title="Parent trait for graph pruning algorithms.">GraphPruneApproach</a>
+                        <a class="object" href="AliasResolver$.html" title=""></a>
+                        <a class="class" href="AliasResolver.html" title="Worker class for alias resolution, which finds duplicate entries for hosts."></a>
+                        <a href="AliasResolver.html" title="Worker class for alias resolution, which finds duplicate entries for hosts.">AliasResolver</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
                         <a class="class" href="" title="Pruning algorithm which removes edges when they haven't been seen in a long time, then removes the now disconnected vertices."></a>
                         <a href="" title="Pruning algorithm which removes edges when they haven't been seen in a long time, then removes the now disconnected vertices.">GraphPruneLastSeenTime</a>
                       </li><li class="current-entities indented8">
                         <span class="separator"></span>
-                        <a class="class" href="GraphPruneParallelAnonymousHost.html" title="Merges duplicate anonymous hosts by finding anonymous parallel paths with the same length."></a>
-                        <a href="GraphPruneParallelAnonymousHost.html" title="Merges duplicate anonymous hosts by finding anonymous parallel paths with the same length.">GraphPruneParallelAnonymousHost</a>
+                        <a class="object" href="GraphPruneParallelAnonymousHost$.html" title="Merges probable duplicate anonymous hosts by finding parallel paths of anonymous hosts with the same length."></a>
+                        <a href="GraphPruneParallelAnonymousHost$.html" title="Merges probable duplicate anonymous hosts by finding parallel paths of anonymous hosts with the same length.">GraphPruneParallelAnonymousHost</a>
+                      </li><li class="current-entities indented8">
+                        <span class="separator"></span>
+                        <a class="class" href="MergeMap.html" title="A Map that allows defining multiple keys per value, but is still accessed in the usual key-first manner."></a>
+                        <a href="MergeMap.html" title="A Map that allows defining multiple keys per value, but is still accessed in the usual key-first manner.">MergeMap</a>
                       </li>
               </ul>
             </div>
@@ -242,23 +245,26 @@ for an entry point.
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">GraphPruneLastSeenTime</span><span class="tparams">[<span name="VertexT">VertexT</span>, <span name="EdgeT">EdgeT &lt;: <a href="../EdgeWithLastSeen.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.EdgeWithLastSeen">EdgeWithLastSeen</a></span>, <span name="GraphT">GraphT &lt;: <span class="extype" name="org.jgrapht.Graph">Graph</span>[<span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime.VertexT">VertexT</span>, <span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime.EdgeT">EdgeT</span>]</span>]</span><span class="result"> extends <a href="GraphPruneApproach.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneApproach">GraphPruneApproach</a>[<span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime.VertexT">VertexT</span>, <span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime.EdgeT">EdgeT</span>, <span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime.GraphT">GraphT</span>] with <a href="../../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></span>
+        <span class="name">GraphPruneLastSeenTime</span><span class="tparams">[<span name="VertexT">VertexT</span>, <span name="EdgeT">EdgeT &lt;: <a href="../impl/EdgeWithLastSeen.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.impl.EdgeWithLastSeen">EdgeWithLastSeen</a></span>, <span name="GraphT">GraphT &lt;: <span class="extype" name="org.jgrapht.Graph">Graph</span>[<span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime.VertexT">VertexT</span>, <span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime.EdgeT">EdgeT</span>]</span>]</span><span class="result"> extends <a href="../../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></span>
       </span>
       </h4>
 
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Pruning algorithm which removes edges when they haven't been seen in a long
-time, then removes the now disconnected vertices.
+time, then removes the now disconnected vertices.</p><p>This behaviour is also implemented with the two GraphChangeEvents
+<a href="../building/GraphChangeEvent$$RemoveOldEdges.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.RemoveOldEdges">RemoveOldEdges</a>
+and
+<a href="../building/GraphChangeEvent$$RemoveUnconnectedVertices.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.building.GraphChangeEvent.RemoveUnconnectedVertices">RemoveUnconnectedVertices</a>
 </p></div><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="../../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="GraphPruneApproach.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneApproach">GraphPruneApproach</a>[<span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime.VertexT">VertexT</span>, <span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime.EdgeT">EdgeT</span>, <span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime.GraphT">GraphT</span>], <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="../../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a>, <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
         </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
                 <span class="toggle diagram-link">
                   Type Hierarchy
                 </span>
-                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 360.00 118.00" height="118pt" width="360pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 114)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-114 356,-114 356,4 -4,4" stroke="transparent" fill="white"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this class" id="graph1_0"><g id="a_this class|graph1_0"><a xlink:title="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime (this class)" xlink:href="#inheritance-diagram"><path d="M319.17,-49C319.17,-49 84.83,-49 84.83,-49 80.67,-49 76.5,-44.83 76.5,-40.67 76.5,-40.67 76.5,-32.33 76.5,-32.33 76.5,-28.17 80.67,-24 84.83,-24 84.83,-24 319.17,-24 319.17,-24 323.33,-24 327.5,-28.17 327.5,-32.33 327.5,-32.33 327.5,-40.67 327.5,-40.67 327.5,-44.83 323.33,-49 319.17,-49" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../../../lib/class_diagram.png" y="-43.5" x="87" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-34.1" x="108" text-anchor="start">GraphPruneLastSeenTime[VertexT, EdgeT, GraphT]</text></a></g></g><!-- node1 --><g class="node trait" id="graph1_1"><g id="a_trait|graph1_1"><a xlink:title="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneApproach" xlink:href="GraphPruneApproach.html#inheritance-diagram"><path d="M223.67,-110C223.67,-110 8.33,-110 8.33,-110 4.17,-110 0,-105.83 0,-101.67 0,-101.67 0,-93.33 0,-93.33 0,-89.17 4.17,-85 8.33,-85 8.33,-85 223.67,-85 223.67,-85 227.83,-85 232,-89.17 232,-93.33 232,-93.33 232,-101.67 232,-101.67 232,-105.83 227.83,-110 223.67,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../../../lib/trait_diagram.png" y="-104.5" x="10" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="31" text-anchor="start">GraphPruneApproach[VertexT, EdgeT, GraphT]</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph1_1_0"><g id="a_inheritance|graph1_1_0"><a xlink:title="GraphPruneLastSeenTime[VertexT, EdgeT, GraphT] is a subtype of GraphPruneApproach[VertexT, EdgeT, GraphT]"><path d="M138.94,-80.76C153.44,-70.82 171.86,-58.18 185.04,-49.13" stroke="#d4d4d4" fill="none"></path><polygon points="137.38,-78.86 132.99,-84.84 140.15,-82.9 137.38,-78.86" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node trait" id="graph1_2"><g id="a_trait|graph1_2"><a xlink:title="nz.net.wand.streamevmon.Logging" xlink:href="../../../../Logging.html#inheritance-diagram"><path d="M319.17,-110C319.17,-110 258.83,-110 258.83,-110 254.67,-110 250.5,-105.83 250.5,-101.67 250.5,-101.67 250.5,-93.33 250.5,-93.33 250.5,-89.17 254.67,-85 258.83,-85 258.83,-85 319.17,-85 319.17,-85 323.33,-85 327.5,-89.17 327.5,-93.33 327.5,-93.33 327.5,-101.67 327.5,-101.67 327.5,-105.83 323.33,-110 319.17,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../../../lib/trait_diagram.png" y="-104.5" x="261" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="282" text-anchor="start">Logging</text></a></g></g><!-- node2&#45;&gt;node0 --><g class="edge inheritance" id="graph1_2_0"><g id="a_inheritance|graph1_2_0"><a xlink:title="GraphPruneLastSeenTime[VertexT, EdgeT, GraphT] is a subtype of Logging"><path d="M265.79,-80.76C251.13,-70.82 232.49,-58.18 219.15,-49.13" stroke="#d4d4d4" fill="none"></path><polygon points="264.64,-82.94 271.81,-84.84 267.39,-78.89 264.64,-82.94" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
+                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph1" viewBox="0.00 0.00 308.00 118.00" height="118pt" width="308pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 114)" class="graph" id="page0,1_graph0"><polygon points="-4,4 -4,-114 304,-114 304,4 -4,4" stroke="transparent" fill="white"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><!-- node0 --><g class="node this class" id="graph1_0"><g id="a_this class|graph1_0"><a xlink:title="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime (this class)" xlink:href="#inheritance-diagram"><path d="M267.17,-49C267.17,-49 32.83,-49 32.83,-49 28.67,-49 24.5,-44.83 24.5,-40.67 24.5,-40.67 24.5,-32.33 24.5,-32.33 24.5,-28.17 28.67,-24 32.83,-24 32.83,-24 267.17,-24 267.17,-24 271.33,-24 275.5,-28.17 275.5,-32.33 275.5,-32.33 275.5,-40.67 275.5,-40.67 275.5,-44.83 271.33,-49 267.17,-49" stroke="#418565" fill="#418565"></path><image xlink:href="../../../../../../../../lib/class_diagram.png" y="-43.5" x="35" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-34.1" x="56" text-anchor="start">GraphPruneLastSeenTime[VertexT, EdgeT, GraphT]</text></a></g></g><!-- node1 --><g class="node trait" id="graph1_1"><g id="a_trait|graph1_1"><a xlink:title="nz.net.wand.streamevmon.Logging" xlink:href="../../../../Logging.html#inheritance-diagram"><path d="M180.17,-110C180.17,-110 119.83,-110 119.83,-110 115.67,-110 111.5,-105.83 111.5,-101.67 111.5,-101.67 111.5,-93.33 111.5,-93.33 111.5,-89.17 115.67,-85 119.83,-85 119.83,-85 180.17,-85 180.17,-85 184.33,-85 188.5,-89.17 188.5,-93.33 188.5,-93.33 188.5,-101.67 188.5,-101.67 188.5,-105.83 184.33,-110 180.17,-110" stroke="#2e6d82" fill="#2e6d82"></path><image xlink:href="../../../../../../../../lib/trait_diagram.png" y="-104.5" x="122" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="8.00" font-family="Source Code Pro" y="-95.1" x="143" text-anchor="start">Logging</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph1_1_0"><g id="a_inheritance|graph1_1_0"><a xlink:title="GraphPruneLastSeenTime[VertexT, EdgeT, GraphT] is a subtype of Logging"><path d="M150,-77.76C150,-68.37 150,-57.29 150,-49.13" stroke="#d4d4d4" fill="none"></path><polygon points="147.55,-77.84 150,-84.84 152.45,-77.84 147.55,-77.84" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
                 <div id="diagram-controls" class="hiddenContent">
                   <button id="diagram-zoom-out" class="diagram-btn"><i class="material-icons"></i></button>
                   <button id="diagram-zoom-in" class="diagram-btn"><i class="material-icons"></i></button>
@@ -289,7 +295,7 @@ time, then removes the now disconnected vertices.
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime"><span>GraphPruneLastSeenTime</span></li><li class="in" name="nz.net.wand.streamevmon.Logging"><span>Logging</span></li><li class="in" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneApproach"><span>GraphPruneApproach</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime"><span>GraphPruneLastSeenTime</span></li><li class="in" name="nz.net.wand.streamevmon.Logging"><span>Logging</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -347,7 +353,7 @@ time, then removes the now disconnected vertices.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -363,7 +369,7 @@ time, then removes the now disconnected vertices.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -379,7 +385,7 @@ time, then removes the now disconnected vertices.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -411,7 +417,7 @@ time, then removes the now disconnected vertices.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -437,7 +443,7 @@ time, then removes the now disconnected vertices.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -453,7 +459,7 @@ time, then removes the now disconnected vertices.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -490,7 +496,7 @@ time, then removes the now disconnected vertices.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
@@ -511,7 +517,7 @@ time, then removes the now disconnected vertices.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -546,7 +552,7 @@ time, then removes the now disconnected vertices.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -562,7 +568,7 @@ time, then removes the now disconnected vertices.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -583,7 +589,7 @@ time, then removes the now disconnected vertices.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -592,7 +598,7 @@ time, then removes the now disconnected vertices.
                 <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime#prune" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime#prune" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="prune(graph:GraphT):Unit"></a><a id="prune(GraphT):Unit"></a>
       <span class="permalink">
       <a href="../../../../../../../../nz/net/wand/streamevmon/events/grouping/graph/pruning/GraphPruneLastSeenTime.html#prune(graph:GraphT):Unit" title="Permalink">
@@ -604,10 +610,10 @@ time, then removes the now disconnected vertices.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">prune</span><span class="params">(<span name="graph">graph: <span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime.GraphT">GraphT</span></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">prune</span><span class="params">(<span name="graph">graph: <span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime.GraphT">GraphT</span></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime">GraphPruneLastSeenTime</a> → <a href="GraphPruneApproach.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneApproach">GraphPruneApproach</a></dd></dl></div>
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
@@ -652,7 +658,7 @@ time, then removes the now disconnected vertices.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="arg1">arg1: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="arg1">arg1: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -674,7 +680,7 @@ time, then removes the now disconnected vertices.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.13/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="https://www.scala-lang.org/api/2.12.14/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>)</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -698,7 +704,7 @@ time, then removes the now disconnected vertices.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -728,7 +734,7 @@ time, then removes the now disconnected vertices.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.13/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name deprecated" title="Deprecated: ">finalize</span><span class="params">()</span><span class="result">: <a href="https://www.scala-lang.org/api/2.12.14/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -747,12 +753,10 @@ time, then removes the now disconnected vertices.
         <div id="inheritedMembers">
         <div class="parent" name="nz.net.wand.streamevmon.Logging">
               <h3>Inherited from <a href="../../../../Logging.html" class="extype" name="nz.net.wand.streamevmon.Logging">Logging</a></h3>
-            </div><div class="parent" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneApproach">
-              <h3>Inherited from <a href="GraphPruneApproach.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneApproach">GraphPruneApproach</a>[<span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime.VertexT">VertexT</span>, <span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime.EdgeT">EdgeT</span>, <span class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.pruning.GraphPruneLastSeenTime.GraphT">GraphT</span>]</h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
             </div>
         
         </div>

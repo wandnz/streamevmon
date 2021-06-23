@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title>streamevmon v0.2.0 - nz.net.wand.streamevmon.events.grouping.time</title>
-          <meta name="description" content="streamevmon v0.2.0 - nz.net.wand.streamevmon.events.grouping.time" />
-          <meta name="keywords" content="streamevmon v0.2.0 nz.net.wand.streamevmon.events.grouping.time" />
+          <title>streamevmon v0.3.0 - nz.net.wand.streamevmon.events.grouping.time</title>
+          <meta name="description" content="streamevmon v0.3.0 - nz.net.wand.streamevmon.events.grouping.time" />
+          <meta name="keywords" content="streamevmon v0.3.0 nz.net.wand.streamevmon.events.grouping.time" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title">streamevmon<span id="doc-version">v0.2.0</span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">v0.3.0</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -188,8 +188,7 @@ make each type of event unique within InfluxDB or another storage system.
 on placing Events on a directed graph of known network topology.</p><div class="fullcomment"><div class="comment cmt"><p>This package is for the implementation of an event-grouping algorithm based
 on placing Events on a directed graph of known network topology. This will
 allow us to determine the topological distance of two events from one
-another. See <a href="../graph/TraceroutePathGraph.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph">TraceroutePathGraph</a>
-for an entry point.
+another. See the <code>building</code> package for usage details.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.events.grouping">grouping</a></dd></dl></div>
     </li><li name="nz.net.wand.streamevmon.events.grouping.time" visbl="pub" class="indented7 current" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="time"></a><a id="time:time"></a>
@@ -271,6 +270,8 @@ other in time. The start time of a group is the earliest received eventTime.
 The end time is the largest eventTime in the group. Groups will only be
 merged if they have the same Flink key. This will usually be the stream ID.</p><h4>Configuration</h4><p>This class is configured by the <code>eventGrouping.time</code> configuration key group.</p><p>- <code>maximumEventInterval</code>: The maximum time, in seconds, between two events
 before a new group is started. Default 10.
+- <code>maximumGroupDuration</code>: The maximum time, in seconds, that an event group
+can span. Default 7200 (2 hours).
 </p></div></div>
     </li></ol>
             </div>

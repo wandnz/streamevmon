@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title>streamevmon v0.2.0 - nz.net.wand.streamevmon.events.grouping</title>
-          <meta name="description" content="streamevmon v0.2.0 - nz.net.wand.streamevmon.events.grouping" />
-          <meta name="keywords" content="streamevmon v0.2.0 nz.net.wand.streamevmon.events.grouping" />
+          <title>streamevmon v0.3.0 - nz.net.wand.streamevmon.events.grouping</title>
+          <meta name="description" content="streamevmon v0.3.0 - nz.net.wand.streamevmon.events.grouping" />
+          <meta name="keywords" content="streamevmon v0.3.0 nz.net.wand.streamevmon.events.grouping" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title">streamevmon<span id="doc-version">v0.2.0</span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">v0.3.0</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -188,8 +188,7 @@ make each type of event unique within InfluxDB or another storage system.
 on placing Events on a directed graph of known network topology.</p><div class="fullcomment"><div class="comment cmt"><p>This package is for the implementation of an event-grouping algorithm based
 on placing Events on a directed graph of known network topology. This will
 allow us to determine the topological distance of two events from one
-another. See <a href="graph/TraceroutePathGraph.html" class="extype" name="nz.net.wand.streamevmon.events.grouping.graph.TraceroutePathGraph">TraceroutePathGraph</a>
-for an entry point.
+another. See the <code>building</code> package for usage details.
 </p></div></div>
     </li><li name="nz.net.wand.streamevmon.events.grouping.time" visbl="pub" class="indented7 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="time"></a><a id="time:time"></a>
@@ -294,7 +293,7 @@ for an entry point.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="A group of events." href="EventGroup.html"><span class="name">EventGroup</span></a><span class="params">(<span name="startTime">startTime: <span class="extype" name="java.time.Instant">Instant</span></span>, <span name="endTime">endTime: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="java.time.Instant">Instant</span>]</span>, <span name="events">events: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>]</span>)</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="A group of events." href="EventGroup.html"><span class="name">EventGroup</span></a><span class="params">(<span name="startTime">startTime: <span class="extype" name="java.time.Instant">Instant</span></span>, <span name="endTime">endTime: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="java.time.Instant">Instant</span>]</span>, <span name="memberEvents">memberEvents: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="../Event.html" class="extype" name="nz.net.wand.streamevmon.events.Event">Event</a>]</span>, <span name="uuid">uuid: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="java.util.UUID">UUID</span>] = <span class="symbol">None</span></span>)</span><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">A group of events.</p><div class="fullcomment"><div class="comment cmt"><p>A group of events. If <code>endTime</code> is none, then the event is still ongoing.</p></div></div>
@@ -334,7 +333,7 @@ for an entry point.
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="EventGroup$.html"><span class="name">EventGroup</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="EventGroup$.html"><span class="name">EventGroup</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       

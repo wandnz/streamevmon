@@ -3,9 +3,9 @@
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-          <title>streamevmon v0.2.0 - nz.net.wand.streamevmon.measurements.latencyts</title>
-          <meta name="description" content="streamevmon v0.2.0 - nz.net.wand.streamevmon.measurements.latencyts" />
-          <meta name="keywords" content="streamevmon v0.2.0 nz.net.wand.streamevmon.measurements.latencyts" />
+          <title>streamevmon v0.3.0 - nz.net.wand.streamevmon.measurements.latencyts</title>
+          <meta name="description" content="streamevmon v0.3.0 - nz.net.wand.streamevmon.measurements.latencyts" />
+          <meta name="keywords" content="streamevmon v0.3.0 nz.net.wand.streamevmon.measurements.latencyts" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       
@@ -28,7 +28,7 @@
         </head>
         <body>
       <div id="search">
-        <span id="doc-title">streamevmon<span id="doc-version">v0.2.0</span></span>
+        <span id="doc-title">streamevmon<span id="doc-version">v0.3.0</span></span>
         <span class="close-results"><span class="left">&lt;</span> Back</span>
         <div id="textfilter">
           <span class="input">
@@ -188,6 +188,27 @@ and can be obtained separately as a
 <a href="../traits/PostgresMeasurementMeta.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.PostgresMeasurementMeta">MeasurementMeta</a>.
 The metadata is information about the test schedule which produced the
 measurement.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.measurements">measurements</a></dd></dl></div>
+    </li><li name="nz.net.wand.streamevmon.measurements.amp2" visbl="pub" class="indented6 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="amp2"></a><a id="amp2:amp2"></a>
+      <span class="permalink">
+      <a href="../../../../../../nz/net/wand/streamevmon/measurements/amp2/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="This package represents data gathered by AMP, WAND's Active Measurement Project." href="../amp2/index.html"><span class="name">amp2</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">This package represents data gathered by <a href="https://amp.wand.net.nz/" target="_blank">AMP</a>,
+WAND's Active Measurement Project.</p><div class="fullcomment"><div class="comment cmt"><p>This package represents data gathered by <a href="https://amp.wand.net.nz/" target="_blank">AMP</a>,
+WAND's Active Measurement Project. Particularly, this package reflects the
+format used by the <code>amplet2</code> collector.</p><p>All measurement types inherit from <a href="../amp2/Amp2Measurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.amp2.Amp2Measurement">Amp2Measurement</a>, meaning they all
+implement <a href="../traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a>.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="nz.net.wand.streamevmon.measurements">measurements</a></dd></dl></div>
     </li><li name="nz.net.wand.streamevmon.measurements.bigdata" visbl="pub" class="indented6 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="bigdata"></a><a id="bigdata:bigdata"></a>
       <span class="permalink">
@@ -367,7 +388,7 @@ functions to ingest this dataset, as shown in <a href="../../runners/examples/La
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
         </div></div>
         
 
@@ -427,7 +448,7 @@ functions to ingest this dataset, as shown in <a href="../../runners/examples/La
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Represents an AMP ICMP measurement, but only containing the data contained in the Latency TS I dataset." href="LatencyTSAmpICMP.html"><span class="name">LatencyTSAmpICMP</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destination">destination: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="family">family: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>, <span name="average">average: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="lossrate">lossrate: <a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>)</span><span class="result"> extends <a href="../traits/RichMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.RichMeasurement">RichMeasurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="../traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="Represents an AMP ICMP measurement, but only containing the data contained in the Latency TS I dataset." href="LatencyTSAmpICMP.html"><span class="name">LatencyTSAmpICMP</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="source">source: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destination">destination: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="family">family: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>, <span name="average">average: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="lossrate">lossrate: <a href="https://www.scala-lang.org/api/2.12.14/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>)</span><span class="result"> extends <a href="../traits/RichMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.RichMeasurement">RichMeasurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="../traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Represents an AMP ICMP measurement, but only containing the data contained
@@ -447,7 +468,7 @@ some fields.
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="Represents a latency measurement reported by fping, used with the Smokeping latency monitoring software." href="LatencyTSSmokeping.html"><span class="name">LatencyTSSmokeping</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destination">destination: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="family">family: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>, <span name="median">median: <a href="https://www.scala-lang.org/api/2.12.13/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a>]</span>, <span name="loss">loss: <a href="https://www.scala-lang.org/api/2.12.13/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="results">results: <span class="extype" name="scala.Seq">Seq</span>[<a href="https://www.scala-lang.org/api/2.12.13/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a>]</span>)</span><span class="result"> extends <a href="../traits/RichMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.RichMeasurement">RichMeasurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="../traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="Represents a latency measurement reported by fping, used with the Smokeping latency monitoring software." href="LatencyTSSmokeping.html"><span class="name">LatencyTSSmokeping</span></a><span class="params">(<span name="stream">stream: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destination">destination: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="family">family: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="time">time: <span class="extype" name="java.time.Instant">Instant</span></span>, <span name="median">median: <a href="https://www.scala-lang.org/api/2.12.14/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://www.scala-lang.org/api/2.12.14/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a>]</span>, <span name="loss">loss: <a href="https://www.scala-lang.org/api/2.12.14/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="results">results: <span class="extype" name="scala.Seq">Seq</span>[<a href="https://www.scala-lang.org/api/2.12.14/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a>]</span>)</span><span class="result"> extends <a href="../traits/RichMeasurement.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.RichMeasurement">RichMeasurement</a> with <a href="../traits/CsvOutputable.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.CsvOutputable">CsvOutputable</a> with <a href="../traits/HasDefault.html" class="extype" name="nz.net.wand.streamevmon.measurements.traits.HasDefault">HasDefault</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       <p class="shortcomment cmt">Represents a latency measurement reported by fping, used with the
@@ -474,7 +495,7 @@ Smokeping latency monitoring software. Similar to an AMP RichICMP.
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="LatencyTSAmpICMP$.html"><span class="name">LatencyTSAmpICMP</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="LatencyTSAmpICMP$.html"><span class="name">LatencyTSAmpICMP</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -490,7 +511,7 @@ Smokeping latency monitoring software. Similar to an AMP RichICMP.
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="LatencyTSSmokeping$.html"><span class="name">LatencyTSSmokeping</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.13/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="LatencyTSSmokeping$.html"><span class="name">LatencyTSSmokeping</span></a><span class="result"> extends <a href="https://www.scala-lang.org/api/2.12.14/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       
       
@@ -505,9 +526,9 @@ Smokeping latency monitoring software. Similar to an AMP RichICMP.
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.13/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
+              <h3>Inherited from <a href="https://www.scala-lang.org/api/2.12.14/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
             </div>
         
         </div>
